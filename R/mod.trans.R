@@ -77,9 +77,9 @@ trans_msm <- function(dat, at) {
     return(dat)
   }
 
-  ## Reorder by role: ins on the left, rec on the right, flippers represented twice
-  disc.ip <- dal[dal[, "ins"] %in% 1:2, ]
-  disc.rp <- dal[dal[, "ins"] %in% c(0, 2), c(2:1, 3:ncols)]
+  ## Reorder by role: ins on the left, rec on the right
+  disc.ip <- dal[dal[, "ins"] == 1, ]
+  disc.rp <- dal[dal[, "ins"] == 0, c(2:1, 3:ncols)]
   colnames(disc.ip)[1:2] <- colnames(disc.rp)[1:2] <- c("ins", "rec")
 
 
@@ -99,7 +99,7 @@ trans_msm <- function(dat, at) {
   ip.tprob <- URAI.prob * 2.45^(ip.vl - 4.5)
 
   # Transform to log odds
-  ip.tlo <- log(ip.tprob/(1-ip.tprob))
+  ip.tlo <- log(ip.tprob/(1 - ip.tprob))
 
   # Condom use
   not.UAI <- which(disc.ip[, "uai"] == 0)
