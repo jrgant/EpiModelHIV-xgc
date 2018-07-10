@@ -145,16 +145,6 @@
 #'        model calibration purposes.
 #' @param cond.rr.WW Condom probability scaler for white-white partnerships for
 #'        model calibration purposes.
-
-#' @param vv.iev.BB.prob Probability that in a black-black partnership of
-#'        two versatile men, they will engage in intra-event versatility
-#'        ("flipping") given that they're having AI.
-#' @param vv.iev.BW.prob Probability that in a black-white partnership of
-#'        two versatile men, they will engage in intra-event versatility
-#'        ("flipping") given that they're having AI.
-#' @param vv.iev.WW.prob Probability that in a white-white partnership of
-#'        two versatile men, they will engage in intra-event versatility
-#'        ("flipping") given that they're having AI.
 #'
 #' @param prep.start Time step at which the PrEP intervention should start.
 #' @param prep.adhr.dist.B Proportion of black men who are low, medium, and high
@@ -339,10 +329,6 @@ param_msm <- function(nwstats,
                       cond.rr.BW = 1,
                       cond.rr.WW = 1.6,
 
-                      vv.iev.BB.prob = 0.42,
-                      vv.iev.BW.prob = 0.56,
-                      vv.iev.WW.prob = 0.49,
-
                       prep.start = Inf,
                       prep.aware.B = 0.5,
                       prep.aware.W = 0.5,
@@ -449,9 +435,6 @@ param_msm <- function(nwstats,
     p$cond.inst.BB.prob = (cond.inst.BB.prob + cond.inst.BW.prob + cond.inst.WW.prob)/3
     p$cond.inst.BW.prob = (cond.inst.BB.prob + cond.inst.BW.prob + cond.inst.WW.prob)/3
     p$cond.inst.WW.prob = (cond.inst.BB.prob + cond.inst.BW.prob + cond.inst.WW.prob)/3
-    p$vv.iev.BB.prob = (vv.iev.BB.prob + vv.iev.BW.prob + vv.iev.WW.prob)/3
-    p$vv.iev.BW.prob = (vv.iev.BB.prob + vv.iev.BW.prob + vv.iev.WW.prob)/3
-    p$vv.iev.WW.prob = (vv.iev.BB.prob + vv.iev.BW.prob + vv.iev.WW.prob)/3
   }
 
   p$time.unit <- nwstats$time.unit

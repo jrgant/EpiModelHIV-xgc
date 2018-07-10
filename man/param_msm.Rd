@@ -32,21 +32,17 @@ param_msm(nwstats, race.method = 2, last.neg.test.B.int = 301,
   cond.pers.WW.prob = 0.26, cond.inst.always.prob = 0.326,
   cond.inst.BB.prob = 0.27, cond.inst.BW.prob = 0.27,
   cond.inst.WW.prob = 0.27, cond.always.prob.corr = 0.5,
-  cond.rr.BB = 0.71, cond.rr.BW = 1, cond.rr.WW = 1.6,
-  vv.iev.BB.prob = 0.42, vv.iev.BW.prob = 0.56, vv.iev.WW.prob = 0.49,
-  prep.start = Inf, prep.aware.B = 0.5, prep.aware.W = 0.5,
-  prep.access.B = 0.76, prep.access.W = 0.95, prep.rx.B = 0.63,
-  prep.rx.W = 0.73, prep.adhr.dist.B = reallocate_pcp(reall = 0.598 -
-  0.784), prep.adhr.dist.W = reallocate_pcp(reall = 0.93 - 0.784),
-  prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate.B = 1 -
-  (2^(-1/406)), prep.discont.rate.W = 1 - (2^(-1/1155)), prep.tst.int = 90,
-  prep.risk.int = 182, prep.risk.reassess.method = "year",
-  rcomp.prob = 0.41, rcomp.adh.groups = 2:3, rgc.tprob = 0.428,
-  ugc.tprob = 0.35, rct.tprob = 0.231, uct.tprob = 0.205,
-  rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14,
-  uct.sympt.prob = 0.58, rgc.ntx.int = 205.8, ugc.ntx.int = 205.8,
-  gc.tx.int = 2 * 7, rct.ntx.int = 265.1, uct.ntx.int = 265.1,
-  ct.tx.int = 2 * 7, gc.sympt.prob.tx.B = 0.86, gc.sympt.prob.tx.W = 0.96,
+  cond.rr.BB = 0.71, cond.rr.BW = 1, cond.rr.WW = 1.6, prep.start = Inf,
+  prep.coverage = 0, prep.adhr.dist = reallocate_pcp(reall = 0.784 - 0.784),
+  prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 - (2^(-1/780)),
+  prep.tst.int = 90, prep.risk.int = 182,
+  prep.risk.reassess.method = "year", rcomp.prob = 0.41,
+  rcomp.adh.groups = 2:3, rgc.tprob = 0.428, ugc.tprob = 0.35,
+  rct.tprob = 0.231, uct.tprob = 0.205, rgc.sympt.prob = 0.16,
+  ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14, uct.sympt.prob = 0.58,
+  rgc.ntx.int = 205.8, ugc.ntx.int = 205.8, gc.tx.int = 2 * 7,
+  rct.ntx.int = 265.1, uct.ntx.int = 265.1, ct.tx.int = 2 * 7,
+  gc.sympt.prob.tx.B = 0.86, gc.sympt.prob.tx.W = 0.96,
   ct.sympt.prob.tx.B = 0.72, ct.sympt.prob.tx.W = 0.85,
   gc.asympt.prob.tx.B = 0.1, gc.asympt.prob.tx.W = 0.19,
   ct.asympt.prob.tx.B = 0.05, ct.asympt.prob.tx.W = 0.1,
@@ -265,48 +261,12 @@ model calibration purposes.}
 \item{cond.rr.WW}{Condom probability scaler for white-white partnerships for
 model calibration purposes.}
 
-\item{vv.iev.BB.prob}{Probability that in a black-black partnership of
-two versatile men, they will engage in intra-event versatility
-("flipping") given that they're having AI.}
-
-\item{vv.iev.BW.prob}{Probability that in a black-white partnership of
-two versatile men, they will engage in intra-event versatility
-("flipping") given that they're having AI.}
-
-\item{vv.iev.WW.prob}{Probability that in a white-white partnership of
-two versatile men, they will engage in intra-event versatility
-("flipping") given that they're having AI.}
-
 \item{prep.start}{Time step at which the PrEP intervention should start.}
-
-\item{prep.aware.B}{Proportion of black men who are aware of PrEP.}
-
-\item{prep.aware.W}{Proportion of white men who are aware of PrEP.}
-
-\item{prep.access.B}{Proportion of black men aware of PrEP who have access to
-a PrEP provider.}
-
-\item{prep.access.W}{Proportion of white men aware of PrEP who have access to
-a PrEP provider.}
-
-\item{prep.rx.B}{Propotion of black men with access to a PrEP provider and with
-current indications for PrEP who receive a PrEP prescription.}
-
-\item{prep.rx.W}{Proportion of white men with access to a PrEP provide and with
-current indications for PrEP who receive a PrEP prescription.}
-
-\item{prep.adhr.dist.B}{Proportion of black men who are low, medium, and high
-adherent to PrEP.}
-
-\item{prep.adhr.dist.W}{Proportion of white men who are low, medium, and high
-adherent to PrEP.}
 
 \item{prep.class.hr}{The hazard ratio for infection per act associated with each
 level of adherence (from Grant).}
 
-\item{prep.discont.rate.B}{Rate of random discontinuation from PrEP for black men.}
-
-\item{prep.discont.rate.W}{Rate of random discontinuation from PrEP for white men.}
+\item{prep.discont.rate}{Rate of random discontinuation from PrEP.}
 
 \item{prep.tst.int}{Testing interval for those who are actively on PrEP. This
 overrides the mean testing interval parameters.}
@@ -413,6 +373,12 @@ in the cond.eff parameter.}
 given dual infection with both gonorrhea and chlamydia.}
 
 \item{...}{Additional arguments passed to the function.}
+
+\item{prep.adhr.dist.B}{Proportion of black men who are low, medium, and high
+adherent to PrEP.}
+
+\item{prep.adhr.dist.W}{Proportion of white men who are low, medium, and high
+adherent to PrEP.}
 }
 \value{
 A list object of class \code{param_msm}, which can be passed to
