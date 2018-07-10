@@ -33,7 +33,7 @@ simnet_msm <- function(dat, at) {
                                              coef.diss = nwparam.m$coef.diss$coef.adj,
                                              save.changes = TRUE)
 
-  plist1 <- update_plist(dat, ptype = 1)
+  plist1 <- update_plist(dat, at, ptype = 1)
 
 
   ## Casual network
@@ -52,7 +52,8 @@ simnet_msm <- function(dat, at) {
                                              coef.diss = nwparam.p$coef.diss$coef.adj,
                                              save.changes = TRUE)
 
-  plist2 <- update_plist(dat, ptype = 2)
+  plist2 <- update_plist(dat, at, ptype = 2)
+
   dat$temp$plist <- rbind(plist1, plist2)
   if (dat$control$truncate.plist == TRUE) {
     to.keep <- which(is.na(dat$temp$plist[, "stop"]))
@@ -81,7 +82,7 @@ simnet_msm <- function(dat, at) {
 }
 
 # updates the partnership list
-update_plist <- function(dat, ptype) {
+update_plist <- function(dat, at, ptype) {
   # pull existing partner type specific list
   plist1 <- dat$temp$plist[dat$temp$plist[, "ptype"] == ptype, ]
 
