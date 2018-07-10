@@ -426,12 +426,6 @@ param_msm <- function(nwstats,
     p$tx.halt.W.prob = (tx.halt.B.prob + tx.halt.W.prob)/2
     p$tx.reinit.B.prob = (tx.reinit.B.prob + tx.reinit.W.prob)/2
     p$tx.reinit.W.prob = (tx.reinit.B.prob + tx.reinit.W.prob)/2
-    p$disc.outset.main.B.prob = (disc.outset.main.B.prob + disc.outset.main.W.prob)/2
-    p$disc.outset.main.W.prob = (disc.outset.main.B.prob + disc.outset.main.W.prob)/2
-    p$disc.outset.pers.B.prob = (disc.outset.pers.B.prob + disc.outset.pers.W.prob)/2
-    p$disc.outset.pers.W.prob = (disc.outset.pers.B.prob + disc.outset.pers.W.prob)/2
-    p$disc.inst.B.prob = (disc.inst.B.prob + disc.inst.W.prob)/2
-    p$disc.inst.W.prob = (disc.inst.B.prob + disc.inst.W.prob)/2
     p$circ.B.prob = (circ.B.prob + circ.W.prob)/2
     p$circ.W.prob = (circ.B.prob + circ.W.prob)/2
     p$base.ai.main.BB.rate = (base.ai.main.BB.rate + base.ai.main.BW.rate +
