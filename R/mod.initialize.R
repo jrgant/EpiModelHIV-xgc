@@ -37,7 +37,7 @@ initialize_msm <- function(x, param, init, control, s) {
   ## Network simulation ##
   nw <- list()
   for (i in 1:3) {
-    nw[[i]] <- simulate(x[[i]]$fit, control = control.simulate.ergm(MCMC.burnin = 5e6))
+    nw[[i]] <- simulate(x[[i]]$fit, control = control.simulate.ergm(MCMC.burnin = 2e6))
   }
 
   ## Build initial edgelists
@@ -226,8 +226,14 @@ initialize_msm <- function(x, param, init, control, s) {
 
   # Prevalence Tracking
   dat$temp$deg.dists <- list()
-
   dat <- prevalence_msm(dat, at = 1)
+
+  # Save partner list
+  plist <- cbind(dat$el[[1]], ptype = 1)
+  plist <- rbind(plist, cbind(dat$el[[2]], ptype = 2))
+  plist <- cbind(plist, start = 1, stop = NA)
+  colnames(plist)[1:2] <- c("p1", "p2")
+  dat$temp$plist <- plist
 
   class(dat) <- "dat"
   return(dat)

@@ -618,6 +618,7 @@ control_msm <- function(simno = 1,
                         prev.FUN = prevalence_msm,
                         verbose.FUN = verbose_msm,
                         save.nwstats = FALSE,
+                        truncate.plist = TRUE,
                         verbose = TRUE,
                         verbose.int = 1,
                         ...) {
