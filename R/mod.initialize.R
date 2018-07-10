@@ -240,41 +240,6 @@ initialize_msm <- function(x, param, init, control, s) {
 }
 
 
-#' @title Removes any sexual partnerships prohibited by sexual role mixing
-#'
-#' @description Due to occassional issues in ERGM fitting, it is possible to
-#'              have initial simulations in which there are pairings between
-#'              exclusively insertive/insertive or receptive/receptive.
-#'
-#' @param nw An object of class \code{network}.
-#'
-#' @export
-#' @keywords initiation utility msm
-#'
-remove_bad_roles_msm <- function(nw) {
-
-  el <- as.edgelist(nw)
-
-  rc <- get.vertex.attribute(nw, "role.class")
-  rc.el <- matrix(rc[el], ncol = 2)
-
-  rc.el.bad <- which((rc.el[, 1] == "R" & rc.el[, 2] == "R") |
-                     (rc.el[, 1] == "I" & rc.el[, 2] == "I"))
-
-  if (length(rc.el.bad) > 0) {
-    el.bad <- el[rc.el.bad, , drop = FALSE]
-
-    eid <- rep(NA, nrow(el.bad))
-    for (i in 1:nrow(el.bad)) {
-      eid[i] <- get.edgeIDs(nw, v = el.bad[i, 1], alter = el.bad[i, 2])
-    }
-    nw <- delete.edges(nw, eid)
-  }
-
-  return(nw)
-}
-
-
 #' @title Initialize the HIV status of persons in the network
 #'
 #' @description Sets the initial individual-level disease status of persons
