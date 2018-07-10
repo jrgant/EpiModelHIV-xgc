@@ -93,38 +93,7 @@
 #'        in the cond.eff parameter.
 #' @param cond.fail.W Condom failure rates for HIV for White MSM, as a reduction
 #'        in the cond.eff parameter.
-#' @param disc.outset.main.B.prob Probability that an HIV-infected black MSM will
-#'        disclose his status at the start of a main partnership.
-#' @param disc.outset.main.W.prob Probability that an HIV-infected white MSM will
-#'        disclose his status at the start of a main partnership.
-#' @param disc.at.diag.main.B.prob Probability that a black MSM already in a main
-#'        partnership will disclose at the time of diagnosis.
-#' @param disc.at.diag.main.W.prob Probability that a white MSM already in a main
-#'        partnership will disclose at the time of diagnosis.
-#' @param disc.post.diag.main.B.prob Probability that an HIV-infected black MSM
-#'        in a main partnership will disclose his status, assuming he didn't
-#'        at the start of the partnership or at diagnosis.
-#' @param disc.post.diag.main.W.prob Probability that an HIV-infected white MSM
-#'        in a main partnership will disclose his status, assuming he didn't
-#'        at the start of the partnership or at diagnosis.
-#' @param disc.outset.pers.B.prob Probability that an HIV-infected black MSM will
-#'        disclose his status at the start of a casual partnership.
-#' @param disc.outset.pers.W.prob Probability that an HIV-infected white MSM will
-#'        disclose his status at the start of a casual partnership.
-#' @param disc.at.diag.pers.B.prob Probability that a black MSM already in a
-#'        casual partnership will disclose at the time of diagnosis.
-#' @param disc.at.diag.pers.W.prob Probability that a white MSM already in a
-#'        casual partnership will disclose at the time of diagnosis.
-#' @param disc.post.diag.pers.B.prob Probability that an HIV-infected black MSM
-#'        in a casual partnership will disclose his status, assuming he
-#'        didn't at the start of the partnership or at diagnosis.
-#' @param disc.post.diag.pers.W.prob Probability that an HIV-infected white MSM
-#'        in a casual partnership will disclose his status, assuming he
-#'        didn't at the start of the partnership or at diagnosis.
-#' @param disc.inst.B.prob Probability that an HIV-infected black MSM will
-#'        disclose his status to a one-off partner.
-#' @param disc.inst.W.prob Probability that an HIV-infected white MSM will
-#'        disclose his status to a one-off partner.
+
 #' @param circ.B.prob Probablity that a black new arrival in the population
 #'        will be circumcised.
 #' @param circ.W.prob Probablity that a white new arrival in the population
@@ -176,23 +145,7 @@
 #'        model calibration purposes.
 #' @param cond.rr.WW Condom probability scaler for white-white partnerships for
 #'        model calibration purposes.
-#' @param cond.diag.main.beta Beta multiplier for the log odds of using a
-#'        condom in a main partnership if the HIV-infected man has been
-#'        diagnosed.
-#' @param cond.discl.main.beta Beta multiplier for the log odds of using a
-#'        condom in a main partnership if the HIV-infected man has disclosed.
-#' @param cond.diag.pers.beta Beta multiplier for the log odds of using a
-#'        condom in a casual partnership if the HIV-infected man has been
-#'        diagnosed.
-#' @param cond.discl.pers.beta Beta multiplier for the log odds of using a
-#'        condom in a casual partnership if the HIV-infected man has disclosed
-#'        his status.
-#' @param cond.diag.inst.beta Beta multiplier for the log odds of using a
-#'        condom in a one-off partnership if the HIV-infected man has been
-#'        diagnosed.
-#' @param cond.discl.inst.beta Beta multiplier for the log odds of using a
-#'        condom in a one-off partnership if the HIV-infected man has disclosed
-#'        his status.
+
 #' @param vv.iev.BB.prob Probability that in a black-black partnership of
 #'        two versatile men, they will engage in intra-event versatility
 #'        ("flipping") given that they're having AI.
@@ -240,10 +193,6 @@
 #' @param rcomp.adh.groups PrEP adherence groups for whom risk compensation
 #'        occurs, as a vector with values 1, 2, 3 corresponding to
 #'        low adherence, medium adherence, and high adherence to PrEP.
-#' @param rcomp.main.only Logical, if risk compensation is limited to main
-#'        partnerships only, versus all partnerships.
-#' @param rcomp.discl.only Logical, if risk compensation is limited known-discordant
-#'        partnerships only, versus all partnerships.
 #'
 #' @param rgc.tprob Probability of rectal gonorrhea infection per act.
 #' @param ugc.tprob Probability of urethral gonorrhea infection per act.
@@ -360,21 +309,6 @@ param_msm <- function(nwstats,
                       cond.fail.B = 0.39,
                       cond.fail.W = 0.21,
 
-                      disc.outset.main.B.prob = 0.685,
-                      disc.outset.main.W.prob = 0.889,
-                      disc.at.diag.main.B.prob = 1,
-                      disc.at.diag.main.W.prob = 1,
-                      disc.post.diag.main.B.prob = 0,
-                      disc.post.diag.main.W.prob = 0,
-                      disc.outset.pers.B.prob = 0.527,
-                      disc.outset.pers.W.prob = 0.828,
-                      disc.at.diag.pers.B.prob = 1,
-                      disc.at.diag.pers.W.prob = 1,
-                      disc.post.diag.pers.B.prob = 0,
-                      disc.post.diag.pers.W.prob = 0,
-                      disc.inst.B.prob = 0.445,
-                      disc.inst.W.prob = 0.691,
-
                       circ.B.prob = 0.874,
                       circ.W.prob = 0.918,
 
@@ -404,19 +338,12 @@ param_msm <- function(nwstats,
                       cond.rr.BB = 0.71,
                       cond.rr.BW = 1,
                       cond.rr.WW = 1.6,
-                      cond.diag.main.beta = -0.67,
-                      cond.discl.main.beta = -0.85,
-                      cond.diag.pers.beta = -0.67,
-                      cond.discl.pers.beta = -0.85,
-                      cond.diag.inst.beta = -0.67,
-                      cond.discl.inst.beta = -0.85,
 
                       vv.iev.BB.prob = 0.42,
                       vv.iev.BW.prob = 0.56,
                       vv.iev.WW.prob = 0.49,
 
                       prep.start = Inf,
-
                       prep.aware.B = 0.5,
                       prep.aware.W = 0.5,
                       prep.access.B = 0.76,
@@ -435,8 +362,6 @@ param_msm <- function(nwstats,
 
                       rcomp.prob = 0.41,
                       rcomp.adh.groups = 2:3,
-                      rcomp.main.only = FALSE,
-                      rcomp.discl.only = FALSE,
 
                       rgc.tprob = 0.428,
                       ugc.tprob = 0.350,
@@ -643,7 +568,6 @@ init_msm <- function(nwstats,
 #' @param roleclass.FUN Module function for transitions in sexual roles.
 #' @param resim_nets.FUN Module function for network resimulation at each time
 #'        step.
-#' @param disclose.FUN Module function for HIV status disclosure.
 #' @param acts.FUN Module function to simulate the number of sexual acts within
 #'        partnerships.
 #' @param condoms.FUN Module function to simulate condom use within acts.
@@ -689,7 +613,6 @@ control_msm <- function(simno = 1,
                         aiclass.FUN = NULL,
                         roleclass.FUN = NULL,
                         resim_nets.FUN = simnet_msm,
-                        disclose.FUN = disclose_msm,
                         acts.FUN = acts_msm,
                         condoms.FUN = condoms_msm,
                         position.FUN = position_msm,

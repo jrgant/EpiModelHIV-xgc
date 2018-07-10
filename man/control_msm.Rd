@@ -9,12 +9,11 @@ control_msm(simno = 1, nsims = 1, ncores = 1, nsteps = 100, start = 1,
   deaths.FUN = deaths_msm, births.FUN = births_msm, test.FUN = test_msm,
   tx.FUN = tx_msm, progress.FUN = progress_msm, vl.FUN = vl_msm,
   aiclass.FUN = NULL, roleclass.FUN = NULL, resim_nets.FUN = simnet_msm,
-  disclose.FUN = disclose_msm, acts.FUN = acts_msm,
-  condoms.FUN = condoms_msm, position.FUN = position_msm,
-  prep.FUN = prep_msm, trans.FUN = trans_msm, stitrans.FUN = sti_trans,
-  stirecov.FUN = sti_recov, stitx.FUN = sti_tx, prev.FUN = prevalence_msm,
-  verbose.FUN = verbose_msm, save.nwstats = FALSE, verbose = TRUE,
-  verbose.int = 1, ...)
+  acts.FUN = acts_msm, condoms.FUN = condoms_msm,
+  position.FUN = position_msm, prep.FUN = prep_msm, trans.FUN = trans_msm,
+  stitrans.FUN = sti_trans, stirecov.FUN = sti_recov, stitx.FUN = sti_tx,
+  prev.FUN = prevalence_msm, verbose.FUN = verbose_msm,
+  save.nwstats = FALSE, verbose = TRUE, verbose.int = 1, ...)
 }
 \arguments{
 \item{simno}{Unique ID for the simulation run, used for file naming purposes
@@ -55,8 +54,6 @@ model.}
 
 \item{resim_nets.FUN}{Module function for network resimulation at each time
 step.}
-
-\item{disclose.FUN}{Module function for HIV status disclosure.}
 
 \item{acts.FUN}{Module function to simulate the number of sexual acts within
 partnerships.}

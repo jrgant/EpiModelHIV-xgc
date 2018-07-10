@@ -21,14 +21,7 @@ param_msm(nwstats, race.method = 2, last.neg.test.B.int = 301,
   birth.age = 18, b.method = "fixed", URAI.prob = 0.0082 * 1.09,
   UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
   cond.eff = 0.95, cond.fail.B = 0.39, cond.fail.W = 0.21,
-  disc.outset.main.B.prob = 0.685, disc.outset.main.W.prob = 0.889,
-  disc.at.diag.main.B.prob = 1, disc.at.diag.main.W.prob = 1,
-  disc.post.diag.main.B.prob = 0, disc.post.diag.main.W.prob = 0,
-  disc.outset.pers.B.prob = 0.527, disc.outset.pers.W.prob = 0.828,
-  disc.at.diag.pers.B.prob = 1, disc.at.diag.pers.W.prob = 1,
-  disc.post.diag.pers.B.prob = 0, disc.post.diag.pers.W.prob = 0,
-  disc.inst.B.prob = 0.445, disc.inst.W.prob = 0.691, circ.B.prob = 0.874,
-  circ.W.prob = 0.918, num.inst.ai.classes = 1,
+  circ.B.prob = 0.874, circ.W.prob = 0.918, num.inst.ai.classes = 1,
   base.ai.main.BB.rate = 0.22, base.ai.main.BW.rate = 0.22,
   base.ai.main.WW.rate = 0.22, base.ai.pers.BB.rate = 0.14,
   base.ai.pers.BW.rate = 0.14, base.ai.pers.WW.rate = 0.14,
@@ -40,9 +33,6 @@ param_msm(nwstats, race.method = 2, last.neg.test.B.int = 301,
   cond.inst.BB.prob = 0.27, cond.inst.BW.prob = 0.27,
   cond.inst.WW.prob = 0.27, cond.always.prob.corr = 0.5,
   cond.rr.BB = 0.71, cond.rr.BW = 1, cond.rr.WW = 1.6,
-  cond.diag.main.beta = -0.67, cond.discl.main.beta = -0.85,
-  cond.diag.pers.beta = -0.67, cond.discl.pers.beta = -0.85,
-  cond.diag.inst.beta = -0.67, cond.discl.inst.beta = -0.85,
   vv.iev.BB.prob = 0.42, vv.iev.BW.prob = 0.56, vv.iev.WW.prob = 0.49,
   prep.start = Inf, prep.aware.B = 0.5, prep.aware.W = 0.5,
   prep.access.B = 0.76, prep.access.W = 0.95, prep.rx.B = 0.63,
@@ -51,13 +41,12 @@ param_msm(nwstats, race.method = 2, last.neg.test.B.int = 301,
   prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate.B = 1 -
   (2^(-1/406)), prep.discont.rate.W = 1 - (2^(-1/1155)), prep.tst.int = 90,
   prep.risk.int = 182, prep.risk.reassess.method = "year",
-  rcomp.prob = 0.41, rcomp.adh.groups = 2:3, rcomp.main.only = FALSE,
-  rcomp.discl.only = FALSE, rgc.tprob = 0.428, ugc.tprob = 0.35,
-  rct.tprob = 0.231, uct.tprob = 0.205, rgc.sympt.prob = 0.16,
-  ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14, uct.sympt.prob = 0.58,
-  rgc.ntx.int = 205.8, ugc.ntx.int = 205.8, gc.tx.int = 2 * 7,
-  rct.ntx.int = 265.1, uct.ntx.int = 265.1, ct.tx.int = 2 * 7,
-  gc.sympt.prob.tx.B = 0.86, gc.sympt.prob.tx.W = 0.96,
+  rcomp.prob = 0.41, rcomp.adh.groups = 2:3, rgc.tprob = 0.428,
+  ugc.tprob = 0.35, rct.tprob = 0.231, uct.tprob = 0.205,
+  rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14,
+  uct.sympt.prob = 0.58, rgc.ntx.int = 205.8, ugc.ntx.int = 205.8,
+  gc.tx.int = 2 * 7, rct.ntx.int = 265.1, uct.ntx.int = 265.1,
+  ct.tx.int = 2 * 7, gc.sympt.prob.tx.B = 0.86, gc.sympt.prob.tx.W = 0.96,
   ct.sympt.prob.tx.B = 0.72, ct.sympt.prob.tx.W = 0.85,
   gc.asympt.prob.tx.B = 0.1, gc.asympt.prob.tx.W = 0.19,
   ct.asympt.prob.tx.B = 0.05, ct.asympt.prob.tx.W = 0.1,
@@ -198,52 +187,6 @@ in the cond.eff parameter.}
 \item{cond.fail.W}{Condom failure rates for HIV for White MSM, as a reduction
 in the cond.eff parameter.}
 
-\item{disc.outset.main.B.prob}{Probability that an HIV-infected black MSM will
-disclose his status at the start of a main partnership.}
-
-\item{disc.outset.main.W.prob}{Probability that an HIV-infected white MSM will
-disclose his status at the start of a main partnership.}
-
-\item{disc.at.diag.main.B.prob}{Probability that a black MSM already in a main
-partnership will disclose at the time of diagnosis.}
-
-\item{disc.at.diag.main.W.prob}{Probability that a white MSM already in a main
-partnership will disclose at the time of diagnosis.}
-
-\item{disc.post.diag.main.B.prob}{Probability that an HIV-infected black MSM
-in a main partnership will disclose his status, assuming he didn't
-at the start of the partnership or at diagnosis.}
-
-\item{disc.post.diag.main.W.prob}{Probability that an HIV-infected white MSM
-in a main partnership will disclose his status, assuming he didn't
-at the start of the partnership or at diagnosis.}
-
-\item{disc.outset.pers.B.prob}{Probability that an HIV-infected black MSM will
-disclose his status at the start of a casual partnership.}
-
-\item{disc.outset.pers.W.prob}{Probability that an HIV-infected white MSM will
-disclose his status at the start of a casual partnership.}
-
-\item{disc.at.diag.pers.B.prob}{Probability that a black MSM already in a
-casual partnership will disclose at the time of diagnosis.}
-
-\item{disc.at.diag.pers.W.prob}{Probability that a white MSM already in a
-casual partnership will disclose at the time of diagnosis.}
-
-\item{disc.post.diag.pers.B.prob}{Probability that an HIV-infected black MSM
-in a casual partnership will disclose his status, assuming he
-didn't at the start of the partnership or at diagnosis.}
-
-\item{disc.post.diag.pers.W.prob}{Probability that an HIV-infected white MSM
-in a casual partnership will disclose his status, assuming he
-didn't at the start of the partnership or at diagnosis.}
-
-\item{disc.inst.B.prob}{Probability that an HIV-infected black MSM will
-disclose his status to a one-off partner.}
-
-\item{disc.inst.W.prob}{Probability that an HIV-infected white MSM will
-disclose his status to a one-off partner.}
-
 \item{circ.B.prob}{Probablity that a black new arrival in the population
 will be circumcised.}
 
@@ -322,29 +265,6 @@ model calibration purposes.}
 \item{cond.rr.WW}{Condom probability scaler for white-white partnerships for
 model calibration purposes.}
 
-\item{cond.diag.main.beta}{Beta multiplier for the log odds of using a
-condom in a main partnership if the HIV-infected man has been
-diagnosed.}
-
-\item{cond.discl.main.beta}{Beta multiplier for the log odds of using a
-condom in a main partnership if the HIV-infected man has disclosed.}
-
-\item{cond.diag.pers.beta}{Beta multiplier for the log odds of using a
-condom in a casual partnership if the HIV-infected man has been
-diagnosed.}
-
-\item{cond.discl.pers.beta}{Beta multiplier for the log odds of using a
-condom in a casual partnership if the HIV-infected man has disclosed
-his status.}
-
-\item{cond.diag.inst.beta}{Beta multiplier for the log odds of using a
-condom in a one-off partnership if the HIV-infected man has been
-diagnosed.}
-
-\item{cond.discl.inst.beta}{Beta multiplier for the log odds of using a
-condom in a one-off partnership if the HIV-infected man has disclosed
-his status.}
-
 \item{vv.iev.BB.prob}{Probability that in a black-black partnership of
 two versatile men, they will engage in intra-event versatility
 ("flipping") given that they're having AI.}
@@ -407,12 +327,6 @@ initiation.}
 \item{rcomp.adh.groups}{PrEP adherence groups for whom risk compensation
 occurs, as a vector with values 1, 2, 3 corresponding to
 low adherence, medium adherence, and high adherence to PrEP.}
-
-\item{rcomp.main.only}{Logical, if risk compensation is limited to main
-partnerships only, versus all partnerships.}
-
-\item{rcomp.discl.only}{Logical, if risk compensation is limited known-discordant
-partnerships only, versus all partnerships.}
 
 \item{rgc.tprob}{Probability of rectal gonorrhea infection per act.}
 

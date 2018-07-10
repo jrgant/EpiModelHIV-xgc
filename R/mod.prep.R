@@ -291,14 +291,9 @@ riskhist_msm <- function(dat, at) {
   dat$attr$prep.ind.uai.nmain[uai.nmain] <- at
 
   ## Condition 3a: AI within known serodiscordant partnerships
-  el2.cond3 <- el2[el2$st1 == 1 & el2$ptype %in% 1:2, ]
-
-  # Disclosure
-  discl.list <- dat$temp$discl.list
-  disclose.cdl <- discl.list[, 1] * 1e7 + discl.list[, 2]
-  delt.cdl <- uid[el2.cond3[, 1]] * 1e7 + uid[el2.cond3[, 2]]
-  discl <- (delt.cdl %in% disclose.cdl)
-  ai.sd <- el2.cond3$p2[discl == TRUE]
+  # TODO: remork AI in SD partners list
+  # el2.cond3 <- el2[el2$st1 == 1 & el2$ptype %in% 1:2, ]
+  ai.sd <- NULL # el2.cond3$p2[discl == TRUE]
   dat$attr$prep.ind.ai.sd[ai.sd] <- at
 
   ## Condition 4, any STI diagnosis

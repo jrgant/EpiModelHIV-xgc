@@ -10,7 +10,7 @@
 #' For each act on the discordant edgelist, condom use is stochastically simulated
 #' based on the partnership type and racial combination of the dyad. Other
 #' modifiers for the probability of condom use in that pair are diagnosis of
-#' disease, disclosure of status, and full or partial HIV viral suppression
+#' disease, and full or partial HIV viral suppression
 #' given HIV anti-retroviral therapy.
 #'
 #' @return
@@ -32,8 +32,6 @@ condoms_msm <- function(dat, at) {
   # Parameters
   rcomp.prob <- dat$param$rcomp.prob
   rcomp.adh.groups <- dat$param$rcomp.adh.groups
-  rcomp.main.only <- dat$param$rcomp.main.only
-  rcomp.discl.only <- dat$param$rcomp.discl.only
 
   el <- dat$temp$el
 
@@ -50,8 +48,6 @@ condoms_msm <- function(dat, at) {
       cond.BB.prob <- dat$param$cond.main.BB.prob
       cond.BW.prob <- dat$param$cond.main.BW.prob
       cond.WW.prob <- dat$param$cond.main.WW.prob
-      diag.beta <- dat$param$cond.diag.main.beta
-      discl.beta <- dat$param$cond.discl.main.beta
       cond.always <- NULL
       ptype <- 1
     }
@@ -59,8 +55,6 @@ condoms_msm <- function(dat, at) {
       cond.BB.prob <- dat$param$cond.pers.BB.prob
       cond.BW.prob <- dat$param$cond.pers.BW.prob
       cond.WW.prob <- dat$param$cond.pers.WW.prob
-      diag.beta <- dat$param$cond.diag.pers.beta
-      discl.beta <- dat$param$cond.discl.pers.beta
       cond.always <- dat$attr$cond.always.pers
       ptype <- 2
     }
@@ -68,8 +62,6 @@ condoms_msm <- function(dat, at) {
       cond.BB.prob <- dat$param$cond.inst.BB.prob
       cond.BW.prob <- dat$param$cond.inst.BW.prob
       cond.WW.prob <- dat$param$cond.inst.WW.prob
-      diag.beta <- dat$param$cond.diag.inst.beta
-      discl.beta <- dat$param$cond.discl.inst.beta
       cond.always <- dat$attr$cond.always.inst
       ptype <- 3
     }
@@ -85,39 +77,7 @@ condoms_msm <- function(dat, at) {
     cond.prob <- (num.B == 2) * (cond.BB.prob * cond.rr.BB) +
                  (num.B == 1) * (cond.BW.prob * cond.rr.BW) +
                  (num.B == 0) * (cond.WW.prob * cond.rr.WW)
-
-
-    # Transform to UAI logit
     uai.prob <- 1 - cond.prob
-    uai.logodds <- log(uai.prob / (1 - uai.prob))
-
-    # Diagnosis modifier
-    isDiscord <- which((elt[, "st1"] - elt[, "st2"]) == 1) # pull vector of discordant
-    pos.diag <- diag.status[elt[, 1]]
-    isDx <- which(pos.diag == 1) # pull vector of diagnosis status
-    isDiscord.dx <- intersect(isDiscord, isDx)
-    uai.logodds[isDiscord.dx] <- uai.logodds[isDiscord.dx] + diag.beta
-
-    # Disclosure modifier
-    isDiscord <- which((elt[, "st1"] - elt[, "st2"]) == 1)
-    delt <- elt[isDiscord, ]
-    discl.list <- dat$temp$discl.list
-    disclose.cdl <- discl.list[, 1] * 1e7 + discl.list[, 2]
-    delt.cdl <- uid[delt[, 1]] * 1e7 + uid[delt[, 2]]
-    discl.disc <- (delt.cdl %in% disclose.cdl)
-
-    discl <- rep(NA, nrow(elt))
-    discl[isDiscord] <- discl.disc
-
-    isDisc <- which(discl == 1)
-    uai.logodds[isDisc] <- uai.logodds[isDisc] + discl.beta
-
-    # Back transform to prob
-    old.uai.prob <- uai.prob
-    uai.prob <- exp(uai.logodds) / (1 + exp(uai.logodds))
-
-    uai.prob[is.na(uai.prob) & old.uai.prob == 0] <- 0
-    uai.prob[is.na(uai.prob) & old.uai.prob == 1] <- 1
 
     # UAI group
     if (type %in% c("pers", "inst")) {
@@ -135,16 +95,8 @@ condoms_msm <- function(dat, at) {
 
     # PrEP Status (risk compensation)
     if (rcomp.prob > 0) {
-
       idsRC <- which((prepStat[elt[, 1]] == 1 & prepClass[elt[, 1]] %in% rcomp.adh.groups) |
                      (prepStat[elt[, 2]] == 1 & prepClass[elt[, 2]] %in% rcomp.adh.groups))
-
-      if (rcomp.main.only == TRUE & ptype > 1) {
-        idsRC <- NULL
-      }
-      if (rcomp.discl.only == TRUE) {
-        idsRC <- intersect(idsRC, isDisc)
-      }
       uai.prob[idsRC] <- 1 - (1 - uai.prob[idsRC]) * (1 - rcomp.prob)
     }
 

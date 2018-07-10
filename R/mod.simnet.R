@@ -33,15 +33,6 @@ simnet_msm <- function(dat, at) {
                                              coef.diss = nwparam.m$coef.diss$coef.adj,
                                              save.changes = TRUE)
 
-  dat$temp$new.edges <- NULL
-  if (at == 2) {
-    new.edges.m <- matrix(dat$el[[1]], ncol = 2)
-  } else {
-    new.edges.m <- attributes(dat$el[[1]])$changes
-    new.edges.m <- new.edges.m[new.edges.m[, "to"] == 1, 1:2, drop = FALSE]
-  }
-  dat$temp$new.edges <- matrix(dat$attr$uid[new.edges.m], ncol = 2)
-
 
   ## Casual network
   nwparam.p <- EpiModel::get_nwparam(dat, network = 2)
@@ -58,15 +49,6 @@ simnet_msm <- function(dat, at) {
                                              coef.form = nwparam.p$coef.form,
                                              coef.diss = nwparam.p$coef.diss$coef.adj,
                                              save.changes = TRUE)
-
-  if (at == 2) {
-    new.edges.p <- matrix(dat$el[[2]], ncol = 2)
-  } else {
-    new.edges.p <- attributes(dat$el[[2]])$changes
-    new.edges.p <- new.edges.p[new.edges.p[, "to"] == 1, 1:2, drop = FALSE]
-  }
-  dat$temp$new.edges <- rbind(dat$temp$new.edges,
-                              matrix(dat$attr$uid[new.edges.p], ncol = 2))
 
 
   ## One-off network

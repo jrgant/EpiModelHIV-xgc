@@ -226,8 +226,6 @@ initialize_msm <- function(x, param, init, control, s) {
 
   # Prevalence Tracking
   dat$temp$deg.dists <- list()
-  dat$temp$discl.list <- matrix(NA, nrow = 0, ncol = 3)
-  colnames(dat$temp$discl.list) <- c("pos", "neg", "discl.time")
 
   dat <- prevalence_msm(dat, at = 1)
 
