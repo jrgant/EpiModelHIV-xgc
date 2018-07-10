@@ -578,6 +578,8 @@ init_msm <- function(nwstats,
 #'        external text files.
 #' @param save.nwstats Calculate and save network statistics as defined in the
 #'        \code{simnet} modules.
+#' @param truncate.plist Truncate the cumulative partnership list to only include
+#'        active partnerships.
 #' @param verbose If \code{TRUE}, print out simulation progress to the console
 #'        if in interactive mode or text files if in batch mode.
 #' @param verbose.int Integer specifying the interval between time steps at which

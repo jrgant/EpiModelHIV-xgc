@@ -84,6 +84,9 @@ external text files.}
 \item{save.nwstats}{Calculate and save network statistics as defined in the
 \code{simnet} modules.}
 
+\item{truncate.plist}{Truncate the cumulative partnership list to only include
+active partnerships.}
+
 \item{verbose}{If \code{TRUE}, print out simulation progress to the console
 if in interactive mode or text files if in batch mode.}
 
