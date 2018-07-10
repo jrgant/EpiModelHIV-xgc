@@ -34,7 +34,7 @@ persons are updated and summary statistics for incidence calculated.
 
 The per-act transmission probability depends on the following elements:
 insertive versus receptive role, viral load of the infected partner, an
-acute stage infection excess risk, condom use, and the CCR5 genetic allele.
+acute stage infection excess risk, and condom use.
 Given these transmission probabilities, transmission is stochastically
 simulating by drawing from a binomial distribution for each act conditional
 on the per-act probability.

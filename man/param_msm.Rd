@@ -28,8 +28,7 @@ param_msm(nwstats, race.method = 2, last.neg.test.B.int = 301,
   disc.at.diag.pers.B.prob = 1, disc.at.diag.pers.W.prob = 1,
   disc.post.diag.pers.B.prob = 0, disc.post.diag.pers.W.prob = 0,
   disc.inst.B.prob = 0.445, disc.inst.W.prob = 0.691, circ.B.prob = 0.874,
-  circ.W.prob = 0.918, ccr5.B.prob = c(0, 0.034), ccr5.W.prob = c(0.021,
-  0.176), ccr5.heteroz.rr = 0.3, num.inst.ai.classes = 1,
+  circ.W.prob = 0.918, num.inst.ai.classes = 1,
   base.ai.main.BB.rate = 0.22, base.ai.main.BW.rate = 0.22,
   base.ai.main.WW.rate = 0.22, base.ai.pers.BB.rate = 0.14,
   base.ai.pers.BW.rate = 0.14, base.ai.pers.WW.rate = 0.14,
@@ -250,17 +249,6 @@ will be circumcised.}
 
 \item{circ.W.prob}{Probablity that a white new arrival in the population
 will be circumcised.}
-
-\item{ccr5.B.prob}{Vector of length two of frequencies of the Delta 32
-mutation (homozygous and heterozygous, respectively) in the CCR5 gene
-among black MSM.}
-
-\item{ccr5.W.prob}{Vector of length two of frequencies of the Delta 32
-mutation (homozygous and heterozygous, respectively) in the CCR5 gene
-among white MSM.}
-
-\item{ccr5.heteroz.rr}{Relative risk of infection for men who are heterozygous
-in the CCR5 mutation.}
 
 \item{num.inst.ai.classes}{Number of quantiles into which men should be
 divided in determining their levels of one-off anal intercourse.}

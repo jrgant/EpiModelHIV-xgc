@@ -220,10 +220,6 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$attr$rCT.tx.prep <- dat$attr$uCT.tx.prep <- rep(NA, num)
 
 
-  # CCR5
-  dat <- init_ccr5_msm(dat)
-
-
   # Network statistics
   dat$stats$nwstats <- list()
 
@@ -665,77 +661,6 @@ init_status_msm <- function(dat) {
 
   return(dat)
 
-}
-
-
-#' @title Sets the CCR5 genetic status of persons
-#'
-#' @description Initializes the CCR5-delta-32 genetic allele of the men in the
-#'              population, based on parameters defining the probability
-#'              distribution.
-#'
-#' @param dat Data object created in initialization module.
-#'
-#' @export
-#' @keywords initiation utility msm
-#'
-init_ccr5_msm <- function(dat) {
-
-  num.B <- dat$init$num.B
-  num.W <- dat$init$num.W
-  num <- num.B + num.W
-  race <- dat$attr$race
-  status <- dat$attr$status
-
-  nInfB <- sum(race == "B" & status == 1)
-  nInfW <- sum(race == "W" & status == 1)
-
-  ##  CCR5 genotype
-  ccr5.heteroz.rr <- dat$param$ccr5.heteroz.rr
-  ccr5 <- rep("WW", num)
-
-  # homozygotes for deletion
-  num.ccr5.DD.B <- dat$param$ccr5.B.prob[1] * num.B
-  # heterozygotes
-  num.ccr5.DW.B <- dat$param$ccr5.B.prob[2] * num.B
-  # homozygotes for deletion
-  num.ccr5.WW.B <- num.B - num.ccr5.DD.B - num.ccr5.DW.B
-  # DD's can't be infected
-  num.uninf.ccr5.DD.B <- round(num.ccr5.DD.B)
-  # Unique solution to get relative risk right in init pop
-  num.inf.ccr5.DW.B <- round(num.ccr5.DW.B * nInfB * ccr5.heteroz.rr /
-                             (num.ccr5.WW.B + num.ccr5.DW.B * ccr5.heteroz.rr))
-  num.uninf.ccr5.DW.B <- round(num.ccr5.DW.B - num.inf.ccr5.DW.B)
-  inf.B <- which(status == 1 & race == "B")
-  inf.ccr5.DW.B <- sample(inf.B, num.inf.ccr5.DW.B, replace = FALSE)
-  ccr5[inf.ccr5.DW.B] <- "DW"
-  uninf.B <- which(status == 0 & race == "B")
-  uninf.ccr5.DWDD.B <- sample(uninf.B, num.uninf.ccr5.DW.B + num.uninf.ccr5.DD.B)
-  uninf.ccr5.DW.B <- sample(uninf.ccr5.DWDD.B, num.uninf.ccr5.DW.B)
-  uninf.ccr5.DD.B <- setdiff(uninf.ccr5.DWDD.B, uninf.ccr5.DW.B)
-  ccr5[uninf.ccr5.DW.B] <- "DW"
-  ccr5[uninf.ccr5.DD.B] <- "DD"
-
-  num.ccr5.DD.W <- dat$param$ccr5.W.prob[1] * num.W
-  num.ccr5.DW.W <- dat$param$ccr5.W.prob[2] * num.W
-  num.ccr5.WW.W <- num.W - num.ccr5.DD.W - num.ccr5.DW.W
-  num.uninf.ccr5.DD.W <- round(num.ccr5.DD.W)
-  num.inf.ccr5.DW.W <- round(num.ccr5.DW.W * nInfW * ccr5.heteroz.rr /
-                             (num.ccr5.WW.W + num.ccr5.DW.W * ccr5.heteroz.rr))
-  num.uninf.ccr5.DW.W <- round(num.ccr5.DW.W - num.inf.ccr5.DW.W)
-  inf.W <- which(status == 1 & race == "W")
-  inf.ccr5.DW.W <- sample(inf.W, num.inf.ccr5.DW.W)
-  ccr5[inf.ccr5.DW.W] <- "DW"
-  uninf.W <- which(status == 0 & race == "W")
-  uninf.ccr5.DWDD.W <- sample(uninf.W, num.uninf.ccr5.DW.W + num.uninf.ccr5.DD.W)
-  uninf.ccr5.DW.W <- sample(uninf.ccr5.DWDD.W, num.uninf.ccr5.DW.W)
-  uninf.ccr5.DD.W <- setdiff(uninf.ccr5.DWDD.W, uninf.ccr5.DW.W)
-  ccr5[uninf.ccr5.DW.W] <- "DW"
-  ccr5[uninf.ccr5.DD.W] <- "DD"
-
-  dat$attr$ccr5 <- ccr5
-
-  return(dat)
 }
 
 

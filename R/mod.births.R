@@ -125,19 +125,6 @@ setBirthAttr_msm <- function(dat, at, nBirths.B, nBirths.W) {
                                   runif(sum(dat$attr$role.class[newIds] == "V"))
   dat$attr$ins.quot[newIds] <- ins.quot
 
-  # CCR5
-  ccr5.B.prob <- dat$param$ccr5.B.prob
-  ccr5.W.prob <- dat$param$ccr5.W.prob
-  dat$attr$ccr5[newIds[newB]] <- sample(c("WW", "DW", "DD"),
-                                        nBirths.B, replace = TRUE,
-                                        prob = c(1 - sum(ccr5.B.prob),
-                                                 ccr5.B.prob[2], ccr5.B.prob[1]))
-  dat$attr$ccr5[newIds[newW]] <- sample(c("WW", "DW", "DD"),
-                                        nBirths.W, replace = TRUE,
-                                        prob = c(1 - sum(ccr5.W.prob),
-                                                 ccr5.W.prob[2], ccr5.W.prob[1]))
-
-
   # Degree
   dat$attr$deg.main[newIds] <- 0
   dat$attr$deg.pers[newIds] <- 0

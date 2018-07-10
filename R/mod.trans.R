@@ -17,7 +17,7 @@
 #'
 #' The per-act transmission probability depends on the following elements:
 #' insertive versus receptive role, viral load of the infected partner, an
-#' acute stage infection excess risk, condom use, and the CCR5 genetic allele.
+#' acute stage infection excess risk, and condom use.
 #' Given these transmission probabilities, transmission is stochastically
 #' simulating by drawing from a binomial distribution for each act conditional
 #' on the per-act probability.
@@ -39,7 +39,6 @@ trans_msm <- function(dat, at) {
   # Attributes
   vl <- dat$attr$vl
   stage <- dat$attr$stage
-  ccr5 <- dat$attr$ccr5
   circ <- dat$attr$circ
   status <- dat$attr$status
   prepStat <- dat$attr$prepStat
@@ -60,7 +59,6 @@ trans_msm <- function(dat, at) {
   cond.fail.W <- dat$param$cond.fail.W
 
   circ.rr <- dat$param$circ.rr
-  ccr5.heteroz.rr <- dat$param$ccr5.heteroz.rr
   prep.hr <- dat$param$prep.class.hr
   hiv.ugc.rr <- dat$param$hiv.ugc.rr
   hiv.uct.rr <- dat$param$hiv.uct.rr
@@ -92,7 +90,6 @@ trans_msm <- function(dat, at) {
   ip.stage <- stage[disc.ip[, 1]]
 
   # Attributes of susceptible
-  ip.ccr5 <- ccr5[disc.ip[, 2]]
   ip.prep <- prepStat[disc.ip[, 2]]
   ip.prepcl <- prepClass[disc.ip[, 2]]
   ip.rGC <- rGC[disc.ip[, 2]]
@@ -114,10 +111,6 @@ trans_msm <- function(dat, at) {
   condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail.W)
 
   ip.tlo[not.UAI] <- ip.tlo[not.UAI] + log(condom.rr[not.UAI])
-
-  # CCR5
-  ip.tlo[ip.ccr5 == "DD"] <- ip.tlo[ip.ccr5 == "DD"] + -Inf
-  ip.tlo[ip.ccr5 == "DW"] <- ip.tlo[ip.ccr5 == "DW"] + log(ccr5.heteroz.rr)
 
   # PrEP, by adherence class
   ip.on.prep <- which(ip.prep == 1)
@@ -156,7 +149,6 @@ trans_msm <- function(dat, at) {
 
   # Attributes of susceptible
   rp.circ <- circ[disc.rp[, 1]]
-  rp.ccr5 <- ccr5[disc.rp[, 1]]
   rp.prep <- prepStat[disc.rp[, 1]]
   rp.prepcl <- prepClass[disc.rp[, 1]]
   rp.uGC <- uGC[disc.rp[, 1]]
@@ -182,10 +174,6 @@ trans_msm <- function(dat, at) {
   condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail.W)
 
   rp.tlo[not.UAI] <- rp.tlo[not.UAI] + log(condom.rr[not.UAI])
-
-  # CCR5
-  rp.tlo[rp.ccr5 == "DD"] <- rp.tlo[rp.ccr5 == "DD"] + -Inf
-  rp.tlo[rp.ccr5 == "DW"] <- rp.tlo[rp.ccr5 == "DW"] + log(ccr5.heteroz.rr)
 
   # PrEP, by adherence class
   rp.on.prep <- which(rp.prep == 1)

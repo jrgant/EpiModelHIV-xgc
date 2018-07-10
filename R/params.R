@@ -129,14 +129,6 @@
 #'        will be circumcised.
 #' @param circ.W.prob Probablity that a white new arrival in the population
 #'        will be circumcised.
-#' @param ccr5.B.prob Vector of length two of frequencies of the Delta 32
-#'        mutation (homozygous and heterozygous, respectively) in the CCR5 gene
-#'        among black MSM.
-#' @param ccr5.W.prob Vector of length two of frequencies of the Delta 32
-#'        mutation (homozygous and heterozygous, respectively) in the CCR5 gene
-#'        among white MSM.
-#' @param ccr5.heteroz.rr Relative risk of infection for men who are heterozygous
-#'        in the CCR5 mutation.
 #' @param num.inst.ai.classes Number of quantiles into which men should be
 #'        divided in determining their levels of one-off anal intercourse.
 #' @param base.ai.main.BB.rate Expected coital frequency in black-black main
@@ -386,10 +378,6 @@ param_msm <- function(nwstats,
                       circ.B.prob = 0.874,
                       circ.W.prob = 0.918,
 
-                      ccr5.B.prob = c(0, 0.034),
-                      ccr5.W.prob = c(0.021, 0.176),
-                      ccr5.heteroz.rr = 0.3,
-
                       num.inst.ai.classes = 1,
                       base.ai.main.BB.rate = 0.22,
                       base.ai.main.BW.rate = 0.22,
@@ -521,8 +509,6 @@ param_msm <- function(nwstats,
     p$disc.inst.W.prob = (disc.inst.B.prob + disc.inst.W.prob)/2
     p$circ.B.prob = (circ.B.prob + circ.W.prob)/2
     p$circ.W.prob = (circ.B.prob + circ.W.prob)/2
-    p$ccr5.B.prob = (ccr5.B.prob + ccr5.W.prob)/2
-    p$ccr5.W.prob = (ccr5.B.prob + ccr5.W.prob)/2
     p$base.ai.main.BB.rate = (base.ai.main.BB.rate + base.ai.main.BW.rate +
                                 base.ai.main.WW.rate)/3
     p$base.ai.main.BW.rate = (base.ai.main.BB.rate + base.ai.main.BW.rate +
