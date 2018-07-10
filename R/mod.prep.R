@@ -225,7 +225,6 @@ riskhist_msm <- function(dat, at) {
 
   ## Attributes
   n <- length(dat$attr$active)
-  uid <- dat$attr$uid
   dx <- dat$attr$diag.status
   since.test <- at - dat$attr$last.neg.test
   rGC.tx <- dat$attr$rGC.tx
@@ -293,7 +292,12 @@ riskhist_msm <- function(dat, at) {
   ## Condition 3a: AI within known serodiscordant partnerships
   # TODO: remork AI in SD partners list
   # el2.cond3 <- el2[el2$st1 == 1 & el2$ptype %in% 1:2, ]
-  ai.sd <- NULL # el2.cond3$p2[discl == TRUE]
+
+  el2.cond3 <- el2[which(el2$st1 == 1 &
+                         dat$attr$diag.status[el2$p1] == 1 &
+                         el2$ptype %in% 1:2), ]
+
+  ai.sd <- el2.cond3$p2
   dat$attr$prep.ind.ai.sd[ai.sd] <- at
 
   ## Condition 4, any STI diagnosis
