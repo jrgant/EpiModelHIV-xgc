@@ -154,18 +154,7 @@
 #' @param prep.class.hr The hazard ratio for infection per act associated with each
 #'        level of adherence (from Grant).
 #'
-#' @param prep.aware.B Proportion of black men who are aware of PrEP.
-#' @param prep.aware.W Proportion of white men who are aware of PrEP.
-#' @param prep.access.B Proportion of black men aware of PrEP who have access to
-#'        a PrEP provider.
-#' @param prep.access.W Proportion of white men aware of PrEP who have access to
-#'        a PrEP provider.
-#' @param prep.rx.B Propotion of black men with access to a PrEP provider and with
-#'        current indications for PrEP who receive a PrEP prescription.
-#' @param prep.rx.W Proportion of white men with access to a PrEP provide and with
-#'        current indications for PrEP who receive a PrEP prescription.
-#' @param prep.discont.rate.B Rate of random discontinuation from PrEP for black men.
-#' @param prep.discont.rate.W Rate of random discontinuation from PrEP for white men.
+#' @param prep.discont.rate Rate of random discontinuation from PrEP.
 #'
 #' @param prep.tst.int Testing interval for those who are actively on PrEP. This
 #'        overrides the mean testing interval parameters.
@@ -330,17 +319,10 @@ param_msm <- function(nwstats,
                       cond.rr.WW = 1.6,
 
                       prep.start = Inf,
-                      prep.aware.B = 0.5,
-                      prep.aware.W = 0.5,
-                      prep.access.B = 0.76,
-                      prep.access.W = 0.95,
-                      prep.rx.B = 0.63,
-                      prep.rx.W = 0.73,
-                      prep.adhr.dist.B = reallocate_pcp(reall = 0.598 - 0.784),
-                      prep.adhr.dist.W = reallocate_pcp(reall = 0.930 - 0.784),
+                      prep.coverage = 0,
+                      prep.adhr.dist = reallocate_pcp(reall = 0.784 - 0.784),
                       prep.class.hr = c(0.69, 0.19, 0.02),
-                      prep.discont.rate.B = 1-(2^(-1/406)),
-                      prep.discont.rate.W = 1-(2^(-1/1155)),
+                      prep.discont.rate = 1 - (2^(-1/780)),
 
                       prep.tst.int = 90,
                       prep.risk.int = 182,

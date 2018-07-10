@@ -29,7 +29,6 @@ prep_msm <- function(dat, at) {
   # Attributes
   active <- dat$attr$active
   status <- dat$attr$status
-  race <- dat$attr$race
   diag.status <- dat$attr$diag.status
   lnt <- dat$attr$last.neg.test
 
