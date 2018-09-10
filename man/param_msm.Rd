@@ -6,23 +6,23 @@
 \usage{
 param_msm(nwstats, race.method = 2, last.neg.test.B.int = 301,
   last.neg.test.W.int = 315, mean.test.B.int = 301,
-  mean.test.W.int = 315, testing.pattern = "memoryless",
-  test.window.int = 21, tt.traj.B.prob = c(0.077, 0, 0.356, 0.567),
-  tt.traj.W.prob = c(0.052, 0, 0.331, 0.617), tx.init.B.prob = 0.092,
-  tx.init.W.prob = 0.127, tx.halt.B.prob = 0.0102,
-  tx.halt.W.prob = 0.0071, tx.reinit.B.prob = 0.00066,
-  tx.reinit.W.prob = 0.00291, max.time.off.tx.full.int = 520 * 7,
-  max.time.on.tx.part.int = 52 * 15 * 7, max.time.off.tx.part.int = 520
-  * 7, vl.acute.rise.int = 45, vl.acute.peak = 6.886,
-  vl.acute.fall.int = 45, vl.set.point = 4.5, vl.aids.onset.int = 520
-  * 7, vl.aids.int = 52 * 2 * 7, vl.fatal = 7, vl.full.supp = 1.5,
-  vl.part.supp = 3.5, full.supp.down.slope = 0.25,
-  full.supp.up.slope = 0.25, part.supp.down.slope = 0.25,
-  part.supp.up.slope = 0.25, b.B.rate = 0.001/7, b.W.rate = 0.001/7,
-  birth.age = 18, b.method = "fixed", URAI.prob = 0.0082 * 1.09,
-  UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
-  cond.eff = 0.95, cond.fail.B = 0.39, cond.fail.W = 0.21,
-  circ.B.prob = 0.874, circ.W.prob = 0.918, num.inst.ai.classes = 1,
+  mean.test.W.int = 315, test.window.int = 21,
+  tt.traj.B.prob = c(0.077, 0, 0.356, 0.567), tt.traj.W.prob = c(0.052,
+  0, 0.331, 0.617), tx.init.B.prob = 0.092, tx.init.W.prob = 0.127,
+  tx.halt.B.prob = 0.0102, tx.halt.W.prob = 0.0071,
+  tx.reinit.B.prob = 0.00066, tx.reinit.W.prob = 0.00291,
+  max.time.off.tx.full.int = 520 * 7, max.time.on.tx.part.int = 52 * 15
+  * 7, max.time.off.tx.part.int = 520 * 7, vl.acute.rise.int = 45,
+  vl.acute.peak = 6.886, vl.acute.fall.int = 45, vl.set.point = 4.5,
+  vl.aids.onset.int = 520 * 7, vl.aids.int = 52 * 2 * 7,
+  vl.fatal = 7, vl.full.supp = 1.5, vl.part.supp = 3.5,
+  full.supp.down.slope = 0.25, full.supp.up.slope = 0.25,
+  part.supp.down.slope = 0.25, part.supp.up.slope = 0.25,
+  b.B.rate = 0.001/7, b.W.rate = 0.001/7, birth.age = 18,
+  b.method = "fixed", URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 *
+  1.09, acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95,
+  cond.fail.B = 0.39, cond.fail.W = 0.21, circ.B.prob = 0.874,
+  circ.W.prob = 0.918, num.inst.ai.classes = 1,
   base.ai.main.BB.rate = 0.22, base.ai.main.BW.rate = 0.22,
   base.ai.main.WW.rate = 0.22, base.ai.pers.BB.rate = 0.14,
   base.ai.pers.BW.rate = 0.14, base.ai.pers.WW.rate = 0.14,
@@ -70,10 +70,6 @@ white men.}
 \item{mean.test.B.int}{Mean intertest interval in days for black MSM who test.}
 
 \item{mean.test.W.int}{Mean intertest interval in days for white MSM who test.}
-
-\item{testing.pattern}{Method for HIV testing, with options \code{"memoryless"}
-for constant hazard without regard to time since previous test, or
-\code{"interval"} deterministic fixed intervals.}
 
 \item{test.window.int}{Length of the HIV test window period in days.}
 

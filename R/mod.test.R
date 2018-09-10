@@ -6,10 +6,8 @@
 #' @inheritParams aging_msm
 #'
 #' @details
-#' This testing module supports two testing parameterizations, input via the
-#' \code{testing.pattern} parameter: memoryless for stochastic and
-#' geometrically-distributed waiting times to test (constant hazard); and interval
-#' for deterministic tested after defined waiting time intervals.
+#' This testing module supports memoryless HIV testing for stochastic and
+#' geometrically-distributed waiting times to test (constant hazard).
 #'
 #' @return
 #' This function returns the \code{dat} object with updated \code{last.neg.test},
@@ -34,7 +32,6 @@ test_msm <- function(dat, at) {
   prep.tst.int <- dat$param$prep.tst.int
 
   # Parameters
-  testing.pattern <- dat$param$testing.pattern
   mean.test.B.int <- dat$param$mean.test.B.int
   mean.test.W.int <- dat$param$mean.test.W.int
   twind.int <- dat$param$test.window.int
@@ -43,38 +40,21 @@ test_msm <- function(dat, at) {
   tsincelntst[is.na(tsincelntst)] <- at - dat$attr$arrival.time[is.na(tsincelntst)]
 
   ## Process
+  elig.B <- which(race == "B" &
+                  tt.traj != 1 &
+                  (diag.status == 0 | is.na(diag.status)) &
+                  prepStat == 0)
+  rates.B <- rep(1/mean.test.B.int, length(elig.B))
+  tst.B <- elig.B[rbinom(length(elig.B), 1, rates.B) == 1]
 
-  if (testing.pattern == "memoryless") {
-    elig.B <- which(race == "B" &
-                    tt.traj != 1 &
-                    (diag.status == 0 | is.na(diag.status)) &
-                    prepStat == 0)
-    rates.B <- rep(1/mean.test.B.int, length(elig.B))
-    tst.B <- elig.B[rbinom(length(elig.B), 1, rates.B) == 1]
+  elig.W <- which(race == "W" &
+                  tt.traj != 1 &
+                  (diag.status == 0 | is.na(diag.status)) &
+                  prepStat == 0)
+  rates.W <- rep(1/mean.test.W.int, length(elig.W))
+  tst.W <- elig.W[rbinom(length(elig.W), 1, rates.W) == 1]
+  tst.nprep <- c(tst.B, tst.W)
 
-    elig.W <- which(race == "W" &
-                    tt.traj != 1 &
-                    (diag.status == 0 | is.na(diag.status)) &
-                    prepStat == 0)
-    rates.W <- rep(1/mean.test.W.int, length(elig.W))
-    tst.W <- elig.W[rbinom(length(elig.W), 1, rates.W) == 1]
-    tst.nprep <- c(tst.B, tst.W)
-  }
-
-  if (testing.pattern == "interval") {
-    tst.B <- which(race == "B" &
-                   tt.traj != 1 &
-                   (diag.status == 0 | is.na(diag.status)) &
-                   tsincelntst >= 2*(mean.test.B.int) &
-                   prepStat == 0)
-
-    tst.W <- which(race == "W" &
-                   tt.traj != 1 &
-                   (diag.status == 0 | is.na(diag.status)) &
-                   tsincelntst >= 2*(mean.test.W.int) &
-                   prepStat == 0)
-    tst.nprep <- c(tst.B, tst.W)
-  }
 
   # PrEP testing
   tst.prep <- which((diag.status == 0 | is.na(diag.status)) &

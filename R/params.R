@@ -16,9 +16,6 @@
 #' @param last.neg.test.W.int Time range in days for last negative test for
 #'        white men.
 #' @param mean.test.W.int Mean intertest interval in days for white MSM who test.
-#' @param testing.pattern Method for HIV testing, with options \code{"memoryless"}
-#'        for constant hazard without regard to time since previous test, or
-#'        \code{"interval"} deterministic fixed intervals.
 #' @param test.window.int Length of the HIV test window period in days.
 #' @param tt.traj.B.prob Proportion of black MSM who enter one of four
 #'        testing/treatment trajectories: never test or treat, test and never
@@ -244,7 +241,6 @@ param_msm <- function(nwstats,
                       last.neg.test.W.int = 315,
                       mean.test.B.int = 301,
                       mean.test.W.int = 315,
-                      testing.pattern = "memoryless",
                       test.window.int = 21,
 
                       tt.traj.B.prob = c(0.077, 0.000, 0.356, 0.567),
@@ -375,11 +371,6 @@ param_msm <- function(nwstats,
 
   p <- get_args(formal.args = formals(sys.function()),
                 dot.args = list(...))
-
-  if (!(testing.pattern %in% c("memoryless", "interval"))) {
-    stop("testing.pattern must be \"memoryless\" or \"interval\" ",
-          call. = FALSE)
-  }
 
   if (race.method == 1) {
     p$last.neg.test.B.int = (last.neg.test.B.int + last.neg.test.W.int)/2

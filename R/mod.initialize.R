@@ -346,17 +346,9 @@ init_status_msm <- function(dat) {
   selected <- which(status == 1 & tt.traj == 2)
 
   # Time to next test
-  if (dat$param$testing.pattern == "interval") {
-    ttntest <- ceiling(runif(length(selected),
-                             min = 0,
-                             max = dat$param$mean.test.B.int * (race[selected] == "B") +
-                                   dat$param$mean.test.W.int * (race[selected] == "W")))
-  }
-  if (dat$param$testing.pattern == "memoryless") {
-    ttntest <- rgeom(length(selected),
-                     1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
-                          dat$param$mean.test.W.int * (race[selected] == "W")))
-  }
+  ttntest <- rgeom(length(selected),
+                   1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
+                        dat$param$mean.test.W.int * (race[selected] == "W")))
 
   twind.int <- dat$param$test.window.int
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
@@ -465,17 +457,9 @@ init_status_msm <- function(dat) {
 
   # Diagnosis
   selected <- which(status == 1 & tt.traj == 4)
-  if (dat$param$testing.pattern == "interval") {
-    ttntest <- ceiling(runif(length(selected),
-                             min = 0,
-                             max = dat$param$mean.test.B.int * (race[selected] == "B") +
-                                   dat$param$mean.test.W.int * (race[selected] == "W")))
-  }
-  if (dat$param$testing.pattern == "memoryless") {
-    ttntest <- rgeom(length(selected),
-                     1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
-                          dat$param$mean.test.W.int * (race[selected] == "W")))
-  }
+  ttntest <- rgeom(length(selected),
+                   1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
+                        dat$param$mean.test.W.int * (race[selected] == "W")))
 
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
   last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
@@ -582,19 +566,9 @@ init_status_msm <- function(dat) {
 
   # Implement diagnosis for both
   selected <- which(status == 1 & tt.traj == 3)
-  if (dat$param$testing.pattern == "interval") {
-    ttntest <- ceiling(runif(length(selected),
-                             min = 0,
-                             max = dat$param$mean.test.B.int * (race[selected] == "B") +
-                                   dat$param$mean.test.W.int * (race[selected] == "W")))
-  }
-
-  if (dat$param$testing.pattern == "memoryless") {
-    ttntest <- rgeom(length(selected),
-                     1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
-                          dat$param$mean.test.W.int * (race[selected] == "W")))
-  }
-
+  ttntest <- rgeom(length(selected),
+                   1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
+                        dat$param$mean.test.W.int * (race[selected] == "W")))
 
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
   last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
@@ -607,18 +581,9 @@ init_status_msm <- function(dat) {
 
   # Last neg test before present for negatives
   selected <- which(status == 0 & tt.traj %in% c(2, 3, 4))
-
-  if (dat$param$testing.pattern == "interval") {
-    tslt <- ceiling(runif(length(selected),
-                          min = 0,
-                          max = dat$param$mean.test.B.int * (race[selected] == "B") +
-                                dat$param$mean.test.W.int * (race[selected] == "W")))
-  }
-  if (dat$param$testing.pattern == "memoryless") {
-    tslt <- rgeom(length(selected),
-                  1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
-                       dat$param$mean.test.W.int * (race[selected] == "W")))
-  }
+  tslt <- rgeom(length(selected),
+                1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
+                     dat$param$mean.test.W.int * (race[selected] == "W")))
   last.neg.test[selected] <- -tslt
 
 
