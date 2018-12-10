@@ -14,7 +14,7 @@ control_msm(simno = 1, nsims = 1, ncores = 1, nsteps = 100,
   stitrans.FUN = sti_trans, stirecov.FUN = sti_recov,
   stitx.FUN = sti_tx, prev.FUN = prevalence_msm,
   verbose.FUN = verbose.net, save.nwstats = FALSE,
-  truncate.plist = TRUE, verbose = TRUE, verbose.int = 1, ...)
+  truncate.plist = TRUE, verbose = TRUE, ...)
 }
 \arguments{
 \item{simno}{Unique ID for the simulation run, used for file naming purposes
@@ -85,9 +85,6 @@ active partnerships.}
 
 \item{verbose}{If \code{TRUE}, print out simulation progress to the console
 if in interactive mode or text files if in batch mode.}
-
-\item{verbose.int}{Integer specifying the interval between time steps at which
-progress is printed.}
 
 \item{...}{Additional arguments passed to the function.}
 }

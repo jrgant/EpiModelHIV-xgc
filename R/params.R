@@ -491,8 +491,6 @@ init_msm <- function(nwstats,
 #'        active partnerships.
 #' @param verbose If \code{TRUE}, print out simulation progress to the console
 #'        if in interactive mode or text files if in batch mode.
-#' @param verbose.int Integer specifying the interval between time steps at which
-#'        progress is printed.
 #' @param ... Additional arguments passed to the function.
 #'
 #' @return
@@ -529,7 +527,6 @@ control_msm <- function(simno = 1,
                         save.nwstats = FALSE,
                         truncate.plist = TRUE,
                         verbose = TRUE,
-                        verbose.int = 1,
                         ...) {
 
   formal.args <- formals(sys.function())
@@ -850,7 +847,6 @@ init_het <- function(i.prev.male = 0.05,
 #' @param save.nwstats Save out network statistics.
 #' @param save.other Other list elements of dat to save out.
 #' @param verbose If \code{TRUE}, print progress to console.
-#' @param verbose.int Interval for printing progress to console.
 #' @param skip.check If \code{TRUE}, skips the error check for parameter values,
 #'        initial conditions, and control settings before running the models.
 #' @param ... Additional arguments passed to the function.
@@ -878,12 +874,11 @@ control_het <- function(simno = 1,
                         resim_nets.FUN = simnet_het,
                         trans.FUN = trans_het,
                         prev.FUN = prevalence_het,
-                        verbose.FUN = verbose_het,
+                        verbose.FUN = verbose.net,
                         module.order = NULL,
                         save.nwstats = FALSE,
                         save.other = c("el", "attr"),
                         verbose = TRUE,
-                        verbose.int = 1,
                         skip.check = TRUE,
                         ...) {
 
