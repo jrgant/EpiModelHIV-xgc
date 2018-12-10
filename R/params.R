@@ -8,8 +8,8 @@
 #'
 #' @param nwstats Target statistics for the network model. An object of class
 #'        \code{nwstats} output from \code{\link{calc_nwstats_msm}}.
-#' @param mean.test.B.int Mean intertest interval in days for black MSM who test.
-#' @param mean.test.W.int Mean intertest interval in days for white MSM who test.
+#' @param hiv.test.byG.int Mean intertest interval in days for black/white MSM
+#'        (vector of length 2).
 #' @param test.window.int Length of the HIV test window period in days.
 #' @param tt.traj.B.prob Proportion of black MSM who enter one of four
 #'        testing/treatment trajectories: never test or treat, test and never
@@ -222,8 +222,7 @@
 #' @export
 #'
 param_msm <- function(nwstats,
-                      mean.test.B.int = 301,
-                      mean.test.W.int = 315,
+                      hiv.test.byG.int = c(301, 315),
                       test.window.int = 21,
 
                       tt.traj.B.prob = c(0.077, 0.000, 0.356, 0.567),

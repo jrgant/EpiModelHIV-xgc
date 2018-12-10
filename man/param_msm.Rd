@@ -4,7 +4,7 @@
 \alias{param_msm}
 \title{Epidemic Model Parameters}
 \usage{
-param_msm(nwstats, mean.test.B.int = 301, mean.test.W.int = 315,
+param_msm(nwstats, hiv.test.byG.int = c(301, 315),
   test.window.int = 21, tt.traj.B.prob = c(0.077, 0, 0.356, 0.567),
   tt.traj.W.prob = c(0.052, 0, 0.331, 0.617), tx.init.B.prob = 0.092,
   tx.init.W.prob = 0.127, tx.halt.B.prob = 0.0102,
@@ -55,9 +55,8 @@ param_msm(nwstats, mean.test.B.int = 301, mean.test.W.int = 315,
 \item{nwstats}{Target statistics for the network model. An object of class
 \code{nwstats} output from \code{\link{calc_nwstats_msm}}.}
 
-\item{mean.test.B.int}{Mean intertest interval in days for black MSM who test.}
-
-\item{mean.test.W.int}{Mean intertest interval in days for white MSM who test.}
+\item{hiv.test.byG.int}{Mean intertest interval in days for black/white MSM
+(vector of length 2).}
 
 \item{test.window.int}{Length of the HIV test window period in days.}
 

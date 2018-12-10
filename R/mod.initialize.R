@@ -347,8 +347,8 @@ init_status_msm <- function(dat) {
 
   # Time to next test
   ttntest <- rgeom(length(selected),
-                   1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
-                        dat$param$mean.test.W.int * (race[selected] == "W")))
+                   1 / (dat$param$hiv.test.byG.int[1] * (race[selected] == "B") +
+                        dat$param$hiv.test.byG.int[2] * (race[selected] == "W")))
 
   twind.int <- dat$param$test.window.int
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
@@ -362,8 +362,8 @@ init_status_msm <- function(dat) {
 
   # Create set of expected values for (cum.time.off.tx, cum.time.on.tx)
 
-  tx.init.time.B <- twind.int + dat$param$mean.test.B.int + 1 / dat$param$tx.init.B.prob
-  tx.init.time.W <- twind.int + dat$param$mean.test.W.int + 1 / dat$param$tx.init.W.prob
+  tx.init.time.B <- twind.int + dat$param$hiv.test.byG.int[1] + 1 / dat$param$tx.init.B.prob
+  tx.init.time.W <- twind.int + dat$param$hiv.test.byG.int[2] + 1 / dat$param$tx.init.W.prob
 
   # Stage for Blacks
   prop.time.on.tx.B <- dat$param$tx.reinit.B.prob /
@@ -458,8 +458,8 @@ init_status_msm <- function(dat) {
   # Diagnosis
   selected <- which(status == 1 & tt.traj == 4)
   ttntest <- rgeom(length(selected),
-                   1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
-                        dat$param$mean.test.W.int * (race[selected] == "W")))
+                   1 / (dat$param$hiv.test.byG.int[1] * (race[selected] == "B") +
+                        dat$param$hiv.test.byG.int[2] * (race[selected] == "W")))
 
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
   last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
@@ -567,8 +567,8 @@ init_status_msm <- function(dat) {
   # Implement diagnosis for both
   selected <- which(status == 1 & tt.traj == 3)
   ttntest <- rgeom(length(selected),
-                   1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
-                        dat$param$mean.test.W.int * (race[selected] == "W")))
+                   1 / (dat$param$hiv.test.byG.int[1] * (race[selected] == "B") +
+                        dat$param$hiv.test.byG.int[2] * (race[selected] == "W")))
 
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
   last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
@@ -582,8 +582,8 @@ init_status_msm <- function(dat) {
   # Last neg test before present for negatives
   selected <- which(status == 0 & tt.traj %in% c(2, 3, 4))
   tslt <- rgeom(length(selected),
-                1 / (dat$param$mean.test.B.int * (race[selected] == "B") +
-                     dat$param$mean.test.W.int * (race[selected] == "W")))
+                1 / (dat$param$hiv.test.byG.int[1] * (race[selected] == "B") +
+                     dat$param$hiv.test.byG.int[1] * (race[selected] == "W")))
   last.neg.test[selected] <- -tslt
 
 

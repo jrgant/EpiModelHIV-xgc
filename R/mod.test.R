@@ -32,8 +32,7 @@ test_msm <- function(dat, at) {
   prep.tst.int <- dat$param$prep.tst.int
 
   # Parameters
-  mean.test.B.int <- dat$param$mean.test.B.int
-  mean.test.W.int <- dat$param$mean.test.W.int
+  hiv.test.byG.int <- dat$param$hiv.test.byG.int
   twind.int <- dat$param$test.window.int
 
   tsincelntst <- at - dat$attr$last.neg.test
@@ -44,14 +43,14 @@ test_msm <- function(dat, at) {
                   tt.traj != 1 &
                   (diag.status == 0 | is.na(diag.status)) &
                   prepStat == 0)
-  rates.B <- rep(1/mean.test.B.int, length(elig.B))
+  rates.B <- rep(1/hiv.test.byG.int[1], length(elig.B))
   tst.B <- elig.B[rbinom(length(elig.B), 1, rates.B) == 1]
 
   elig.W <- which(race == "W" &
                   tt.traj != 1 &
                   (diag.status == 0 | is.na(diag.status)) &
                   prepStat == 0)
-  rates.W <- rep(1/mean.test.W.int, length(elig.W))
+  rates.W <- rep(1/hiv.test.byG.int[2], length(elig.W))
   tst.W <- elig.W[rbinom(length(elig.W), 1, rates.W) == 1]
   tst.nprep <- c(tst.B, tst.W)
 
