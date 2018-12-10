@@ -101,9 +101,7 @@
 #'        of length 3).
 #'
 #' @param prep.start Time step at which the PrEP intervention should start.
-#' @param prep.adhr.dist.B Proportion of black men who are low, medium, and high
-#'        adherent to PrEP.
-#' @param prep.adhr.dist.W Proportion of white men who are low, medium, and high
+#' @param prep.adhr.dist Proportion of men who are low, medium, and high
 #'        adherent to PrEP.
 #' @param prep.class.hr The hazard ratio for infection per act associated with each
 #'        level of adherence (from Grant).
@@ -750,7 +748,7 @@ init_het <- function(i.prev.male = 0.05,
 #' @param prev.FUN Module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{prevalence_het}}.
 #' @param verbose.FUN Module to print simulation progress to screen, with the
-#'        default function of \code{\link{verbose_het}}.
+#'        default function of \code{verbose.net}.
 #' @param module.order A character vector of module names that lists modules the
 #'        order in which they should be evaluated within each time step. If
 #'        \code{NULL}, the modules will be evaluated as follows: first any

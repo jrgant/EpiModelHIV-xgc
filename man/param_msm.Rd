@@ -173,6 +173,9 @@ of length 3).}
 
 \item{prep.start}{Time step at which the PrEP intervention should start.}
 
+\item{prep.adhr.dist}{Proportion of men who are low, medium, and high
+adherent to PrEP.}
+
 \item{prep.class.hr}{The hazard ratio for infection per act associated with each
 level of adherence (from Grant).}
 
@@ -268,12 +271,6 @@ a reduction in the cond.eff parameter (vector of length 2).}
 given dual infection with both gonorrhea and chlamydia.}
 
 \item{...}{Additional arguments passed to the function.}
-
-\item{prep.adhr.dist.B}{Proportion of black men who are low, medium, and high
-adherent to PrEP.}
-
-\item{prep.adhr.dist.W}{Proportion of white men who are low, medium, and high
-adherent to PrEP.}
 }
 \value{
 A list object of class \code{param_msm}, which can be passed to
