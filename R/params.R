@@ -258,8 +258,7 @@ param_msm <- function(nwstats,
                       part.supp.down.slope = 0.25,
                       part.supp.up.slope = 0.25,
 
-                      b.B.rate = 1e-3 / 7,
-                      b.W.rate = 1e-3 / 7,
+                      b.rate = 1e-3 / 7,
                       birth.age = 18,
 
                       URAI.prob = 0.0082 * 1.09,

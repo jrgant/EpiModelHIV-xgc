@@ -26,24 +26,17 @@ births_msm <- function(dat, at){
   ## Variables
 
   # Parameters
-  b.B.rate <- dat$param$b.B.rate
-  b.W.rate <- dat$param$b.W.rate
-
+  b.rate <- dat$param$b.rate
 
   ## Process
-  numB <- dat$epi$num.B[1]
-  numW <- dat$epi$num.W[1]
+  num <- dat$epi$num[1]
 
-  nBirths.B <- rpois(1, b.B.rate * numB)
-  nBirths.W <- rpois(1, b.W.rate * numW)
-  nBirths <- nBirths.B + nBirths.W
-
+  nBirths <- rpois(1, b.rate * num)
 
   ## Update Attr
   if (nBirths > 0) {
-    dat <- setBirthAttr_msm(dat, at, nBirths.B, nBirths.W)
+    dat <- setBirthAttr_msm(dat, at, nBirths)
   }
-
 
   # Update Networks
   if (nBirths > 0) {
@@ -52,7 +45,6 @@ births_msm <- function(dat, at){
     }
   }
 
-
   ## Output
   dat$epi$nBirths[at] <- nBirths
 
@@ -60,9 +52,7 @@ births_msm <- function(dat, at){
 }
 
 
-setBirthAttr_msm <- function(dat, at, nBirths.B, nBirths.W) {
-
-  nBirths <- nBirths.B + nBirths.W
+setBirthAttr_msm <- function(dat, at, nBirths) {
 
   # Set all attributes NA by default
   dat$attr <- lapply(dat$attr, {
@@ -78,7 +68,8 @@ setBirthAttr_msm <- function(dat, at, nBirths.B, nBirths.W) {
 
   dat$attr$arrival.time[newIds] <- rep(at, nBirths)
 
-  race <- sample(rep(c("B", "W"), c(nBirths.B, nBirths.W)))
+  race.dist.B <- sum(dat$epi$num.B[1])/sum(dat$epi$num[1])
+  race <- apportion_lr(nBirths, c("B", "W"), c(race.dist.B, 1 - race.dist.B), TRUE)
   newB <- which(race == "B")
   newW <- which(race == "W")
   dat$attr$race[newIds] <- race
@@ -93,22 +84,22 @@ setBirthAttr_msm <- function(dat, at, nBirths.B, nBirths.W) {
                                            nBirths, replace = TRUE)
 
   dat$attr$tt.traj[newIds[newB]] <- sample(1:4,
-                                           nBirths.B, replace = TRUE,
+                                           length(newB), replace = TRUE,
                                            prob = dat$param$tt.traj.B.prob)
   dat$attr$tt.traj[newIds[newW]] <- sample(1:4,
-                                           nBirths.W, replace = TRUE,
+                                           length(newW), replace = TRUE,
                                            prob = dat$param$tt.traj.W.prob)
 
   # Circumcision
-  dat$attr$circ[newIds[newB]] <- rbinom(nBirths.B, 1, dat$param$circ.B.prob)
-  dat$attr$circ[newIds[newW]] <- rbinom(nBirths.W, 1, dat$param$circ.W.prob)
+  dat$attr$circ[newIds[newB]] <- rbinom(length(newB), 1, dat$param$circ.B.prob)
+  dat$attr$circ[newIds[newW]] <- rbinom(length(newW), 1, dat$param$circ.W.prob)
 
   # Role
   dat$attr$role.class[newIds[newB]] <- sample(c("I", "R", "V"),
-                                              nBirths.B, replace = TRUE,
+                                              length(newB), replace = TRUE,
                                               prob = dat$param$role.B.prob)
   dat$attr$role.class[newIds[newW]] <- sample(c("I", "R", "V"),
-                                              nBirths.W, replace = TRUE,
+                                              length(newW), replace = TRUE,
                                               prob = dat$param$role.W.prob)
 
   ins.quot <- rep(NA, nBirths)
