@@ -11,12 +11,12 @@ These packages combine these Statnet methods with an agent-based epidemic modeli
 
 ## Installation
 
-You can install `EpiModelHIV` in R using `devtools`:
+You can install `EpiModelHIV` in R using `remotes`:
 ```
 install.packages("EpiModel", dependencies = TRUE)
-devtools::install_github("statnet/tergmLite")
-devtools::install_github("statnet/EpiModelHPC")
-devtools::install_github("statnet/EpiModelHIV")
+remotes::install_github("statnet/tergmLite")
+remotes::install_github("statnet/EpiModelHPC")
+remotes::install_github("statnet/EpiModelHIV")
 ```
 
 Documentation on using this software package is forthcoming, although limited function documentation is provided within the package and available with the `help(package = "EpiModelHIV")` command.
