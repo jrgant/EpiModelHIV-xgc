@@ -262,10 +262,10 @@ init_status_msm <- function(dat) {
   # Treatment trajectory
   tt.traj <- rep(NA, num)
 
-  tt.traj[ids.B] <- sample(apportion_lr(num.B, c(1, 2, 3, 4),
-                                        dat$param$tt.traj.B.prob))
-  tt.traj[ids.W] <- sample(apportion_lr(num.W, c(1, 2, 3, 4),
-                                        dat$param$tt.traj.W.prob))
+  tt.traj[ids.B] <- sample(apportion_lr(num.B, 1:4,
+                                        dat$param$tt.traj.prob[[1]]))
+  tt.traj[ids.W] <- sample(apportion_lr(num.W, 1:4,
+                                        dat$param$tt.traj.prob[[2]]))
   dat$attr$tt.traj <- tt.traj
 
 

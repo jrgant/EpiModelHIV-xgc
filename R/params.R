@@ -12,12 +12,11 @@
 #' @param hiv.test.int Mean intertest interval in days for black/white MSM
 #'        (vector of length 2).
 #' @param test.window.int Length of the HIV test window period in days.
-#' @param tt.traj.B.prob Proportion of black MSM who enter one of four
+#' @param tt.traj.prob Proportion of black/white MSM who enter one of four
 #'        testing/treatment trajectories: never test or treat, test and never
 #'        initiate treatment, test and treated with partial viral suppression,
-#'        and test and treated with full suppression.
-#' @param tt.traj.W.prob Proportion of white MSM who enter into the four
-#'        testing/treatment trajectories, as defined above.
+#'        and test and treated with full suppression (list of 2 vectors of
+#'        vectors, each of length 4).
 #' @param tx.init.prob Probability per time step that a black/white MSM who has
 #'        tested positive will initiate treatment (vector of length 2).
 #' @param tx.halt.prob Probability per time step that a black/white MSM who is
@@ -187,9 +186,8 @@ param_msm <- function(nwstats,
                       hiv.test.int = c(301, 315),
                       test.window.int = 21,
 
-                      tt.traj.B.prob = c(0.077, 0.000, 0.356, 0.567),
-                      tt.traj.W.prob = c(0.052, 0.000, 0.331, 0.617),
-
+                      tt.traj.prob = list(c(0.077, 0.000, 0.356, 0.567),
+                                          c(0.052, 0.000, 0.331, 0.617)),
                       tx.init.prob = c(0.092, 0.127),
                       tx.halt.prob = c(0.0102, 0.0071),
                       tx.reinit.prob = c(0.00066, 0.00291),

@@ -5,20 +5,20 @@
 \title{Epidemic Model Parameters}
 \usage{
 param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
-  tt.traj.B.prob = c(0.077, 0, 0.356, 0.567), tt.traj.W.prob = c(0.052,
-  0, 0.331, 0.617), tx.init.prob = c(0.092, 0.127),
-  tx.halt.prob = c(0.0102, 0.0071), tx.reinit.prob = c(0.00066,
-  0.00291), max.time.off.tx.full.int = 520 * 7,
-  max.time.on.tx.part.int = 52 * 15 * 7, max.time.off.tx.part.int = 520
-  * 7, vl.acute.rise.int = 45, vl.acute.peak = 6.886,
-  vl.acute.fall.int = 45, vl.set.point = 4.5, vl.aids.onset.int = 520
-  * 7, vl.aids.int = 52 * 2 * 7, vl.fatal = 7, vl.full.supp = 1.5,
-  vl.part.supp = 3.5, full.supp.down.slope = 0.25,
-  full.supp.up.slope = 0.25, part.supp.down.slope = 0.25,
-  part.supp.up.slope = 0.25, b.rate = 0.001/7, birth.age = 18,
-  URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 * 1.09, acute.rr = 6,
-  circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.39, 0.21),
-  circ.prob = c(0.874, 0.918), base.ai.main.rate = c(0.22, 0.22, 0.22),
+  tt.traj.prob = list(c(0.077, 0, 0.356, 0.567), c(0.052, 0, 0.331,
+  0.617)), tx.init.prob = c(0.092, 0.127), tx.halt.prob = c(0.0102,
+  0.0071), tx.reinit.prob = c(0.00066, 0.00291),
+  max.time.off.tx.full.int = 520 * 7, max.time.on.tx.part.int = 52 * 15
+  * 7, max.time.off.tx.part.int = 520 * 7, vl.acute.rise.int = 45,
+  vl.acute.peak = 6.886, vl.acute.fall.int = 45, vl.set.point = 4.5,
+  vl.aids.onset.int = 520 * 7, vl.aids.int = 52 * 2 * 7,
+  vl.fatal = 7, vl.full.supp = 1.5, vl.part.supp = 3.5,
+  full.supp.down.slope = 0.25, full.supp.up.slope = 0.25,
+  part.supp.down.slope = 0.25, part.supp.up.slope = 0.25,
+  b.rate = 0.001/7, birth.age = 18, URAI.prob = 0.0082 * 1.09,
+  UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
+  cond.eff = 0.95, cond.fail = c(0.39, 0.21), circ.prob = c(0.874,
+  0.918), base.ai.main.rate = c(0.22, 0.22, 0.22),
   base.ai.pers.rate = c(0.14, 0.14, 0.14), ai.scale = c(1.31, 1, 0.77),
   cond.main.prob = c(0.21, 0.21, 0.21), cond.pers.always.prob = 0.216,
   cond.pers.prob = c(0.26, 0.26, 0.26), cond.inst.always.prob = 0.326,
@@ -33,10 +33,8 @@ param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
   ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14, uct.sympt.prob = 0.58,
   rgc.ntx.int = 205.8, ugc.ntx.int = 205.8, gc.tx.int = 2 * 7,
   rct.ntx.int = 265.1, uct.ntx.int = 265.1, ct.tx.int = 2 * 7,
-  gc.sympt.prob.tx.B = 0.86, gc.sympt.prob.tx.W = 0.96,
-  ct.sympt.prob.tx.B = 0.72, ct.sympt.prob.tx.W = 0.85,
-  gc.asympt.prob.tx.B = 0.1, gc.asympt.prob.tx.W = 0.19,
-  ct.asympt.prob.tx.B = 0.05, ct.asympt.prob.tx.W = 0.1,
+  gc.sympt.prob.tx = c(0.86, 0.96), ct.sympt.prob.tx = c(0.72, 0.85),
+  gc.asympt.prob.tx = c(0.1, 0.19), ct.asympt.prob.tx = c(0.05, 0.1),
   prep.sti.screen.int = 182, prep.sti.prob.tx = 1,
   prep.continue.stand.tx = TRUE, sti.cond.eff = 0.95,
   sti.cond.fail = c(0.39, 0.21), hiv.rgc.rr = 2.78,
@@ -52,13 +50,11 @@ param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
 
 \item{test.window.int}{Length of the HIV test window period in days.}
 
-\item{tt.traj.B.prob}{Proportion of black MSM who enter one of four
+\item{tt.traj.prob}{Proportion of black/white MSM who enter one of four
 testing/treatment trajectories: never test or treat, test and never
 initiate treatment, test and treated with partial viral suppression,
-and test and treated with full suppression.}
-
-\item{tt.traj.W.prob}{Proportion of white MSM who enter into the four
-testing/treatment trajectories, as defined above.}
+and test and treated with full suppression (list of 2 vectors of
+vectors, each of length 4).}
 
 \item{tx.init.prob}{Probability per time step that a black/white MSM who has
 tested positive will initiate treatment (vector of length 2).}
@@ -234,29 +230,17 @@ chlamydia.}
 
 \item{ct.tx.int}{Average in days duration of treated chlamydia (both sites).}
 
-\item{gc.sympt.prob.tx.B}{Probability of treatment for symptomatic gonorrhea
-for Black men.}
+\item{gc.sympt.prob.tx}{Probability of treatment for symptomatic gonorrhea
+for Black/White men (vector of length 2).}
 
-\item{gc.sympt.prob.tx.W}{Probability of treatment for symptomatic gonorrhea
-for White men.}
+\item{ct.sympt.prob.tx}{Probability of treatment for symptomatic chlamydia
+for Black/White men (vector of length 2).}
 
-\item{ct.sympt.prob.tx.B}{Probability of treatment for symptomatic chlamydia
-for Black men.}
+\item{gc.asympt.prob.tx}{Probability of treatment for asymptomatic gonorrhea
+for Black/White men (vector of length 2).}
 
-\item{ct.sympt.prob.tx.W}{Probability of treatment for symptomatic chlamydia
-for White men.}
-
-\item{gc.asympt.prob.tx.B}{Probability of treatment for asymptomatic gonorrhea
-for Black men.}
-
-\item{gc.asympt.prob.tx.W}{Probability of treatment for asymptomatic gonorrhea
-for White men.}
-
-\item{ct.asympt.prob.tx.B}{Probability of treatment for asymptomatic chlamydia
-for Black men.}
-
-\item{ct.asympt.prob.tx.W}{Probability of treatment for asymptomatic chlamydia
-for White men.}
+\item{ct.asympt.prob.tx}{Probability of treatment for asymptomatic chlamydia
+for Black/White men (vector of length 2).}
 
 \item{prep.sti.screen.int}{Interval in days between STI screening at PrEP visits.}
 

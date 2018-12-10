@@ -82,10 +82,10 @@ setBirthAttr_msm <- function(dat, at, nBirths) {
 
   dat$attr$tt.traj[newIds[newB]] <- sample(1:4,
                                            length(newB), replace = TRUE,
-                                           prob = dat$param$tt.traj.B.prob)
+                                           prob = dat$param$tt.traj.prob[[1]])
   dat$attr$tt.traj[newIds[newW]] <- sample(1:4,
                                            length(newW), replace = TRUE,
-                                           prob = dat$param$tt.traj.W.prob)
+                                           prob = dat$param$tt.traj.prob[[2]])
 
   # Circumcision
   dat$attr$circ[newIds[newB]] <- rbinom(length(newB), 1, dat$param$circ.prob[1])
