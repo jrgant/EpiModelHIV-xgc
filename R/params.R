@@ -62,8 +62,7 @@
 #'        re-initiation until the level in \code{vl.part.supp}.
 #' @param part.supp.up.slope For partial suppressors, number of log10 units that
 #'        viral load rises per time step from treatment halting until expected value.
-#' @param b.B.rate Rate at which black MSM enter the population.
-#' @param b.W.rate Rate at which white MSM enter the population.
+#' @param b.rate Rate at which MSM enter the population.
 #' @param birth.age Age (in years) of new arrivals.
 #' @param URAI.prob Probability of transmission for a man having unprotected
 #'        receptive anal intercourse with an infected man at set point viral

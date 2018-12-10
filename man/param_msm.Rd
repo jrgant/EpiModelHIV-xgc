@@ -136,6 +136,8 @@ re-initiation until the level in \code{vl.part.supp}.}
 \item{part.supp.up.slope}{For partial suppressors, number of log10 units that
 viral load rises per time step from treatment halting until expected value.}
 
+\item{b.rate}{Rate at which MSM enter the population.}
+
 \item{birth.age}{Age (in years) of new arrivals.}
 
 \item{URAI.prob}{Probability of transmission for a man having unprotected
@@ -342,10 +344,6 @@ in the cond.eff parameter.}
 given dual infection with both gonorrhea and chlamydia.}
 
 \item{...}{Additional arguments passed to the function.}
-
-\item{b.B.rate}{Rate at which black MSM enter the population.}
-
-\item{b.W.rate}{Rate at which white MSM enter the population.}
 
 \item{cond.fail.B}{Condom failure rates for HIV for Black/White MSM, as a reduction
 in the cond.eff parameter (vector of length 2).}
