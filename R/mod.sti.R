@@ -439,15 +439,10 @@ sti_recov <- function(dat, at) {
 sti_tx <- function(dat, at) {
 
   # Parameters
-  gc.sympt.prob.tx.B <- dat$param$gc.sympt.prob.tx.B
-  gc.sympt.prob.tx.W <- dat$param$gc.sympt.prob.tx.W
-  ct.sympt.prob.tx.W <- dat$param$ct.sympt.prob.tx.B
-  ct.sympt.prob.tx.B <- dat$param$ct.sympt.prob.tx.W
-
-  gc.asympt.prob.tx.B <- dat$param$gc.asympt.prob.tx.B
-  gc.asympt.prob.tx.W <- dat$param$gc.asympt.prob.tx.W
-  ct.asympt.prob.tx.W <- dat$param$ct.asympt.prob.tx.B
-  ct.asympt.prob.tx.B <- dat$param$ct.asympt.prob.tx.W
+  gc.sympt.prob.tx <- dat$param$gc.sympt.prob.tx
+  ct.sympt.prob.tx <- dat$param$ct.sympt.prob.tx
+  gc.asympt.prob.tx <- dat$param$gc.asympt.prob.tx
+  ct.asympt.prob.tx <- dat$param$ct.asympt.prob.tx
 
   prep.sti.screen.int <- dat$param$prep.sti.screen.int
   prep.sti.prob.tx <- dat$param$prep.sti.prob.tx
@@ -485,9 +480,9 @@ sti_tx <- function(dat, at) {
 
   # Treatment by race
   txGC_sympt_B <- idsGC_tx_sympt_B[which(rbinom(length(idsGC_tx_sympt_B), 1,
-                                                gc.sympt.prob.tx.B) == 1)]
+                                                gc.sympt.prob.tx[1]) == 1)]
   txGC_sympt_W <- idsGC_tx_sympt_W[which(rbinom(length(idsGC_tx_sympt_W), 1,
-                                                gc.sympt.prob.tx.W) == 1)]
+                                                gc.sympt.prob.tx[2]) == 1)]
   txGC_sympt <- union(txGC_sympt_B, txGC_sympt_W)
 
   # Subset by site
@@ -518,9 +513,9 @@ sti_tx <- function(dat, at) {
 
   # Treatment by race
   txGC_asympt_B <- idsGC_tx_asympt_B[which(rbinom(length(idsGC_tx_asympt_B), 1,
-                                                  gc.asympt.prob.tx.B) == 1)]
+                                                  gc.asympt.prob.tx[1]) == 1)]
   txGC_asympt_W <- idsGC_tx_asympt_W[which(rbinom(length(idsGC_tx_asympt_W), 1,
-                                                  gc.asympt.prob.tx.W) == 1)]
+                                                  gc.asympt.prob.tx[2]) == 1)]
   txGC_asympt <- union(txGC_asympt_B, txGC_asympt_W)
 
   # Subset by site
@@ -562,9 +557,9 @@ sti_tx <- function(dat, at) {
 
   # Treatment by race
   txCT_sympt_B <- idsCT_tx_sympt_B[which(rbinom(length(idsCT_tx_sympt_B), 1,
-                                                ct.sympt.prob.tx.B) == 1)]
+                                                ct.sympt.prob.tx[1]) == 1)]
   txCT_sympt_W <- idsCT_tx_sympt_W[which(rbinom(length(idsCT_tx_sympt_W), 1,
-                                                ct.sympt.prob.tx.W) == 1)]
+                                                ct.sympt.prob.tx[2]) == 1)]
   txCT_sympt <- union(txCT_sympt_B, txCT_sympt_W)
 
   # Subset by site
@@ -596,9 +591,9 @@ sti_tx <- function(dat, at) {
 
   # Treatment by race
   txCT_asympt_B <- idsCT_tx_asympt_B[which(rbinom(length(idsCT_tx_asympt_B), 1,
-                                                ct.asympt.prob.tx.B) == 1)]
+                                                ct.asympt.prob.tx[1]) == 1)]
   txCT_asympt_W <- idsCT_tx_asympt_W[which(rbinom(length(idsCT_tx_asympt_W), 1,
-                                                ct.asympt.prob.tx.W) == 1)]
+                                                ct.asympt.prob.tx[2]) == 1)]
   txCT_asympt <- union(txCT_asympt_B, txCT_asympt_W)
 
   # Subset by site

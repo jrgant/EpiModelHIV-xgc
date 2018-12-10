@@ -148,22 +148,14 @@
 #' @param uct.ntx.int Average in days duration of untreated urethral chlamydia.
 #' @param ct.tx.int Average in days duration of treated chlamydia (both sites).
 #'
-#' @param gc.sympt.prob.tx.B Probability of treatment for symptomatic gonorrhea
-#'        for Black men.
-#' @param gc.sympt.prob.tx.W Probability of treatment for symptomatic gonorrhea
-#'        for White men.
-#' @param ct.sympt.prob.tx.B Probability of treatment for symptomatic chlamydia
-#'        for Black men.
-#' @param ct.sympt.prob.tx.W Probability of treatment for symptomatic chlamydia
-#'        for White men.
-#' @param gc.asympt.prob.tx.B Probability of treatment for asymptomatic gonorrhea
-#'        for Black men.
-#' @param gc.asympt.prob.tx.W Probability of treatment for asymptomatic gonorrhea
-#'        for White men.
-#' @param ct.asympt.prob.tx.B Probability of treatment for asymptomatic chlamydia
-#'        for Black men.
-#' @param ct.asympt.prob.tx.W Probability of treatment for asymptomatic chlamydia
-#'        for White men.
+#' @param gc.sympt.prob.tx Probability of treatment for symptomatic gonorrhea
+#'        for Black/White men (vector of length 2).
+#' @param ct.sympt.prob.tx Probability of treatment for symptomatic chlamydia
+#'        for Black/White men (vector of length 2).
+#' @param gc.asympt.prob.tx Probability of treatment for asymptomatic gonorrhea
+#'        for Black/White men (vector of length 2).
+#' @param ct.asympt.prob.tx Probability of treatment for asymptomatic chlamydia
+#'        for Black/White men (vector of length 2).
 #'
 #' @param prep.sti.screen.int Interval in days between STI screening at PrEP visits.
 #' @param prep.sti.prob.tx Probability of treatment given positive screening during
@@ -273,14 +265,10 @@ param_msm <- function(nwstats,
                       uct.ntx.int = 265.1,
                       ct.tx.int = 2 * 7,
 
-                      gc.sympt.prob.tx.B = 0.86,
-                      gc.sympt.prob.tx.W = 0.96,
-                      ct.sympt.prob.tx.B = 0.72,
-                      ct.sympt.prob.tx.W = 0.85,
-                      gc.asympt.prob.tx.B = 0.10,
-                      gc.asympt.prob.tx.W = 0.19,
-                      ct.asympt.prob.tx.B = 0.05,
-                      ct.asympt.prob.tx.W = 0.10,
+                      gc.sympt.prob.tx = c(0.86, 0.96),
+                      ct.sympt.prob.tx = c(0.72, 0.85),
+                      gc.asympt.prob.tx = c(0.10, 0.19),
+                      ct.asympt.prob.tx = c(0.05, 0.10),
 
                       prep.sti.screen.int = 182,
                       prep.sti.prob.tx = 1,
