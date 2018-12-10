@@ -296,12 +296,6 @@ param_msm <- function(nwstats,
   p$role.B.prob <- nwstats$role.B.prob
   p$role.W.prob <- nwstats$role.W.prob
 
-  p$inst.trans.matrix <- matrix(1, nrow = 1)
-  p$role.trans.matrix <- matrix(c(1, 0, 0,
-                                  0, 1, 0,
-                                  0, 0, 1),
-                                nrow = 3)
-
   p$method <- nwstats$method
   p$modes <- 1
 
