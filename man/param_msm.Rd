@@ -4,36 +4,35 @@
 \alias{param_msm}
 \title{Epidemic Model Parameters}
 \usage{
-param_msm(nwstats, last.neg.test.B.int = 301,
-  last.neg.test.W.int = 315, mean.test.B.int = 301,
-  mean.test.W.int = 315, test.window.int = 21,
-  tt.traj.B.prob = c(0.077, 0, 0.356, 0.567), tt.traj.W.prob = c(0.052,
-  0, 0.331, 0.617), tx.init.B.prob = 0.092, tx.init.W.prob = 0.127,
-  tx.halt.B.prob = 0.0102, tx.halt.W.prob = 0.0071,
-  tx.reinit.B.prob = 0.00066, tx.reinit.W.prob = 0.00291,
-  max.time.off.tx.full.int = 520 * 7, max.time.on.tx.part.int = 52 * 15
-  * 7, max.time.off.tx.part.int = 520 * 7, vl.acute.rise.int = 45,
-  vl.acute.peak = 6.886, vl.acute.fall.int = 45, vl.set.point = 4.5,
-  vl.aids.onset.int = 520 * 7, vl.aids.int = 52 * 2 * 7,
-  vl.fatal = 7, vl.full.supp = 1.5, vl.part.supp = 3.5,
-  full.supp.down.slope = 0.25, full.supp.up.slope = 0.25,
-  part.supp.down.slope = 0.25, part.supp.up.slope = 0.25,
-  b.B.rate = 0.001/7, b.W.rate = 0.001/7, birth.age = 18,
-  URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 * 1.09, acute.rr = 6,
-  circ.rr = 0.4, cond.eff = 0.95, cond.fail.B = 0.39,
-  cond.fail.W = 0.21, circ.B.prob = 0.874, circ.W.prob = 0.918,
-  num.inst.ai.classes = 1, base.ai.main.BB.rate = 0.22,
-  base.ai.main.BW.rate = 0.22, base.ai.main.WW.rate = 0.22,
-  base.ai.pers.BB.rate = 0.14, base.ai.pers.BW.rate = 0.14,
-  base.ai.pers.WW.rate = 0.14, ai.scale.BB = 1.31, ai.scale.BW = 1,
-  ai.scale.WW = 0.77, cond.main.BB.prob = 0.21,
-  cond.main.BW.prob = 0.21, cond.main.WW.prob = 0.21,
-  cond.pers.always.prob = 0.216, cond.pers.BB.prob = 0.26,
-  cond.pers.BW.prob = 0.26, cond.pers.WW.prob = 0.26,
-  cond.inst.always.prob = 0.326, cond.inst.BB.prob = 0.27,
-  cond.inst.BW.prob = 0.27, cond.inst.WW.prob = 0.27,
-  cond.always.prob.corr = 0.5, cond.rr.BB = 0.71, cond.rr.BW = 1,
-  cond.rr.WW = 1.6, prep.start = Inf, prep.coverage = 0,
+param_msm(nwstats, mean.test.B.int = 301, mean.test.W.int = 315,
+  test.window.int = 21, tt.traj.B.prob = c(0.077, 0, 0.356, 0.567),
+  tt.traj.W.prob = c(0.052, 0, 0.331, 0.617), tx.init.B.prob = 0.092,
+  tx.init.W.prob = 0.127, tx.halt.B.prob = 0.0102,
+  tx.halt.W.prob = 0.0071, tx.reinit.B.prob = 0.00066,
+  tx.reinit.W.prob = 0.00291, max.time.off.tx.full.int = 520 * 7,
+  max.time.on.tx.part.int = 52 * 15 * 7, max.time.off.tx.part.int = 520
+  * 7, vl.acute.rise.int = 45, vl.acute.peak = 6.886,
+  vl.acute.fall.int = 45, vl.set.point = 4.5, vl.aids.onset.int = 520
+  * 7, vl.aids.int = 52 * 2 * 7, vl.fatal = 7, vl.full.supp = 1.5,
+  vl.part.supp = 3.5, full.supp.down.slope = 0.25,
+  full.supp.up.slope = 0.25, part.supp.down.slope = 0.25,
+  part.supp.up.slope = 0.25, b.B.rate = 0.001/7, b.W.rate = 0.001/7,
+  birth.age = 18, URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 *
+  1.09, acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95,
+  cond.fail.B = 0.39, cond.fail.W = 0.21, circ.B.prob = 0.874,
+  circ.W.prob = 0.918, num.inst.ai.classes = 1,
+  base.ai.main.BB.rate = 0.22, base.ai.main.BW.rate = 0.22,
+  base.ai.main.WW.rate = 0.22, base.ai.pers.BB.rate = 0.14,
+  base.ai.pers.BW.rate = 0.14, base.ai.pers.WW.rate = 0.14,
+  ai.scale.BB = 1.31, ai.scale.BW = 1, ai.scale.WW = 0.77,
+  cond.main.BB.prob = 0.21, cond.main.BW.prob = 0.21,
+  cond.main.WW.prob = 0.21, cond.pers.always.prob = 0.216,
+  cond.pers.BB.prob = 0.26, cond.pers.BW.prob = 0.26,
+  cond.pers.WW.prob = 0.26, cond.inst.always.prob = 0.326,
+  cond.inst.BB.prob = 0.27, cond.inst.BW.prob = 0.27,
+  cond.inst.WW.prob = 0.27, cond.always.prob.corr = 0.5,
+  cond.rr.BB = 0.71, cond.rr.BW = 1, cond.rr.WW = 1.6,
+  prep.start = Inf, prep.coverage = 0,
   prep.adhr.dist = reallocate_pcp(reall = 0.784 - 0.784),
   prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
   (2^(-1/780)), prep.tst.int = 90, prep.risk.int = 182,
@@ -56,12 +55,6 @@ param_msm(nwstats, last.neg.test.B.int = 301,
 \arguments{
 \item{nwstats}{Target statistics for the network model. An object of class
 \code{nwstats} output from \code{\link{calc_nwstats_msm}}.}
-
-\item{last.neg.test.B.int}{Time range in days for last negative test for
-black men.}
-
-\item{last.neg.test.W.int}{Time range in days for last negative test for
-white men.}
 
 \item{mean.test.B.int}{Mean intertest interval in days for black MSM who test.}
 

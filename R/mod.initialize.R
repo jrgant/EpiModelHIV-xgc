@@ -362,8 +362,8 @@ init_status_msm <- function(dat) {
 
   # Create set of expected values for (cum.time.off.tx, cum.time.on.tx)
 
-  tx.init.time.B <- twind.int + dat$param$last.neg.test.B.int + 1 / dat$param$tx.init.B.prob
-  tx.init.time.W <- twind.int + dat$param$last.neg.test.W.int + 1 / dat$param$tx.init.W.prob
+  tx.init.time.B <- twind.int + dat$param$mean.test.B.int + 1 / dat$param$tx.init.B.prob
+  tx.init.time.W <- twind.int + dat$param$mean.test.W.int + 1 / dat$param$tx.init.W.prob
 
   # Stage for Blacks
   prop.time.on.tx.B <- dat$param$tx.reinit.B.prob /
