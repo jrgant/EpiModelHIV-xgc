@@ -4,12 +4,11 @@
 \alias{param_msm}
 \title{Epidemic Model Parameters}
 \usage{
-param_msm(nwstats, hiv.test.byG.int = c(301, 315),
-  test.window.int = 21, tt.traj.B.prob = c(0.077, 0, 0.356, 0.567),
-  tt.traj.W.prob = c(0.052, 0, 0.331, 0.617), tx.init.B.prob = 0.092,
-  tx.init.W.prob = 0.127, tx.halt.B.prob = 0.0102,
-  tx.halt.W.prob = 0.0071, tx.reinit.B.prob = 0.00066,
-  tx.reinit.W.prob = 0.00291, max.time.off.tx.full.int = 520 * 7,
+param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
+  tt.traj.B.prob = c(0.077, 0, 0.356, 0.567), tt.traj.W.prob = c(0.052,
+  0, 0.331, 0.617), tx.init.prob = c(0.092, 0.127),
+  tx.halt.prob = c(0.0102, 0.0071), tx.reinit.prob = c(0.00066,
+  0.00291), max.time.off.tx.full.int = 520 * 7,
   max.time.on.tx.part.int = 52 * 15 * 7, max.time.off.tx.part.int = 520
   * 7, vl.acute.rise.int = 45, vl.acute.peak = 6.886,
   vl.acute.fall.int = 45, vl.set.point = 4.5, vl.aids.onset.int = 520
@@ -18,8 +17,8 @@ param_msm(nwstats, hiv.test.byG.int = c(301, 315),
   full.supp.up.slope = 0.25, part.supp.down.slope = 0.25,
   part.supp.up.slope = 0.25, b.rate = 0.001/7, birth.age = 18,
   URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 * 1.09, acute.rr = 6,
-  circ.rr = 0.4, cond.eff = 0.95, cond.fail.byG = c(0.39, 0.21),
-  circ.byG.prob = c(0.874, 0.918), num.inst.ai.classes = 1,
+  circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.39, 0.21),
+  circ.prob = c(0.874, 0.918), num.inst.ai.classes = 1,
   base.ai.main.BB.rate = 0.22, base.ai.main.BW.rate = 0.22,
   base.ai.main.WW.rate = 0.22, base.ai.pers.BB.rate = 0.14,
   base.ai.pers.BW.rate = 0.14, base.ai.pers.WW.rate = 0.14,
@@ -55,7 +54,7 @@ param_msm(nwstats, hiv.test.byG.int = c(301, 315),
 \item{nwstats}{Target statistics for the network model. An object of class
 \code{nwstats} output from \code{\link{calc_nwstats_msm}}.}
 
-\item{hiv.test.byG.int}{Mean intertest interval in days for black/white MSM
+\item{hiv.test.int}{Mean intertest interval in days for black/white MSM
 (vector of length 2).}
 
 \item{test.window.int}{Length of the HIV test window period in days.}
@@ -68,25 +67,15 @@ and test and treated with full suppression.}
 \item{tt.traj.W.prob}{Proportion of white MSM who enter into the four
 testing/treatment trajectories, as defined above.}
 
-\item{tx.init.B.prob}{Probability per time step that a black MSM who has
-tested positive will initiate treatment.}
+\item{tx.init.prob}{Probability per time step that a black/white MSM who has
+tested positive will initiate treatment (vector of length 2).}
 
-\item{tx.init.W.prob}{Probability per time step that a white MSM who has
-tested positive will initiate treatment.}
+\item{tx.halt.prob}{Probability per time step that a black/white MSM who is
+currently on treatment will halt treatment (vector of length 2).}
 
-\item{tx.halt.B.prob}{Probability per time step that a black MSM who is
-currently on treatment will halt treatment.}
-
-\item{tx.halt.W.prob}{Probability per time step that a white MSM who is
-currently on treatment will halt treatment.}
-
-\item{tx.reinit.B.prob}{Probability per time step that a black MSM who is
+\item{tx.reinit.prob}{Probability per time step that a black/white MSM who is
 not currently on treatment but who has been in the past will
-re-initiate treatment.}
-
-\item{tx.reinit.W.prob}{Probability per time step that a white MSM who is
-not currently on treatment but who has been in the past will
-re-initiate treatment.}
+re-initiate treatment (vector of length 2).}
 
 \item{max.time.off.tx.full.int}{Number of days off treatment for a full
 suppressor before onset of AIDS, including time before diagnosis.}
@@ -156,7 +145,7 @@ negative insertive partner is circumcised.}
 \item{cond.eff}{Relative risk of HIV infection from anal sex when a condom is
 used properly (biological efficacy).}
 
-\item{circ.byG.prob}{Probablity that a black/white new arrival in the population
+\item{circ.prob}{Probablity that a black/white new arrival in the population
 will be circumcised (vector of length 2).}
 
 \item{num.inst.ai.classes}{Number of quantiles into which men should be

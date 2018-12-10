@@ -105,8 +105,8 @@ initialize_msm <- function(x, param, init, control, s) {
 
   # Circumcision
   circ <- rep(NA, num)
-  circ[ids.B] <- sample(apportion_lr(num.B, 0:1, 1 - param$circ.byG.prob[1]))
-  circ[ids.W] <- sample(apportion_lr(num.W, 0:1, 1 - param$circ.byG.prob[2]))
+  circ[ids.B] <- sample(apportion_lr(num.B, 0:1, 1 - param$circ.prob[1]))
+  circ[ids.W] <- sample(apportion_lr(num.W, 0:1, 1 - param$circ.prob[2]))
   dat$attr$circ <- circ
 
   ## PrEP Attributes ##
@@ -347,8 +347,8 @@ init_status_msm <- function(dat) {
 
   # Time to next test
   ttntest <- rgeom(length(selected),
-                   1 / (dat$param$hiv.test.byG.int[1] * (race[selected] == "B") +
-                        dat$param$hiv.test.byG.int[2] * (race[selected] == "W")))
+                   1 / (dat$param$hiv.test.int[1] * (race[selected] == "B") +
+                        dat$param$hiv.test.int[2] * (race[selected] == "W")))
 
   twind.int <- dat$param$test.window.int
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
@@ -362,12 +362,12 @@ init_status_msm <- function(dat) {
 
   # Create set of expected values for (cum.time.off.tx, cum.time.on.tx)
 
-  tx.init.time.B <- twind.int + dat$param$hiv.test.byG.int[1] + 1 / dat$param$tx.init.B.prob
-  tx.init.time.W <- twind.int + dat$param$hiv.test.byG.int[2] + 1 / dat$param$tx.init.W.prob
+  tx.init.time.B <- twind.int + dat$param$hiv.test.int[1] + 1 / dat$param$tx.init.prob[1]
+  tx.init.time.W <- twind.int + dat$param$hiv.test.int[2] + 1 / dat$param$tx.init.prob[2]
 
   # Stage for Blacks
-  prop.time.on.tx.B <- dat$param$tx.reinit.B.prob /
-                       (dat$param$tx.halt.B.prob + dat$param$tx.reinit.B.prob)
+  prop.time.on.tx.B <- dat$param$tx.reinit.prob[1] /
+                       (dat$param$tx.halt.prob[1] + dat$param$tx.reinit.prob[1])
   offon.B <- matrix(c(1:tx.init.time.B, rep(0, tx.init.time.B)),
                     nrow = tx.init.time.B)
   numsteps.B <- (dat$param$max.time.off.tx.full.int - tx.init.time.B) /
@@ -389,8 +389,8 @@ init_status_msm <- function(dat) {
   stage.time.B <- c(1:vlar.int, 1:vlaf.int, 1:exp.dur.chronic.B, 1:vl.aids.int)
 
   # Stage for Whites
-  prop.time.on.tx.W <- dat$param$tx.reinit.W.prob /
-    (dat$param$tx.halt.W.prob + dat$param$tx.reinit.W.prob)
+  prop.time.on.tx.W <- dat$param$tx.reinit.prob[2] /
+    (dat$param$tx.halt.prob[2] + dat$param$tx.reinit.prob[2])
   offon.W <- matrix(c(1:tx.init.time.W, rep(0, tx.init.time.W)),
                     nrow = tx.init.time.W)
   numsteps.W <- (dat$param$max.time.off.tx.full.int - tx.init.time.W) /
@@ -458,8 +458,8 @@ init_status_msm <- function(dat) {
   # Diagnosis
   selected <- which(status == 1 & tt.traj == 4)
   ttntest <- rgeom(length(selected),
-                   1 / (dat$param$hiv.test.byG.int[1] * (race[selected] == "B") +
-                        dat$param$hiv.test.byG.int[2] * (race[selected] == "W")))
+                   1 / (dat$param$hiv.test.int[1] * (race[selected] == "B") +
+                        dat$param$hiv.test.int[2] * (race[selected] == "W")))
 
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
   last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
@@ -473,8 +473,8 @@ init_status_msm <- function(dat) {
 
   # Create set of expected values for (cum.time.off.tx,cum.time.on.tx)
 
-  prop.time.on.tx.B <- dat$param$tx.reinit.B.prob /
-                       (dat$param$tx.halt.B.prob + dat$param$tx.reinit.B.prob)
+  prop.time.on.tx.B <- dat$param$tx.reinit.prob[1] /
+                       (dat$param$tx.halt.prob[1] + dat$param$tx.reinit.prob[1])
   offon.B <- matrix(c(1:tx.init.time.B, rep(0, tx.init.time.B)),
                     nrow = tx.init.time.B)
   while (offon.B[nrow(offon.B), 1] / dat$param$max.time.off.tx.part.int +
@@ -496,8 +496,8 @@ init_status_msm <- function(dat) {
   stage.B <- rep(c(1, 2, 3, 4), c(vlar.int, vlaf.int, exp.dur.chronic.B, vl.aids.int))
   stage.time.B <- c(1:vlar.int, 1:vlaf.int, 1:exp.dur.chronic.B, 1:vl.aids.int)
 
-  prop.time.on.tx.W <- dat$param$tx.reinit.W.prob /
-                       (dat$param$tx.halt.W.prob + dat$param$tx.reinit.W.prob)
+  prop.time.on.tx.W <- dat$param$tx.reinit.prob[2] /
+                       (dat$param$tx.halt.prob[2] + dat$param$tx.reinit.prob[2])
   offon.W <- matrix(c(1:tx.init.time.W, rep(0, tx.init.time.W)),
                     nrow = tx.init.time.W)
 
@@ -567,8 +567,8 @@ init_status_msm <- function(dat) {
   # Implement diagnosis for both
   selected <- which(status == 1 & tt.traj == 3)
   ttntest <- rgeom(length(selected),
-                   1 / (dat$param$hiv.test.byG.int[1] * (race[selected] == "B") +
-                        dat$param$hiv.test.byG.int[2] * (race[selected] == "W")))
+                   1 / (dat$param$hiv.test.int[1] * (race[selected] == "B") +
+                        dat$param$hiv.test.int[2] * (race[selected] == "W")))
 
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
   last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
@@ -582,8 +582,8 @@ init_status_msm <- function(dat) {
   # Last neg test before present for negatives
   selected <- which(status == 0 & tt.traj %in% c(2, 3, 4))
   tslt <- rgeom(length(selected),
-                1 / (dat$param$hiv.test.byG.int[1] * (race[selected] == "B") +
-                     dat$param$hiv.test.byG.int[1] * (race[selected] == "W")))
+                1 / (dat$param$hiv.test.int[1] * (race[selected] == "B") +
+                     dat$param$hiv.test.int[1] * (race[selected] == "W")))
   last.neg.test[selected] <- -tslt
 
 

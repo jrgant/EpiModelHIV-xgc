@@ -8,7 +8,8 @@
 #'
 #' @param nwstats Target statistics for the network model. An object of class
 #'        \code{nwstats} output from \code{\link{calc_nwstats_msm}}.
-#' @param hiv.test.byG.int Mean intertest interval in days for black/white MSM
+#'
+#' @param hiv.test.int Mean intertest interval in days for black/white MSM
 #'        (vector of length 2).
 #' @param test.window.int Length of the HIV test window period in days.
 #' @param tt.traj.B.prob Proportion of black MSM who enter one of four
@@ -17,20 +18,14 @@
 #'        and test and treated with full suppression.
 #' @param tt.traj.W.prob Proportion of white MSM who enter into the four
 #'        testing/treatment trajectories, as defined above.
-#' @param tx.init.B.prob Probability per time step that a black MSM who has
-#'        tested positive will initiate treatment.
-#' @param tx.init.W.prob Probability per time step that a white MSM who has
-#'        tested positive will initiate treatment.
-#' @param tx.halt.B.prob Probability per time step that a black MSM who is
-#'        currently on treatment will halt treatment.
-#' @param tx.halt.W.prob Probability per time step that a white MSM who is
-#'        currently on treatment will halt treatment.
-#' @param tx.reinit.B.prob Probability per time step that a black MSM who is
+#' @param tx.init.prob Probability per time step that a black/white MSM who has
+#'        tested positive will initiate treatment (vector of length 2).
+#' @param tx.halt.prob Probability per time step that a black/white MSM who is
+#'        currently on treatment will halt treatment (vector of length 2).
+#' @param tx.reinit.prob Probability per time step that a black/white MSM who is
 #'        not currently on treatment but who has been in the past will
-#'        re-initiate treatment.
-#' @param tx.reinit.W.prob Probability per time step that a white MSM who is
-#'        not currently on treatment but who has been in the past will
-#'        re-initiate treatment.
+#'        re-initiate treatment (vector of length 2).
+
 #' @param max.time.off.tx.full.int Number of days off treatment for a full
 #'        suppressor before onset of AIDS, including time before diagnosis.
 #' @param max.time.on.tx.part.int Number of days on treatment for a
@@ -79,7 +74,7 @@
 #' @param cond.fail.B Condom failure rates for HIV for Black/White MSM, as a reduction
 #'        in the cond.eff parameter (vector of length 2).
 
-#' @param circ.byG.prob Probablity that a black/white new arrival in the population
+#' @param circ.prob Probablity that a black/white new arrival in the population
 #'        will be circumcised (vector of length 2).
 #' @param num.inst.ai.classes Number of quantiles into which men should be
 #'        divided in determining their levels of one-off anal intercourse.
@@ -222,18 +217,15 @@
 #' @export
 #'
 param_msm <- function(nwstats,
-                      hiv.test.byG.int = c(301, 315),
+                      hiv.test.int = c(301, 315),
                       test.window.int = 21,
 
                       tt.traj.B.prob = c(0.077, 0.000, 0.356, 0.567),
                       tt.traj.W.prob = c(0.052, 0.000, 0.331, 0.617),
 
-                      tx.init.B.prob = 0.092,
-                      tx.init.W.prob = 0.127,
-                      tx.halt.B.prob = 0.0102,
-                      tx.halt.W.prob = 0.0071,
-                      tx.reinit.B.prob = 0.00066,
-                      tx.reinit.W.prob = 0.00291,
+                      tx.init.prob = c(0.092, 0.127),
+                      tx.halt.prob = c(0.0102, 0.0071),
+                      tx.reinit.prob = c(0.00066, 0.00291),
 
                       max.time.off.tx.full.int = 520 * 7,
                       max.time.on.tx.part.int = 52 * 15 * 7,
@@ -261,9 +253,9 @@ param_msm <- function(nwstats,
                       circ.rr = 0.4,
 
                       cond.eff = 0.95,
-                      cond.fail.byG = c(0.39, 0.21),
+                      cond.fail = c(0.39, 0.21),
 
-                      circ.byG.prob = c(0.874, 0.918),
+                      circ.prob = c(0.874, 0.918),
 
                       num.inst.ai.classes = 1,
                       base.ai.main.BB.rate = 0.22,

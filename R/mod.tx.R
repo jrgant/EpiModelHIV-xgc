@@ -38,12 +38,9 @@ tx_msm <- function(dat, at) {
   stage <- dat$attr$stage
 
   # Parameters
-  tx.init.B.prob <- dat$param$tx.init.B.prob
-  tx.init.W.prob <- dat$param$tx.init.W.prob
-  tx.halt.B.prob <- dat$param$tx.halt.B.prob
-  tx.halt.W.prob <- dat$param$tx.halt.W.prob
-  tx.reinit.B.prob <- dat$param$tx.reinit.B.prob
-  tx.reinit.W.prob <- dat$param$tx.reinit.W.prob
+  tx.init.prob <- dat$param$tx.init.prob
+  tx.halt.prob <- dat$param$tx.halt.prob
+  tx.reinit.prob <- dat$param$tx.reinit.prob
 
 
   ## Initiation
@@ -52,14 +49,14 @@ tx_msm <- function(dat, at) {
                           tt.traj %in% 3:4 & cum.time.on.tx == 0 &
                           stage != 4)
   tx.init.B <- tx.init.elig.B[rbinom(length(tx.init.elig.B), 1,
-                                     tx.init.B.prob) == 1]
+                                     tx.init.prob[1]) == 1]
 
   tx.init.elig.W <- which(race == "W" & status == 1 &
                           tx.status == 0 & diag.status == 1 &
                           tt.traj %in% 3:4 & cum.time.on.tx == 0 &
                           stage != 4)
   tx.init.W <- tx.init.elig.W[rbinom(length(tx.init.elig.W), 1,
-                                     tx.init.W.prob) == 1]
+                                     tx.init.prob[2]) == 1]
 
   tx.init <- c(tx.init.B, tx.init.W)
 
@@ -70,11 +67,11 @@ tx_msm <- function(dat, at) {
   ## Halting
   tx.halt.elig.B <- which(race == "B" & tx.status == 1)
   tx.halt.B <- tx.halt.elig.B[rbinom(length(tx.halt.elig.B), 1,
-                                     tx.halt.B.prob) == 1]
+                                     tx.halt.prob[1]) == 1]
 
   tx.halt.elig.W <- which(race == "W" & tx.status == 1)
   tx.halt.W <- tx.halt.elig.W[rbinom(length(tx.halt.elig.W),
-                                     1, tx.halt.W.prob) == 1]
+                                     1, tx.halt.prob[2]) == 1]
   tx.halt <- c(tx.halt.B, tx.halt.W)
   dat$attr$tx.status[tx.halt] <- 0
 
@@ -83,12 +80,12 @@ tx_msm <- function(dat, at) {
   tx.reinit.elig.B <- which(race == "B" & tx.status == 0 &
                             cum.time.on.tx > 0 & stage != 4)
   tx.reinit.B <- tx.reinit.elig.B[rbinom(length(tx.reinit.elig.B),
-                                         1, tx.reinit.B.prob) == 1]
+                                         1, tx.reinit.prob[1]) == 1]
 
   tx.reinit.elig.W <- which(race == "W" & tx.status == 0 &
                             cum.time.on.tx > 0 & stage != 4)
   tx.reinit.W <- tx.reinit.elig.W[rbinom(length(tx.reinit.elig.W),
-                                         1, tx.reinit.W.prob) == 1]
+                                         1, tx.reinit.prob[2]) == 1]
 
   tx.reinit <- c(tx.reinit.B, tx.reinit.W)
   dat$attr$tx.status[tx.reinit] <- 1

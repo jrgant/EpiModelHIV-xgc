@@ -55,7 +55,7 @@ trans_msm <- function(dat, at) {
   acute.rr <- dat$param$acute.rr
 
   cond.eff <- dat$param$cond.eff
-  cond.fail.byG <- dat$param$cond.fail.byG
+  cond.fail <- dat$param$cond.fail
 
   circ.rr <- dat$param$circ.rr
   prep.hr <- dat$param$prep.class.hr
@@ -106,8 +106,8 @@ trans_msm <- function(dat, at) {
   not.UAI.W.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == "W"))
 
   condom.rr <- rep(NA, nrow(disc.ip))
-  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail.byG[1])
-  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail.byG[2])
+  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail[1])
+  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail[2])
 
   ip.tlo[not.UAI] <- ip.tlo[not.UAI] + log(condom.rr[not.UAI])
 
@@ -169,8 +169,8 @@ trans_msm <- function(dat, at) {
   not.UAI.W.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == "W"))
 
   condom.rr <- rep(NA, nrow(disc.rp))
-  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail.byG[1])
-  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail.byG[2])
+  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail[1])
+  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail[2])
 
   rp.tlo[not.UAI] <- rp.tlo[not.UAI] + log(condom.rr[not.UAI])
 

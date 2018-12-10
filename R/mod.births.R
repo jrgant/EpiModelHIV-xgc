@@ -91,8 +91,8 @@ setBirthAttr_msm <- function(dat, at, nBirths) {
                                            prob = dat$param$tt.traj.W.prob)
 
   # Circumcision
-  dat$attr$circ[newIds[newB]] <- rbinom(length(newB), 1, dat$param$circ.byG.prob[1])
-  dat$attr$circ[newIds[newW]] <- rbinom(length(newW), 1, dat$param$circ.byG.prob[2])
+  dat$attr$circ[newIds[newB]] <- rbinom(length(newB), 1, dat$param$circ.prob[1])
+  dat$attr$circ[newIds[newW]] <- rbinom(length(newW), 1, dat$param$circ.prob[2])
 
   # Role
   dat$attr$role.class[newIds[newB]] <- sample(c("I", "R", "V"),
