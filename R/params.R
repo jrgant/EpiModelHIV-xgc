@@ -8,8 +8,6 @@
 #'
 #' @param nwstats Target statistics for the network model. An object of class
 #'        \code{nwstats} output from \code{\link{calc_nwstats_msm}}.
-#' @param race.method Number of races in the model, with options of 1 or 2. If
-#'        1, then race-specific parameters will be averaged.
 #' @param last.neg.test.B.int Time range in days for last negative test for
 #'        black men.
 #' @param mean.test.B.int Mean intertest interval in days for black MSM who test.
@@ -236,7 +234,6 @@
 #' @export
 #'
 param_msm <- function(nwstats,
-                      race.method = 2,
                       last.neg.test.B.int = 301,
                       last.neg.test.W.int = 315,
                       mean.test.B.int = 301,
@@ -371,44 +368,6 @@ param_msm <- function(nwstats,
 
   p <- get_args(formal.args = formals(sys.function()),
                 dot.args = list(...))
-
-  if (race.method == 1) {
-    p$last.neg.test.B.int = (last.neg.test.B.int + last.neg.test.W.int)/2
-    p$last.neg.test.W.int = (last.neg.test.B.int + last.neg.test.W.int)/2
-    p$mean.test.B.int = (mean.test.W.int + mean.test.B.int)/2
-    p$mean.test.W.int = (mean.test.W.int + mean.test.B.int)/2
-    p$tt.traj.B.prob = (tt.traj.B.prob + tt.traj.W.prob)/2
-    p$tt.traj.W.prob = (tt.traj.B.prob + tt.traj.W.prob)/2
-    p$tx.init.B.prob = (tx.init.B.prob + tx.init.W.prob)/2
-    p$tx.init.W.prob = (tx.init.B.prob + tx.init.W.prob)/2
-    p$tx.halt.B.prob = (tx.halt.B.prob + tx.halt.W.prob)/2
-    p$tx.halt.W.prob = (tx.halt.B.prob + tx.halt.W.prob)/2
-    p$tx.reinit.B.prob = (tx.reinit.B.prob + tx.reinit.W.prob)/2
-    p$tx.reinit.W.prob = (tx.reinit.B.prob + tx.reinit.W.prob)/2
-    p$circ.B.prob = (circ.B.prob + circ.W.prob)/2
-    p$circ.W.prob = (circ.B.prob + circ.W.prob)/2
-    p$base.ai.main.BB.rate = (base.ai.main.BB.rate + base.ai.main.BW.rate +
-                                base.ai.main.WW.rate)/3
-    p$base.ai.main.BW.rate = (base.ai.main.BB.rate + base.ai.main.BW.rate +
-                                base.ai.main.WW.rate)/3
-    p$base.ai.main.WW.rate = (base.ai.main.BB.rate + base.ai.main.BW.rate +
-                                base.ai.main.WW.rate)/3
-    p$base.ai.pers.BB.rate = (base.ai.pers.BB.rate + base.ai.pers.BW.rate +
-                                base.ai.pers.WW.rate)/3
-    p$base.ai.pers.BW.rate = (base.ai.pers.BB.rate + base.ai.pers.BW.rate +
-                                base.ai.pers.WW.rate)/3
-    p$base.ai.pers.WW.rate = (base.ai.pers.BB.rate + base.ai.pers.BW.rate +
-                                base.ai.pers.WW.rate)/3
-    p$cond.main.BB.prob = (cond.main.BB.prob + cond.main.BW.prob + cond.main.WW.prob)/3
-    p$cond.main.BW.prob = (cond.main.BB.prob + cond.main.BW.prob + cond.main.WW.prob)/3
-    p$cond.main.WW.prob = (cond.main.BB.prob + cond.main.BW.prob + cond.main.WW.prob)/3
-    p$cond.pers.BB.prob = (cond.pers.BB.prob + cond.pers.BW.prob + cond.pers.WW.prob)/3
-    p$cond.pers.BW.prob = (cond.pers.BB.prob + cond.pers.BW.prob + cond.pers.WW.prob)/3
-    p$cond.pers.WW.prob = (cond.pers.BB.prob + cond.pers.BW.prob + cond.pers.WW.prob)/3
-    p$cond.inst.BB.prob = (cond.inst.BB.prob + cond.inst.BW.prob + cond.inst.WW.prob)/3
-    p$cond.inst.BW.prob = (cond.inst.BB.prob + cond.inst.BW.prob + cond.inst.WW.prob)/3
-    p$cond.inst.WW.prob = (cond.inst.BB.prob + cond.inst.BW.prob + cond.inst.WW.prob)/3
-  }
 
   p$time.unit <- nwstats$time.unit
 
