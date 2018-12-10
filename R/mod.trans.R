@@ -451,3 +451,11 @@ hughes_tp <- function(vls, susmales, susages, suscircs, prop.male, fmat = FALSE)
 
   return(tp.full)
 }
+
+keep.attr <- function(attrList, keep) {
+  lapply(attrList, function(x) x[keep])
+}
+
+nbsdtosize <- function(mu, sd) {
+  mu ^ 2 / (sd ^ 2 - mu)
+}
