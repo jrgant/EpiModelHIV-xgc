@@ -69,28 +69,20 @@
 #'        elevated viral load) when positive partner is in the acute stage.
 #' @param circ.rr Relative risk of infection from insertive anal sex when the
 #'        negative insertive partner is circumcised.
+#'
 #' @param cond.eff Relative risk of HIV infection from anal sex when a condom is
 #'        used properly (biological efficacy).
 #' @param cond.fail.B Condom failure rates for HIV for Black/White MSM, as a reduction
 #'        in the cond.eff parameter (vector of length 2).
-
 #' @param circ.prob Probablity that a black/white new arrival in the population
 #'        will be circumcised (vector of length 2).
-#' @param base.ai.main.BB.rate Expected coital frequency in black-black main
-#'        partnerships (acts per day).
-#' @param base.ai.main.BW.rate Expected coital frequency in black-white main
-#'        partnerships (acts per day).
-#' @param base.ai.main.WW.rate Expected coital frequency in white-white main
-#'        partnerships (acts per day).
-#' @param base.ai.pers.BB.rate Expected coital frequency in black-black casual
-#'        partnerships (acts per day).
-#' @param base.ai.pers.BW.rate Expected coital frequency in black-white casual
-#'        partnerships (acts per day).
-#' @param base.ai.pers.WW.rate Expected coital frequency in white-white casual
-#'        partnerships (acts per day).
-#' @param ai.scale.BB Relative scaler for all BB act rates.
-#' @param ai.scale.BW Relative scaler for all BW act rates.
-#' @param ai.scale.WW Relative scaler for all WW act rates.
+#'
+#' @param base.ai.main.rate Expected coital frequency in BB/BW/WW main
+#'        partnerships per day (vector of length 3).
+#' @param base.ai.pers.rate Expected coital frequency in BB/BW/WW casual
+#'        partnerships per day (vector of length 3).
+#' @param ai.scale Relative scaler for all BB/BW/WW act rates (vector of length 3).
+#'
 #' @param cond.main.BB.prob Probability of condom use in a black-black main
 #'        partnership.
 #' @param cond.main.BW.prob Probability of condom use in a black-white main
@@ -249,21 +241,13 @@ param_msm <- function(nwstats,
                       UIAI.prob = 0.0031 * 1.09,
                       acute.rr = 6,
                       circ.rr = 0.4,
-
                       cond.eff = 0.95,
                       cond.fail = c(0.39, 0.21),
-
                       circ.prob = c(0.874, 0.918),
 
-                      base.ai.main.BB.rate = 0.22,
-                      base.ai.main.BW.rate = 0.22,
-                      base.ai.main.WW.rate = 0.22,
-                      base.ai.pers.BB.rate = 0.14,
-                      base.ai.pers.BW.rate = 0.14,
-                      base.ai.pers.WW.rate = 0.14,
-                      ai.scale.BB = 1.31,
-                      ai.scale.BW = 1,
-                      ai.scale.WW = 0.77,
+                      base.ai.main.rate = c(0.22, 0.22, 0.22),
+                      base.ai.pers.rate = c(0.14, 0.14, 0.14),
+                      ai.scale = c(1.31, 1, 0.77),
 
                       cond.main.BB.prob = 0.21,
                       cond.main.BW.prob = 0.21,

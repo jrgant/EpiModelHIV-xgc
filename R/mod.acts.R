@@ -33,32 +33,23 @@ acts_msm <- function(dat, at) {
     race <- dat$attr$race
 
     # Parameters
-    ai.scale.BB <- dat$param$ai.scale.BB
-    ai.scale.BW <- dat$param$ai.scale.BW
-    ai.scale.WW <- dat$param$ai.scale.WW
+    ai.scale <- dat$param$ai.scale
 
     if (type == "main") {
-      base.ai.BB.rate <- dat$param$base.ai.main.BB.rate
-      base.ai.BW.rate <- dat$param$base.ai.main.BW.rate
-      base.ai.WW.rate <- dat$param$base.ai.main.WW.rate
+      base.ai.rate <- dat$param$base.ai.main.rate
       fixed <- FALSE
       ptype <- 1
       el <- dat$el[[1]]
     }
     if (type == "pers") {
-      base.ai.BB.rate <- dat$param$base.ai.pers.BB.rate
-      base.ai.BW.rate <- dat$param$base.ai.pers.BW.rate
-      base.ai.WW.rate <- dat$param$base.ai.pers.WW.rate
+      base.ai.rate <- dat$param$base.ai.pers.rate
       fixed <- FALSE
       ptype <- 2
       el <- dat$el[[2]]
     }
     if (type == "inst") {
-      base.ai.BB.rate <- 1
-      base.ai.BW.rate <- 1
-      base.ai.WW.rate <- 1
-      fixed <- ifelse(ai.scale.BB != 1 & ai.scale.BW != 1 & ai.scale.WW != 1,
-                      FALSE, TRUE)
+      base.ai.rate <- rep(1, 3)
+      fixed <- ifelse(any(ai.scale != 1), FALSE, TRUE)
       ptype <- 3
       el <- dat$el[[3]]
     }
@@ -81,9 +72,9 @@ acts_msm <- function(dat, at) {
       race.p1 <- race[el[, 1]]
       race.p2 <- race[el[, 2]]
       num.B <- (race.p1 == "B") + (race.p2 == "B")
-      ai.rate <- ((num.B == 2) * base.ai.BB.rate * ai.scale.BB) +
-                 ((num.B == 1) * base.ai.BW.rate * ai.scale.BW) +
-                 ((num.B == 0) * base.ai.WW.rate * ai.scale.WW)
+      ai.rate <- ((num.B == 2) * base.ai.rate[1] * ai.scale[1]) +
+                 ((num.B == 1) * base.ai.rate[2] * ai.scale[2]) +
+                 ((num.B == 0) * base.ai.rate[3] * ai.scale[3])
 
       # Final act number
       if (fixed == FALSE) {

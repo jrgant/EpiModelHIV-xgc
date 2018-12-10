@@ -18,18 +18,16 @@ param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
   part.supp.up.slope = 0.25, b.rate = 0.001/7, birth.age = 18,
   URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 * 1.09, acute.rr = 6,
   circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.39, 0.21),
-  circ.prob = c(0.874, 0.918), base.ai.main.BB.rate = 0.22,
-  base.ai.main.BW.rate = 0.22, base.ai.main.WW.rate = 0.22,
-  base.ai.pers.BB.rate = 0.14, base.ai.pers.BW.rate = 0.14,
-  base.ai.pers.WW.rate = 0.14, ai.scale.BB = 1.31, ai.scale.BW = 1,
-  ai.scale.WW = 0.77, cond.main.BB.prob = 0.21,
-  cond.main.BW.prob = 0.21, cond.main.WW.prob = 0.21,
-  cond.pers.always.prob = 0.216, cond.pers.BB.prob = 0.26,
-  cond.pers.BW.prob = 0.26, cond.pers.WW.prob = 0.26,
-  cond.inst.always.prob = 0.326, cond.inst.BB.prob = 0.27,
-  cond.inst.BW.prob = 0.27, cond.inst.WW.prob = 0.27,
-  cond.always.prob.corr = 0.5, cond.rr.BB = 0.71, cond.rr.BW = 1,
-  cond.rr.WW = 1.6, prep.start = Inf, prep.coverage = 0,
+  circ.prob = c(0.874, 0.918), base.ai.main.rate = c(0.22, 0.22, 0.22),
+  base.ai.pers.rate = c(0.14, 0.14, 0.14), ai.scale = c(1.31, 1, 0.77),
+  cond.main.BB.prob = 0.21, cond.main.BW.prob = 0.21,
+  cond.main.WW.prob = 0.21, cond.pers.always.prob = 0.216,
+  cond.pers.BB.prob = 0.26, cond.pers.BW.prob = 0.26,
+  cond.pers.WW.prob = 0.26, cond.inst.always.prob = 0.326,
+  cond.inst.BB.prob = 0.27, cond.inst.BW.prob = 0.27,
+  cond.inst.WW.prob = 0.27, cond.always.prob.corr = 0.5,
+  cond.rr.BB = 0.71, cond.rr.BW = 1, cond.rr.WW = 1.6,
+  prep.start = Inf, prep.coverage = 0,
   prep.adhr.dist = reallocate_pcp(reall = 0.784 - 0.784),
   prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
   (2^(-1/780)), prep.tst.int = 90, prep.risk.int = 182,
@@ -147,29 +145,13 @@ used properly (biological efficacy).}
 \item{circ.prob}{Probablity that a black/white new arrival in the population
 will be circumcised (vector of length 2).}
 
-\item{base.ai.main.BB.rate}{Expected coital frequency in black-black main
-partnerships (acts per day).}
+\item{base.ai.main.rate}{Expected coital frequency in BB/BW/WW main
+partnerships per day (vector of length 3).}
 
-\item{base.ai.main.BW.rate}{Expected coital frequency in black-white main
-partnerships (acts per day).}
+\item{base.ai.pers.rate}{Expected coital frequency in BB/BW/WW casual
+partnerships per day (vector of length 3).}
 
-\item{base.ai.main.WW.rate}{Expected coital frequency in white-white main
-partnerships (acts per day).}
-
-\item{base.ai.pers.BB.rate}{Expected coital frequency in black-black casual
-partnerships (acts per day).}
-
-\item{base.ai.pers.BW.rate}{Expected coital frequency in black-white casual
-partnerships (acts per day).}
-
-\item{base.ai.pers.WW.rate}{Expected coital frequency in white-white casual
-partnerships (acts per day).}
-
-\item{ai.scale.BB}{Relative scaler for all BB act rates.}
-
-\item{ai.scale.BW}{Relative scaler for all BW act rates.}
-
-\item{ai.scale.WW}{Relative scaler for all WW act rates.}
+\item{ai.scale}{Relative scaler for all BB/BW/WW act rates (vector of length 3).}
 
 \item{cond.main.BB.prob}{Probability of condom use in a black-black main
 partnership.}
