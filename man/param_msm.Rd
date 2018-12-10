@@ -16,23 +16,22 @@ param_msm(nwstats, mean.test.B.int = 301, mean.test.W.int = 315,
   * 7, vl.aids.int = 52 * 2 * 7, vl.fatal = 7, vl.full.supp = 1.5,
   vl.part.supp = 3.5, full.supp.down.slope = 0.25,
   full.supp.up.slope = 0.25, part.supp.down.slope = 0.25,
-  part.supp.up.slope = 0.25, b.B.rate = 0.001/7, b.W.rate = 0.001/7,
-  birth.age = 18, URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 *
-  1.09, acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95,
-  cond.fail.B = 0.39, cond.fail.W = 0.21, circ.B.prob = 0.874,
-  circ.W.prob = 0.918, num.inst.ai.classes = 1,
-  base.ai.main.BB.rate = 0.22, base.ai.main.BW.rate = 0.22,
-  base.ai.main.WW.rate = 0.22, base.ai.pers.BB.rate = 0.14,
-  base.ai.pers.BW.rate = 0.14, base.ai.pers.WW.rate = 0.14,
-  ai.scale.BB = 1.31, ai.scale.BW = 1, ai.scale.WW = 0.77,
-  cond.main.BB.prob = 0.21, cond.main.BW.prob = 0.21,
-  cond.main.WW.prob = 0.21, cond.pers.always.prob = 0.216,
-  cond.pers.BB.prob = 0.26, cond.pers.BW.prob = 0.26,
-  cond.pers.WW.prob = 0.26, cond.inst.always.prob = 0.326,
-  cond.inst.BB.prob = 0.27, cond.inst.BW.prob = 0.27,
-  cond.inst.WW.prob = 0.27, cond.always.prob.corr = 0.5,
-  cond.rr.BB = 0.71, cond.rr.BW = 1, cond.rr.WW = 1.6,
-  prep.start = Inf, prep.coverage = 0,
+  part.supp.up.slope = 0.25, b.rate = 0.001/7, birth.age = 18,
+  URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 * 1.09, acute.rr = 6,
+  circ.rr = 0.4, cond.eff = 0.95, cond.fail.B = 0.39,
+  cond.fail.W = 0.21, circ.byG.prob = c(0.874, 0.918),
+  num.inst.ai.classes = 1, base.ai.main.BB.rate = 0.22,
+  base.ai.main.BW.rate = 0.22, base.ai.main.WW.rate = 0.22,
+  base.ai.pers.BB.rate = 0.14, base.ai.pers.BW.rate = 0.14,
+  base.ai.pers.WW.rate = 0.14, ai.scale.BB = 1.31, ai.scale.BW = 1,
+  ai.scale.WW = 0.77, cond.main.BB.prob = 0.21,
+  cond.main.BW.prob = 0.21, cond.main.WW.prob = 0.21,
+  cond.pers.always.prob = 0.216, cond.pers.BB.prob = 0.26,
+  cond.pers.BW.prob = 0.26, cond.pers.WW.prob = 0.26,
+  cond.inst.always.prob = 0.326, cond.inst.BB.prob = 0.27,
+  cond.inst.BW.prob = 0.27, cond.inst.WW.prob = 0.27,
+  cond.always.prob.corr = 0.5, cond.rr.BB = 0.71, cond.rr.BW = 1,
+  cond.rr.WW = 1.6, prep.start = Inf, prep.coverage = 0,
   prep.adhr.dist = reallocate_pcp(reall = 0.784 - 0.784),
   prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
   (2^(-1/780)), prep.tst.int = 90, prep.risk.int = 182,
@@ -137,10 +136,6 @@ re-initiation until the level in \code{vl.part.supp}.}
 \item{part.supp.up.slope}{For partial suppressors, number of log10 units that
 viral load rises per time step from treatment halting until expected value.}
 
-\item{b.B.rate}{Rate at which black MSM enter the population.}
-
-\item{b.W.rate}{Rate at which white MSM enter the population.}
-
 \item{birth.age}{Age (in years) of new arrivals.}
 
 \item{URAI.prob}{Probability of transmission for a man having unprotected
@@ -166,11 +161,8 @@ in the cond.eff parameter.}
 \item{cond.fail.W}{Condom failure rates for HIV for White MSM, as a reduction
 in the cond.eff parameter.}
 
-\item{circ.B.prob}{Probablity that a black new arrival in the population
-will be circumcised.}
-
-\item{circ.W.prob}{Probablity that a white new arrival in the population
-will be circumcised.}
+\item{circ.byG.prob}{Probablity that a black/white new arrival in the population
+will be circumcised (vector of length 2).}
 
 \item{num.inst.ai.classes}{Number of quantiles into which men should be
 divided in determining their levels of one-off anal intercourse.}
@@ -356,6 +348,10 @@ in the cond.eff parameter.}
 given dual infection with both gonorrhea and chlamydia.}
 
 \item{...}{Additional arguments passed to the function.}
+
+\item{b.B.rate}{Rate at which black MSM enter the population.}
+
+\item{b.W.rate}{Rate at which white MSM enter the population.}
 
 \item{prep.adhr.dist.B}{Proportion of black men who are low, medium, and high
 adherent to PrEP.}

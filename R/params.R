@@ -82,10 +82,8 @@
 #' @param cond.fail.W Condom failure rates for HIV for White MSM, as a reduction
 #'        in the cond.eff parameter.
 
-#' @param circ.B.prob Probablity that a black new arrival in the population
-#'        will be circumcised.
-#' @param circ.W.prob Probablity that a white new arrival in the population
-#'        will be circumcised.
+#' @param circ.byG.prob Probablity that a black/white new arrival in the population
+#'        will be circumcised (vector of length 2).
 #' @param num.inst.ai.classes Number of quantiles into which men should be
 #'        divided in determining their levels of one-off anal intercourse.
 #' @param base.ai.main.BB.rate Expected coital frequency in black-black main
@@ -270,8 +268,7 @@ param_msm <- function(nwstats,
                       cond.fail.B = 0.39,
                       cond.fail.W = 0.21,
 
-                      circ.B.prob = 0.874,
-                      circ.W.prob = 0.918,
+                      circ.byG.prob = c(0.874, 0.918),
 
                       num.inst.ai.classes = 1,
                       base.ai.main.BB.rate = 0.22,

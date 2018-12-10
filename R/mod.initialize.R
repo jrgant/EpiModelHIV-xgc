@@ -105,8 +105,8 @@ initialize_msm <- function(x, param, init, control, s) {
 
   # Circumcision
   circ <- rep(NA, num)
-  circ[ids.B] <- sample(apportion_lr(num.B, 0:1, 1 - param$circ.B.prob))
-  circ[ids.W] <- sample(apportion_lr(num.W, 0:1, 1 - param$circ.W.prob))
+  circ[ids.B] <- sample(apportion_lr(num.B, 0:1, 1 - param$circ.byG.prob[1]))
+  circ[ids.W] <- sample(apportion_lr(num.W, 0:1, 1 - param$circ.byG.prob[2]))
   dat$attr$circ <- circ
 
   ## PrEP Attributes ##
