@@ -59,6 +59,7 @@
 #'        viral load rises per time step from treatment halting until expected value.
 #' @param b.rate Rate at which MSM enter the population.
 #' @param birth.age Age (in years) of new arrivals.
+#'
 #' @param URAI.prob Probability of transmission for a man having unprotected
 #'        receptive anal intercourse with an infected man at set point viral
 #'        load.
@@ -72,7 +73,7 @@
 #'
 #' @param cond.eff Relative risk of HIV infection from anal sex when a condom is
 #'        used properly (biological efficacy).
-#' @param cond.fail.B Condom failure rates for HIV for Black/White MSM, as a reduction
+#' @param cond.fail Condom failure rates for HIV for Black/White MSM, as a reduction
 #'        in the cond.eff parameter (vector of length 2).
 #' @param circ.prob Probablity that a black/white new arrival in the population
 #'        will be circumcised (vector of length 2).
@@ -83,36 +84,22 @@
 #'        partnerships per day (vector of length 3).
 #' @param ai.scale Relative scaler for all BB/BW/WW act rates (vector of length 3).
 #'
-#' @param cond.main.BB.prob Probability of condom use in a black-black main
-#'        partnership.
-#' @param cond.main.BW.prob Probability of condom use in a black-white main
-#'        partnership.
-#' @param cond.main.WW.prob Probability of condom use in a white-white main
-#'        partnership.
+#' @param cond.main.prob Per-act probability of condom use in a BB/BW/WW main
+#'        partnerships (vector of length 3).
 #' @param cond.pers.always.prob Fraction of men in casual partnerships who always
 #'        use condoms in those partnerships.
-#' @param cond.pers.BB.prob Of men who are not consistent condom users, per-act
-#'        probability of condom use in a black-black casual partnerships.
-#' @param cond.pers.BW.prob Of men who are not consistent condom users, per-act
-#'        probability of condom use in a black-white casual partnerships.
-#' @param cond.pers.WW.prob Of men who are not consistent condom users, per-act
-#'        probability of condom use in a white-white casual partnerships.
+#' @param cond.pers.prob Of men who are not consistent condom users, per-act
+#'        probability of condom use in a BB/BW/WW casual partnerships (vector of
+#'        length 3).
 #' @param cond.inst.always.prob Fraction of men in instant partnerships who always
 #'        use condoms in those partnerships.
-#' @param cond.inst.BB.prob Of men who are not consistent condom users, per-act
-#'        probability of condom use in a black-black one-off partnerships.
-#' @param cond.inst.BW.prob Of men who are not consistent condom users, per-act
-#'        probability of condom use in a black-white one-off partnerships.
-#' @param cond.inst.WW.prob Of men who are not consistent condom users, per-act
-#'        probability of condom use in a white-white one-off partnerships.
+#' @param cond.inst.prob Of men who are not consistent condom users, per-act
+#'        probability of condom use in a BB/BW/WW one-off partnerships vector of
+#'        length 3).
 #' @param cond.always.prob.corr Correlation coefficient for probability of always
-#'        using condoms in both casual and one-off
-#' @param cond.rr.BB Condom probability scaler for black-black partnerships for
-#'        model calibration purposes.
-#' @param cond.rr.BW Condom probability scaler for black-white partnerships for
-#'        model calibration purposes.
-#' @param cond.rr.WW Condom probability scaler for white-white partnerships for
-#'        model calibration purposes.
+#'        using condoms in both casual and one-off partnerships.
+#' @param cond.rr Condom probability scaler for BB/BW/WW partnerships (vector
+#'        of length 3).
 #'
 #' @param prep.start Time step at which the PrEP intervention should start.
 #' @param prep.adhr.dist.B Proportion of black men who are low, medium, and high
@@ -185,10 +172,8 @@
 #'        STI treatment of symptomatic cases even after PrEP initiation.
 #' @param sti.cond.eff Relative risk of STI infection from anal sex when a condom is
 #'        used properly (biological efficacy).
-#' @param sti.cond.fail.B Condom failure rates for STI for Black MSM, as a reduction
-#'        in the cond.eff parameter.
-#' @param sti.cond.fail.W Condom failure rates for STI for White MSM, as a reduction
-#'        in the cond.eff parameter.
+#' @param sti.cond.fail Condom failure rates for STI for Black/White MSM, as
+#'        a reduction in the cond.eff parameter (vector of length 2).
 #' @param hiv.rgc.rr Relative risk of HIV infection given current rectal gonorrhea.
 #' @param hiv.ugc.rr Relative risk of HIV infection given current urethral gonorrhea.
 #' @param hiv.rct.rr Relative risk of HIV infection given current rectal chlamydia.
@@ -249,21 +234,13 @@ param_msm <- function(nwstats,
                       base.ai.pers.rate = c(0.14, 0.14, 0.14),
                       ai.scale = c(1.31, 1, 0.77),
 
-                      cond.main.BB.prob = 0.21,
-                      cond.main.BW.prob = 0.21,
-                      cond.main.WW.prob = 0.21,
+                      cond.main.prob = c(0.21, 0.21, 0.21),
                       cond.pers.always.prob = 0.216,
-                      cond.pers.BB.prob = 0.26,
-                      cond.pers.BW.prob = 0.26,
-                      cond.pers.WW.prob = 0.26,
+                      cond.pers.prob = c(0.26, 0.26, 0.26),
                       cond.inst.always.prob = 0.326,
-                      cond.inst.BB.prob = 0.27,
-                      cond.inst.BW.prob = 0.27,
-                      cond.inst.WW.prob = 0.27,
+                      cond.inst.prob = c(0.27, 0.27, 0.27),
                       cond.always.prob.corr = 0.5,
-                      cond.rr.BB = 0.71,
-                      cond.rr.BW = 1,
-                      cond.rr.WW = 1.6,
+                      cond.rr = c(0.71, 1, 1.6),
 
                       prep.start = Inf,
                       prep.coverage = 0,
@@ -310,8 +287,7 @@ param_msm <- function(nwstats,
                       prep.continue.stand.tx = TRUE,
 
                       sti.cond.eff = 0.95,
-                      sti.cond.fail.B = 0.39,
-                      sti.cond.fail.W = 0.21,
+                      sti.cond.fail = c(0.39, 0.21),
 
                       hiv.rgc.rr = 2.78,
                       hiv.ugc.rr = 1.73,

@@ -28,8 +28,7 @@ sti_trans <- function(dat, at) {
 
   # Relative risk of infection given condom use during act
   sti.cond.eff <- dat$param$sti.cond.eff
-  sti.cond.fail.B <- dat$param$sti.cond.fail.B
-  sti.cond.fail.W <- dat$param$sti.cond.fail.W
+  sti.cond.fail <- dat$param$sti.cond.fail
 
 
   # Attributes ----------------------------------------------------------
@@ -96,8 +95,8 @@ sti_trans <- function(dat, at) {
   # Modify log odds by race-specific condom effectiveness
   races <- c(race[al[p1Inf_rgc, "p1"]], race[al[p2Inf_rgc, "p2"]])
   condom.rr <- rep(NA, length(races))
-  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail.B)
-  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail.W)
+  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail[1])
+  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail[2])
 
   tlo_rgc[uai_rgc == 0] <- tlo_rgc[uai_rgc == 0] + log(condom.rr[uai_rgc == 0])
 
@@ -141,8 +140,8 @@ sti_trans <- function(dat, at) {
   # Modify log odds by race-specific condom effectiveness
   races <- c(race[al[p1Inf_ugc, "p2"]], race[al[p2Inf_ugc, "p1"]])
   condom.rr <- rep(NA, length(races))
-  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail.B)
-  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail.W)
+  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail[1])
+  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail[2])
 
   tlo_ugc[uai_ugc == 0] <- tlo_ugc[uai_ugc == 0] + log(condom.rr[uai_ugc == 0])
 
@@ -186,8 +185,8 @@ sti_trans <- function(dat, at) {
   # Modify log odds by race-specific condom effectiveness
   races <- c(race[al[p1Inf_rct, "p1"]], race[al[p2Inf_rct, "p2"]])
   condom.rr <- rep(NA, length(races))
-  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail.B)
-  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail.W)
+  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail[1])
+  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail[2])
 
   tlo_rct[uai_rct == 0] <- tlo_rct[uai_rct == 0] + log(condom.rr[uai_rct == 0])
 
@@ -231,8 +230,8 @@ sti_trans <- function(dat, at) {
   # Modify log odds by race-specific condom effectiveness
   races <- c(race[al[p1Inf_uct, "p2"]], race[al[p2Inf_uct, "p1"]])
   condom.rr <- rep(NA, length(races))
-  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail.B)
-  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail.W)
+  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail[1])
+  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail[2])
 
   tlo_uct[uai_uct == 0] <- tlo_uct[uai_uct == 0] + log(condom.rr[uai_uct == 0])
 

@@ -23,8 +23,6 @@
 condoms_msm <- function(dat, at) {
 
   # Attributes
-  uid <- dat$attr$uid
-  diag.status <- dat$attr$diag.status
   race <- dat$attr$race
   prepStat <- dat$attr$prepStat
   prepClass <- dat$attr$prepClass
@@ -40,28 +38,20 @@ condoms_msm <- function(dat, at) {
     ## Variables ##
 
     # Parameters
-    cond.rr.BB <- dat$param$cond.rr.BB
-    cond.rr.BW <- dat$param$cond.rr.BW
-    cond.rr.WW <- dat$param$cond.rr.WW
+    cond.rr <- dat$param$cond.rr
 
     if (type == "main") {
-      cond.BB.prob <- dat$param$cond.main.BB.prob
-      cond.BW.prob <- dat$param$cond.main.BW.prob
-      cond.WW.prob <- dat$param$cond.main.WW.prob
+      cond.prob <- dat$param$cond.main.prob
       cond.always <- NULL
       ptype <- 1
     }
     if (type == "pers") {
-      cond.BB.prob <- dat$param$cond.pers.BB.prob
-      cond.BW.prob <- dat$param$cond.pers.BW.prob
-      cond.WW.prob <- dat$param$cond.pers.WW.prob
+      cond.prob <- dat$param$cond.pers.prob
       cond.always <- dat$attr$cond.always.pers
       ptype <- 2
     }
     if (type == "inst") {
-      cond.BB.prob <- dat$param$cond.inst.BB.prob
-      cond.BW.prob <- dat$param$cond.inst.BW.prob
-      cond.WW.prob <- dat$param$cond.inst.WW.prob
+      cond.prob <- dat$param$cond.inst.prob
       cond.always <- dat$attr$cond.always.inst
       ptype <- 3
     }
@@ -74,9 +64,9 @@ condoms_msm <- function(dat, at) {
     race.p1 <- race[elt[, 1]]
     race.p2 <- race[elt[, 2]]
     num.B <- (race.p1 == "B") + (race.p2 == "B")
-    cond.prob <- (num.B == 2) * (cond.BB.prob * cond.rr.BB) +
-                 (num.B == 1) * (cond.BW.prob * cond.rr.BW) +
-                 (num.B == 0) * (cond.WW.prob * cond.rr.WW)
+    cond.prob <- (num.B == 2) * (cond.prob[1] * cond.rr[1]) +
+                 (num.B == 1) * (cond.prob[2] * cond.rr[2]) +
+                 (num.B == 0) * (cond.prob[3] * cond.rr[3])
     uai.prob <- 1 - cond.prob
 
     # UAI group
@@ -84,13 +74,6 @@ condoms_msm <- function(dat, at) {
       ca1 <- cond.always[elt[, 1]]
       ca2 <- cond.always[elt[, 2]]
       uai.prob <- ifelse(ca1 == 1 | ca2 == 1, 0, uai.prob)
-      if (type == "pers") {
-        dat$epi$cprob.always.pers <- NULL
-        # dat$epi$cprob.always.pers[at] <- mean(uai.prob == 0)
-      } else {
-        dat$epi$cprob.always.inst <- NULL
-        # dat$epi$cprob.always.inst[at] <- mean(uai.prob == 0)
-      }
     }
 
     # PrEP Status (risk compensation)

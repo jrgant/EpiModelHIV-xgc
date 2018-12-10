@@ -20,14 +20,10 @@ param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
   circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.39, 0.21),
   circ.prob = c(0.874, 0.918), base.ai.main.rate = c(0.22, 0.22, 0.22),
   base.ai.pers.rate = c(0.14, 0.14, 0.14), ai.scale = c(1.31, 1, 0.77),
-  cond.main.BB.prob = 0.21, cond.main.BW.prob = 0.21,
-  cond.main.WW.prob = 0.21, cond.pers.always.prob = 0.216,
-  cond.pers.BB.prob = 0.26, cond.pers.BW.prob = 0.26,
-  cond.pers.WW.prob = 0.26, cond.inst.always.prob = 0.326,
-  cond.inst.BB.prob = 0.27, cond.inst.BW.prob = 0.27,
-  cond.inst.WW.prob = 0.27, cond.always.prob.corr = 0.5,
-  cond.rr.BB = 0.71, cond.rr.BW = 1, cond.rr.WW = 1.6,
-  prep.start = Inf, prep.coverage = 0,
+  cond.main.prob = c(0.21, 0.21, 0.21), cond.pers.always.prob = 0.216,
+  cond.pers.prob = c(0.26, 0.26, 0.26), cond.inst.always.prob = 0.326,
+  cond.inst.prob = c(0.27, 0.27, 0.27), cond.always.prob.corr = 0.5,
+  cond.rr = c(0.71, 1, 1.6), prep.start = Inf, prep.coverage = 0,
   prep.adhr.dist = reallocate_pcp(reall = 0.784 - 0.784),
   prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
   (2^(-1/780)), prep.tst.int = 90, prep.risk.int = 182,
@@ -43,7 +39,7 @@ param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
   ct.asympt.prob.tx.B = 0.05, ct.asympt.prob.tx.W = 0.1,
   prep.sti.screen.int = 182, prep.sti.prob.tx = 1,
   prep.continue.stand.tx = TRUE, sti.cond.eff = 0.95,
-  sti.cond.fail.B = 0.39, sti.cond.fail.W = 0.21, hiv.rgc.rr = 2.78,
+  sti.cond.fail = c(0.39, 0.21), hiv.rgc.rr = 2.78,
   hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78, hiv.uct.rr = 1.73,
   hiv.dual.rr = 0.2, ...)
 }
@@ -142,6 +138,9 @@ negative insertive partner is circumcised.}
 \item{cond.eff}{Relative risk of HIV infection from anal sex when a condom is
 used properly (biological efficacy).}
 
+\item{cond.fail}{Condom failure rates for HIV for Black/White MSM, as a reduction
+in the cond.eff parameter (vector of length 2).}
+
 \item{circ.prob}{Probablity that a black/white new arrival in the population
 will be circumcised (vector of length 2).}
 
@@ -153,50 +152,28 @@ partnerships per day (vector of length 3).}
 
 \item{ai.scale}{Relative scaler for all BB/BW/WW act rates (vector of length 3).}
 
-\item{cond.main.BB.prob}{Probability of condom use in a black-black main
-partnership.}
-
-\item{cond.main.BW.prob}{Probability of condom use in a black-white main
-partnership.}
-
-\item{cond.main.WW.prob}{Probability of condom use in a white-white main
-partnership.}
+\item{cond.main.prob}{Per-act probability of condom use in a BB/BW/WW main
+partnerships (vector of length 3).}
 
 \item{cond.pers.always.prob}{Fraction of men in casual partnerships who always
 use condoms in those partnerships.}
 
-\item{cond.pers.BB.prob}{Of men who are not consistent condom users, per-act
-probability of condom use in a black-black casual partnerships.}
-
-\item{cond.pers.BW.prob}{Of men who are not consistent condom users, per-act
-probability of condom use in a black-white casual partnerships.}
-
-\item{cond.pers.WW.prob}{Of men who are not consistent condom users, per-act
-probability of condom use in a white-white casual partnerships.}
+\item{cond.pers.prob}{Of men who are not consistent condom users, per-act
+probability of condom use in a BB/BW/WW casual partnerships (vector of
+length 3).}
 
 \item{cond.inst.always.prob}{Fraction of men in instant partnerships who always
 use condoms in those partnerships.}
 
-\item{cond.inst.BB.prob}{Of men who are not consistent condom users, per-act
-probability of condom use in a black-black one-off partnerships.}
-
-\item{cond.inst.BW.prob}{Of men who are not consistent condom users, per-act
-probability of condom use in a black-white one-off partnerships.}
-
-\item{cond.inst.WW.prob}{Of men who are not consistent condom users, per-act
-probability of condom use in a white-white one-off partnerships.}
+\item{cond.inst.prob}{Of men who are not consistent condom users, per-act
+probability of condom use in a BB/BW/WW one-off partnerships vector of
+length 3).}
 
 \item{cond.always.prob.corr}{Correlation coefficient for probability of always
-using condoms in both casual and one-off}
+using condoms in both casual and one-off partnerships.}
 
-\item{cond.rr.BB}{Condom probability scaler for black-black partnerships for
-model calibration purposes.}
-
-\item{cond.rr.BW}{Condom probability scaler for black-white partnerships for
-model calibration purposes.}
-
-\item{cond.rr.WW}{Condom probability scaler for white-white partnerships for
-model calibration purposes.}
+\item{cond.rr}{Condom probability scaler for BB/BW/WW partnerships (vector
+of length 3).}
 
 \item{prep.start}{Time step at which the PrEP intervention should start.}
 
@@ -292,11 +269,8 @@ STI treatment of symptomatic cases even after PrEP initiation.}
 \item{sti.cond.eff}{Relative risk of STI infection from anal sex when a condom is
 used properly (biological efficacy).}
 
-\item{sti.cond.fail.B}{Condom failure rates for STI for Black MSM, as a reduction
-in the cond.eff parameter.}
-
-\item{sti.cond.fail.W}{Condom failure rates for STI for White MSM, as a reduction
-in the cond.eff parameter.}
+\item{sti.cond.fail}{Condom failure rates for STI for Black/White MSM, as
+a reduction in the cond.eff parameter (vector of length 2).}
 
 \item{hiv.rgc.rr}{Relative risk of HIV infection given current rectal gonorrhea.}
 
@@ -310,9 +284,6 @@ in the cond.eff parameter.}
 given dual infection with both gonorrhea and chlamydia.}
 
 \item{...}{Additional arguments passed to the function.}
-
-\item{cond.fail.B}{Condom failure rates for HIV for Black/White MSM, as a reduction
-in the cond.eff parameter (vector of length 2).}
 
 \item{prep.adhr.dist.B}{Proportion of black men who are low, medium, and high
 adherent to PrEP.}
