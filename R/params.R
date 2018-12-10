@@ -69,9 +69,6 @@
 #' @param b.B.rate Rate at which black MSM enter the population.
 #' @param b.W.rate Rate at which white MSM enter the population.
 #' @param birth.age Age (in years) of new arrivals.
-#' @param b.method Method for calculating the number of expected births at each
-#'        time step, with \code{"fixed"} based on the number of persons at the
-#'        initial time step and \code{"varying"} based on the current time step.
 #' @param URAI.prob Probability of transmission for a man having unprotected
 #'        receptive anal intercourse with an infected man at set point viral
 #'        load.
@@ -270,7 +267,6 @@ param_msm <- function(nwstats,
                       b.B.rate = 1e-3 / 7,
                       b.W.rate = 1e-3 / 7,
                       birth.age = 18,
-                      b.method = "fixed",
 
                       URAI.prob = 0.0082 * 1.09,
                       UIAI.prob = 0.0031 * 1.09,

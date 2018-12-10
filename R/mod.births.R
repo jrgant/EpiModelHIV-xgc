@@ -28,18 +28,11 @@ births_msm <- function(dat, at){
   # Parameters
   b.B.rate <- dat$param$b.B.rate
   b.W.rate <- dat$param$b.W.rate
-  b.method <- dat$param$b.method
 
 
   ## Process
-  if (b.method == "fixed") {
-    numB <- dat$epi$num.B[1]
-    numW <- dat$epi$num.W[1]
-  }
-  if (b.method == "varying") {
-    numB <- dat$epi$num.B[at - 1]
-    numW <- dat$epi$num.W[at - 1]
-  }
+  numB <- dat$epi$num.B[1]
+  numW <- dat$epi$num.W[1]
 
   nBirths.B <- rpois(1, b.B.rate * numB)
   nBirths.W <- rpois(1, b.W.rate * numW)
