@@ -117,13 +117,6 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$attr$prepLastRisk <- rep(NA, num)
   dat$attr$prepLastStiScreen <- rep(NA, num)
 
-  # One-off AI class
-  inst.ai.class <- rep(NA, num)
-  ncl <- param$num.inst.ai.classes
-  inst.ai.class[ids.B] <- sample(apportion_lr(num.B, 1:ncl, rep(1 / ncl, ncl)))
-  inst.ai.class[ids.W] <- sample(apportion_lr(num.W, 1:ncl, rep(1 / ncl, ncl)))
-  dat$attr$inst.ai.class <- inst.ai.class
-
   # Role class
   role.class <- get.vertex.attribute(nw[[1]], "role.class")
   dat$attr$role.class <- role.class

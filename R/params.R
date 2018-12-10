@@ -76,8 +76,6 @@
 
 #' @param circ.prob Probablity that a black/white new arrival in the population
 #'        will be circumcised (vector of length 2).
-#' @param num.inst.ai.classes Number of quantiles into which men should be
-#'        divided in determining their levels of one-off anal intercourse.
 #' @param base.ai.main.BB.rate Expected coital frequency in black-black main
 #'        partnerships (acts per day).
 #' @param base.ai.main.BW.rate Expected coital frequency in black-white main
@@ -257,7 +255,6 @@ param_msm <- function(nwstats,
 
                       circ.prob = c(0.874, 0.918),
 
-                      num.inst.ai.classes = 1,
                       base.ai.main.BB.rate = 0.22,
                       base.ai.main.BW.rate = 0.22,
                       base.ai.main.WW.rate = 0.22,

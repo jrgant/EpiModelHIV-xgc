@@ -80,9 +80,6 @@ setBirthAttr_msm <- function(dat, at, nBirths) {
   # Disease status and related
   dat$attr$status[newIds] <- rep(0, nBirths)
 
-  dat$attr$inst.ai.class[newIds] <- sample(1:dat$param$num.inst.ai.classes,
-                                           nBirths, replace = TRUE)
-
   dat$attr$tt.traj[newIds[newB]] <- sample(1:4,
                                            length(newB), replace = TRUE,
                                            prob = dat$param$tt.traj.B.prob)

@@ -18,19 +18,18 @@ param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
   part.supp.up.slope = 0.25, b.rate = 0.001/7, birth.age = 18,
   URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 * 1.09, acute.rr = 6,
   circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.39, 0.21),
-  circ.prob = c(0.874, 0.918), num.inst.ai.classes = 1,
-  base.ai.main.BB.rate = 0.22, base.ai.main.BW.rate = 0.22,
-  base.ai.main.WW.rate = 0.22, base.ai.pers.BB.rate = 0.14,
-  base.ai.pers.BW.rate = 0.14, base.ai.pers.WW.rate = 0.14,
-  ai.scale.BB = 1.31, ai.scale.BW = 1, ai.scale.WW = 0.77,
-  cond.main.BB.prob = 0.21, cond.main.BW.prob = 0.21,
-  cond.main.WW.prob = 0.21, cond.pers.always.prob = 0.216,
-  cond.pers.BB.prob = 0.26, cond.pers.BW.prob = 0.26,
-  cond.pers.WW.prob = 0.26, cond.inst.always.prob = 0.326,
-  cond.inst.BB.prob = 0.27, cond.inst.BW.prob = 0.27,
-  cond.inst.WW.prob = 0.27, cond.always.prob.corr = 0.5,
-  cond.rr.BB = 0.71, cond.rr.BW = 1, cond.rr.WW = 1.6,
-  prep.start = Inf, prep.coverage = 0,
+  circ.prob = c(0.874, 0.918), base.ai.main.BB.rate = 0.22,
+  base.ai.main.BW.rate = 0.22, base.ai.main.WW.rate = 0.22,
+  base.ai.pers.BB.rate = 0.14, base.ai.pers.BW.rate = 0.14,
+  base.ai.pers.WW.rate = 0.14, ai.scale.BB = 1.31, ai.scale.BW = 1,
+  ai.scale.WW = 0.77, cond.main.BB.prob = 0.21,
+  cond.main.BW.prob = 0.21, cond.main.WW.prob = 0.21,
+  cond.pers.always.prob = 0.216, cond.pers.BB.prob = 0.26,
+  cond.pers.BW.prob = 0.26, cond.pers.WW.prob = 0.26,
+  cond.inst.always.prob = 0.326, cond.inst.BB.prob = 0.27,
+  cond.inst.BW.prob = 0.27, cond.inst.WW.prob = 0.27,
+  cond.always.prob.corr = 0.5, cond.rr.BB = 0.71, cond.rr.BW = 1,
+  cond.rr.WW = 1.6, prep.start = Inf, prep.coverage = 0,
   prep.adhr.dist = reallocate_pcp(reall = 0.784 - 0.784),
   prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
   (2^(-1/780)), prep.tst.int = 90, prep.risk.int = 182,
@@ -147,9 +146,6 @@ used properly (biological efficacy).}
 
 \item{circ.prob}{Probablity that a black/white new arrival in the population
 will be circumcised (vector of length 2).}
-
-\item{num.inst.ai.classes}{Number of quantiles into which men should be
-divided in determining their levels of one-off anal intercourse.}
 
 \item{base.ai.main.BB.rate}{Expected coital frequency in black-black main
 partnerships (acts per day).}
