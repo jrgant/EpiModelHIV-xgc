@@ -55,8 +55,7 @@ trans_msm <- function(dat, at) {
   acute.rr <- dat$param$acute.rr
 
   cond.eff <- dat$param$cond.eff
-  cond.fail.B <- dat$param$cond.fail.B
-  cond.fail.W <- dat$param$cond.fail.W
+  cond.fail.byG <- dat$param$cond.fail.byG
 
   circ.rr <- dat$param$circ.rr
   prep.hr <- dat$param$prep.class.hr
@@ -107,8 +106,8 @@ trans_msm <- function(dat, at) {
   not.UAI.W.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == "W"))
 
   condom.rr <- rep(NA, nrow(disc.ip))
-  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail.B)
-  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail.W)
+  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail.byG[1])
+  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail.byG[2])
 
   ip.tlo[not.UAI] <- ip.tlo[not.UAI] + log(condom.rr[not.UAI])
 
@@ -158,7 +157,7 @@ trans_msm <- function(dat, at) {
   rp.tprob <- UIAI.prob * 2.45^(rp.vl - 4.5)
 
   # Transform to log odds
-  rp.tlo <- log(rp.tprob/(1-rp.tprob))
+  rp.tlo <- log(rp.tprob/(1 - rp.tprob))
 
   # Circumcision
   rp.tlo[rp.circ == 1] <- rp.tlo[rp.circ == 1] + log(circ.rr)
@@ -170,8 +169,8 @@ trans_msm <- function(dat, at) {
   not.UAI.W.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == "W"))
 
   condom.rr <- rep(NA, nrow(disc.rp))
-  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail.B)
-  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail.W)
+  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail.byG[1])
+  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail.byG[2])
 
   rp.tlo[not.UAI] <- rp.tlo[not.UAI] + log(condom.rr[not.UAI])
 

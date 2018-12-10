@@ -77,10 +77,8 @@
 #'        negative insertive partner is circumcised.
 #' @param cond.eff Relative risk of HIV infection from anal sex when a condom is
 #'        used properly (biological efficacy).
-#' @param cond.fail.B Condom failure rates for HIV for Black MSM, as a reduction
-#'        in the cond.eff parameter.
-#' @param cond.fail.W Condom failure rates for HIV for White MSM, as a reduction
-#'        in the cond.eff parameter.
+#' @param cond.fail.B Condom failure rates for HIV for Black/White MSM, as a reduction
+#'        in the cond.eff parameter (vector of length 2).
 
 #' @param circ.byG.prob Probablity that a black/white new arrival in the population
 #'        will be circumcised (vector of length 2).
@@ -265,8 +263,7 @@ param_msm <- function(nwstats,
                       circ.rr = 0.4,
 
                       cond.eff = 0.95,
-                      cond.fail.B = 0.39,
-                      cond.fail.W = 0.21,
+                      cond.fail.byG = c(0.39, 0.21),
 
                       circ.byG.prob = c(0.874, 0.918),
 
