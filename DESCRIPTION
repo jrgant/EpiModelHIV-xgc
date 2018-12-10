@@ -28,7 +28,6 @@ Suggests:
     knitr,
     testthat
 VignetteBuilder: knitr
-LinkingTo: ergm
 RoxygenNote: 6.1.1
 LazyData: true
 Encoding: UTF-8

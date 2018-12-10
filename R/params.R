@@ -315,7 +315,7 @@ param_msm <- function(nwstats,
 
                       prep.tst.int = 90,
                       prep.risk.int = 182,
-                      prep.risk.reassess.method = "year", # inst, year
+                      prep.risk.reassess.method = "year",
 
                       rcomp.prob = 0.41,
                       rcomp.adh.groups = 2:3,
