@@ -8,8 +8,7 @@ control_msm(simno = 1, nsims = 1, ncores = 1, nsteps = 100,
   start = 1, initialize.FUN = initialize_msm, aging.FUN = aging_msm,
   deaths.FUN = deaths_msm, births.FUN = births_msm,
   test.FUN = test_msm, tx.FUN = tx_msm, progress.FUN = progress_msm,
-  vl.FUN = vl_msm, aiclass.FUN = NULL, roleclass.FUN = NULL,
-  resim_nets.FUN = simnet_msm, acts.FUN = acts_msm,
+  vl.FUN = vl_msm, resim_nets.FUN = simnet_msm, acts.FUN = acts_msm,
   condoms.FUN = condoms_msm, position.FUN = position_msm,
   prep.FUN = prep_msm, trans.FUN = trans_msm,
   stitrans.FUN = sti_trans, stirecov.FUN = sti_recov,
@@ -49,10 +48,6 @@ model.}
 \item{progress.FUN}{Module function for HIV disease progression.}
 
 \item{vl.FUN}{Module function for HIV viral load evolution.}
-
-\item{aiclass.FUN}{Module function for one-off AI risk class transitions.}
-
-\item{roleclass.FUN}{Module function for transitions in sexual roles.}
 
 \item{resim_nets.FUN}{Module function for network resimulation at each time
 step.}

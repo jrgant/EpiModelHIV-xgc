@@ -469,8 +469,6 @@ init_msm <- function(nwstats,
 #' @param prep.FUN Module function for PrEP initiation and utilization.
 #' @param progress.FUN Module function for HIV disease progression.
 #' @param vl.FUN Module function for HIV viral load evolution.
-#' @param aiclass.FUN Module function for one-off AI risk class transitions.
-#' @param roleclass.FUN Module function for transitions in sexual roles.
 #' @param resim_nets.FUN Module function for network resimulation at each time
 #'        step.
 #' @param acts.FUN Module function to simulate the number of sexual acts within
@@ -517,8 +515,6 @@ control_msm <- function(simno = 1,
                         tx.FUN = tx_msm,
                         progress.FUN = progress_msm,
                         vl.FUN = vl_msm,
-                        aiclass.FUN = NULL,
-                        roleclass.FUN = NULL,
                         resim_nets.FUN = simnet_msm,
                         acts.FUN = acts_msm,
                         condoms.FUN = condoms_msm,
