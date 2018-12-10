@@ -4,7 +4,7 @@
 \alias{param_msm}
 \title{Epidemic Model Parameters}
 \usage{
-param_msm(nwstats, race.method = 2, last.neg.test.B.int = 301,
+param_msm(nwstats, last.neg.test.B.int = 301,
   last.neg.test.W.int = 315, mean.test.B.int = 301,
   mean.test.W.int = 315, test.window.int = 21,
   tt.traj.B.prob = c(0.077, 0, 0.356, 0.567), tt.traj.W.prob = c(0.052,
@@ -57,9 +57,6 @@ param_msm(nwstats, race.method = 2, last.neg.test.B.int = 301,
 \arguments{
 \item{nwstats}{Target statistics for the network model. An object of class
 \code{nwstats} output from \code{\link{calc_nwstats_msm}}.}
-
-\item{race.method}{Number of races in the model, with options of 1 or 2. If
-1, then race-specific parameters will be averaged.}
 
 \item{last.neg.test.B.int}{Time range in days for last negative test for
 black men.}
