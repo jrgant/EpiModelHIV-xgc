@@ -195,7 +195,6 @@ riskhist_msm <- function(dat, at) {
   if (is.null(dat$attr$prep.ind.uai.mono)) {
     dat$attr$prep.ind.uai.mono <- rep(NA, n)
     dat$attr$prep.ind.uai.nmain <- rep(NA, n)
-    dat$attr$prep.ind.ai.sd <- rep(NA, n)
     dat$attr$prep.ind.sti <- rep(NA, n)
   }
 
@@ -232,17 +231,6 @@ riskhist_msm <- function(dat, at) {
   uai.nmain <- unique(c(el2$p1[el2$st1 == 0 & el2$uai > 0 & el2$ptype %in% 2:3],
                         el2$p2[el2$uai > 0 & el2$ptype %in% 2:3]))
   dat$attr$prep.ind.uai.nmain[uai.nmain] <- at
-
-  ## Condition 3a: AI within known serodiscordant partnerships
-  # TODO: remork AI in SD partners list
-  # el2.cond3 <- el2[el2$st1 == 1 & el2$ptype %in% 1:2, ]
-
-  el2.cond3 <- el2[which(el2$st1 == 1 &
-                         dat$attr$diag.status[el2$p1] == 1 &
-                         el2$ptype %in% 1:2), ]
-
-  ai.sd <- el2.cond3$p2
-  dat$attr$prep.ind.ai.sd[ai.sd] <- at
 
   ## Condition 4, any STI diagnosis
   idsDx <- which(rGC.tx == 1 | uGC.tx == 1 | rCT.tx == 1 | uCT.tx == 1)
