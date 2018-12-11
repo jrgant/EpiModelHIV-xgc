@@ -177,15 +177,17 @@
 #' @export
 #'
 param_msm <- function(nwstats,
+
+                      # Clinical
                       hiv.test.int = c(301, 315),
                       test.window.int = 21,
-
                       tt.traj.prob = list(c(0.077, 0.000, 0.356, 0.567),
                                           c(0.052, 0.000, 0.331, 0.617)),
                       tx.init.prob = c(0.092, 0.127),
                       tx.halt.prob = c(0.0102, 0.0071),
                       tx.reinit.prob = c(0.00066, 0.00291),
 
+                      # HIV natural history
                       max.time.off.tx.full.int = 520 * 7,
                       max.time.on.tx.part.int = 52 * 15 * 7,
                       max.time.off.tx.part.int = 520 * 7,
@@ -203,9 +205,11 @@ param_msm <- function(nwstats,
                       part.supp.down.slope = 0.25,
                       part.supp.up.slope = 0.25,
 
+                      # Demographic
                       b.rate = 1e-3 / 7,
                       birth.age = 18,
 
+                      # HIV transmission prob
                       URAI.prob = 0.0082 * 1.09,
                       UIAI.prob = 0.0031 * 1.09,
                       acute.rr = 6,
@@ -214,10 +218,10 @@ param_msm <- function(nwstats,
                       cond.fail = c(0.39, 0.21),
                       circ.prob = c(0.874, 0.918),
 
+                      # Behavioral
                       base.ai.main.rate = c(0.22, 0.22, 0.22),
                       base.ai.pers.rate = c(0.14, 0.14, 0.14),
                       ai.scale = c(1.31, 1, 0.77),
-
                       cond.main.prob = c(0.21, 0.21, 0.21),
                       cond.pers.always.prob = 0.216,
                       cond.pers.prob = c(0.26, 0.26, 0.26),
@@ -226,53 +230,47 @@ param_msm <- function(nwstats,
                       cond.always.prob.corr = 0.5,
                       cond.rr = c(0.71, 1, 1.6),
 
-                      prep.start = Inf,
-                      prep.coverage = 0,
-                      prep.adhr.dist = c(0.089, 0.127, 0.784),
-                      prep.class.hr = c(0.69, 0.19, 0.02),
-                      prep.discont.rate = 1 - (2^(-1/780)),
-
-                      prep.tst.int = 90,
-                      prep.risk.int = 182,
-
-                      rcomp.prob = 0.41,
-                      rcomp.adh.groups = 2:3,
-
+                      # STI epi
                       rgc.tprob = 0.428,
                       ugc.tprob = 0.350,
                       rct.tprob = 0.231,
                       uct.tprob = 0.205,
-
                       rgc.sympt.prob = 0.16,
                       ugc.sympt.prob = 0.90,
                       rct.sympt.prob = 0.14,
                       uct.sympt.prob = 0.58,
-
                       rgc.ntx.int = 205.8,
                       ugc.ntx.int = 205.8,
                       gc.tx.int = 2 * 7,
-
                       rct.ntx.int = 265.1,
                       uct.ntx.int = 265.1,
                       ct.tx.int = 2 * 7,
-
                       gc.sympt.prob.tx = c(0.86, 0.96),
                       ct.sympt.prob.tx = c(0.72, 0.85),
                       gc.asympt.prob.tx = c(0.10, 0.19),
                       ct.asympt.prob.tx = c(0.05, 0.10),
-
-                      prep.sti.screen.int = 182,
-                      prep.sti.prob.tx = 1,
-                      prep.continue.stand.tx = TRUE,
-
                       sti.cond.eff = 0.95,
                       sti.cond.fail = c(0.39, 0.21),
-
                       hiv.rgc.rr = 2.78,
                       hiv.ugc.rr = 1.73,
                       hiv.rct.rr = 2.78,
                       hiv.uct.rr = 1.73,
                       hiv.dual.rr = 0.2,
+
+                      # PrEP
+                      riskh.start = Inf,
+                      prep.start = Inf,
+                      prep.start.prob = 0.2,
+                      prep.adhr.dist = c(0.089, 0.127, 0.784),
+                      prep.class.hr = c(0.69, 0.19, 0.02),
+                      prep.discont.rate = 1 - (2^(-1/780)),
+                      prep.tst.int = 90,
+                      prep.risk.int = 182,
+                      rcomp.prob = 0.41,
+                      rcomp.adh.groups = 2:3,
+                      prep.sti.screen.int = 182,
+                      prep.sti.prob.tx = 1,
+                      prep.continue.stand.tx = TRUE,
                       ...) {
 
   p <- get_args(formal.args = formals(sys.function()),
