@@ -589,7 +589,6 @@ init_status_msm <- function(dat) {
   dat$attr$diag.time <- diag.time
   dat$attr$last.neg.test <- last.neg.test
   dat$attr$tx.status <- tx.status
-  dat$attr$tx.init.time <- tx.init.time
   dat$attr$cum.time.on.tx <- cum.time.on.tx
   dat$attr$cum.time.off.tx <- cum.time.off.tx
   dat$attr$infector <- infector

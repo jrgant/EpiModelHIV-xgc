@@ -26,8 +26,6 @@
 #'
 tx_msm <- function(dat, at) {
 
-  ## Variables
-
   # Attributes
   race <- dat$attr$race
   status <- dat$attr$status
@@ -35,6 +33,7 @@ tx_msm <- function(dat, at) {
   diag.status <- dat$attr$diag.status
   tt.traj <- dat$attr$tt.traj
   cum.time.on.tx <- dat$attr$cum.time.on.tx
+  cum.time.off.tx <- dat$attr$cum.time.off.tx
   stage <- dat$attr$stage
 
   # Parameters
@@ -42,61 +41,39 @@ tx_msm <- function(dat, at) {
   tx.halt.prob <- dat$param$tx.halt.prob
   tx.reinit.prob <- dat$param$tx.reinit.prob
 
-
   ## Initiation
-  tx.init.elig.B <- which(race == "B" & status == 1 &
-                          tx.status == 0 & diag.status == 1 &
-                          tt.traj %in% 3:4 & cum.time.on.tx == 0 &
-                          stage != 4)
-  tx.init.B <- tx.init.elig.B[rbinom(length(tx.init.elig.B), 1,
-                                     tx.init.prob[1]) == 1]
-
-  tx.init.elig.W <- which(race == "W" & status == 1 &
-                          tx.status == 0 & diag.status == 1 &
-                          tt.traj %in% 3:4 & cum.time.on.tx == 0 &
-                          stage != 4)
-  tx.init.W <- tx.init.elig.W[rbinom(length(tx.init.elig.W), 1,
-                                     tx.init.prob[2]) == 1]
-
-  tx.init <- c(tx.init.B, tx.init.W)
-
-  dat$attr$tx.status[tx.init] <- 1
-  dat$attr$tx.init.time[tx.init] <- at
-
+  tx.init.elig <- which(status == 1 &
+                        tx.status == 0 &
+                        diag.status == 1 &
+                        tt.traj %in% 3:4 &
+                        cum.time.on.tx == 0 &
+                        stage != 4)
+  rates <- tx.init.prob[as.numeric(as.factor(race[tx.init.elig]))]
+  tx.init <- tx.init.elig[rbinom(length(tx.init.elig), 1, rates) == 1]
 
   ## Halting
-  tx.halt.elig.B <- which(race == "B" & tx.status == 1)
-  tx.halt.B <- tx.halt.elig.B[rbinom(length(tx.halt.elig.B), 1,
-                                     tx.halt.prob[1]) == 1]
-
-  tx.halt.elig.W <- which(race == "W" & tx.status == 1)
-  tx.halt.W <- tx.halt.elig.W[rbinom(length(tx.halt.elig.W),
-                                     1, tx.halt.prob[2]) == 1]
-  tx.halt <- c(tx.halt.B, tx.halt.W)
-  dat$attr$tx.status[tx.halt] <- 0
-
+  tx.halt.elig <- which(tx.status == 1)
+  rates <- tx.halt.prob[as.numeric(as.factor(race[tx.halt.elig]))]
+  tx.halt <- tx.halt.elig[rbinom(length(tx.halt.elig), 1, rates) == 1]
 
   ## Restarting
-  tx.reinit.elig.B <- which(race == "B" & tx.status == 0 &
-                            cum.time.on.tx > 0 & stage != 4)
-  tx.reinit.B <- tx.reinit.elig.B[rbinom(length(tx.reinit.elig.B),
-                                         1, tx.reinit.prob[1]) == 1]
+  tx.reinit.elig <- which(tx.status == 0 &
+                          cum.time.on.tx > 0 &
+                          stage != 4)
+  rates <- tx.reinit.prob[as.numeric(as.factor(race[tx.reinit.elig]))]
+  tx.reinit <- tx.reinit.elig[rbinom(length(tx.reinit.elig), 1, rates) == 1]
 
-  tx.reinit.elig.W <- which(race == "W" & tx.status == 0 &
-                            cum.time.on.tx > 0 & stage != 4)
-  tx.reinit.W <- tx.reinit.elig.W[rbinom(length(tx.reinit.elig.W),
-                                         1, tx.reinit.prob[2]) == 1]
+  ## Update treatment time
+  cum.time.on.tx[which(tx.status == 1)] <- cum.time.on.tx[which(tx.status == 1)] + 1
+  cum.time.off.tx[which(tx.status == 0)] <- cum.time.off.tx[which(tx.status == 0)] + 1
 
-  tx.reinit <- c(tx.reinit.B, tx.reinit.W)
+  ## Update Attributes
+  dat$attr$tx.status[tx.init] <- 1
+  dat$attr$tx.status[tx.halt] <- 0
   dat$attr$tx.status[tx.reinit] <- 1
 
-
-  ## Other output
-  dat$attr$cum.time.on.tx <- dat$attr$cum.time.on.tx +
-                             ((dat$attr$tx.status == 1) %in% TRUE)
-  dat$attr$cum.time.off.tx <- dat$attr$cum.time.off.tx +
-                              ((dat$attr$tx.status == 0) %in% TRUE)
-
+  dat$attr$cum.time.on.tx <- cum.time.on.tx
+  dat$attr$cum.time.off.tx <- cum.time.off.tx
 
   return(dat)
 }
