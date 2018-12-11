@@ -55,7 +55,7 @@ or \code{"mpi"} for multi-node MPI threads.}
 with the default function of \code{\link{prevalence_het}}.}
 
 \item{verbose.FUN}{Module to print simulation progress to screen, with the
-default function of \code{\link{verbose_het}}.}
+default function of \code{verbose.net}.}
 
 \item{module.order}{A character vector of module names that lists modules the
 order in which they should be evaluated within each time step. If

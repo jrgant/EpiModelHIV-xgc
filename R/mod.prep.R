@@ -46,8 +46,6 @@ prep_msm <- function(dat, at) {
 
   prep.start.prob <- dat$param$prep.start.prob
   prep.adhr.dist <- dat$param$prep.adhr.dist
-
-  prep.risk.reassess.method <- dat$param$prep.risk.reassess.method
   prep.discont.rate <- dat$param$prep.discont.rate
 
 
@@ -74,21 +72,12 @@ prep_msm <- function(dat, at) {
   ## Stoppage ------------------------------------------------------------------
 
   # Indication lapse
-  # Rules = None, instant, yearly (CDC guidelines)
-  if (prep.risk.reassess.method == "none") {
-    idsStpInd <- NULL
-  } else if (prep.risk.reassess.method == "inst") {
-    idsRiskAssess <- which(active == 1 & prepStat == 1 )
-    prepLastRisk[idsRiskAssess] <- at
-    idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
-  } else if (prep.risk.reassess.method == "year") {
-    idsRiskAssess <- which(active == 1 &
-                           prepStat == 1  &
-                           lnt == at &
-                           (at - prepLastRisk) >= 52)
-    prepLastRisk[idsRiskAssess] <- at
-    idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
-  }
+  idsRiskAssess <- which(active == 1 &
+                         prepStat == 1  &
+                         lnt == at &
+                         (at - prepLastRisk) >= 52)
+  prepLastRisk[idsRiskAssess] <- at
+  idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
 
   # Random discontinuation
   idsEligStpRand <- which(active == 1 & prepStat == 1)

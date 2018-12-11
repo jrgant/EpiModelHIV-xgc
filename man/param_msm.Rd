@@ -24,22 +24,20 @@ param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
   cond.pers.prob = c(0.26, 0.26, 0.26), cond.inst.always.prob = 0.326,
   cond.inst.prob = c(0.27, 0.27, 0.27), cond.always.prob.corr = 0.5,
   cond.rr = c(0.71, 1, 1.6), prep.start = Inf, prep.coverage = 0,
-  prep.adhr.dist = reallocate_pcp(reall = 0.784 - 0.784),
-  prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
-  (2^(-1/780)), prep.tst.int = 90, prep.risk.int = 182,
-  prep.risk.reassess.method = "year", rcomp.prob = 0.41,
-  rcomp.adh.groups = 2:3, rgc.tprob = 0.428, ugc.tprob = 0.35,
-  rct.tprob = 0.231, uct.tprob = 0.205, rgc.sympt.prob = 0.16,
-  ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14, uct.sympt.prob = 0.58,
-  rgc.ntx.int = 205.8, ugc.ntx.int = 205.8, gc.tx.int = 2 * 7,
-  rct.ntx.int = 265.1, uct.ntx.int = 265.1, ct.tx.int = 2 * 7,
-  gc.sympt.prob.tx = c(0.86, 0.96), ct.sympt.prob.tx = c(0.72, 0.85),
-  gc.asympt.prob.tx = c(0.1, 0.19), ct.asympt.prob.tx = c(0.05, 0.1),
-  prep.sti.screen.int = 182, prep.sti.prob.tx = 1,
-  prep.continue.stand.tx = TRUE, sti.cond.eff = 0.95,
-  sti.cond.fail = c(0.39, 0.21), hiv.rgc.rr = 2.78,
-  hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78, hiv.uct.rr = 1.73,
-  hiv.dual.rr = 0.2, ...)
+  prep.adhr.dist = c(0.089, 0.127, 0.784), prep.class.hr = c(0.69,
+  0.19, 0.02), prep.discont.rate = 1 - (2^(-1/780)), prep.tst.int = 90,
+  prep.risk.int = 182, rcomp.prob = 0.41, rcomp.adh.groups = 2:3,
+  rgc.tprob = 0.428, ugc.tprob = 0.35, rct.tprob = 0.231,
+  uct.tprob = 0.205, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9,
+  rct.sympt.prob = 0.14, uct.sympt.prob = 0.58, rgc.ntx.int = 205.8,
+  ugc.ntx.int = 205.8, gc.tx.int = 2 * 7, rct.ntx.int = 265.1,
+  uct.ntx.int = 265.1, ct.tx.int = 2 * 7, gc.sympt.prob.tx = c(0.86,
+  0.96), ct.sympt.prob.tx = c(0.72, 0.85), gc.asympt.prob.tx = c(0.1,
+  0.19), ct.asympt.prob.tx = c(0.05, 0.1), prep.sti.screen.int = 182,
+  prep.sti.prob.tx = 1, prep.continue.stand.tx = TRUE,
+  sti.cond.eff = 0.95, sti.cond.fail = c(0.39, 0.21),
+  hiv.rgc.rr = 2.78, hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78,
+  hiv.uct.rr = 1.73, hiv.dual.rr = 0.2, ...)
 }
 \arguments{
 \item{nwstats}{Target statistics for the network model. An object of class
@@ -186,11 +184,6 @@ overrides the mean testing interval parameters.}
 
 \item{prep.risk.int}{Time window for assessment of risk eligibility for PrEP
 in days.}
-
-\item{prep.risk.reassess.method}{Method for determining risk-based discontinuation
-of PrEP, with \code{"none"} for no discontinuation, \code{"inst"} for
-reassessment every time step, and \code{"year"} for reassessment at yearly
-HIV diagnostic testing visits.}
 
 \item{rcomp.prob}{Level of risk compensation from 0 to 1, where 0 is no risk
 compensation, 0.5 is a 50% reduction in the probability of condom use

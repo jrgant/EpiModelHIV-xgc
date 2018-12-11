@@ -112,10 +112,6 @@
 #'        overrides the mean testing interval parameters.
 #' @param prep.risk.int Time window for assessment of risk eligibility for PrEP
 #'        in days.
-#' @param prep.risk.reassess.method Method for determining risk-based discontinuation
-#'        of PrEP, with \code{"none"} for no discontinuation, \code{"inst"} for
-#'        reassessment every time step, and \code{"year"} for reassessment at yearly
-#'        HIV diagnostic testing visits.
 #'
 #' @param rcomp.prob Level of risk compensation from 0 to 1, where 0 is no risk
 #'        compensation, 0.5 is a 50% reduction in the probability of condom use
@@ -232,13 +228,12 @@ param_msm <- function(nwstats,
 
                       prep.start = Inf,
                       prep.coverage = 0,
-                      prep.adhr.dist = reallocate_pcp(reall = 0.784 - 0.784),
+                      prep.adhr.dist = c(0.089, 0.127, 0.784),
                       prep.class.hr = c(0.69, 0.19, 0.02),
                       prep.discont.rate = 1 - (2^(-1/780)),
 
                       prep.tst.int = 90,
                       prep.risk.int = 182,
-                      prep.risk.reassess.method = "year",
 
                       rcomp.prob = 0.41,
                       rcomp.adh.groups = 2:3,
