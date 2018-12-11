@@ -446,9 +446,10 @@ control_msm <- function(simno = 1,
   p$bi.mods <- bi.mods
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
-  p$save.other = c("attr", "temp", "el", "p")
+  p$save.other <- c("attr", "temp", "el", "p")
 
-  p$save.network = FALSE
+  p$save.network <- FALSE
+  p$verbose.int <- 1
 
   class(p) <- "control.net"
   return(p)

@@ -28,14 +28,13 @@ control <- control_msm(simno = 1,
                        nsims = 1,
                        ncores = 1)
 
-# sim <- netsim(est, param, init, control)
+sim <- netsim(est, param, init, control)
 
 # df <- as.data.frame(sim)
 # names(df)
 
 
 # Testing/Timing ------------------------------------------------------
-
 
 dat <- initialize_msm(est, param, init, control, s = 1)
 
@@ -48,7 +47,6 @@ for (at in 2:104) {
   dat <- progress_msm(dat, at)
   dat <- vl_msm(dat, at)
   dat <- simnet_msm(dat, at)
-  dat <- disclose_msm(dat, at)
   dat <- acts_msm(dat, at)
   dat <- condoms_msm(dat, at)
   dat <- position_msm(dat, at)
