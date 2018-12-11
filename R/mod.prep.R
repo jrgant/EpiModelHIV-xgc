@@ -24,75 +24,73 @@ prep_msm <- function(dat, at) {
     return(dat)
   }
 
-  # Pull Data ---------------------------------------------------------------
 
-  # Attributes
+  # Attributes --------------------------------------------------------------
+
+  # Core Attributes
   active <- dat$attr$active
   status <- dat$attr$status
   diag.status <- dat$attr$diag.status
   lnt <- dat$attr$last.neg.test
 
+  # PrEP Attributes
   prepElig <- dat$attr$prepElig
-  prepIndic <- dat$attr$prepIndic
   prepStat <- dat$attr$prepStat
   prepClass <- dat$attr$prepClass
   prepLastRisk <- dat$attr$prepLastRisk
   prepStartTime <- dat$attr$prepStartTime
   prepLastStiScreen <- dat$attr$prepLastStiScreen
 
-  # Parameters
-  prep.coverage <- dat$param$prep.coverage
+
+  # Parameters --------------------------------------------------------------
+
+  prep.start.prob <- dat$param$prep.start.prob
   prep.adhr.dist <- dat$param$prep.adhr.dist
-  prep.discont.rate <- dat$param$prep.discont.rate
+
   prep.risk.reassess.method <- dat$param$prep.risk.reassess.method
+  prep.discont.rate <- dat$param$prep.discont.rate
 
 
-  ## Eligibility ---------------------------------------------------------------
+  # Indications -------------------------------------------------------------
 
-  # Base eligibility
-  idsEligStart <- which(active == 1 &
-                        status == 0 &
-                        prepStat == 0 &
-                        lnt == at)
-
-  # Core eligiblity
   ind1 <- dat$attr$prep.ind.uai.mono
   ind2 <- dat$attr$prep.ind.uai.nmain
-  ind3 <- dat$attr$prep.ind.ai.sd
-  ind4 <- dat$attr$prep.ind.sti
+  ind3 <- dat$attr$prep.ind.sti
 
   twind <- at - dat$param$prep.risk.int
-  idsIndic <- which(ind1 >= twind | ind2 >= twind | ind3 >= twind | ind4 >= twind)
-  prepIndic[idsIndic] <- 1
 
-  idsEligStart <- intersect(idsIndic, idsEligStart)
-  prepElig[idsEligStart] <- 1
+  # No indications in window
+  idsNoIndic <- which((ind1 < twind | is.na(ind1)) &
+                      (ind2 < twind | is.na(ind2)) &
+                      (ind3 < twind | is.na(ind3)))
+
+  # Indications in window
+  idsIndic <- which(ind1 >= twind | ind2 >= twind | ind3 >= twind)
+
+  # Set eligibility to 0 if no indications
+  prepElig[idsNoIndic] <- 0
 
 
   ## Stoppage ------------------------------------------------------------------
 
-  # No indications
-  idsNoIndic <- which((ind1 < twind | is.na(ind1)) &
-                      (ind2 < twind | is.na(ind2)) &
-                      (ind3 < twind | is.na(ind3)) &
-                      (ind4 < twind | is.na(ind4)))
-  prepIndic[idsNoIndic] <- 0
-
-  # Risk reassessment rules
+  # Indication lapse
+  # Rules = None, instant, yearly (CDC guidelines)
   if (prep.risk.reassess.method == "none") {
     idsStpInd <- NULL
   } else if (prep.risk.reassess.method == "inst") {
-    idsRiskAssess <- which(active == 1 & prepStat == 1)
+    idsRiskAssess <- which(active == 1 & prepStat == 1 )
     prepLastRisk[idsRiskAssess] <- at
     idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
   } else if (prep.risk.reassess.method == "year") {
-    idsRiskAssess <- which(active == 1 & prepStat == 1 & lnt == at &
-                             (at - prepLastRisk) >= 52)
+    idsRiskAssess <- which(active == 1 &
+                           prepStat == 1  &
+                           lnt == at &
+                           (at - prepLastRisk) >= 52)
     prepLastRisk[idsRiskAssess] <- at
     idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
   }
 
-  # Random (memoryless) discontinuation
+  # Random discontinuation
   idsEligStpRand <- which(active == 1 & prepStat == 1)
   vecStpRand <- rbinom(length(idsEligStpRand), 1, prep.discont.rate)
   idsStpRand <- idsEligStpRand[which(vecStpRand == 1)]
@@ -105,7 +103,10 @@ prep_msm <- function(dat, at) {
 
   # Reset PrEP status
   idsStp <- c(idsStpInd, idsStpRand, idsStpDx, idsStpDth)
+
+  # Update attributes for stoppers
   prepStat[idsStp] <- 0
+  prepElig[idsStp] <- 0
   prepLastRisk[idsStp] <- NA
   prepStartTime[idsStp] <- NA
   prepLastStiScreen[idsStp] <- NA
@@ -113,29 +114,29 @@ prep_msm <- function(dat, at) {
 
   ## Initiation ----------------------------------------------------------------
 
-  prepCov <- sum(prepStat == 1, na.rm = TRUE)/sum(prepElig == 1, na.rm = TRUE)
-  prepCov <- ifelse(is.nan(prepCov), 0, prepCov)
+  ## Eligibility ##
 
-  idsEligSt <- which(prepElig == 1)
-  nEligSt <- length(idsEligSt)
+  # Indications to start either formulation
+  idsEligStart <- which(active == 1 &
+                          status == 0 &
+                          prepStat == 0 &
+                          lnt == at)
+  idsEligStart <- intersect(idsIndic, idsEligStart)
+  prepElig[idsEligStart] <- 1
 
-  nStart <- max(0, min(nEligSt, round((prep.coverage - prepCov) *
-                                        sum(prepElig == 1, na.rm = TRUE))))
-  idsStart <- NULL
-  if (nStart > 0) {
-    idsStart <- ssample(idsEligSt, nStart)
-  }
+  vecStart <- rbinom(length(idsEligStart), 1, prep.start.prob)
+  idsStart <- idsEligStart[which(vecStart == 1)]
 
-  # Attributes
+  # Set attributes for starters
   if (length(idsStart) > 0) {
     prepStat[idsStart] <- 1
     prepStartTime[idsStart] <- at
     prepLastRisk[idsStart] <- at
 
-    # PrEP class
+    # PrEP adherence class
     needPC <- which(is.na(prepClass[idsStart]))
-    prepClass[idsStart[needPC]] <- sample(x = 0:3, size = length(needPC),
-                                          replace = TRUE, prob = prep.adhr.dist)
+    prepClass[idsStart[needPC]] <- sample(x = 1:3, size = length(needPC),
+                                              replace = TRUE, prob = prep.adhr.dist)
   }
 
 
@@ -143,10 +144,10 @@ prep_msm <- function(dat, at) {
 
   # Attributes
   dat$attr$prepElig <- prepElig
-  dat$attr$prepIndic <- prepIndic
   dat$attr$prepStat <- prepStat
-  dat$attr$prepStartTime <- prepStartTime
   dat$attr$prepClass <- prepClass
+
+  dat$attr$prepStartTime <- prepStartTime
   dat$attr$prepLastRisk <- prepLastRisk
   dat$attr$prepLastStiScreen <- prepLastStiScreen
 
