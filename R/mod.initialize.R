@@ -37,7 +37,7 @@ initialize_msm <- function(x, param, init, control, s) {
   ## Network simulation ##
   nw <- list()
   for (i in 1:3) {
-    nw[[i]] <- simulate(x[[i]]$fit, control = control.simulate.ergm(MCMC.burnin = 2e6))
+    nw[[i]] <- simulate(x[[i]]$fit, basis = x[[i]]$fit$newnetwork)
   }
 
   ## Build initial edgelists
