@@ -38,22 +38,13 @@ test_msm <- function(dat, at) {
   tsincelntst <- at - dat$attr$last.neg.test
   tsincelntst[is.na(tsincelntst)] <- at - dat$attr$arrival.time[is.na(tsincelntst)]
 
-  ## Process
-  elig.B <- which(race == "B" &
-                  tt.traj != 1 &
-                  (diag.status == 0 | is.na(diag.status)) &
-                  prepStat == 0)
-  rates.B <- rep(1/hiv.test.int[1], length(elig.B))
-  tst.B <- elig.B[rbinom(length(elig.B), 1, rates.B) == 1]
-
-  elig.W <- which(race == "W" &
-                  tt.traj != 1 &
-                  (diag.status == 0 | is.na(diag.status)) &
-                  prepStat == 0)
-  rates.W <- rep(1/hiv.test.int[2], length(elig.W))
-  tst.W <- elig.W[rbinom(length(elig.W), 1, rates.W) == 1]
-  tst.nprep <- c(tst.B, tst.W)
-
+  # General interval testing
+  elig <- which(tt.traj != 1 &
+                (diag.status == 0 | is.na(diag.status)) &
+                prepStat == 0)
+  # rates by race
+  rates <- 1/hiv.test.int[as.numeric(as.factor(race[elig]))]
+  tst.nprep <- elig[rbinom(length(elig), 1, rates) == 1]
 
   # PrEP testing
   tst.prep <- which((diag.status == 0 | is.na(diag.status)) &
