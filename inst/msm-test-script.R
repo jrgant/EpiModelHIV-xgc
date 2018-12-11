@@ -26,26 +26,7 @@ init <- init_msm(nwstats = st,
 control <- control_msm(simno = 1,
                        nsteps = 200,
                        nsims = 1,
-                       ncores = 1,
-                       initialize.FUN = initialize_msm,
-                       aging.FUN = aging_msm,
-                       deaths.FUN = deaths_msm,
-                       births.FUN = births_msm,
-                       test.FUN = test_msm,
-                       tx.FUN = tx_msm,
-                       progress.FUN = progress_msm,
-                       vl.FUN = vl_msm,
-                       resim_nets.FUN = simnet_msm,
-                       disclose.FUN = disclose_msm,
-                       acts.FUN = acts_msm,
-                       condoms.FUN = condoms_msm,
-                       position.FUN = position_msm,
-                       prep.FUN = prep_msm,
-                       trans.FUN = trans_msm,
-                       stitrans.FUN = sti_trans,
-                       stirecov.FUN = sti_recov,
-                       stitx.FUN = sti_tx,
-                       prev.FUN = prevalence_msm)
+                       ncores = 1)
 
 # sim <- netsim(est, param, init, control)
 

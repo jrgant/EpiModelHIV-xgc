@@ -270,7 +270,6 @@ param_msm <- function(nwstats,
                       rcomp.adh.groups = 2:3,
                       prep.sti.screen.int = 182,
                       prep.sti.prob.tx = 1,
-                      prep.continue.stand.tx = TRUE,
                       ...) {
 
   p <- get_args(formal.args = formals(sys.function()),

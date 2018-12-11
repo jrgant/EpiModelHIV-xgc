@@ -447,26 +447,18 @@ sti_tx <- function(dat, at) {
   prep.sti.screen.int <- dat$param$prep.sti.screen.int
   prep.sti.prob.tx <- dat$param$prep.sti.prob.tx
 
-  prep.cont.stand.tx <- dat$param$prep.continue.stand.tx
-  if (prep.cont.stand.tx == TRUE) {
-    prep.stand.tx.grp <- 0:1
-  } else {
-    prep.stand.tx.grp <- 0
-  }
-
+  # Attributes
   race <- dat$attr$race
 
   ## Symptomatic GC Treatment ##
   idsRGC_tx_sympt <- which(dat$attr$rGC == 1 &
                            dat$attr$rGC.infTime < at &
                            dat$attr$rGC.sympt == 1 &
-                           is.na(dat$attr$rGC.tx) &
-                           dat$attr$prepStat %in% prep.stand.tx.grp)
+                           is.na(dat$attr$rGC.tx))
   idsUGC_tx_sympt <- which(dat$attr$uGC == 1 &
                            dat$attr$uGC.infTime < at &
                            dat$attr$uGC.sympt == 1 &
-                           is.na(dat$attr$uGC.tx) &
-                           dat$attr$prepStat %in% prep.stand.tx.grp)
+                           is.na(dat$attr$uGC.tx))
 
   # Subset by race
   idsRGC_tx_sympt_B <- intersect(idsRGC_tx_sympt, which(race == "B"))
@@ -494,12 +486,12 @@ sti_tx <- function(dat, at) {
                             dat$attr$rGC.infTime < at &
                             dat$attr$rGC.sympt == 0 &
                             is.na(dat$attr$rGC.tx) &
-                            dat$attr$prepStat %in% prep.stand.tx.grp)
+                            dat$attr$prepStat == 0)
   idsUGC_tx_asympt <- which(dat$attr$uGC == 1 &
                             dat$attr$uGC.infTime < at &
                             dat$attr$uGC.sympt == 0 &
                             is.na(dat$attr$uGC.tx) &
-                            dat$attr$prepStat %in% prep.stand.tx.grp)
+                            dat$attr$prepStat == 0)
 
   # Subset by race
   idsRGC_tx_asympt_B <- intersect(idsRGC_tx_asympt, which(race == "B"))
@@ -537,13 +529,11 @@ sti_tx <- function(dat, at) {
   idsRCT_tx_sympt <- which(dat$attr$rCT == 1 &
                            dat$attr$rCT.infTime < at &
                            dat$attr$rCT.sympt == 1 &
-                           is.na(dat$attr$rCT.tx) &
-                           dat$attr$prepStat %in% prep.stand.tx.grp)
+                           is.na(dat$attr$rCT.tx))
   idsUCT_tx_sympt <- which(dat$attr$uCT == 1 &
                            dat$attr$uCT.infTime < at &
                            dat$attr$uCT.sympt == 1 &
-                           is.na(dat$attr$uCT.tx) &
-                           dat$attr$prepStat %in% prep.stand.tx.grp)
+                           is.na(dat$attr$uCT.tx))
 
   # Subset by race
   idsRCT_tx_sympt_B <- intersect(idsRCT_tx_sympt, which(race == "B"))
