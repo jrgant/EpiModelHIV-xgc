@@ -8,8 +8,10 @@ devtools::load_all("~/Dropbox/Dev/EpiModelHIV/EpiModelHIV-p")
 scr.dir <- "~/Dropbox/Projects/injectable-prep/"
 load(file.path(scr.dir, "est/nwstats.rda"))
 load(file.path(scr.dir, "est/fit.rda"))
+epistats <- readRDS("~/Dropbox/Projects/NetParams/data/artnet.EpiStats.Atlanta.rda")
 
 param <- param_msm(nwstats = st,
+                   acts.model = epistats$act.rates,
                    riskh.start = 2,
                    prep.start = 50,
                    prep.start.prob = 0.2,
@@ -36,7 +38,9 @@ sim <- netsim(est, param, init, control)
 
 # Testing/Timing ------------------------------------------------------
 
-dat <- initialize_msm(est, param, init, control, s = 1)
+# dtemp <- dat
+dat <- dtemp
+# dat <- initialize_msm(est, param, init, control, s = 1)
 
 for (at in 2:104) {
   dat <- aging_msm(dat, at)

@@ -18,25 +18,24 @@ param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
   b.rate = 0.001/7, birth.age = 18, URAI.prob = 0.0082 * 1.09,
   UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
   cond.eff = 0.95, cond.fail = c(0.39, 0.21), circ.prob = c(0.874,
-  0.918), base.ai.main.rate = c(0.22, 0.22, 0.22),
-  base.ai.pers.rate = c(0.14, 0.14, 0.14), ai.scale = c(1.31, 1, 0.77),
-  cond.main.prob = c(0.21, 0.21, 0.21), cond.pers.always.prob = 0.216,
-  cond.pers.prob = c(0.26, 0.26, 0.26), cond.inst.always.prob = 0.326,
-  cond.inst.prob = c(0.27, 0.27, 0.27), cond.always.prob.corr = 0.5,
-  cond.rr = c(0.71, 1, 1.6), rgc.tprob = 0.428, ugc.tprob = 0.35,
-  rct.tprob = 0.231, uct.tprob = 0.205, rgc.sympt.prob = 0.16,
-  ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14, uct.sympt.prob = 0.58,
-  rgc.ntx.int = 205.8, ugc.ntx.int = 205.8, gc.tx.int = 2 * 7,
-  rct.ntx.int = 265.1, uct.ntx.int = 265.1, ct.tx.int = 2 * 7,
-  gc.sympt.prob.tx = c(0.86, 0.96), ct.sympt.prob.tx = c(0.72, 0.85),
-  gc.asympt.prob.tx = c(0.1, 0.19), ct.asympt.prob.tx = c(0.05, 0.1),
-  sti.cond.eff = 0.95, sti.cond.fail = c(0.39, 0.21),
-  hiv.rgc.rr = 2.78, hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78,
-  hiv.uct.rr = 1.73, hiv.dual.rr = 0.2, riskh.start = Inf,
-  prep.start = Inf, prep.start.prob = 0.2, prep.adhr.dist = c(0.089,
-  0.127, 0.784), prep.class.hr = c(0.69, 0.19, 0.02),
-  prep.discont.rate = 1 - (2^(-1/780)), prep.tst.int = 90,
-  prep.risk.int = 182, rcomp.prob = 0.41, rcomp.adh.groups = 2:3,
+  0.918), acts.model = epistats$act.rates, cond.main.prob = c(0.21,
+  0.21, 0.21), cond.pers.always.prob = 0.216, cond.pers.prob = c(0.26,
+  0.26, 0.26), cond.inst.always.prob = 0.326, cond.inst.prob = c(0.27,
+  0.27, 0.27), cond.always.prob.corr = 0.5, cond.rr = c(0.71, 1, 1.6),
+  rgc.tprob = 0.428, ugc.tprob = 0.35, rct.tprob = 0.231,
+  uct.tprob = 0.205, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9,
+  rct.sympt.prob = 0.14, uct.sympt.prob = 0.58, rgc.ntx.int = 205.8,
+  ugc.ntx.int = 205.8, gc.tx.int = 2 * 7, rct.ntx.int = 265.1,
+  uct.ntx.int = 265.1, ct.tx.int = 2 * 7, gc.sympt.prob.tx = c(0.86,
+  0.96), ct.sympt.prob.tx = c(0.72, 0.85), gc.asympt.prob.tx = c(0.1,
+  0.19), ct.asympt.prob.tx = c(0.05, 0.1), sti.cond.eff = 0.95,
+  sti.cond.fail = c(0.39, 0.21), hiv.rgc.rr = 2.78,
+  hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78, hiv.uct.rr = 1.73,
+  hiv.dual.rr = 0.2, riskh.start = Inf, prep.start = Inf,
+  prep.start.prob = 0.2, prep.adhr.dist = c(0.089, 0.127, 0.784),
+  prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
+  (2^(-1/780)), prep.tst.int = 90, prep.risk.int = 182,
+  rcomp.prob = 0.41, rcomp.adh.groups = 2:3,
   prep.sti.screen.int = 182, prep.sti.prob.tx = 1, ...)
 }
 \arguments{
@@ -138,13 +137,8 @@ in the cond.eff parameter (vector of length 2).}
 \item{circ.prob}{Probablity that a black/white new arrival in the population
 will be circumcised (vector of length 2).}
 
-\item{base.ai.main.rate}{Expected coital frequency in BB/BW/WW main
-partnerships per day (vector of length 3).}
-
-\item{base.ai.pers.rate}{Expected coital frequency in BB/BW/WW casual
-partnerships per day (vector of length 3).}
-
-\item{ai.scale}{Relative scaler for all BB/BW/WW act rates (vector of length 3).}
+\item{acts.model}{Statistical model object for the rate of acts per partnership
+per year (then transformed into rate per week).}
 
 \item{cond.main.prob}{Per-act probability of condom use in a BB/BW/WW main
 partnerships (vector of length 3).}
@@ -230,7 +224,11 @@ a reduction in the cond.eff parameter (vector of length 2).}
 \item{hiv.dual.rr}{Additive proportional risk, from 0 to 1, for HIV infection
 given dual infection with both gonorrhea and chlamydia.}
 
+\item{riskh.start}{Time step at which behavioral risk history assessment occurs.}
+
 \item{prep.start}{Time step at which the PrEP intervention should start.}
+
+\item{prep.start.prob}{Probability of starting PrEP given current indications.}
 
 \item{prep.adhr.dist}{Proportion of men who are low, medium, and high
 adherent to PrEP.}
@@ -261,9 +259,6 @@ low adherence, medium adherence, and high adherence to PrEP.}
 PrEP visit.}
 
 \item{...}{Additional arguments passed to the function.}
-
-\item{prep.continue.stand.tx}{Logical, if \code{TRUE} will continue standard
-STI treatment of symptomatic cases even after PrEP initiation.}
 }
 \value{
 A list object of class \code{param_msm}, which can be passed to

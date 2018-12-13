@@ -77,11 +77,8 @@
 #' @param circ.prob Probablity that a black/white new arrival in the population
 #'        will be circumcised (vector of length 2).
 #'
-#' @param base.ai.main.rate Expected coital frequency in BB/BW/WW main
-#'        partnerships per day (vector of length 3).
-#' @param base.ai.pers.rate Expected coital frequency in BB/BW/WW casual
-#'        partnerships per day (vector of length 3).
-#' @param ai.scale Relative scaler for all BB/BW/WW act rates (vector of length 3).
+#' @param acts.model Statistical model object for the rate of acts per partnership
+#'        per year (then transformed into rate per week).
 #'
 #' @param cond.main.prob Per-act probability of condom use in a BB/BW/WW main
 #'        partnerships (vector of length 3).
@@ -100,7 +97,9 @@
 #' @param cond.rr Condom probability scaler for BB/BW/WW partnerships (vector
 #'        of length 3).
 #'
+#' @param riskh.start Time step at which behavioral risk history assessment occurs.
 #' @param prep.start Time step at which the PrEP intervention should start.
+#' @param prep.start.prob Probability of starting PrEP given current indications.
 #' @param prep.adhr.dist Proportion of men who are low, medium, and high
 #'        adherent to PrEP.
 #' @param prep.class.hr The hazard ratio for infection per act associated with each
@@ -153,8 +152,6 @@
 #' @param prep.sti.screen.int Interval in days between STI screening at PrEP visits.
 #' @param prep.sti.prob.tx Probability of treatment given positive screening during
 #'        PrEP visit.
-#' @param prep.continue.stand.tx Logical, if \code{TRUE} will continue standard
-#'        STI treatment of symptomatic cases even after PrEP initiation.
 #' @param sti.cond.eff Relative risk of STI infection from anal sex when a condom is
 #'        used properly (biological efficacy).
 #' @param sti.cond.fail Condom failure rates for STI for Black/White MSM, as
@@ -219,9 +216,8 @@ param_msm <- function(nwstats,
                       circ.prob = c(0.874, 0.918),
 
                       # Behavioral
-                      base.ai.main.rate = c(0.22, 0.22, 0.22),
-                      base.ai.pers.rate = c(0.14, 0.14, 0.14),
-                      ai.scale = c(1.31, 1, 0.77),
+                      acts.model = epistats$act.rates,
+
                       cond.main.prob = c(0.21, 0.21, 0.21),
                       cond.pers.always.prob = 0.216,
                       cond.pers.prob = c(0.26, 0.26, 0.26),

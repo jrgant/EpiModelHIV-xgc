@@ -14,90 +14,55 @@
 #' from a Poisson distribution. The number of total acts may further be modified
 #' by the level of HIV viral suppression in an infected person.
 #'
-#' @return
-#' This function returns the \code{dat} object with the updated discordant act
-#' list (\code{dal}). Each element of \code{dal} is a data frame with the ids of the
-#' discordant pair repeated the number of times they have AI.
-#'
 #' @keywords module msm
 #' @export
 #'
 acts_msm <- function(dat, at) {
 
-  for (type in c("main", "pers", "inst")) {
+  # Attributes
+  status <- dat$attr$status
+  race <- dat$attr$race
+  age <- dat$attr$age
 
-    ## Variables ##
+  # Parameters
+  mod <- dat$param$acts.model
 
-    # Attributes
-    status <- dat$attr$status
-    race <- dat$attr$race
+  # Construct edgelist
+  el.mc <- rbind(dat$el[[1]], dat$el[[2]])
+  ptype  <- rep(1:2, times = c(nrow(dat$el[[1]]), nrow(dat$el[[2]])))
 
-    # Parameters
-    ai.scale <- dat$param$ai.scale
+  # Base AI rates based on Poisson model for main/casual
+  # TODO: switch to ARTnet race encoding
+  race.combo <- as.numeric(race[el.mc[, 1]] == "W") +
+                as.numeric(race[el.mc[, 2]] == "W")
+  comb.age <- age[el.mc[, 1]] + age[el.mc[, 2]]
 
-    if (type == "main") {
-      base.ai.rate <- dat$param$base.ai.main.rate
-      fixed <- FALSE
-      ptype <- 1
-      el <- dat$el[[1]]
-    }
-    if (type == "pers") {
-      base.ai.rate <- dat$param$base.ai.pers.rate
-      fixed <- FALSE
-      ptype <- 2
-      el <- dat$el[[2]]
-    }
-    if (type == "inst") {
-      base.ai.rate <- rep(1, 3)
-      fixed <- ifelse(any(ai.scale != 1), FALSE, TRUE)
-      ptype <- 3
-      el <- dat$el[[3]]
-    }
+  # Model predictions
+  x <- data.frame(ptype = ptype,
+                  race.combo = race.combo,
+                  comb.age = comb.age,
+                  city = "Atlanta")
+  rates <- unname(predict(mod, newdata = x, type = "response"))/52
+  ai <- rpois(length(rates), rates)
 
-    ## Processes ##
+  # Add one-time partnerships
+  el <- rbind(el.mc, dat$el[[3]])
+  ptype <- c(ptype, rep(3, nrow(dat$el[[3]])))
+  ai <- c(ai, rep(1, sum(ptype == 3)))
 
-    # Construct edgelist
-
-    st1 <- status[el[, 1]]
-    st2 <- status[el[, 2]]
-    disc <- abs(st1 - st2) == 1
-    el[which(disc == 1 & st2 == 1), ] <- el[which(disc == 1 & st2 == 1), 2:1]
-    el <- cbind(el, status[el[, 1]], status[el[, 2]])
-    colnames(el) <- c("p1", "p2", "st1", "st2")
-
-    if (nrow(el) > 0) {
-
-      # Base AI rates
-      ai.rate <- rep(NA, nrow(el))
-      race.p1 <- race[el[, 1]]
-      race.p2 <- race[el[, 2]]
-      num.B <- (race.p1 == "B") + (race.p2 == "B")
-      ai.rate <- ((num.B == 2) * base.ai.rate[1] * ai.scale[1]) +
-                 ((num.B == 1) * base.ai.rate[2] * ai.scale[2]) +
-                 ((num.B == 0) * base.ai.rate[3] * ai.scale[3])
-
-      # Final act number
-      if (fixed == FALSE) {
-        ai <- rpois(length(ai.rate), ai.rate)
-      } else {
-        ai <- round(ai.rate)
-      }
-
-      # Full edge list
-      el <- cbind(el, ptype, ai)
-      colnames(el)[5:6] <- c("ptype", "ai")
-
-      if (type == "main") {
-        dat$temp$el <- el
-      } else {
-        dat$temp$el <- rbind(dat$temp$el, el)
-      }
-    }
-
-  } # loop over type end
+  # Add HIV status
+  st1 <- status[el[, 1]]
+  st2 <- status[el[, 2]]
+  disc <- abs(st1 - st2) == 1
+  el[which(disc == 1 & st2 == 1), ] <- el[which(disc == 1 & st2 == 1), 2:1]
+  el <- cbind(el, status[el[, 1]], status[el[, 2]], ptype, ai)
+  colnames(el) <- c("p1", "p2", "st1", "st2", "ptype", "ai")
 
   # Remove inactive edges from el
-  dat$temp$el <- dat$temp$el[-which(dat$temp$el[, "ai"] == 0), ]
+  el <- el[-which(el[, "ai"] == 0), ]
+
+  # Save out
+  dat$temp$el <- el
 
   return(dat)
 }
