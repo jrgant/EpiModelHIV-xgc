@@ -23,6 +23,9 @@ acts_msm <- function(dat, at) {
   status <- dat$attr$status
   race <- dat$attr$race
   age <- dat$attr$age
+  uid <- dat$attr$uid
+
+  plist <- dat$temp$plist
 
   # Parameters
   mod <- dat$param$acts.model
@@ -37,8 +40,15 @@ acts_msm <- function(dat, at) {
                 as.numeric(race[el.mc[, 2]] == "W")
   comb.age <- age[el.mc[, 1]] + age[el.mc[, 2]]
 
+  # Calculate current partnership durations
+  pid_plist <- plist[, 1]*1e7 + plist[, 2]
+  pid_el <- uid[el.mc[, 1]]*1e7 + uid[el.mc[, 2]]
+  matches <- match(pid_el, pid_plist)
+  durations <- (at - plist[, "start"])[matches]
+
   # Model predictions
   x <- data.frame(ptype = ptype,
+                  p_duration = durations,
                   race.combo = race.combo,
                   comb.age = comb.age,
                   city = "Atlanta")

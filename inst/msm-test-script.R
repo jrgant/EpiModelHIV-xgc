@@ -28,7 +28,8 @@ init <- init_msm(nwstats = st,
 control <- control_msm(simno = 1,
                        nsteps = 200,
                        nsims = 1,
-                       ncores = 1)
+                       ncores = 1,
+                       truncate.plist = TRUE)
 
 sim <- netsim(est, param, init, control)
 
@@ -40,7 +41,7 @@ sim <- netsim(est, param, init, control)
 
 # dtemp <- dat
 dat <- dtemp
-# dat <- initialize_msm(est, param, init, control, s = 1)
+dat <- initialize_msm(est, param, init, control, s = 1)
 
 for (at in 2:104) {
   dat <- aging_msm(dat, at)
@@ -63,6 +64,8 @@ for (at in 2:104) {
   cat(at, ".", sep = "")
 }
 
-length(unique(sapply(dat$attr, length)))
-names(dat$attr)
-table(dat$attr$prepStat, dat$attr$prepElig)
+nrow(dat$temp$plist)
+table(dat$temp$plist[, "start"])
+table(dat$temp$plist[, "stop"])
+head(dat$temp$plist)
+
