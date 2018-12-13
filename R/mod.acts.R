@@ -40,7 +40,7 @@ acts_msm <- function(dat, at) {
                 as.numeric(race[el.mc[, 2]] == "W")
   comb.age <- age[el.mc[, 1]] + age[el.mc[, 2]]
 
-  # Calculate current partnership durations
+  # Current partnership durations
   pid_plist <- plist[, 1]*1e7 + plist[, 2]
   pid_el <- uid[el.mc[, 1]]*1e7 + uid[el.mc[, 2]]
   matches <- match(pid_el, pid_plist)
