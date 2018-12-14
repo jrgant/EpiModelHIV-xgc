@@ -46,6 +46,7 @@ initialize_msm <- function(x, param, init, control, s) {
   for (i in 1:3) {
     dat$nw[[i]] <- simulate(x[[i]]$fit, basis = x[[i]]$fit$newnetwork)
   }
+  nw <- dat$nw
 
   # Pull Network parameters
   dat$nwparam <- list()
