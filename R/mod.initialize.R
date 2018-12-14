@@ -669,7 +669,17 @@ reinit_msm <- function(x, param, init, control, s) {
 }
 
 
+#' @title Initialize ERGM Constraint List for Faster Evaluation
+#'
+#' @description Comments out the computationally intensive constraint processing
+#'              not needed by EMH models without constraints.
+#'
+#' @param lhs.nw Network object
+#' @param ... other arguments
+#'
 #' @export
+#' @keywords initiation utility msm
+#'
 InitErgmConstraint..attributes <- function(lhs.nw, ...){
   list(
     # free_dyads = {
