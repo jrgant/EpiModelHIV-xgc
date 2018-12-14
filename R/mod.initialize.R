@@ -34,6 +34,10 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$temp <- list()
   dat$epi <- list()
 
+  assignInNamespace("InitErgmConstraint..attributes",
+                    EpiModelHIV::InitErgmConstraint..attributes,
+                    ns = "ergm", envir = as.environment("package:ergm"))
+
   ## Network simulation ##
   nw <- list()
   for (i in 1:3) {
@@ -664,6 +668,37 @@ reinit_msm <- function(x, param, init, control, s) {
   return(dat)
 }
 
+
+#' @export
+InitErgmConstraint..attributes <- function(lhs.nw, ...){
+  list(
+    # free_dyads = {
+    # n <- network.size(lhs.nw)
+    ## NB: Free dyad RLE matrix is stored in a column-major order for
+    ## consistency with R.
+    # d <-
+    # if(has.loops(lhs.nw)) rep(rep(rle(TRUE),n,scale="run"),n,scale="run")
+    # else do.call(c, lapply(seq_len(n), function(i) rep(rle(c(TRUE,FALSE,TRUE)), c(i-1, 1, n-i),scale="run")))
+
+    # if(is.bipartite(lhs.nw)){
+    #   n1 <- lhs.nw%n%"bipartite"
+    #   n2 <- n - n1
+    #
+    #   d <- d &
+    #     c(rep(rep(rle(c(FALSE)),n,scale="run"),n1,scale="run"),
+    #       rep(rep(rle(c(TRUE,FALSE)),c(n1,n2),scale="run"),n2,scale="run"))
+    # }
+
+    # if(!is.directed(lhs.nw)){
+    #   d <- d &
+    #     do.call(c, lapply(seq_len(n), function(i) rep(rle(c(TRUE,FALSE)), c(i-1, n-i+1),scale="run")))
+    # }
+    #
+    # rlebdm(compact.rle(d), n)
+    # },
+    constrain = character(0),
+    dependence = FALSE)
+}
 
 
 # HET -----------------------------------------------------------------
