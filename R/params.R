@@ -6,8 +6,8 @@
 #' @description Sets the epidemic parameters for stochastic network models
 #'              simulated with \code{\link{netsim}} for EpiModelHIV
 #'
-#' @param nwstats Target statistics for the network model. An object of class
-#'        \code{nwstats} output from \code{\link{calc_nwstats_msm}}.
+#' @param netstats Target statistics and related network initialization data from
+#'        the standard ARTnet workflow.
 #'
 #' @param hiv.test.int Mean intertest interval in days for black/white MSM
 #'        (vector of length 2).
@@ -173,7 +173,7 @@
 #'
 #' @export
 #'
-param_msm <- function(nwstats,
+param_msm <- function(netstats,
 
                       # Clinical
                       hiv.test.int = c(301, 315),
@@ -271,24 +271,14 @@ param_msm <- function(nwstats,
   p <- get_args(formal.args = formals(sys.function()),
                 dot.args = list(...))
 
-  p$time.unit <- nwstats$time.unit
+  p$time.unit <- 7
+  # p$modes <- 1
 
   intvars <- grep(names(p), pattern = ".int", fixed = TRUE)
   p[intvars] <- lapply(p[intvars], FUN = function(x) round(x / p$time.unit))
 
   ratevars <- grep(names(p), pattern = ".rate", fixed = TRUE)
   p[ratevars] <- lapply(p[ratevars], FUN = function(x) x * p$time.unit)
-
-  p$role.B.prob <- nwstats$role.B.prob
-  p$role.W.prob <- nwstats$role.W.prob
-
-  p$method <- nwstats$method
-  p$modes <- 1
-
-  p$asmr.B <- nwstats$asmr.B
-  p$asmr.W <- nwstats$asmr.W
-
-  p$nwstats <- NULL
 
   class(p) <- "param.net"
   return(p)
@@ -300,8 +290,6 @@ param_msm <- function(nwstats,
 #' @description Sets the initial conditions for a stochastic epidemic models
 #'              simulated with \code{\link{netsim}}.
 #'
-#' @param nwstats Target statistics for the network model. An object of class
-#'        \code{nwstats} output from \code{\link{calc_nwstats_msm}}.
 #' @param prev.B Initial disease prevalence among black MSM.
 #' @param prev.W Initial disease prevalence among white MSM.
 #' @param prev.ugc Initial prevalence of urethral gonorrhea.
@@ -317,8 +305,7 @@ param_msm <- function(nwstats,
 #' @keywords msm
 #'
 #' @export
-init_msm <- function(nwstats,
-                     prev.B = 0.253,
+init_msm <- function(prev.B = 0.253,
                      prev.W = 0.253,
                      prev.ugc = 0.005,
                      prev.rgc = 0.005,
@@ -329,12 +316,8 @@ init_msm <- function(nwstats,
   p <- get_args(formal.args = formals(sys.function()),
                 dot.args = list(...))
 
-  p$ages <- nwstats$ages
-
   p$init.prev.age.slope.B <- prev.B / 12
   p$init.prev.age.slope.W <- prev.W / 12
-
-  p$nwstats <- NULL
 
   class(p) <- "init.net"
   return(p)
