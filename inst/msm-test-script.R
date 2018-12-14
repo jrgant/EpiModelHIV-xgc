@@ -5,12 +5,12 @@ devtools::load_all("~/Dropbox/Dev/EpiModelHIV/EpiModelHIV-p")
 
 # Main Test Script ----------------------------------------------------
 
-scr.dir <- "~/Dropbox/Projects/injectable-prep/"
-load(file.path(scr.dir, "est/nwstats.rda"))
-load(file.path(scr.dir, "est/fit.rda"))
-epistats <- readRDS("~/Dropbox/Projects/NetParams/data/artnet.EpiStats.Atlanta.rda")
+scr.dir <- "~/Dropbox/Projects/NetParams/"
+nwstats <- readRDS(file.path(scr.dir, "data/artnet.NetStats.Atlanta.rda"))
+epistats <- readRDS(file.path(scr.dir, "data/artnet.EpiStats.Atlanta.rda"))
+est <- readRDS(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))
 
-param <- param_msm(nwstats = st,
+param <- param_msm(nwstats = nwstats,
                    acts.model = epistats$act.rates,
                    riskh.start = 2,
                    prep.start = 50,
@@ -22,7 +22,7 @@ param <- param_msm(nwstats = st,
                    prep.risk.int = 182,
                    prep.sti.screen.int = 182,
                    prep.sti.prob.tx = 1)
-init <- init_msm(nwstats = st,
+init <- init_msm(nwstats = nwstats,
                  prev.B = 0.260,
                  prev.W = 0.260)
 control <- control_msm(simno = 1,

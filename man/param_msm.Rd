@@ -4,7 +4,7 @@
 \alias{param_msm}
 \title{Epidemic Model Parameters}
 \usage{
-param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
+param_msm(netstats, hiv.test.int = c(301, 315), test.window.int = 21,
   tt.traj.prob = list(c(0.077, 0, 0.356, 0.567), c(0.052, 0, 0.331,
   0.617)), tx.init.prob = c(0.092, 0.127), tx.halt.prob = c(0.0102,
   0.0071), tx.reinit.prob = c(0.00066, 0.00291),
@@ -39,8 +39,8 @@ param_msm(nwstats, hiv.test.int = c(301, 315), test.window.int = 21,
   prep.sti.screen.int = 182, prep.sti.prob.tx = 1, ...)
 }
 \arguments{
-\item{nwstats}{Target statistics for the network model. An object of class
-\code{nwstats} output from \code{\link{calc_nwstats_msm}}.}
+\item{netstats}{Target statistics and related network initialization data from
+the standard ARTnet workflow.}
 
 \item{hiv.test.int}{Mean intertest interval in days for black/white MSM
 (vector of length 2).}

@@ -4,13 +4,10 @@
 \alias{init_msm}
 \title{Epidemic Model Initial Conditions}
 \usage{
-init_msm(nwstats, prev.B = 0.253, prev.W = 0.253, prev.ugc = 0.005,
+init_msm(prev.B = 0.253, prev.W = 0.253, prev.ugc = 0.005,
   prev.rgc = 0.005, prev.uct = 0.013, prev.rct = 0.013, ...)
 }
 \arguments{
-\item{nwstats}{Target statistics for the network model. An object of class
-\code{nwstats} output from \code{\link{calc_nwstats_msm}}.}
-
 \item{prev.B}{Initial disease prevalence among black MSM.}
 
 \item{prev.W}{Initial disease prevalence among white MSM.}
