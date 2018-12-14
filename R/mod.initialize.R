@@ -59,6 +59,10 @@ initialize_msm <- function(x, param, init, control, s) {
 
 
   ## Nodal Attributes Setup ##
+  num <- network.size(nw[[1]])
+  dat$attr$active <- rep(1, num)
+  dat$attr$uid <- 1:num
+  dat$temp$max.uid <- num
 
   # Degree terms
   dat$attr$deg.pers <- get.vertex.attribute(x[[1]]$fit$network, "deg.pers")
@@ -66,15 +70,10 @@ initialize_msm <- function(x, param, init, control, s) {
 
   # Race
   dat$attr$race <- get.vertex.attribute(nw[[1]], "race")
-  num.B <- dat$init$num.B
-  num.W <- dat$init$num.W
-  num <- num.B + num.W
   ids.B <- which(dat$attr$race == "B")
   ids.W <- which(dat$attr$race == "W")
-
-  dat$attr$active <- rep(1, num)
-  dat$attr$uid <- 1:num
-  dat$temp$max.uid <- num
+  num.B <- length(ids.B)
+  num.W <- length(ids.W)
 
   # Age
   dat$attr$sqrt.age <- get.vertex.attribute(nw[[1]], "sqrt.age")
@@ -160,11 +159,12 @@ initialize_msm <- function(x, param, init, control, s) {
 #'
 init_status_msm <- function(dat) {
 
-  num.B <- dat$init$num.B
-  num.W <- dat$init$num.W
-  num <- num.B + num.W
+  num <- sum(dat$attr$active == 1)
   ids.B <- which(dat$attr$race == "B")
   ids.W <- which(dat$attr$race == "W")
+  num.B <- length(ids.B)
+  num.W <- length(ids.W)
+
   age <- dat$attr$age
   race <- dat$attr$race
 

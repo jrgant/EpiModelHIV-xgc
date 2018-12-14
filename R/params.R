@@ -329,9 +329,6 @@ init_msm <- function(nwstats,
   p <- get_args(formal.args = formals(sys.function()),
                 dot.args = list(...))
 
-  p$num.B <- nwstats$num.B
-  p$num.W <- nwstats$num.W
-
   p$ages <- nwstats$ages
 
   p$init.prev.age.slope.B <- prev.B / 12
