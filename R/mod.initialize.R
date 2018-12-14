@@ -40,34 +40,21 @@ initialize_msm <- function(x, param, init, control, s) {
 
 
   ## Network Setup ##
-  nw <- list()
+
+  # Initial network simulations
+  dat$nw <- list()
   for (i in 1:3) {
-    nw[[i]] <- simulate(x[[i]]$fit, basis = x[[i]]$fit$newnetwork)
+    dat$nw[[i]] <- simulate(x[[i]]$fit, basis = x[[i]]$fit$newnetwork)
   }
 
-  # Build initial edgelists
-  dat$el <- list()
-  dat$p <- list()
-  for (i in 1:2) {
-    dat$el[[i]] <- as.edgelist(nw[[i]])
-    attributes(dat$el[[i]])$vnames <- NULL
-    p <- stergm_prep(nw[[i]], x[[i]]$formation, x[[i]]$coef.diss$dissolution,
-                     x[[i]]$coef.form, x[[i]]$coef.diss$coef.adj, x[[i]]$constraints)
-    p$model.form$formula <- NULL
-    p$model.diss$formula <- NULL
-    dat$p[[i]] <- p
-  }
-  dat$el[[3]] <- as.edgelist(nw[[3]])
-  attributes(dat$el[[3]])$vnames <- NULL
-  p <- tergmLite::ergm_prep(nw[[3]], x[[3]]$formation, x[[3]]$coef.form, x[[3]]$constraints)
-  p$model.form$formula <- NULL
-  dat$p[[3]] <- p
-
-  # Network parameters
+  # Pull Network parameters
   dat$nwparam <- list()
   for (i in 1:3) {
     dat$nwparam[i] <- list(x[[i]][-which(names(x[[i]]) == "fit")])
   }
+
+  # Convert to tergmLite method
+  dat <- init_tergmLite(dat)
 
 
   ## Nodal Attributes Setup ##

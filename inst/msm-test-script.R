@@ -39,8 +39,6 @@ sim <- netsim(est, param, init, control)
 
 # Testing/Timing ------------------------------------------------------
 
-# dtemp <- dat
-dat <- dtemp
 dat <- initialize_msm(est, param, init, control, s = 1)
 
 for (at in 2:104) {
