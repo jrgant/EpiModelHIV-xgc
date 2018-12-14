@@ -173,10 +173,10 @@ init_status_msm <- function(dat) {
   nInfW <- round(dat$init$prev.W * num.W)
 
   # Age-based infection probability
-  probInfCrB <- age[ids.B] * dat$init$init.prev.age.slope.B
+  probInfCrB <- age[ids.B] * dat$init$prev.B / 12
   probInfB <- probInfCrB + (nInfB - sum(probInfCrB)) / num.B
 
-  probInfCrW <- age[ids.W] * dat$init$init.prev.age.slope.W
+  probInfCrW <- age[ids.W] * dat$init$prev.W / 12
   probInfW <- probInfCrW + (nInfW - sum(probInfCrW)) / num.W
 
   if (any(probInfB <= 0) | any(probInfW <= 0)) {

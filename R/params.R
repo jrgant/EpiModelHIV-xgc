@@ -316,9 +316,6 @@ init_msm <- function(prev.B = 0.253,
   p <- get_args(formal.args = formals(sys.function()),
                 dot.args = list(...))
 
-  p$init.prev.age.slope.B <- prev.B / 12
-  p$init.prev.age.slope.W <- prev.W / 12
-
   class(p) <- "init.net"
   return(p)
 }
