@@ -1,8 +1,8 @@
 
-#' @title Death Module
+#' @title Depature Module
 #'
 #' @description Module function for simulting both general and disease-related
-#'              deaths among population members.
+#'              departures, including deaths, among population members.
 #'
 #' @inheritParams aging_msm
 #'
@@ -13,7 +13,8 @@
 #' Which nodes have died is determined stochastically for general deaths using
 #' draws from a binomial distribution, and deterministically for disease-related
 #' deaths after nodes have reach a maximum viral load value set in the
-#' \code{vl.fatal} parameter.
+#' \code{vl.fatal} parameter. Additionally, deterministic departures from the
+#' population occur at the maximum age implemented in the model.
 #'
 #' @return
 #' This function returns the updated \code{dat} object accounting for deaths.
@@ -25,7 +26,7 @@
 #' @keywords module msm
 #' @export
 #'
-deaths_msm <- function(dat, at) {
+departure_msm <- function(dat, at) {
 
   ## General deaths
   age <- floor(dat$attr$age)
@@ -72,7 +73,7 @@ deaths_msm <- function(dat, at) {
 
 
 #' @export
-#' @rdname deaths_msm
+#' @rdname departure_msm
 deaths_het <- function(dat, at) {
 
   ### 1. Susceptible Deaths ###

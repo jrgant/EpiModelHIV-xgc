@@ -337,7 +337,7 @@ init_msm <- function(init.hiv.mod,
 #' @param initialize.FUN Module function to use for initialization of the epidemic
 #'        model.
 #' @param aging.FUN Module function for aging.
-#' @param deaths.FUN Module function for general and disease-realted deaths.
+#' @param departure.FUN Module function for general and disease-realted depatures.
 #' @param births.FUN Module function for births or entries into the population.
 #' @param test.FUN Module function for diagnostic disease testing.
 #' @param tx.FUN Module function for ART initiation and adherence.
@@ -382,7 +382,7 @@ control_msm <- function(simno = 1,
                         start = 1,
                         initialize.FUN = initialize_msm,
                         aging.FUN = aging_msm,
-                        deaths.FUN = deaths_msm,
+                        depature.FUN = depature_msm,
                         births.FUN = births_msm,
                         test.FUN = test_msm,
                         tx.FUN = tx_msm,
