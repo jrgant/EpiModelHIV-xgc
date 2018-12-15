@@ -6,12 +6,12 @@ devtools::load_all("~/Dropbox/Dev/EpiModelHIV/EpiModelHIV-p")
 # Main Test Script ----------------------------------------------------
 
 scr.dir <- "~/Dropbox/Projects/NetParams/"
-nwstats <- readRDS(file.path(scr.dir, "data/artnet.NetStats.Atlanta.rda"))
+netstats <- readRDS(file.path(scr.dir, "data/artnet.NetStats.Atlanta.rda"))
 epistats <- readRDS(file.path(scr.dir, "data/artnet.EpiStats.Atlanta.rda"))
 est <- readRDS(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))
 
-param <- param_msm(nwstats = nwstats,
-                   acts.model = epistats$act.rates,
+param <- param_msm(netstats = netstats,
+                   acts.model = epistats$acts.mod,
                    riskh.start = 2,
                    prep.start = 50,
                    prep.start.prob = 0.2,
@@ -22,16 +22,13 @@ param <- param_msm(nwstats = nwstats,
                    prep.risk.int = 182,
                    prep.sti.screen.int = 182,
                    prep.sti.prob.tx = 1)
-init <- init_msm(nwstats = nwstats,
-                 prev.B = 0.260,
-                 prev.W = 0.260)
+init <- init_msm(init.hiv.mod = epistats$hiv.mod)
 control <- control_msm(simno = 1,
                        nsteps = 200,
                        nsims = 1,
-                       ncores = 1,
-                       truncate.plist = TRUE)
+                       ncores = 1)
 
-sim <- netsim(est, param, init, control)
+# sim <- netsim(est, param, init, control)
 
 # df <- as.data.frame(sim)
 # names(df)

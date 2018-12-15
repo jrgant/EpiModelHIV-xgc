@@ -28,19 +28,8 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$init <- init
   dat$control <- control
 
-  dat$attr <- list()
-  dat$stats <- list()
-  dat$stats$nwstats <- list()
-  dat$temp <- list()
-  dat$epi <- list()
-
-  assignInNamespace("InitErgmConstraint..attributes",
-                    EpiModelHIV::InitErgmConstraint..attributes,
-                    ns = "ergm", envir = as.environment("package:ergm"))
-
 
   ## Network Setup ##
-
   # Initial network simulations
   dat$nw <- list()
   for (i in 1:3) {
@@ -59,52 +48,33 @@ initialize_msm <- function(x, param, init, control, s) {
 
 
   ## Nodal Attributes Setup ##
+  dat$attr <- netstats$attr
+
   num <- network.size(nw[[1]])
   dat$attr$active <- rep(1, num)
+  dat$attr$arrival.time <- rep(1, num)
   dat$attr$uid <- 1:num
   dat$temp$max.uid <- num
-
-  # Degree terms
-  dat$attr$deg.pers <- get.vertex.attribute(x[[1]]$fit$network, "deg.pers")
-  dat$attr$deg.main <- get.vertex.attribute(x[[2]]$fit$network, "deg.main")
-
-  # Race
-  dat$attr$race <- get.vertex.attribute(nw[[1]], "race")
-  ids.B <- which(dat$attr$race == "B")
-  ids.W <- which(dat$attr$race == "W")
-  num.B <- length(ids.B)
-  num.W <- length(ids.W)
-
-  # Age
-  dat$attr$sqrt.age <- get.vertex.attribute(nw[[1]], "sqrt.age")
-  dat$attr$age <- dat$attr$sqrt.age^2
-
-  # Risk group
-  dat$attr$riskg <- get.vertex.attribute(nw[[3]], "riskg")
 
   # UAI group
   p1 <- dat$param$cond.pers.always.prob
   p2 <- dat$param$cond.inst.always.prob
   rho <- dat$param$cond.always.prob.corr
-  uai.always <- bindata::rmvbin(num, c(p1, p2), bincorr = (1 - rho) * diag(2) + rho)
-  dat$attr$cond.always.pers <- uai.always[, 1]
-  dat$attr$cond.always.inst <- uai.always[, 2]
-
-  # Arrival and departure
-  dat$attr$arrival.time <- rep(1, num)
+  cond.always <- bindata::rmvbin(num, c(p1, p2), bincorr = (1 - rho) * diag(2) + rho)
+  dat$attr$cond.always.pers <- cond.always[, 1]
+  dat$attr$cond.always.inst <- cond.always[, 2]
 
   # Circumcision
   circ <- rep(NA, num)
-  circ[ids.B] <- sample(apportion_lr(num.B, 0:1, 1 - param$circ.prob[1]))
-  circ[ids.W] <- sample(apportion_lr(num.W, 0:1, 1 - param$circ.prob[2]))
+  idsB <- which(dat$attr$race == "B")
+  idsW <- which(dat$attr$race == "W")
+  circ[idsB] <- rbinom(length(idsB), 1, param$circ.prob[1])
+  circ[idsW] <- rbinom(length(idsW), 1, param$circ.prob[2])
   dat$attr$circ <- circ
-
-  # Role class
-  role.class <- get.vertex.attribute(nw[[1]], "role.class")
-  dat$attr$role.class <- role.class
 
   # Ins.quot
   ins.quot <- rep(NA, num)
+  role.class <- dat$attr$role.class
   ins.quot[role.class == "I"]  <- 1
   ins.quot[role.class == "R"]  <- 0
   ins.quot[role.class == "V"]  <- runif(sum(role.class == "V"))
@@ -116,11 +86,12 @@ initialize_msm <- function(x, param, init, control, s) {
   # STI Status
   dat <- init_sti_msm(dat)
 
-  # Network statistics
-  dat$stats$nwstats <- list()
-
 
   ## Other Setup ##
+  dat$stats <- list()
+  dat$stats$nwstats <- list()
+  dat$temp <- list()
+  dat$epi <- list()
 
   # Prevalence Tracking
   dat$temp$deg.dists <- list()
@@ -133,6 +104,7 @@ initialize_msm <- function(x, param, init, control, s) {
   colnames(plist)[1:2] <- c("p1", "p2")
   dat$temp$plist <- plist
 
+  dat$param$netstats <- NULL
   class(dat) <- "dat"
   return(dat)
 }
@@ -160,32 +132,14 @@ init_status_msm <- function(dat) {
   age <- dat$attr$age
   race <- dat$attr$race
 
-  # Infection Status
-  nInfB <- round(dat$init$prev.B * num.B)
-  nInfW <- round(dat$init$prev.W * num.W)
+  # Race and age-based infection probability
+  hiv.mod <- dat$init$init.hiv.mod
+  race2 <- ifelse(dat$attr$race == "B", 0, 1)
+  xs <- data.frame(race2 = race2, age = age, city2 = "Atlanta")
+  preds <- predict(hiv.mod, newdata = xs, type = "response")
 
-  # Age-based infection probability
-  probInfCrB <- age[ids.B] * dat$init$prev.B / 12
-  probInfB <- probInfCrB + (nInfB - sum(probInfCrB)) / num.B
-
-  probInfCrW <- age[ids.W] * dat$init$prev.W / 12
-  probInfW <- probInfCrW + (nInfW - sum(probInfCrW)) / num.W
-
-  if (any(probInfB <= 0) | any(probInfW <= 0)) {
-    stop("Slope of initial prevalence by age must be sufficiently low to ",
-         "avoid non-positive probabilities.", call. = FALSE)
-  }
-
-  # Infection status
-  status <- rep(0, num)
-  while (sum(status[ids.B]) != nInfB) {
-    status[ids.B] <- rbinom(num.B, 1, probInfB)
-  }
-  while (sum(status[ids.W]) != nInfW) {
-    status[ids.W] <- rbinom(num.W, 1, probInfW)
-  }
+  status <- rbinom(num, 1, preds)
   dat$attr$status <- status
-
 
   # Treatment trajectory
   tt.traj <- rep(NA, num)
@@ -195,7 +149,6 @@ init_status_msm <- function(dat) {
   tt.traj[ids.W] <- sample(apportion_lr(num.W, 1:4,
                                         dat$param$tt.traj.prob[[2]]))
   dat$attr$tt.traj <- tt.traj
-
 
 
   ## Infection-related attributes
