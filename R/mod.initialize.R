@@ -161,7 +161,6 @@ init_status_msm <- function(dat) {
   diag.time <- rep(NA, num)
   last.neg.test <- rep(NA, num)
   tx.status <- rep(NA, num)
-  tx.init.time <- rep(NA, num)
   cum.time.on.tx <- rep(NA, num)
   cum.time.off.tx <- rep(NA, num)
   infector <- rep(NA, num)
@@ -506,10 +505,10 @@ init_sti_msm <- function(dat) {
   uCT <- rCT <- rep(0, num)
 
   # Initialize GC infection at both sites
-  idsUGC <- sample(idsUreth, size = round(init$prev.ugc * num), FALSE)
+  idsUGC <- sample(idsUreth, size = round(dat$init$prev.ugc * num), FALSE)
   uGC[idsUGC] <- 1
 
-  idsRGC <- sample(setdiff(idsRect, idsUGC), size = round(init$prev.rgc * num), FALSE)
+  idsRGC <- sample(setdiff(idsRect, idsUGC), size = round(dat$init$prev.rgc * num), FALSE)
   rGC[idsRGC] <- 1
 
   dat$attr$rGC <- rGC
@@ -532,10 +531,10 @@ init_sti_msm <- function(dat) {
   dat$attr$rGC.tx.prep <- dat$attr$uGC.tx.prep <- rep(NA, num)
 
   # Initialize CT infection at both sites
-  idsUCT <- sample(idsUreth, size = round(init$prev.uct * num), FALSE)
+  idsUCT <- sample(idsUreth, size = round(dat$init$prev.uct * num), FALSE)
   uCT[idsUCT] <- 1
 
-  idsRCT <- sample(setdiff(idsRect, idsUCT), size = round(init$prev.rct * num), FALSE)
+  idsRCT <- sample(setdiff(idsRect, idsUCT), size = round(dat$init$prev.rct * num), FALSE)
   rCT[idsRCT] <- 1
 
   dat$attr$rCT <- rCT
