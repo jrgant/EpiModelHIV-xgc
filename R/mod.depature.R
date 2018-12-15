@@ -28,45 +28,43 @@
 #'
 departure_msm <- function(dat, at) {
 
-  ## General deaths
+  ## General departures
+  active <- dat$attr$active
   age <- floor(dat$attr$age)
   race <- dat$attr$race
 
-  alive.B <- which(race == "B")
-  age.B <- age[alive.B]
-  death.B.prob <- dat$param$asmr.B[age.B]
-  deaths.B <- alive.B[rbinom(length(death.B.prob), 1, death.B.prob) == 1]
+  asmr <- dat$param$netstats$demog$asmr
 
-  alive.W <- which(race == "W")
-  age.W <- age[alive.W]
-  death.W.prob <- dat$param$asmr.W[age.W]
-  deaths.W <- alive.W[rbinom(length(death.W.prob), 1, death.W.prob) == 1]
+  idsElig <- which(active == 1)
+  idsEligB <- which(active == 1 & race == "B")
+  idsEligW <- which(active == 1 & race == "W")
 
-  dth.gen <- c(deaths.B, deaths.W)
+  rates <- rep(NA, length(idsElig))
+  rates[idsEligB] <- asmr[age[idsEligB], "vec.asmr.B"]
+  rates[idsEligW] <- asmr[age[idsEligW], "vec.asmr.W"]
 
+  idsDep <- idsElig[rbinom(length(rates), 1, rates) == 1]
 
-  ## Disease deaths
-  dth.dis <- which(dat$attr$stage == 4 &
+  ## HIV-related deaths
+  idsDepAIDS <- which(dat$attr$stage == 4 &
                    dat$attr$vl >= dat$param$vl.fatal)
 
-  dth.all <- NULL
-  dth.all <- unique(c(dth.gen, dth.dis))
+  idsDepAll <- unique(c(idsDep, idsDepAIDS))
 
-  if (length(dth.all) > 0) {
-    dat$attr$active[dth.all] <- 0
+  if (length(idsDepAll) > 0) {
+    dat$attr$active[idsDepAll] <- 0
     for (i in 1:3) {
-      dat$el[[i]] <- tergmLite::delete_vertices(dat$el[[i]], dth.all)
+      dat$el[[i]] <- tergmLite::delete_vertices(dat$el[[i]], idsDepAll)
     }
-    dat$attr <- deleteAttr(dat$attr, dth.all)
+    dat$attr <- deleteAttr(dat$attr, idsDepAll)
     if (unique(sapply(dat$attr, length)) != attributes(dat$el[[1]])$n) {
-      stop("mismatch between el and attr length in death mod")
+      stop("mismatch between el and attr length in departures mod")
     }
   }
 
-
   ## Summary Output
-  dat$epi$dth.gen[at] <- length(dth.gen)
-  dat$epi$dth.dis[at] <- length(dth.dis)
+  dat$epi$dep.gen[at] <- length(idsDep)
+  dat$epi$dep.AIDS[at] <- length(idsDepAIDS)
 
   return(dat)
 }
