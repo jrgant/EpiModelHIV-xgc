@@ -32,7 +32,7 @@
 #'
 #' @export
 #'
-trans_msm <- function(dat, at) {
+hivtrans_msm <- function(dat, at) {
 
   # Variables -----------------------------------------------------------
 
@@ -251,7 +251,7 @@ trans_msm <- function(dat, at) {
 
 
 #' @export
-#' @rdname trans_msm
+#' @rdname hivtrans_msm
 trans_het <- function(dat, at) {
 
   ## Discordant Edgelist

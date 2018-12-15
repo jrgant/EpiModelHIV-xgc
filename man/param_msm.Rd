@@ -15,7 +15,7 @@ param_msm(netstats, hiv.test.int = c(301, 315), test.window.int = 21,
   vl.fatal = 7, vl.full.supp = 1.5, vl.part.supp = 3.5,
   full.supp.down.slope = 0.25, full.supp.up.slope = 0.25,
   part.supp.down.slope = 0.25, part.supp.up.slope = 0.25,
-  b.rate = 0.001/7, birth.age = 15, URAI.prob = 0.0082 * 1.09,
+  a.rate = 0.001/7, arrival.age = 15, URAI.prob = 0.0082 * 1.09,
   UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
   cond.eff = 0.95, cond.fail = c(0.39, 0.21), circ.prob = c(0.874,
   0.918), acts.model = epistats$act.rates, cond.main.prob = c(0.21,
@@ -109,10 +109,6 @@ re-initiation until the level in \code{vl.part.supp}.}
 
 \item{part.supp.up.slope}{For partial suppressors, number of log10 units that
 viral load rises per time step from treatment halting until expected value.}
-
-\item{b.rate}{Rate at which MSM enter the population.}
-
-\item{birth.age}{Age (in years) of new arrivals.}
 
 \item{URAI.prob}{Probability of transmission for a man having unprotected
 receptive anal intercourse with an infected man at set point viral
@@ -259,6 +255,10 @@ low adherence, medium adherence, and high adherence to PrEP.}
 PrEP visit.}
 
 \item{...}{Additional arguments passed to the function.}
+
+\item{b.rate}{Rate at which MSM enter the population.}
+
+\item{birth.age}{Age (in years) of new arrivals.}
 }
 \value{
 A list object of class \code{param_msm}, which can be passed to

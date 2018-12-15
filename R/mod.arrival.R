@@ -1,18 +1,17 @@
 
-#' @title Births Module
+#' @title Arrivals Module
 #'
-#' @description Module function for births or entries into the sexually active
+#' @description Module function for arrivals into the sexually active
 #'              population.
 #'
 #' @inheritParams aging_msm
 #'
 #' @details
-#' New population members are added based on expected numbers of entries among
-#' black and white MSM, stochastically determined with draws from Poisson
-#' distributions. For each new entry, a set of attributes is added for that node,
-#' and the nodes are added onto the network objects. Only attributes that are
-#' a part of the network model formulae are updated as vertex attributes on the
-#' network objects.
+#' New population members are added based on expected numbers of entries,
+#' stochastically determined with draws from Poisson distributions. For each new
+#' entry, a set of attributes is added for that node, and the nodes are added onto
+#' the network objects. Only attributes that are a part of the network model
+#' formulae are updated as vertex attributes on the network objects.
 #'
 #' @return
 #' This function updates the \code{attr} list with new attributes for each new
@@ -21,63 +20,63 @@
 #' @keywords module msm
 #' @export
 #'
-births_msm <- function(dat, at){
+arrival_msm <- function(dat, at){
 
   ## Variables
 
   # Parameters
-  b.rate <- dat$param$b.rate
+  a.rate <- dat$param$a.rate
 
   ## Process
   num <- dat$epi$num[1]
 
-  nBirths <- rpois(1, b.rate * num)
+  nNew <- rpois(1, a.rate * num)
 
   ## Update Attr
-  if (nBirths > 0) {
-    dat <- setBirthAttr_msm(dat, at, nBirths)
+  if (nNew > 0) {
+    dat <- setNewAttr_msm(dat, at, nNew)
   }
 
   # Update Networks
-  if (nBirths > 0) {
+  if (nNew > 0) {
     for (i in 1:3) {
-      dat$el[[i]] <- tergmLite::add_vertices(dat$el[[i]], nBirths)
+      dat$el[[i]] <- tergmLite::add_vertices(dat$el[[i]], nNew)
     }
   }
 
   ## Output
-  dat$epi$nBirths[at] <- nBirths
+  dat$epi$nNew[at] <- nNew
 
   return(dat)
 }
 
 
-setBirthAttr_msm <- function(dat, at, nBirths) {
+setNewAttr_msm <- function(dat, at, nNew) {
 
   # Set all attributes NA by default
   dat$attr <- lapply(dat$attr, {
     function(x)
-      c(x, rep(NA, nBirths))
+      c(x, rep(NA, nNew))
   })
   newIds <- which(is.na(dat$attr$active))
 
   # Demographic
-  dat$attr$active[newIds] <- rep(1, nBirths)
-  dat$attr$uid[newIds] <- dat$temp$max.uid + (1:nBirths)
-  dat$temp$max.uid <- dat$temp$max.uid + nBirths
+  dat$attr$active[newIds] <- rep(1, nNew)
+  dat$attr$uid[newIds] <- dat$temp$max.uid + (1:nNew)
+  dat$temp$max.uid <- dat$temp$max.uid + nNew
 
-  dat$attr$arrival.time[newIds] <- rep(at, nBirths)
+  dat$attr$arrival.time[newIds] <- rep(at, nNew)
 
   race.dist.B <- sum(dat$epi$num.B[1])/sum(dat$epi$num[1])
-  race <- apportion_lr(nBirths, c("B", "W"), c(race.dist.B, 1 - race.dist.B), TRUE)
+  race <- apportion_lr(nNew, c("B", "W"), c(race.dist.B, 1 - race.dist.B), TRUE)
   newB <- which(race == "B")
   newW <- which(race == "W")
   dat$attr$race[newIds] <- race
 
-  dat$attr$age[newIds] <- rep(dat$param$birth.age, nBirths)
+  dat$attr$age[newIds] <- rep(dat$param$birth.age, nNew)
 
   # Disease status and related
-  dat$attr$status[newIds] <- rep(0, nBirths)
+  dat$attr$status[newIds] <- rep(0, nNew)
 
   dat$attr$tt.traj[newIds[newB]] <- sample(1:4,
                                            length(newB), replace = TRUE,
@@ -98,7 +97,7 @@ setBirthAttr_msm <- function(dat, at, nBirths) {
                                               length(newW), replace = TRUE,
                                               prob = dat$param$role.W.prob)
 
-  ins.quot <- rep(NA, nBirths)
+  ins.quot <- rep(NA, nNew)
   ins.quot[dat$attr$role.class[newIds] == "I"]  <- 1
   ins.quot[dat$attr$role.class[newIds] == "R"]  <- 0
   ins.quot[dat$attr$role.class[newIds] == "V"]  <-
@@ -110,13 +109,13 @@ setBirthAttr_msm <- function(dat, at, nBirths) {
   dat$attr$deg.pers[newIds] <- 0
 
   # One-off risk group
-  dat$attr$riskg[newIds] <- sample(1:5, nBirths, TRUE)
+  dat$attr$riskg[newIds] <- sample(1:5, nNew, TRUE)
 
   # UAI group
   p1 <- dat$param$cond.pers.always.prob
   p2 <- dat$param$cond.inst.always.prob
   rho <- dat$param$cond.always.prob.corr
-  uai.always <- bindata::rmvbin(nBirths, c(p1, p2), bincorr = (1 - rho) * diag(2) + rho)
+  uai.always <- bindata::rmvbin(nNew, c(p1, p2), bincorr = (1 - rho) * diag(2) + rho)
   dat$attr$cond.always.pers[newIds] <- uai.always[, 1]
   dat$attr$cond.always.inst[newIds] <- uai.always[, 2]
 
@@ -129,7 +128,7 @@ setBirthAttr_msm <- function(dat, at, nBirths) {
 
 
 #' @export
-#' @rdname births_msm
+#' @rdname arrival_msm
 births_het <- function(dat, at) {
 
   # Variables

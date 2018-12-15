@@ -203,8 +203,8 @@ param_msm <- function(netstats,
                       part.supp.up.slope = 0.25,
 
                       # Demographic
-                      b.rate = 1e-3 / 7,
-                      birth.age = 15,
+                      a.rate = 1e-3 / 7,
+                      arrival.age = 15,
 
                       # HIV transmission prob
                       URAI.prob = 0.0082 * 1.09,
@@ -338,19 +338,19 @@ init_msm <- function(init.hiv.mod,
 #'        model.
 #' @param aging.FUN Module function for aging.
 #' @param departure.FUN Module function for general and disease-realted depatures.
-#' @param births.FUN Module function for births or entries into the population.
-#' @param test.FUN Module function for diagnostic disease testing.
-#' @param tx.FUN Module function for ART initiation and adherence.
+#' @param arrival.FUN Module function for entries into the sexually active population.
+#' @param hivtest.FUN Module function for HIV diagnostic disease testing.
+#' @param hivtx.FUN Module function for ART initiation and adherence.
 #' @param prep.FUN Module function for PrEP initiation and utilization.
-#' @param progress.FUN Module function for HIV disease progression.
-#' @param vl.FUN Module function for HIV viral load evolution.
+#' @param hivprogress.FUN Module function for HIV disease progression.
+#' @param hivvl.FUN Module function for HIV viral load evolution.
 #' @param resim_nets.FUN Module function for network resimulation at each time
 #'        step.
 #' @param acts.FUN Module function to simulate the number of sexual acts within
 #'        partnerships.
 #' @param condoms.FUN Module function to simulate condom use within acts.
 #' @param position.FUN Module function to simulate sexual position within acts.
-#' @param trans.FUN Module function to stochastically simulate HIV transmission
+#' @param hivtrans.FUN Module function to stochastically simulate HIV transmission
 #'        over acts given individual and dyadic attributes.
 #' @param stitrans.FUN Module function to simulate GC/CT transmission over current
 #'        edgelist.
@@ -382,21 +382,21 @@ control_msm <- function(simno = 1,
                         start = 1,
                         initialize.FUN = initialize_msm,
                         aging.FUN = aging_msm,
-                        depature.FUN = depature_msm,
-                        births.FUN = births_msm,
-                        test.FUN = test_msm,
-                        tx.FUN = tx_msm,
-                        progress.FUN = progress_msm,
-                        vl.FUN = vl_msm,
+                        depature.FUN = departure_msm,
+                        arrival.FUN = arrival_msm,
+                        hivtest.FUN = hivtest_msm,
+                        hivtx.FUN = hivtx_msm,
+                        hivprogress.FUN = hivprogress_msm,
+                        hivvl.FUN = hivvl_msm,
                         resim_nets.FUN = simnet_msm,
                         acts.FUN = acts_msm,
                         condoms.FUN = condoms_msm,
                         position.FUN = position_msm,
                         prep.FUN = prep_msm,
-                        trans.FUN = trans_msm,
-                        stitrans.FUN = sti_trans,
-                        stirecov.FUN = sti_recov,
-                        stitx.FUN = sti_tx,
+                        hivtrans.FUN = hivtrans_msm,
+                        stitrans.FUN = stitrans_msm,
+                        stirecov.FUN = stirecov_msm,
+                        stitx.FUN = stitx_msm,
                         prev.FUN = prevalence_msm,
                         verbose.FUN = verbose.net,
                         save.nwstats = FALSE,

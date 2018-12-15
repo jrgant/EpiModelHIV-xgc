@@ -24,7 +24,7 @@
 #'
 #' @export
 #'
-tx_msm <- function(dat, at) {
+hivtx_msm <- function(dat, at) {
 
   # Attributes
   race <- dat$attr$race
@@ -80,7 +80,7 @@ tx_msm <- function(dat, at) {
 
 
 #' @export
-#' @rdname tx_msm
+#' @rdname hivtx_msm
 tx_het <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------

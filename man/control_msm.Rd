@@ -6,13 +6,14 @@
 \usage{
 control_msm(simno = 1, nsims = 1, ncores = 1, nsteps = 100,
   start = 1, initialize.FUN = initialize_msm, aging.FUN = aging_msm,
-  depature.FUN = depature_msm, births.FUN = births_msm,
-  test.FUN = test_msm, tx.FUN = tx_msm, progress.FUN = progress_msm,
-  vl.FUN = vl_msm, resim_nets.FUN = simnet_msm, acts.FUN = acts_msm,
+  depature.FUN = departure_msm, arrival.FUN = arrival_msm,
+  hivtest.FUN = hivtest_msm, hivtx.FUN = hivtx_msm,
+  hivprogress.FUN = hivprogress_msm, hivvl.FUN = hivvl_msm,
+  resim_nets.FUN = simnet_msm, acts.FUN = acts_msm,
   condoms.FUN = condoms_msm, position.FUN = position_msm,
-  prep.FUN = prep_msm, trans.FUN = trans_msm,
-  stitrans.FUN = sti_trans, stirecov.FUN = sti_recov,
-  stitx.FUN = sti_tx, prev.FUN = prevalence_msm,
+  prep.FUN = prep_msm, hivtrans.FUN = hivtrans_msm,
+  stitrans.FUN = stitrans_msm, stirecov.FUN = stirecov_msm,
+  stitx.FUN = stitx_msm, prev.FUN = prevalence_msm,
   verbose.FUN = verbose.net, save.nwstats = FALSE,
   truncate.plist = TRUE, verbose = TRUE, ...)
 }
@@ -37,15 +38,15 @@ model.}
 
 \item{aging.FUN}{Module function for aging.}
 
-\item{births.FUN}{Module function for births or entries into the population.}
+\item{arrival.FUN}{Module function for entries into the sexually active population.}
 
-\item{test.FUN}{Module function for diagnostic disease testing.}
+\item{hivtest.FUN}{Module function for HIV diagnostic disease testing.}
 
-\item{tx.FUN}{Module function for ART initiation and adherence.}
+\item{hivtx.FUN}{Module function for ART initiation and adherence.}
 
-\item{progress.FUN}{Module function for HIV disease progression.}
+\item{hivprogress.FUN}{Module function for HIV disease progression.}
 
-\item{vl.FUN}{Module function for HIV viral load evolution.}
+\item{hivvl.FUN}{Module function for HIV viral load evolution.}
 
 \item{resim_nets.FUN}{Module function for network resimulation at each time
 step.}
@@ -59,7 +60,7 @@ partnerships.}
 
 \item{prep.FUN}{Module function for PrEP initiation and utilization.}
 
-\item{trans.FUN}{Module function to stochastically simulate HIV transmission
+\item{hivtrans.FUN}{Module function to stochastically simulate HIV transmission
 over acts given individual and dyadic attributes.}
 
 \item{stitrans.FUN}{Module function to simulate GC/CT transmission over current

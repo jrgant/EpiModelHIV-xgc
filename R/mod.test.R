@@ -17,7 +17,7 @@
 #'
 #' @export
 #'
-test_msm <- function(dat, at) {
+hivtest_msm <- function(dat, at) {
 
   ## Variables
 
@@ -66,7 +66,7 @@ test_msm <- function(dat, at) {
 
 
 #' @export
-#' @rdname test_msm
+#' @rdname hivtest_msm
 dx_het <- function(dat, at) {
 
   # Variables

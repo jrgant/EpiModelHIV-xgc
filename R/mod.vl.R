@@ -27,7 +27,7 @@
 #'
 #' @export
 #'
-vl_msm <- function(dat, at) {
+hivvl_msm <- function(dat, at) {
 
   ## Variables
 
@@ -136,7 +136,7 @@ vl_msm <- function(dat, at) {
 
 
 #' @export
-#' @rdname vl_msm
+#' @rdname hivvl_msm
 vl_het <- function(dat, at) {
 
   ## Common variables

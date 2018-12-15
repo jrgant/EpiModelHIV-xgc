@@ -10,7 +10,7 @@
 #'
 #' @export
 #'
-sti_trans <- function(dat, at) {
+stitrans_msm <- function(dat, at) {
 
   # Parameters ----------------------------------------------------------
 
@@ -314,7 +314,7 @@ sti_trans <- function(dat, at) {
 #'
 #' @export
 #'
-sti_recov <- function(dat, at) {
+stirecov_msm <- function(dat, at) {
 
   # Parameters ----------------------------------------------------------
 
@@ -436,7 +436,7 @@ sti_recov <- function(dat, at) {
 #'
 #' @export
 #'
-sti_tx <- function(dat, at) {
+stitx_msm <- function(dat, at) {
 
   # Parameters
   gc.sympt.prob.tx <- dat$param$gc.sympt.prob.tx

@@ -28,10 +28,10 @@
 #' of infected individuals.
 #'
 #' @keywords module msm
-#' 
+#'
 #' @export
 #'
-progress_msm <- function(dat, at) {
+hivprogress_msm <- function(dat, at) {
 
   ## Variables
 
