@@ -99,14 +99,6 @@ initialize_msm <- function(x, param, init, control, s) {
   circ[ids.W] <- sample(apportion_lr(num.W, 0:1, 1 - param$circ.prob[2]))
   dat$attr$circ <- circ
 
-  ## PrEP Attributes ##
-  dat$attr$prepClass <- rep(NA, num)
-  dat$attr$prepElig <- rep(NA, num)
-  dat$attr$prepStat <- rep(0, num)
-  dat$attr$prepStartTime <- rep(NA, num)
-  dat$attr$prepLastRisk <- rep(NA, num)
-  dat$attr$prepLastStiScreen <- rep(NA, num)
-
   # Role class
   role.class <- get.vertex.attribute(nw[[1]], "role.class")
   dat$attr$role.class <- role.class

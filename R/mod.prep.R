@@ -34,6 +34,15 @@ prep_msm <- function(dat, at) {
   lnt <- dat$attr$last.neg.test
 
   # PrEP Attributes
+  if (at == dat$param$prep.start) {
+    num <- sum(active == 1)
+    dat$attr$prepClass <- rep(NA, num)
+    dat$attr$prepElig <- rep(NA, num)
+    dat$attr$prepStat <- rep(0, num)
+    dat$attr$prepStartTime <- rep(NA, num)
+    dat$attr$prepLastRisk <- rep(NA, num)
+    dat$attr$prepLastStiScreen <- rep(NA, num)
+  }
   prepElig <- dat$attr$prepElig
   prepStat <- dat$attr$prepStat
   prepClass <- dat$attr$prepClass
