@@ -104,7 +104,7 @@ initialize_msm <- function(x, param, init, control, s) {
   colnames(plist)[1:2] <- c("p1", "p2")
   dat$temp$plist <- plist
 
-  dat$param$netstats <- NULL
+  # dat$param$netstats <- NULL
   class(dat) <- "dat"
   return(dat)
 }
@@ -172,7 +172,7 @@ init_status_msm <- function(dat) {
 
   time.sex.active <- pmax(1,
                           round((365 / dat$param$time.unit) * age - (365 / dat$param$time.unit) *
-                                  min(dat$init$ages), 0))
+                                  min(dat$attr$age), 0))
 
   vlar.int <- dat$param$vl.acute.rise.int
   vlap <- dat$param$vl.acute.peak
