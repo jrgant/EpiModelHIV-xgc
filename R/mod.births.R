@@ -75,7 +75,6 @@ setBirthAttr_msm <- function(dat, at, nBirths) {
   dat$attr$race[newIds] <- race
 
   dat$attr$age[newIds] <- rep(dat$param$birth.age, nBirths)
-  dat$attr$sqrt.age[newIds] <- sqrt(dat$attr$age[newIds])
 
   # Disease status and related
   dat$attr$status[newIds] <- rep(0, nBirths)

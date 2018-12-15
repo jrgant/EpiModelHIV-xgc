@@ -25,7 +25,6 @@ aging_msm <- function(dat, at) {
   age[active == 1] <- age[active == 1] + time.unit / 365
 
   dat$attr$age <- age
-  dat$attr$sqrt.age <- sqrt(age)
 
   return(dat)
 }
