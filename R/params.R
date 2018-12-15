@@ -290,8 +290,7 @@ param_msm <- function(netstats,
 #' @description Sets the initial conditions for a stochastic epidemic models
 #'              simulated with \code{\link{netsim}}.
 #'
-#' @param prev.B Initial disease prevalence among black MSM.
-#' @param prev.W Initial disease prevalence among white MSM.
+#' @param init.hiv.mod Logistic regression model for initial HIV status
 #' @param prev.ugc Initial prevalence of urethral gonorrhea.
 #' @param prev.rgc Initial prevalence of rectal gonorrhea.
 #' @param prev.uct Initial prevalence of urethral chlamydia.
@@ -305,8 +304,7 @@ param_msm <- function(netstats,
 #' @keywords msm
 #'
 #' @export
-init_msm <- function(prev.B = 0.253,
-                     prev.W = 0.253,
+init_msm <- function(init.hiv.mod,
                      prev.ugc = 0.005,
                      prev.rgc = 0.005,
                      prev.uct = 0.013,

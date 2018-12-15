@@ -4,13 +4,11 @@
 \alias{init_msm}
 \title{Epidemic Model Initial Conditions}
 \usage{
-init_msm(prev.B = 0.253, prev.W = 0.253, prev.ugc = 0.005,
-  prev.rgc = 0.005, prev.uct = 0.013, prev.rct = 0.013, ...)
+init_msm(init.hiv.mod, prev.ugc = 0.005, prev.rgc = 0.005,
+  prev.uct = 0.013, prev.rct = 0.013, ...)
 }
 \arguments{
-\item{prev.B}{Initial disease prevalence among black MSM.}
-
-\item{prev.W}{Initial disease prevalence among white MSM.}
+\item{init.hiv.mod}{Logistic regression model for initial HIV status}
 
 \item{prev.ugc}{Initial prevalence of urethral gonorrhea.}
 
