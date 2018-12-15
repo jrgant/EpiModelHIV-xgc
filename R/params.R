@@ -204,7 +204,7 @@ param_msm <- function(netstats,
 
                       # Demographic
                       b.rate = 1e-3 / 7,
-                      birth.age = 18,
+                      birth.age = 15,
 
                       # HIV transmission prob
                       URAI.prob = 0.0082 * 1.09,
