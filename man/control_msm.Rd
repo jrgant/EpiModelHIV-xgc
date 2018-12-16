@@ -6,7 +6,7 @@
 \usage{
 control_msm(simno = 1, nsims = 1, ncores = 1, nsteps = 100,
   start = 1, initialize.FUN = initialize_msm, aging.FUN = aging_msm,
-  depature.FUN = departure_msm, arrival.FUN = arrival_msm,
+  departure.FUN = departure_msm, arrival.FUN = arrival_msm,
   hivtest.FUN = hivtest_msm, hivtx.FUN = hivtx_msm,
   hivprogress.FUN = hivprogress_msm, hivvl.FUN = hivvl_msm,
   resim_nets.FUN = simnet_msm, acts.FUN = acts_msm,
@@ -37,6 +37,8 @@ parameters.}
 model.}
 
 \item{aging.FUN}{Module function for aging.}
+
+\item{departure.FUN}{Module function for general and disease-realted depatures.}
 
 \item{arrival.FUN}{Module function for entries into the sexually active population.}
 
@@ -86,8 +88,6 @@ active partnerships.}
 if in interactive mode or text files if in batch mode.}
 
 \item{...}{Additional arguments passed to the function.}
-
-\item{departure.FUN}{Module function for general and disease-realted depatures.}
 }
 \value{
 A list object of class \code{control_msm}, which can be passed to the

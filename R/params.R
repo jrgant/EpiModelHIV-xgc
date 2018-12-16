@@ -56,8 +56,9 @@
 #'        re-initiation until the level in \code{vl.part.supp}.
 #' @param part.supp.up.slope For partial suppressors, number of log10 units that
 #'        viral load rises per time step from treatment halting until expected value.
-#' @param b.rate Rate at which MSM enter the population.
-#' @param birth.age Age (in years) of new arrivals.
+#'
+#' @param a.rate Rate at which MSM enter the population.
+#' @param arrival.age Age (in years) of new arrivals.
 #'
 #' @param URAI.prob Probability of transmission for a man having unprotected
 #'        receptive anal intercourse with an infected man at set point viral
@@ -382,7 +383,7 @@ control_msm <- function(simno = 1,
                         start = 1,
                         initialize.FUN = initialize_msm,
                         aging.FUN = aging_msm,
-                        depature.FUN = departure_msm,
+                        departure.FUN = departure_msm,
                         arrival.FUN = arrival_msm,
                         hivtest.FUN = hivtest_msm,
                         hivtx.FUN = hivtx_msm,

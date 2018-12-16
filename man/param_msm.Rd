@@ -110,6 +110,10 @@ re-initiation until the level in \code{vl.part.supp}.}
 \item{part.supp.up.slope}{For partial suppressors, number of log10 units that
 viral load rises per time step from treatment halting until expected value.}
 
+\item{a.rate}{Rate at which MSM enter the population.}
+
+\item{arrival.age}{Age (in years) of new arrivals.}
+
 \item{URAI.prob}{Probability of transmission for a man having unprotected
 receptive anal intercourse with an infected man at set point viral
 load.}
@@ -255,10 +259,6 @@ low adherence, medium adherence, and high adherence to PrEP.}
 PrEP visit.}
 
 \item{...}{Additional arguments passed to the function.}
-
-\item{b.rate}{Rate at which MSM enter the population.}
-
-\item{birth.age}{Age (in years) of new arrivals.}
 }
 \value{
 A list object of class \code{param_msm}, which can be passed to
