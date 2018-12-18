@@ -47,13 +47,6 @@ stitrans_msm <- function(dat, at) {
   rCT.timesInf <- dat$attr$rCT.timesInf
   uCT.timesInf <- dat$attr$uCT.timesInf
 
-  # Set disease status to 0 for new births
-  newBirths <- which(dat$attr$arrival.time == at)
-  rGC[newBirths] <- rGC.timesInf[newBirths] <- 0
-  uGC[newBirths] <- uGC.timesInf[newBirths] <- 0
-  rCT[newBirths] <- rCT.timesInf[newBirths] <- 0
-  uCT[newBirths] <- uCT.timesInf[newBirths] <- 0
-
   # Infection time
   rGC.infTime <- dat$attr$rGC.infTime
   uGC.infTime <- dat$attr$uGC.infTime
