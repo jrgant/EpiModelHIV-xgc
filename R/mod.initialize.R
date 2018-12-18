@@ -54,7 +54,6 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$attr$active <- rep(1, num)
   dat$attr$arrival.time <- rep(1, num)
   dat$attr$uid <- 1:num
-  dat$temp$max.uid <- num
 
   # UAI group
   p1 <- dat$param$cond.pers.always.prob
@@ -94,7 +93,7 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$epi <- list()
 
   # Prevalence Tracking
-  dat$temp$deg.dists <- list()
+  dat$temp$max.uid <- num
   dat <- prevalence_msm(dat, at = 1)
 
   # Setup Partner List
