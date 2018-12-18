@@ -36,16 +36,21 @@ control <- control_msm(simno = 1,
 
 # Testing/Timing ------------------------------------------------------
 
-dat <- initialize_msm(est, param, init, control, s = 1)
+library(microbenchmark)
+m <- microbenchmark(hivvl_msm(dat, at))
+print(m, unit = "ms")
 
-for (at in 2:104) {
-  dat <- aging_msm(dat, at)
-  dat <- departure_msm(dat, at)
-  dat <- births_msm(dat, at)
-  dat <- hivtest_msm(dat, at)
-  dat <- hivtx_msm(dat, at)
-  dat <- hivprogress_msm(dat, at)
-  dat <- hivvl_msm(dat, at)
+dat <- initialize_msm(est, param, init, control, s = 1) # check
+
+# for (at in 2:104) {
+  at = 2
+  dat <- aging_msm(dat, at)        # check
+  dat <- departure_msm(dat, at)    # check
+  dat <- arrival_msm(dat, at)      # check
+  dat <- hivtest_msm(dat, at)      # check
+  dat <- hivtx_msm(dat, at)        # check
+  dat <- hivprogress_msm(dat, at)  # check
+  dat <- hivvl_msm(dat, at)        # check
   dat <- simnet_msm(dat, at)
   dat <- acts_msm(dat, at)
   dat <- condoms_msm(dat, at)
@@ -57,7 +62,7 @@ for (at in 2:104) {
   dat <- stitx_msm(dat, at)
   dat <- prevalence_msm(dat, at)
   cat(at, ".", sep = "")
-}
+# }
 
 nrow(dat$temp$plist)
 table(dat$temp$plist[, "start"])

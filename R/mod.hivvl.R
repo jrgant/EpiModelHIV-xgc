@@ -29,11 +29,8 @@
 #'
 hivvl_msm <- function(dat, at) {
 
-  ## Variables
-
   # Attributes
   inf.time.bp <- at - dat$attr$inf.time
-  # cum.time.off.tx <- dat$attr$cum.time.off.tx
   cum.time.on.tx <- dat$attr$cum.time.on.tx
   status <- dat$attr$status
   tt.traj <- dat$attr$tt.traj
@@ -55,14 +52,7 @@ hivvl_msm <- function(dat, at) {
   part.supp.down.slope <- dat$param$part.supp.down.slope
   full.supp.up.slope <- dat$param$full.supp.up.slope
   part.supp.up.slope <- dat$param$part.supp.up.slope
-  # max.time.off.tx.part <- dat$param$max.time.off.tx.part
-  # max.time.on.tx.part <- dat$param$max.time.on.tx.part
-
-  # Calculations
   vlds <- (vlf - vlsp) / vldd
-  # part.tx.score <-  (cum.time.off.tx / max.time.off.tx.part) +
-  #                   (cum.time.on.tx / max.time.on.tx.part)
-
 
   ## Process
 
@@ -76,50 +66,50 @@ hivvl_msm <- function(dat, at) {
             (inf.time.bp.tn > vldo) * (vlsp + (inf.time.bp.tn - vldo) * vlds)
   vl[target] <- new.vl
 
-  # 2. men on tx, tt.traj=full, not yet escaped
+  # 2. men on tx, tt.traj=full, not AIDS
   target <- which(tx.status == 1 & tt.traj == 4 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmax(current.vl - full.supp.down.slope, vl.full.supp)
   vl[target] <- new.vl
 
-  # 3. men on tx, tt.traj=part, not yet escaped
+  # 3. men on tx, tt.traj=part, not AIDS
   target <- which(tx.status == 1 & tt.traj == 3 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmax(current.vl - part.supp.down.slope, vl.part.supp)
   vl[target] <- new.vl
 
-  # 4. men off tx, not naive, tt.traj=full, not yet escaped
+  # 4. men off tx, not naive, tt.traj=full, not AIDS
   target <- which(tx.status == 0 & tt.traj == 4 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmin(current.vl + full.supp.up.slope, vlsp)
   vl[target] <- new.vl
 
-  # 5. men off tx, not naive, tt.traj=part, not yet escaped
+  # 5. men off tx, not naive, tt.traj=part, not AIDS
   target <- which(tx.status == 0 & tt.traj == 3 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmin(current.vl + part.supp.up.slope, vlsp)
   vl[target] <- new.vl
 
-  # 6. men on tx, tt.traj=full, escaped
+  # 6. men on tx, tt.traj=full, AIDS
   # Doesn't exist.
 
-  # 7. men on tx, tt.traj=part, escaped
+  # 7. men on tx, tt.traj=part, AIDS
   target <- which(tx.status == 1 &
                   tt.traj == 3 & stage == 4)
   current.vl <- vl[target]
   new.vl <- current.vl + vlds
   vl[target] <- new.vl
 
-  # 8. men off tx, tt.traj=full, and escaped
+  # 8. men off tx, tt.traj=full, and AIDS
   target <- which(tx.status == 0 & tt.traj == 4 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]
   new.vl <- current.vl + vlds
   vl[target] <- new.vl
 
-  # 9. men off tx, tt.traj=part, and escaped
+  # 9. men off tx, tt.traj=part, and AIDS
   target <- which(tx.status == 0 & tt.traj == 3 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]

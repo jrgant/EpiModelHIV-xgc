@@ -33,8 +33,6 @@
 #'
 hivprogress_msm <- function(dat, at) {
 
-  ## Variables
-
   # Attributes
   active <- dat$attr$active
   status <- dat$attr$status
