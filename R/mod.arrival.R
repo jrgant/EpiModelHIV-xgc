@@ -73,10 +73,17 @@ setNewAttr_msm <- function(dat, at, nNew) {
   newW <- which(race == "W")
   dat$attr$race[newIds] <- race
 
-  dat$attr$age[newIds] <- rep(dat$param$birth.age, nNew)
+  dat$attr$age[newIds] <- rep(dat$param$arrival.age, nNew)
+  age.breaks <- c(0, 24, 34, 44, 54, 64, 100)
+  attr_age.grp <- cut(dat$attr$age[newIds], age.breaks, labels = FALSE)
+  dat$attr$age.grp[newIds] <- attr_age.grp
 
   # Disease status and related
   dat$attr$status[newIds] <- rep(0, nNew)
+  dat$attr$rGC[newIds] <- dat$attrrGC.timesInf[newIds] <- 0
+  dat$attr$uGC[newIds] <- dat$attruGC.timesInf[newIds] <- 0
+  dat$attr$rCT[newIds] <- dat$attrrCT.timesInf[newIds] <- 0
+  dat$attr$uCT[newIds] <- dat$attruCT.timesInf[newIds] <- 0
 
   dat$attr$tt.traj[newIds[newB]] <- sample(1:4,
                                            length(newB), replace = TRUE,
@@ -90,12 +97,16 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$circ[newIds[newW]] <- rbinom(length(newW), 1, dat$param$circ.prob[2])
 
   # Role
+  ns <- dat$param$netstats$attr
+  rc.probs.B <- prop.table(table(ns$role.class[ns$race == "B"]))
+  rc.probs.W <- prop.table(table(ns$role.class[ns$race == "W"]))
+
   dat$attr$role.class[newIds[newB]] <- sample(c("I", "R", "V"),
                                               length(newB), replace = TRUE,
-                                              prob = dat$param$role.B.prob)
+                                              prob = rc.probs.B)
   dat$attr$role.class[newIds[newW]] <- sample(c("I", "R", "V"),
                                               length(newW), replace = TRUE,
-                                              prob = dat$param$role.W.prob)
+                                              prob = rc.probs.W)
 
   ins.quot <- rep(NA, nNew)
   ins.quot[dat$attr$role.class[newIds] == "I"]  <- 1
@@ -107,20 +118,25 @@ setNewAttr_msm <- function(dat, at, nNew) {
   # Degree
   dat$attr$deg.main[newIds] <- 0
   dat$attr$deg.pers[newIds] <- 0
+  dat$attr$deg.tot[newIds] <- 0
 
   # One-off risk group
-  dat$attr$riskg[newIds] <- sample(1:5, nNew, TRUE)
+  dat$attr$risk.grp[newIds] <- apportion_lr(nNew, 1:2, rep(0.5, 2), shuffled = TRUE)
 
   # UAI group
   p1 <- dat$param$cond.pers.always.prob
   p2 <- dat$param$cond.inst.always.prob
   rho <- dat$param$cond.always.prob.corr
-  uai.always <- bindata::rmvbin(nNew, c(p1, p2), bincorr = (1 - rho) * diag(2) + rho)
-  dat$attr$cond.always.pers[newIds] <- uai.always[, 1]
-  dat$attr$cond.always.inst[newIds] <- uai.always[, 2]
+  cond.always <- bindata::rmvbin(nNew, c(p1, p2), bincorr = (1 - rho) * diag(2) + rho)
+  dat$attr$cond.always.pers[newIds] <- cond.always[, 1]
+  dat$attr$cond.always.inst[newIds] <- cond.always[, 2]
 
   # PrEP
   dat$attr$prepStat[newIds] <- 0
+
+
+  ## Check attributes written as expected
+  cbind(sapply(dat$attr, function(x) is.na(tail(x, 1))))
 
   return(dat)
 }
