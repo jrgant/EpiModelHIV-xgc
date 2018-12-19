@@ -18,17 +18,15 @@ param_msm(netstats, hiv.test.int = c(301, 315), test.window.int = 21,
   a.rate = 0.001/7, arrival.age = 15, URAI.prob = 0.0082 * 1.09,
   UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
   cond.eff = 0.95, cond.fail = c(0.39, 0.21), circ.prob = c(0.874,
-  0.918), acts.model = epistats$act.rates, cond.main.prob = c(0.21,
-  0.21, 0.21), cond.pers.always.prob = 0.216, cond.pers.prob = c(0.26,
-  0.26, 0.26), cond.inst.always.prob = 0.326, cond.inst.prob = c(0.27,
-  0.27, 0.27), cond.always.prob.corr = 0.5, cond.rr = c(0.71, 1, 1.6),
-  rgc.tprob = 0.428, ugc.tprob = 0.35, rct.tprob = 0.231,
-  uct.tprob = 0.205, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9,
-  rct.sympt.prob = 0.14, uct.sympt.prob = 0.58, rgc.ntx.int = 205.8,
-  ugc.ntx.int = 205.8, gc.tx.int = 2 * 7, rct.ntx.int = 265.1,
-  uct.ntx.int = 265.1, ct.tx.int = 2 * 7, gc.sympt.prob.tx = c(0.86,
-  0.96), ct.sympt.prob.tx = c(0.72, 0.85), gc.asympt.prob.tx = c(0.1,
-  0.19), ct.asympt.prob.tx = c(0.05, 0.1), sti.cond.eff = 0.95,
+  0.918), acts.model = epistats$acts.mod,
+  cond.model = epistats$cond.mod, rgc.tprob = 0.428,
+  ugc.tprob = 0.35, rct.tprob = 0.231, uct.tprob = 0.205,
+  rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14,
+  uct.sympt.prob = 0.58, rgc.ntx.int = 205.8, ugc.ntx.int = 205.8,
+  gc.tx.int = 2 * 7, rct.ntx.int = 265.1, uct.ntx.int = 265.1,
+  ct.tx.int = 2 * 7, gc.sympt.prob.tx = c(0.86, 0.96),
+  ct.sympt.prob.tx = c(0.72, 0.85), gc.asympt.prob.tx = c(0.1, 0.19),
+  ct.asympt.prob.tx = c(0.05, 0.1), sti.cond.eff = 0.95,
   sti.cond.fail = c(0.39, 0.21), hiv.rgc.rr = 2.78,
   hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78, hiv.uct.rr = 1.73,
   hiv.dual.rr = 0.2, riskh.start = Inf, prep.start = Inf,
@@ -140,28 +138,8 @@ will be circumcised (vector of length 2).}
 \item{acts.model}{Statistical model object for the rate of acts per partnership
 per year (then transformed into rate per week).}
 
-\item{cond.main.prob}{Per-act probability of condom use in a BB/BW/WW main
-partnerships (vector of length 3).}
-
-\item{cond.pers.always.prob}{Fraction of men in casual partnerships who always
-use condoms in those partnerships.}
-
-\item{cond.pers.prob}{Of men who are not consistent condom users, per-act
-probability of condom use in a BB/BW/WW casual partnerships (vector of
-length 3).}
-
-\item{cond.inst.always.prob}{Fraction of men in instant partnerships who always
-use condoms in those partnerships.}
-
-\item{cond.inst.prob}{Of men who are not consistent condom users, per-act
-probability of condom use in a BB/BW/WW one-off partnerships vector of
-length 3).}
-
-\item{cond.always.prob.corr}{Correlation coefficient for probability of always
-using condoms in both casual and one-off partnerships.}
-
-\item{cond.rr}{Condom probability scaler for BB/BW/WW partnerships (vector
-of length 3).}
+\item{cond.model}{Statistical model object for the probability of condom use
+per act.}
 
 \item{rgc.tprob}{Probability of rectal gonorrhea infection per act.}
 
