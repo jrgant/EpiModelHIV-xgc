@@ -80,23 +80,8 @@
 #'
 #' @param acts.model Statistical model object for the rate of acts per partnership
 #'        per year (then transformed into rate per week).
-#'
-#' @param cond.main.prob Per-act probability of condom use in a BB/BW/WW main
-#'        partnerships (vector of length 3).
-#' @param cond.pers.always.prob Fraction of men in casual partnerships who always
-#'        use condoms in those partnerships.
-#' @param cond.pers.prob Of men who are not consistent condom users, per-act
-#'        probability of condom use in a BB/BW/WW casual partnerships (vector of
-#'        length 3).
-#' @param cond.inst.always.prob Fraction of men in instant partnerships who always
-#'        use condoms in those partnerships.
-#' @param cond.inst.prob Of men who are not consistent condom users, per-act
-#'        probability of condom use in a BB/BW/WW one-off partnerships vector of
-#'        length 3).
-#' @param cond.always.prob.corr Correlation coefficient for probability of always
-#'        using condoms in both casual and one-off partnerships.
-#' @param cond.rr Condom probability scaler for BB/BW/WW partnerships (vector
-#'        of length 3).
+#' @param cond.model Statistical model object for the probability of condom use
+#'        per act.
 #'
 #' @param riskh.start Time step at which behavioral risk history assessment occurs.
 #' @param prep.start Time step at which the PrEP intervention should start.
@@ -179,8 +164,8 @@ param_msm <- function(netstats,
                       # Clinical
                       hiv.test.int = c(301, 315),
                       test.window.int = 21,
-                      tt.traj.prob = list(c(0.077, 0.000, 0.356, 0.567),
-                                          c(0.052, 0.000, 0.331, 0.617)),
+                      tt.traj.prob = list(c(0, 0, 0.433, 0.567),
+                                          c(0, 0, 0.383, 0.617)),
                       tx.init.prob = c(0.092, 0.127),
                       tx.halt.prob = c(0.0102, 0.0071),
                       tx.reinit.prob = c(0.00066, 0.00291),
@@ -217,15 +202,8 @@ param_msm <- function(netstats,
                       circ.prob = c(0.874, 0.918),
 
                       # Behavioral
-                      acts.model = epistats$act.rates,
-
-                      cond.main.prob = c(0.21, 0.21, 0.21),
-                      cond.pers.always.prob = 0.216,
-                      cond.pers.prob = c(0.26, 0.26, 0.26),
-                      cond.inst.always.prob = 0.326,
-                      cond.inst.prob = c(0.27, 0.27, 0.27),
-                      cond.always.prob.corr = 0.5,
-                      cond.rr = c(0.71, 1, 1.6),
+                      acts.model = epistats$acts.mod,
+                      cond.model = epistats$cond.mod,
 
                       # STI epi
                       rgc.tprob = 0.428,

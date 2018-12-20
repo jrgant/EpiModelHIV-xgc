@@ -5,11 +5,11 @@
 \title{Epidemic Model Parameters}
 \usage{
 param_msm(netstats, hiv.test.int = c(301, 315), test.window.int = 21,
-  tt.traj.prob = list(c(0.077, 0, 0.356, 0.567), c(0.052, 0, 0.331,
-  0.617)), tx.init.prob = c(0.092, 0.127), tx.halt.prob = c(0.0102,
-  0.0071), tx.reinit.prob = c(0.00066, 0.00291),
-  max.time.off.tx.full.int = 520 * 7, max.time.on.tx.part.int = 52 * 15
-  * 7, max.time.off.tx.part.int = 520 * 7, vl.acute.rise.int = 45,
+  tt.traj.prob = list(c(0, 0, 0.433, 0.567), c(0, 0, 0.383, 0.617)),
+  tx.init.prob = c(0.092, 0.127), tx.halt.prob = c(0.0102, 0.0071),
+  tx.reinit.prob = c(0.00066, 0.00291), max.time.off.tx.full.int = 520
+  * 7, max.time.on.tx.part.int = 52 * 15 * 7,
+  max.time.off.tx.part.int = 520 * 7, vl.acute.rise.int = 45,
   vl.acute.peak = 6.886, vl.acute.fall.int = 45, vl.set.point = 4.5,
   vl.aids.onset.int = 520 * 7, vl.aids.int = 52 * 2 * 7,
   vl.fatal = 7, vl.full.supp = 1.5, vl.part.supp = 3.5,
