@@ -51,7 +51,7 @@ acts_msm <- function(dat, at) {
                   p_duration = durations,
                   race.combo = race.combo,
                   comb.age = comb.age,
-                  city = "Atlanta")
+                  city = dat$param$netstats$demog$city)
   rates <- unname(predict(mod, newdata = x, type = "response"))/52
   ai <- rpois(length(rates), rates)
 

@@ -488,6 +488,8 @@ init_status_msm <- function(dat) {
 
 }
 
+  xs <- data.frame(race2 = race2,
+                   age = age, city2 = dat$param$netstats$demog$city)
 #' @title Initialize the STI status of persons in the network
 #'
 #' @description Sets the initial individual-level disease status of persons
