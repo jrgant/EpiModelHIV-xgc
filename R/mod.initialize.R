@@ -55,14 +55,6 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$attr$arrival.time <- rep(1, num)
   dat$attr$uid <- 1:num
 
-  # UAI group
-  p1 <- dat$param$cond.pers.always.prob
-  p2 <- dat$param$cond.inst.always.prob
-  rho <- dat$param$cond.always.prob.corr
-  cond.always <- bindata::rmvbin(num, c(p1, p2), bincorr = (1 - rho) * diag(2) + rho)
-  dat$attr$cond.always.pers <- cond.always[, 1]
-  dat$attr$cond.always.inst <- cond.always[, 2]
-
   # Circumcision
   rates <- param$circ.prob[dat$attr$race + 1]
   dat$attr$circ <- rbinom(length(rates), 1, rates)

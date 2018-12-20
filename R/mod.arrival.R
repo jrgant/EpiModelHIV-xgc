@@ -123,14 +123,6 @@ setNewAttr_msm <- function(dat, at, nNew) {
   # One-off risk group
   dat$attr$risk.grp[newIds] <- apportion_lr(nNew, 1:2, rep(0.5, 2), shuffled = TRUE)
 
-  # UAI group
-  p1 <- dat$param$cond.pers.always.prob
-  p2 <- dat$param$cond.inst.always.prob
-  rho <- dat$param$cond.always.prob.corr
-  cond.always <- bindata::rmvbin(nNew, c(p1, p2), bincorr = (1 - rho) * diag(2) + rho)
-  dat$attr$cond.always.pers[newIds] <- cond.always[, 1]
-  dat$attr$cond.always.inst[newIds] <- cond.always[, 2]
-
   # PrEP
   dat$attr$prepStat[newIds] <- 0
 

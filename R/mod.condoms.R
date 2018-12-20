@@ -69,13 +69,6 @@ condoms_msm <- function(dat, at) {
                  (num.B == 0) * (cond.prob[3] * cond.rr[3])
     uai.prob <- 1 - cond.prob
 
-    # UAI group
-    if (type %in% c("pers", "inst")) {
-      ca1 <- cond.always[elt[, 1]]
-      ca2 <- cond.always[elt[, 2]]
-      uai.prob <- ifelse(ca1 == 1 | ca2 == 1, 0, uai.prob)
-    }
-
     # PrEP Status (risk compensation)
     if (rcomp.prob > 0) {
       idsRC <- which((prepStat[elt[, 1]] == 1 & prepClass[elt[, 1]] %in% rcomp.adh.groups) |
@@ -104,12 +97,6 @@ condoms_msm <- function(dat, at) {
 
   dat$temp$al <- al
 
-  if (at == 2) {
-    dat$epi$ai.events <- rep(NA, 2)
-    dat$epi$uai.events <- rep(NA, 2)
-  }
-  dat$epi$ai.events[at] <- nrow(al)
-  dat$epi$uai.events[at] <- sum(al[, "uai"])
 
   return(dat)
 }
