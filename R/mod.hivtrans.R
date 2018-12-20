@@ -216,15 +216,10 @@ hivtrans_msm <- function(dat, at) {
 
   # Update attributes
 
-  infected <- inf.type <- NULL
+  infected <- NULL
   if (sum(trans.ip, trans.rp) > 0) {
-
     infected <- c(disc.ip[trans.ip == 1, 2],
                   disc.rp[trans.rp == 1, 1])
-    inf.role <- c(rep(0, sum(trans.ip)), rep(1, sum(trans.rp)))
-    inf.type <- c(disc.ip[trans.ip == 1, "ptype"],
-                  disc.rp[trans.rp == 1, "ptype"])
-
     dat$attr$status[infected] <- 1
     dat$attr$inf.time[infected] <- at
     dat$attr$vl[infected] <- 0
@@ -232,9 +227,6 @@ hivtrans_msm <- function(dat, at) {
     dat$attr$stage.time[infected] <- 0
     dat$attr$diag.status[infected] <- 0
     dat$attr$tx.status[infected] <- 0
-
-    dat$attr$inf.role[infected] <- inf.role
-    dat$attr$inf.type[infected] <- inf.type
 
     dat$attr$cum.time.on.tx[infected] <- 0
     dat$attr$cum.time.off.tx[infected] <- 0
