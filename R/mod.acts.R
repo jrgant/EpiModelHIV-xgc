@@ -35,9 +35,7 @@ acts_msm <- function(dat, at) {
   ptype  <- rep(1:2, times = c(nrow(dat$el[[1]]), nrow(dat$el[[2]])))
 
   # Base AI rates based on Poisson model for main/casual
-  # TODO: switch to ARTnet race encoding
-  race.combo <- as.numeric(race[el.mc[, 1]] == "W") +
-                as.numeric(race[el.mc[, 2]] == "W")
+  race.combo <- race[el.mc[, 1]] + race[el.mc[, 2]]
   comb.age <- age[el.mc[, 1]] + age[el.mc[, 2]]
 
   # Current partnership durations

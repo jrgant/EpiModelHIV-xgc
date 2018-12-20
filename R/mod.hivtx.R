@@ -48,19 +48,19 @@ hivtx_msm <- function(dat, at) {
                         tt.traj %in% 3:4 &
                         cum.time.on.tx == 0 &
                         stage != 4)
-  rates <- tx.init.prob[as.numeric(as.factor(race[tx.init.elig]))]
+  rates <- tx.init.prob[race[tx.init.elig] + 1]
   tx.init <- tx.init.elig[rbinom(length(tx.init.elig), 1, rates) == 1]
 
   ## Halting
   tx.halt.elig <- which(tx.status == 1)
-  rates <- tx.halt.prob[as.numeric(as.factor(race[tx.halt.elig]))]
+  rates <- tx.halt.prob[race[tx.halt.elig] + 1]
   tx.halt <- tx.halt.elig[rbinom(length(tx.halt.elig), 1, rates) == 1]
 
   ## Restarting
   tx.reinit.elig <- which(tx.status == 0 &
                           cum.time.on.tx > 0 &
                           stage != 4)
-  rates <- tx.reinit.prob[as.numeric(as.factor(race[tx.reinit.elig]))]
+  rates <- tx.reinit.prob[race[tx.reinit.elig] + 1]
   tx.reinit <- tx.reinit.elig[rbinom(length(tx.reinit.elig), 1, rates) == 1]
 
   ## Update treatment time

@@ -67,10 +67,10 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   dat$attr$arrival.time[newIds] <- rep(at, nNew)
 
-  race.dist.B <- sum(dat$epi$num.B[1])/sum(dat$epi$num[1])
-  race <- apportion_lr(nNew, c("B", "W"), c(race.dist.B, 1 - race.dist.B), TRUE)
-  newB <- which(race == "B")
-  newW <- which(race == "W")
+  race.dist.W <- sum(dat$epi$num.W[1])/sum(dat$epi$num[1])
+  race <- rbinom(nNew, 1, race.dist.W)
+  newB <- which(race == 0)
+  newW <- which(race == 1)
   dat$attr$race[newIds] <- race
 
   dat$attr$age[newIds] <- rep(dat$param$arrival.age, nNew)
@@ -98,8 +98,8 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   # Role
   ns <- dat$param$netstats$attr
-  rc.probs.B <- prop.table(table(ns$role.class[ns$race == "B"]))
-  rc.probs.W <- prop.table(table(ns$role.class[ns$race == "W"]))
+  rc.probs.B <- prop.table(table(ns$role.class[ns$race == 0]))
+  rc.probs.W <- prop.table(table(ns$role.class[ns$race == 1]))
 
   dat$attr$role.class[newIds[newB]] <- sample(c("I", "R", "V"),
                                               length(newB), replace = TRUE,

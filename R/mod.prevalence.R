@@ -37,8 +37,8 @@ prevalence_msm <- function(dat, at) {
   uCT <- dat$attr$uCT
 
   dat$epi$num[at] <- sum(active == 1, na.rm = TRUE)
-  dat$epi$num.B[at] <- sum(race == "B", na.rm = TRUE)
-  dat$epi$num.W[at] <- sum(race == "W", na.rm = TRUE)
+  dat$epi$num.B[at] <- sum(race == 0, na.rm = TRUE)
+  dat$epi$num.W[at] <- sum(race == 1, na.rm = TRUE)
 
   dat$epi$s.num[at] <- sum(status == 0, na.rm = TRUE)
 

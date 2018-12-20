@@ -102,8 +102,8 @@ hivtrans_msm <- function(dat, at) {
 
   # Condom use
   not.UAI <- which(disc.ip[, "uai"] == 0)
-  not.UAI.B.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == "B"))
-  not.UAI.W.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == "W"))
+  not.UAI.B.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == 0))
+  not.UAI.W.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == 1))
 
   condom.rr <- rep(NA, nrow(disc.ip))
   condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail[1])
@@ -165,8 +165,8 @@ hivtrans_msm <- function(dat, at) {
   # Condom use
   not.UAI <- which(disc.rp[, "uai"] == 0)
 
-  not.UAI.B.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == "B"))
-  not.UAI.W.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == "W"))
+  not.UAI.B.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == 0))
+  not.UAI.W.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == 1))
 
   condom.rr <- rep(NA, nrow(disc.rp))
   condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail[1])
@@ -242,8 +242,8 @@ hivtrans_msm <- function(dat, at) {
 
   # Summary Output
   dat$epi$incid[at] <- length(infected)
-  dat$epi$incid.B[at] <- sum(dat$attr$race[infected] == "B")
-  dat$epi$incid.W[at] <- sum(dat$attr$race[infected] == "W")
+  dat$epi$incid.B[at] <- sum(dat$attr$race[infected] == 0)
+  dat$epi$incid.W[at] <- sum(dat$attr$race[infected] == 1)
 
   return(dat)
 }

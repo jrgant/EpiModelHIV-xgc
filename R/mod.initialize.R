@@ -64,14 +64,10 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$attr$cond.always.inst <- cond.always[, 2]
 
   # Circumcision
-  circ <- rep(NA, num)
-  idsB <- which(dat$attr$race == "B")
-  idsW <- which(dat$attr$race == "W")
-  circ[idsB] <- rbinom(length(idsB), 1, param$circ.prob[1])
-  circ[idsW] <- rbinom(length(idsW), 1, param$circ.prob[2])
-  dat$attr$circ <- circ
+  rates <- param$circ.prob[dat$attr$race + 1]
+  dat$attr$circ <- rbinom(length(rates), 1, rates)
 
-  # Ins.quot
+  # Insertivity Quotient
   ins.quot <- rep(NA, num)
   role.class <- dat$attr$role.class
   ins.quot[role.class == "I"]  <- 1
@@ -130,8 +126,8 @@ initialize_msm <- function(x, param, init, control, s) {
 init_status_msm <- function(dat) {
 
   num <- sum(dat$attr$active == 1)
-  ids.B <- which(dat$attr$race == "B")
-  ids.W <- which(dat$attr$race == "W")
+  ids.B <- which(dat$attr$race == 0)
+  ids.W <- which(dat$attr$race == 1)
   num.B <- length(ids.B)
   num.W <- length(ids.W)
 
@@ -140,7 +136,7 @@ init_status_msm <- function(dat) {
 
   # Race and age-based infection probability
   hiv.mod <- dat$init$init.hiv.mod
-  race2 <- ifelse(dat$attr$race == "B", 0, 1)
+  race2 <- dat$attr$race
   xs <- data.frame(race2 = race2, age = age, city2 = "Atlanta")
   preds <- predict(hiv.mod, newdata = xs, type = "response")
 
@@ -226,8 +222,8 @@ init_status_msm <- function(dat) {
 
   # Time to next test
   ttntest <- rgeom(length(selected),
-                   1 / (dat$param$hiv.test.int[1] * (race[selected] == "B") +
-                        dat$param$hiv.test.int[2] * (race[selected] == "W")))
+                   1 / (dat$param$hiv.test.int[1] * (race[selected] == 0) +
+                        dat$param$hiv.test.int[2] * (race[selected] == 1)))
 
   twind.int <- dat$param$test.window.int
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
@@ -291,7 +287,7 @@ init_status_msm <- function(dat) {
   stage.time.W <- c(1:vlar.int, 1:vlaf.int, 1:exp.dur.chronic.W, 1:vl.aids.int)
 
   # Vl for Blacks
-  selected <- which(status == 1 & tt.traj == 4 & race == "B")
+  selected <- which(status == 1 & tt.traj == 4 & race == 0)
   max.inf.time <- pmin(time.sex.active[selected], max.possible.inf.time.B)
   time.since.inf <- ceiling(runif(length(selected), max = max.inf.time))
   inf.time[selected] <- 1 - time.since.inf
@@ -313,7 +309,7 @@ init_status_msm <- function(dat) {
   vl[selected][tx.status[selected] == 1] <- dat$param$vl.full.supp
 
   # VL for Whites
-  selected <- which(status == 1 & tt.traj == 4 & race == "W")
+  selected <- which(status == 1 & tt.traj == 4 & race == 1)
   max.inf.time <- pmin(time.sex.active[selected], max.possible.inf.time.W)
   time.since.inf <- ceiling(runif(length(selected), max = max.inf.time))
   inf.time[selected] <- 1 - time.since.inf
@@ -337,8 +333,8 @@ init_status_msm <- function(dat) {
   # Diagnosis
   selected <- which(status == 1 & tt.traj == 4)
   ttntest <- rgeom(length(selected),
-                   1 / (dat$param$hiv.test.int[1] * (race[selected] == "B") +
-                        dat$param$hiv.test.int[2] * (race[selected] == "W")))
+                   1 / (dat$param$hiv.test.int[1] * (race[selected] == 0) +
+                        dat$param$hiv.test.int[2] * (race[selected] == 1)))
 
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
   last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
@@ -400,7 +396,7 @@ init_status_msm <- function(dat) {
   stage.time.W <- c(1:vlar.int, 1:vlaf.int, 1:exp.dur.chronic.W, 1:vl.aids.int)
 
   # VL for Blacks
-  selected <- which(status == 1 & tt.traj == 3 & race == "B")
+  selected <- which(status == 1 & tt.traj == 3 & race == 0)
   max.inf.time <- pmin(time.sex.active[selected], max.possible.inf.time.B)
   time.since.inf <- ceiling(runif(length(selected), max = max.inf.time))
   inf.time[selected] <- 1 - time.since.inf
@@ -422,7 +418,7 @@ init_status_msm <- function(dat) {
   vl[selected][tx.status[selected] == 1] <- dat$param$vl.part.supp
 
   # VL for Whites
-  selected <- which(status == 1 & tt.traj == 3 & race == "W")
+  selected <- which(status == 1 & tt.traj == 3 & race == 1)
   max.inf.time <- pmin(time.sex.active[selected], max.possible.inf.time.W)
   time.since.inf <- ceiling(runif(length(selected), max = max.inf.time))
   inf.time[selected] <- 1 - time.since.inf
@@ -446,8 +442,8 @@ init_status_msm <- function(dat) {
   # Implement diagnosis for both
   selected <- which(status == 1 & tt.traj == 3)
   ttntest <- rgeom(length(selected),
-                   1 / (dat$param$hiv.test.int[1] * (race[selected] == "B") +
-                        dat$param$hiv.test.int[2] * (race[selected] == "W")))
+                   1 / (dat$param$hiv.test.int[1] * (race[selected] == 0) +
+                        dat$param$hiv.test.int[2] * (race[selected] == 1)))
 
   diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
   last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
@@ -461,8 +457,8 @@ init_status_msm <- function(dat) {
   # Last neg test before present for negatives
   selected <- which(status == 0 & tt.traj %in% c(2, 3, 4))
   tslt <- rgeom(length(selected),
-                1 / (dat$param$hiv.test.int[1] * (race[selected] == "B") +
-                     dat$param$hiv.test.int[1] * (race[selected] == "W")))
+                1 / (dat$param$hiv.test.int[1] * (race[selected] == 0) +
+                     dat$param$hiv.test.int[1] * (race[selected] == 1)))
   last.neg.test[selected] <- -tslt
 
 

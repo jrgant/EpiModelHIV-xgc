@@ -88,8 +88,8 @@ stitrans_msm <- function(dat, at) {
   # Modify log odds by race-specific condom effectiveness
   races <- c(race[al[p1Inf_rgc, "p1"]], race[al[p2Inf_rgc, "p2"]])
   condom.rr <- rep(NA, length(races))
-  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail[1])
-  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail[2])
+  condom.rr[races == 0] <- 1 - (sti.cond.eff - sti.cond.fail[1])
+  condom.rr[races == 1] <- 1 - (sti.cond.eff - sti.cond.fail[2])
 
   tlo_rgc[uai_rgc == 0] <- tlo_rgc[uai_rgc == 0] + log(condom.rr[uai_rgc == 0])
 
@@ -133,8 +133,8 @@ stitrans_msm <- function(dat, at) {
   # Modify log odds by race-specific condom effectiveness
   races <- c(race[al[p1Inf_ugc, "p2"]], race[al[p2Inf_ugc, "p1"]])
   condom.rr <- rep(NA, length(races))
-  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail[1])
-  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail[2])
+  condom.rr[races == 0] <- 1 - (sti.cond.eff - sti.cond.fail[1])
+  condom.rr[races == 1] <- 1 - (sti.cond.eff - sti.cond.fail[2])
 
   tlo_ugc[uai_ugc == 0] <- tlo_ugc[uai_ugc == 0] + log(condom.rr[uai_ugc == 0])
 
@@ -178,8 +178,8 @@ stitrans_msm <- function(dat, at) {
   # Modify log odds by race-specific condom effectiveness
   races <- c(race[al[p1Inf_rct, "p1"]], race[al[p2Inf_rct, "p2"]])
   condom.rr <- rep(NA, length(races))
-  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail[1])
-  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail[2])
+  condom.rr[races == 0] <- 1 - (sti.cond.eff - sti.cond.fail[1])
+  condom.rr[races == 1] <- 1 - (sti.cond.eff - sti.cond.fail[2])
 
   tlo_rct[uai_rct == 0] <- tlo_rct[uai_rct == 0] + log(condom.rr[uai_rct == 0])
 
@@ -223,8 +223,8 @@ stitrans_msm <- function(dat, at) {
   # Modify log odds by race-specific condom effectiveness
   races <- c(race[al[p1Inf_uct, "p2"]], race[al[p2Inf_uct, "p1"]])
   condom.rr <- rep(NA, length(races))
-  condom.rr[races == "B"] <- 1 - (sti.cond.eff - sti.cond.fail[1])
-  condom.rr[races == "W"] <- 1 - (sti.cond.eff - sti.cond.fail[2])
+  condom.rr[races == 0] <- 1 - (sti.cond.eff - sti.cond.fail[1])
+  condom.rr[races == 1] <- 1 - (sti.cond.eff - sti.cond.fail[2])
 
   tlo_uct[uai_uct == 0] <- tlo_uct[uai_uct == 0] + log(condom.rr[uai_uct == 0])
 
@@ -275,12 +275,12 @@ stitrans_msm <- function(dat, at) {
 
   # Summary stats
   dat$epi$incid.gc[at] <- length(idsInf_rgc) + length(idsInf_ugc)
-  dat$epi$incid.gc.B[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == "B")))
-  dat$epi$incid.gc.W[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == "W")))
+  dat$epi$incid.gc.B[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 0)))
+  dat$epi$incid.gc.W[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 1)))
 
   dat$epi$incid.ct[at] <- length(idsInf_rct) + length(idsInf_uct)
-  dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == "B")))
-  dat$epi$incid.ct.W[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == "W")))
+  dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 0)))
+  dat$epi$incid.ct.W[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 1)))
 
 
   # Check all infected have all STI attributes
@@ -454,10 +454,10 @@ stitx_msm <- function(dat, at) {
                            is.na(dat$attr$uGC.tx))
 
   # Subset by race
-  idsRGC_tx_sympt_B <- intersect(idsRGC_tx_sympt, which(race == "B"))
-  idsRGC_tx_sympt_W <- intersect(idsRGC_tx_sympt, which(race == "W"))
-  idsUGC_tx_sympt_B <- intersect(idsUGC_tx_sympt, which(race == "B"))
-  idsUGC_tx_sympt_W <- intersect(idsUGC_tx_sympt, which(race == "W"))
+  idsRGC_tx_sympt_B <- intersect(idsRGC_tx_sympt, which(race == 0))
+  idsRGC_tx_sympt_W <- intersect(idsRGC_tx_sympt, which(race == 1))
+  idsUGC_tx_sympt_B <- intersect(idsUGC_tx_sympt, which(race == 0))
+  idsUGC_tx_sympt_W <- intersect(idsUGC_tx_sympt, which(race == 1))
 
   # Collect over site
   idsGC_tx_sympt_B <- union(idsRGC_tx_sympt_B, idsUGC_tx_sympt_B)
@@ -487,10 +487,10 @@ stitx_msm <- function(dat, at) {
                             dat$attr$prepStat == 0)
 
   # Subset by race
-  idsRGC_tx_asympt_B <- intersect(idsRGC_tx_asympt, which(race == "B"))
-  idsRGC_tx_asympt_W <- intersect(idsRGC_tx_asympt, which(race == "W"))
-  idsUGC_tx_asympt_B <- intersect(idsUGC_tx_asympt, which(race == "B"))
-  idsUGC_tx_asympt_W <- intersect(idsUGC_tx_asympt, which(race == "W"))
+  idsRGC_tx_asympt_B <- intersect(idsRGC_tx_asympt, which(race == 0))
+  idsRGC_tx_asympt_W <- intersect(idsRGC_tx_asympt, which(race == 1))
+  idsUGC_tx_asympt_B <- intersect(idsUGC_tx_asympt, which(race == 0))
+  idsUGC_tx_asympt_W <- intersect(idsUGC_tx_asympt, which(race == 1))
 
   # Collect over site
   idsGC_tx_asympt_B <- union(idsRGC_tx_asympt_B, idsUGC_tx_asympt_B)
@@ -529,10 +529,10 @@ stitx_msm <- function(dat, at) {
                            is.na(dat$attr$uCT.tx))
 
   # Subset by race
-  idsRCT_tx_sympt_B <- intersect(idsRCT_tx_sympt, which(race == "B"))
-  idsRCT_tx_sympt_W <- intersect(idsRCT_tx_sympt, which(race == "W"))
-  idsUCT_tx_sympt_B <- intersect(idsUCT_tx_sympt, which(race == "B"))
-  idsUCT_tx_sympt_W <- intersect(idsUCT_tx_sympt, which(race == "W"))
+  idsRCT_tx_sympt_B <- intersect(idsRCT_tx_sympt, which(race == 0))
+  idsRCT_tx_sympt_W <- intersect(idsRCT_tx_sympt, which(race == 1))
+  idsUCT_tx_sympt_B <- intersect(idsUCT_tx_sympt, which(race == 0))
+  idsUCT_tx_sympt_W <- intersect(idsUCT_tx_sympt, which(race == 1))
 
   # Collect over site
   idsCT_tx_sympt_B <- union(idsRCT_tx_sympt_B, idsUCT_tx_sympt_B)
@@ -563,10 +563,10 @@ stitx_msm <- function(dat, at) {
                             dat$attr$prepStat == 0)
 
   # Subset by race
-  idsRCT_tx_asympt_B <- intersect(idsRCT_tx_asympt, which(race == "B"))
-  idsRCT_tx_asympt_W <- intersect(idsRCT_tx_asympt, which(race == "W"))
-  idsUCT_tx_asympt_B <- intersect(idsUCT_tx_asympt, which(race == "B"))
-  idsUCT_tx_asympt_W <- intersect(idsUCT_tx_asympt, which(race == "W"))
+  idsRCT_tx_asympt_B <- intersect(idsRCT_tx_asympt, which(race == 0))
+  idsRCT_tx_asympt_W <- intersect(idsRCT_tx_asympt, which(race == 1))
+  idsUCT_tx_asympt_B <- intersect(idsUCT_tx_asympt, which(race == 0))
+  idsUCT_tx_asympt_W <- intersect(idsUCT_tx_asympt, which(race == 1))
 
   # Collect over site
   idsCT_tx_asympt_B <- union(idsRCT_tx_asympt_B, idsUCT_tx_asympt_B)

@@ -43,7 +43,7 @@ hivtest_msm <- function(dat, at) {
                 (diag.status == 0 | is.na(diag.status)) &
                 prepStat == 0)
   # rates by race
-  rates <- 1/hiv.test.int[as.numeric(as.factor(race[elig]))]
+  rates <- 1/hiv.test.int[race[elig] + 1]
   tst.nprep <- elig[rbinom(length(elig), 1, rates) == 1]
 
   # PrEP testing

@@ -36,8 +36,8 @@ departure_msm <- function(dat, at) {
   asmr <- dat$param$netstats$demog$asmr
 
   idsElig <- which(active == 1)
-  idsEligB <- which(active == 1 & race == "B")
-  idsEligW <- which(active == 1 & race == "W")
+  idsEligB <- which(active == 1 & race == 0)
+  idsEligW <- which(active == 1 & race == 1)
 
   rates <- rep(NA, length(idsElig))
   rates[idsEligB] <- asmr[age[idsEligB], "vec.asmr.B"]
