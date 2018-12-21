@@ -104,11 +104,9 @@ hivtrans_msm <- function(dat, at) {
   not.UAI <- which(disc.ip[, "uai"] == 0)
   not.UAI.B.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == 0))
   not.UAI.W.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == 1))
-
   condom.rr <- rep(NA, nrow(disc.ip))
   condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail[1])
   condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail[2])
-
   ip.tlo[not.UAI] <- ip.tlo[not.UAI] + log(condom.rr[not.UAI])
 
   # PrEP, by adherence class
@@ -121,21 +119,17 @@ hivtrans_msm <- function(dat, at) {
 
   ## Multiplier for STI
   is.rGC <- which(ip.rGC == 1)
-
   is.rCT <- which(ip.rCT == 1)
-
   is.rect.dual <- intersect(is.rGC, is.rCT)
-
   is.rGC.sing <- setdiff(is.rGC, is.rect.dual)
   is.rCT.sing <- setdiff(is.rCT, is.rect.dual)
-
   ip.tlo[is.rGC.sing] <- ip.tlo[is.rGC.sing] + log(hiv.rgc.rr)
   ip.tlo[is.rCT.sing] <- ip.tlo[is.rCT.sing] + log(hiv.rct.rr)
-
   ip.tlo[is.rect.dual] <- ip.tlo[is.rect.dual] +
     max(log(hiv.rgc.rr), log(hiv.rct.rr)) +
     min(log(hiv.rgc.rr), log(hiv.rct.rr)) * hiv.dual.rr
 
+  # Retransformation to probability
   ip.tprob <- plogis(ip.tlo)
   stopifnot(ip.tprob >= 0, ip.tprob <= 1)
 
@@ -164,14 +158,11 @@ hivtrans_msm <- function(dat, at) {
 
   # Condom use
   not.UAI <- which(disc.rp[, "uai"] == 0)
-
   not.UAI.B.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == 0))
   not.UAI.W.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == 1))
-
   condom.rr <- rep(NA, nrow(disc.rp))
   condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail[1])
   condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail[2])
-
   rp.tlo[not.UAI] <- rp.tlo[not.UAI] + log(condom.rr[not.UAI])
 
   # PrEP, by adherence class
@@ -184,17 +175,12 @@ hivtrans_msm <- function(dat, at) {
 
   ## Multiplier for STI
   is.uGC <- which(rp.uGC == 1)
-
   is.uCT <- which(rp.uCT == 1)
-
   is.ureth.dual <- intersect(is.uGC, is.uCT)
-
   is.uGC.sing <- setdiff(is.uGC, is.ureth.dual)
   is.uCT.sing <- setdiff(is.uCT, is.ureth.dual)
-
   rp.tlo[is.uGC.sing] <- rp.tlo[is.uGC.sing] + log(hiv.ugc.rr)
   rp.tlo[is.uCT.sing] <- rp.tlo[is.uCT.sing] + log(hiv.uct.rr)
-
   rp.tlo[is.ureth.dual] <- rp.tlo[is.ureth.dual] +
     max(log(hiv.ugc.rr), log(hiv.uct.rr)) +
     min(log(hiv.ugc.rr), log(hiv.uct.rr)) * hiv.dual.rr
@@ -206,15 +192,11 @@ hivtrans_msm <- function(dat, at) {
 
   # Transmission --------------------------------------------------------
 
-  ## Bernoulli transmission events
   trans.ip <- rbinom(length(ip.tprob), 1, ip.tprob)
   trans.rp <- rbinom(length(rp.tprob), 1, rp.tprob)
 
 
   # Output --------------------------------------------------------------
-
-
-  # Update attributes
 
   infected <- NULL
   if (sum(trans.ip, trans.rp) > 0) {
@@ -239,7 +221,6 @@ hivtrans_msm <- function(dat, at) {
 
   return(dat)
 }
-
 
 
 #' @export

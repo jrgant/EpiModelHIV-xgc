@@ -46,7 +46,6 @@ initialize_msm <- function(x, param, init, control, s) {
   # Convert to tergmLite method
   dat <- init_tergmLite(dat)
 
-
   ## Nodal Attributes Setup ##
   dat$attr <- netstats$attr
 
