@@ -26,13 +26,7 @@ condoms_msm <- function(dat, at) {
   race <- dat$attr$race
   age <- dat$attr$age
   diag.status <- dat$attr$diag.status
-
   prepStat <- dat$attr$prepStat
-  prepClass <- dat$attr$prepClass
-
-  # Parameters
-  rcomp.prob <- dat$param$rcomp.prob
-  rcomp.adh.groups <- dat$param$rcomp.adh.groups
 
   # Condom Use Models
   cond.mc.mod <- param$cond.mc.mod
@@ -49,12 +43,14 @@ condoms_msm <- function(dat, at) {
   hiv.concord.pos <- rep(0, nrow(el.mc))
   cp <- which(diag.status[el.mc[, 1]] == 1 & diag.status[el.mc[, 2]] == 1)
   hiv.concord.pos[cp] <- 1
+  any.prep <- as.numeric((prepStat[el.mc[, 1]] + prepStat[el.mc[, 2]]) > 0)
 
   x <- data.frame(ptype = el.mc[, "ptype"],
                   duration = el.mc[, "durations"],
                   race.combo = race.combo,
                   comb.age = comb.age,
                   hiv.concord.pos = hiv.concord.pos,
+                  prep = any.prep,
                   city = dat$param$netstats$demog$city)
   cond.prob <- unname(predict(cond.mc.mod, newdata = x, type = "response"))
   el.mc <- cbind(el.mc, cond.prob)
@@ -68,10 +64,12 @@ condoms_msm <- function(dat, at) {
   hiv.concord.pos <- rep(0, nrow(el.oo))
   cp <- which(diag.status[el.oo[, 1]] == 1 & diag.status[el.oo[, 2]] == 1)
   hiv.concord.pos[cp] <- 1
+  any.prep <- as.numeric((prepStat[el.oo[, 1]] + prepStat[el.oo[, 2]]) > 0)
 
   x <- data.frame(race.combo = race.combo,
                   comb.age = comb.age,
                   hiv.concord.pos = hiv.concord.pos,
+                  prep = any.prep,
                   city = dat$param$netstats$demog$city)
   cond.prob <- unname(predict(cond.oo.mod, newdata = x, type = "response"))
   el.oo <- cbind(el.oo, cond.prob)
@@ -88,12 +86,6 @@ condoms_msm <- function(dat, at) {
   ptype <- rep(el[, "ptype"], ai.vec)
   cond.prob <- rep(el[, "cond.prob"], ai.vec)
 
-  # PrEP-related risk compensation
-  if (rcomp.prob > 0) {
-    idsRC <- which((prepStat[el[, 1]] == 1 & prepClass[el[, 1]] %in% rcomp.adh.groups) |
-                   (prepStat[el[, 2]] == 1 & prepClass[el[, 2]] %in% rcomp.adh.groups))
-    cond.prob[idsRC] <- cond.prob[idsRC] * (1 - rcomp.prob)
-  }
 
   # UAI draw per act
   uai <- rbinom(length(cond.prob), 1, 1 - cond.prob)
