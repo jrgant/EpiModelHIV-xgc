@@ -21,6 +21,7 @@ acts_msm <- function(dat, at) {
 
   # Attributes
   status <- dat$attr$status
+  diag.status <- dat$attr$diag.status
   race <- dat$attr$race
   age <- dat$attr$age
   uid <- dat$attr$uid
@@ -31,8 +32,18 @@ acts_msm <- function(dat, at) {
   mod <- dat$param$acts.model
 
   # Construct edgelist
-  el.mc <- rbind(dat$el[[1]], dat$el[[2]])
-  ptype  <- rep(1:2, times = c(nrow(dat$el[[1]]), nrow(dat$el[[2]])))
+  el <- rbind(dat$el[[1]], dat$el[[2]], dat$el[[3]])
+  ptype  <- rep(1:3, times = c(nrow(dat$el[[1]]),
+                               nrow(dat$el[[2]]),
+                               nrow(dat$el[[3]])))
+  st1 <- status[el[, 1]]
+  st2 <- status[el[, 2]]
+
+  el <- cbind(el, st1, st2, ptype)
+  colnames(el) <- c("p1", "p2", "st1", "st2", "ptype")
+
+  # Subset to main/casual
+  el.mc <- el[el[, "ptype"] != 3, ]
 
   # Base AI rates based on Poisson model for main/casual
   race.combo <- race[el.mc[, 1]] + race[el.mc[, 2]]
@@ -44,27 +55,34 @@ acts_msm <- function(dat, at) {
   matches <- match(pid_el, pid_plist)
   durations <- (at - plist[, "start"])[matches]
 
+  # HIV-positive concordant
+  hiv.concord.pos <- rep(0, nrow(el.mc))
+  cp <- which(diag.status[el.mc[, 1]] == 1 & diag.status[el.mc[, 2]] == 1)
+  hiv.concord.pos[cp] <- 1
+
   # Model predictions
-  x <- data.frame(ptype = ptype,
-                  p_duration = durations,
+  x <- data.frame(ptype = el.mc[, "ptype"],
+                  duration = durations,
                   race.combo = race.combo,
                   comb.age = comb.age,
+                  hiv.concord.pos = hiv.concord.pos,
                   city = dat$param$netstats$demog$city)
   rates <- unname(predict(mod, newdata = x, type = "response"))/52
   ai <- rpois(length(rates), rates)
+  el.mc <- cbind(el.mc, durations, ai)
 
   # Add one-time partnerships
-  el <- rbind(el.mc, dat$el[[3]])
-  ptype <- c(ptype, rep(3, nrow(dat$el[[3]])))
-  ai <- c(ai, rep(1, sum(ptype == 3)))
+  el.oo <- el[el[, "ptype"] == 3, ]
+  ai <- durations <- rep(1, nrow(el.oo))
+  el.oo <- cbind(el.oo, durations, ai)
 
-  # Add HIV status
-  st1 <- status[el[, 1]]
-  st2 <- status[el[, 2]]
-  disc <- abs(st1 - st2) == 1
-  el[which(disc == 1 & st2 == 1), ] <- el[which(disc == 1 & st2 == 1), 2:1]
-  el <- cbind(el, status[el[, 1]], status[el[, 2]], ptype, ai)
-  colnames(el) <- c("p1", "p2", "st1", "st2", "ptype", "ai")
+  # Bind el back together
+  el <- rbind(el.mc, el.oo)
+
+  # Flip order of discordant edges
+  disc <- abs(el[, "st1"] - el[, "st2"]) == 1
+  disc.st2pos <- which(disc == TRUE & el[, "st2"] == 1)
+  el[disc.st2pos, 1:4] <- el[disc.st2pos, c(2, 1, 4, 3)]
 
   # Remove inactive edges from el
   el <- el[-which(el[, "ai"] == 0), ]
