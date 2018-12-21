@@ -203,7 +203,8 @@ param_msm <- function(netstats,
 
                       # Behavioral
                       acts.model = epistats$acts.mod,
-                      cond.model = epistats$cond.mod,
+                      cond.mc.model = epistats$cond.mc.mod,
+                      cond.oo.model = epistats$cond.oo.mod,
 
                       # STI epi
                       rgc.tprob = 0.428,

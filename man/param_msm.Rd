@@ -19,7 +19,8 @@ param_msm(netstats, hiv.test.int = c(301, 315), test.window.int = 21,
   UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
   cond.eff = 0.95, cond.fail = c(0.39, 0.21), circ.prob = c(0.874,
   0.918), acts.model = epistats$acts.mod,
-  cond.model = epistats$cond.mod, rgc.tprob = 0.428,
+  cond.mc.model = epistats$cond.mc.mod,
+  cond.oo.model = epistats$cond.oo.mod, rgc.tprob = 0.428,
   ugc.tprob = 0.35, rct.tprob = 0.231, uct.tprob = 0.205,
   rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14,
   uct.sympt.prob = 0.58, rgc.ntx.int = 205.8, ugc.ntx.int = 205.8,
@@ -138,9 +139,6 @@ will be circumcised (vector of length 2).}
 \item{acts.model}{Statistical model object for the rate of acts per partnership
 per year (then transformed into rate per week).}
 
-\item{cond.model}{Statistical model object for the probability of condom use
-per act.}
-
 \item{rgc.tprob}{Probability of rectal gonorrhea infection per act.}
 
 \item{ugc.tprob}{Probability of urethral gonorrhea infection per act.}
@@ -237,6 +235,9 @@ low adherence, medium adherence, and high adherence to PrEP.}
 PrEP visit.}
 
 \item{...}{Additional arguments passed to the function.}
+
+\item{cond.model}{Statistical model object for the probability of condom use
+per act.}
 }
 \value{
 A list object of class \code{param_msm}, which can be passed to

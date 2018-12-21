@@ -21,9 +21,12 @@
 #' @export
 #'
 condoms_msm <- function(dat, at) {
-
+browser()
   # Attributes
   race <- dat$attr$race
+  age <- dat$attr$age
+  diag.status <- dat$attr$diag.status
+
   prepStat <- dat$attr$prepStat
   prepClass <- dat$attr$prepClass
 
@@ -31,72 +34,72 @@ condoms_msm <- function(dat, at) {
   rcomp.prob <- dat$param$rcomp.prob
   rcomp.adh.groups <- dat$param$rcomp.adh.groups
 
+  # Condom Use Models
+  cond.mc.mod <- param$cond.mc.mod
+  cond.oo.mod <- param$cond.oo.mod
+
+  # Temp edgelist
   el <- dat$temp$el
 
-  for (type in c("main", "pers", "inst")) {
+  ## Main/casual partnerships ##
+  el.mc <- el[el[, "ptype"] != 3, ]
 
-    ## Variables ##
+  race.combo <- race[el.mc[, 1]] + race[el.mc[, 2]]
+  comb.age <- age[el.mc[, 1]] + age[el.mc[, 2]]
+  hiv.concord.pos <- rep(0, nrow(el.mc))
+  cp <- which(diag.status[el.mc[, 1]] == 1 & diag.status[el.mc[, 2]] == 1)
+  hiv.concord.pos[cp] <- 1
 
-    # Parameters
-    cond.rr <- dat$param$cond.rr
+  x <- data.frame(ptype = el.mc[, "ptype"],
+                  duration = el.mc[, "durations"],
+                  race.combo = race.combo,
+                  comb.age = comb.age,
+                  hiv.concord.pos = hiv.concord.pos,
+                  city = dat$param$netstats$demog$city)
+  cond.prob <- unname(predict(cond.mc.mod, newdata = x, type = "response"))
+  el.mc <- cbind(el.mc, cond.prob)
 
-    if (type == "main") {
-      cond.prob <- dat$param$cond.main.prob
-      cond.always <- NULL
-      ptype <- 1
-    }
-    if (type == "pers") {
-      cond.prob <- dat$param$cond.pers.prob
-      cond.always <- dat$attr$cond.always.pers
-      ptype <- 2
-    }
-    if (type == "inst") {
-      cond.prob <- dat$param$cond.inst.prob
-      cond.always <- dat$attr$cond.always.inst
-      ptype <- 3
-    }
+  ## One-off partnerships ##
+  el.oo <- el[el[, "ptype"] == 3, ]
 
-    elt <- el[el[, "ptype"] == ptype, ]
+  # TODO: consolidate these calcs in el
+  race.combo <- race[el.oo[, 1]] + race[el.oo[, 2]]
+  comb.age <- age[el.oo[, 1]] + age[el.oo[, 2]]
+  hiv.concord.pos <- rep(0, nrow(el.oo))
+  cp <- which(diag.status[el.oo[, 1]] == 1 & diag.status[el.oo[, 2]] == 1)
+  hiv.concord.pos[cp] <- 1
 
-    ## Process ##
+  x <- data.frame(race.combo = race.combo,
+                  comb.age = comb.age,
+                  hiv.concord.pos = hiv.concord.pos,
+                  city = dat$param$netstats$demog$city)
+  cond.prob <- unname(predict(cond.oo.mod, newdata = x, type = "response"))
+  el.oo <- cbind(el.oo, cond.prob)
 
-    # Base condom probs
-    race.p1 <- race[elt[, 1]]
-    race.p2 <- race[elt[, 2]]
-    num.B <- (race.p1 == "B") + (race.p2 == "B")
-    cond.prob <- (num.B == 2) * (cond.prob[1] * cond.rr[1]) +
-                 (num.B == 1) * (cond.prob[2] * cond.rr[2]) +
-                 (num.B == 0) * (cond.prob[3] * cond.rr[3])
-    uai.prob <- 1 - cond.prob
 
-    # PrEP Status (risk compensation)
-    if (rcomp.prob > 0) {
-      idsRC <- which((prepStat[elt[, 1]] == 1 & prepClass[elt[, 1]] %in% rcomp.adh.groups) |
-                     (prepStat[elt[, 2]] == 1 & prepClass[elt[, 2]] %in% rcomp.adh.groups))
-      uai.prob[idsRC] <- 1 - (1 - uai.prob[idsRC]) * (1 - rcomp.prob)
-    }
+  ## Bind el together
+  el <- rbind(el.mc, el.oo)
 
-    ai.vec <- elt[, "ai"]
-    p1 <- rep(elt[, "p1"], ai.vec)
-    p2 <- rep(elt[, "p2"], ai.vec)
-    ptype <- rep(elt[, "ptype"], ai.vec)
+  # Acts
+  ai.vec <- el[, "ai"]
+  pid <- rep(1:length(ai.vec), ai.vec)
+  p1 <- rep(el[, "p1"], ai.vec)
+  p2 <- rep(el[, "p2"], ai.vec)
+  ptype <- rep(el[, "ptype"], ai.vec)
+  cond.prob <- rep(el[, "cond.prob"], ai.vec)
 
-    uai.prob.peract <- rep(uai.prob, ai.vec)
-    uai <- rbinom(length(p1), 1, uai.prob.peract)
+  # PrEP Status (risk compensation)
+  # if (rcomp.prob > 0) {
+  #   idsRC <- which((prepStat[elt[, 1]] == 1 & prepClass[elt[, 1]] %in% rcomp.adh.groups) |
+  #                    (prepStat[elt[, 2]] == 1 & prepClass[elt[, 2]] %in% rcomp.adh.groups))
+  #   uai.prob[idsRC] <- 1 - (1 - uai.prob[idsRC]) * (1 - rcomp.prob)
+  # }
 
-    if (type == "main") {
-      pid <- rep(1:length(ai.vec), ai.vec)
-      al <- cbind(p1, p2, ptype, uai, pid)
-    } else {
-      pid <- rep(max(al[, "pid"]) + (1:length(ai.vec)), ai.vec)
-      tmp.al <- cbind(p1, p2, ptype, uai, pid)
-      al <- rbind(al, tmp.al)
-    }
+  uai <- rbinom(length(cond.prob), 1, 1 - cond.prob)
 
-  } # end ptype loop
-
+  # Act list construction
+  al <- cbind(p1, p2, ptype, uai, pid)
   dat$temp$al <- al
-
 
   return(dat)
 }
