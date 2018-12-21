@@ -25,7 +25,6 @@
 #'
 position_msm <- function(dat, at) {
 
-  ## Variables
   al <- dat$temp$al
   if (nrow(al) == 0) {
     return(dat)
@@ -38,8 +37,8 @@ position_msm <- function(dat, at) {
   # Parameters
 
   ## Process
-  p1.role.class <- role.class[al[, 1]]
-  p2.role.class <- role.class[al[, 2]]
+  p1.role.class <- role.class[al[, "p1"]]
+  p2.role.class <- role.class[al[, "p2"]]
 
   ins <- rep(NA, length(p1.role.class))
   ins[which(p1.role.class == "I")] <- 1
