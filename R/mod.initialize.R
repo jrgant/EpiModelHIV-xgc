@@ -68,7 +68,7 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$attr$ins.quot <- ins.quot
 
   # HIV-related attributes
-  dat <- init_status_msm(dat)
+  dat <- init_status_msm2(dat)
 
   # STI Status
   dat <- init_sti_msm(dat)
@@ -480,303 +480,41 @@ init_status_msm <- function(dat) {
 init_status_msm2 <- function(dat) {
 
   num <- sum(dat$attr$active == 1)
-  ids.B <- which(dat$attr$race == 0)
-  ids.W <- which(dat$attr$race == 1)
-  num.B <- length(ids.B)
-  num.W <- length(ids.W)
 
-  age <- dat$attr$age
-  race <- dat$attr$race
-
-  # Race and age-based infection probability
-  hiv.mod <- dat$init$init.hiv.mod
-  race2 <- dat$attr$race
-  xs <- data.frame(race2 = race2,
-                   age = age, city2 = dat$param$netstats$demog$city)
-  preds <- predict(hiv.mod, newdata = xs, type = "response")
-
-  status <- rbinom(num, 1, preds)
-  dat$attr$status <- status
+  # Sub in diag.status from model for status
+  status <- dat$attr$diag.status
 
   # Treatment trajectory
   tt.traj <- rep(NA, num)
-
-  tt.traj[ids.B] <- sample(apportion_lr(num.B, 1:4,
+  ids.B <- which(dat$attr$race == 0)
+  ids.W <- which(dat$attr$race == 1)
+  tt.traj[ids.B] <- sample(apportion_lr(length(ids.B), 1:4,
                                         dat$param$tt.traj.prob[[1]]))
-  tt.traj[ids.W] <- sample(apportion_lr(num.W, 1:4,
+  tt.traj[ids.W] <- sample(apportion_lr(length(ids.W), 1:4,
                                         dat$param$tt.traj.prob[[2]]))
   dat$attr$tt.traj <- tt.traj
 
 
   ## Infection-related attributes
-
-  stage <- rep(NA, num)
-  stage.time <- rep(NA, num)
-  inf.time <- rep(NA, num)
-  vl <- rep(NA, num)
-  diag.status <- rep(NA, num)
-  diag.time <- rep(NA, num)
-  last.neg.test <- rep(NA, num)
-  tx.status <- rep(NA, num)
-  cum.time.on.tx <- rep(NA, num)
-  cum.time.off.tx <- rep(NA, num)
-
-  time.sex.active <- pmax(1,
-                          round((365 / dat$param$time.unit) * age - (365 / dat$param$time.unit) *
-                                  min(dat$attr$age), 0))
-
-  vlar.int <- dat$param$vl.acute.rise.int
-  vlap <- dat$param$vl.acute.peak
-  vlaf.int <- dat$param$vl.acute.fall.int
-  vlsp <- dat$param$vl.set.point
-  vldo.int <- dat$param$vl.aids.onset.int
-  vl.aids.int <- dat$param$vl.aids.int
-  vlf  <- dat$param$vl.fatal
-  vlds <- (vlf - vlsp) / vl.aids.int
-  vl.acute.int <- vlar.int + vlaf.int
-
-
-
-  ### Full adherent type
-
-  # Create set of expected values for (cum.time.off.tx, cum.time.on.tx)
-  twind.int <- dat$param$test.window.int
-  tx.init.time.B <- twind.int + dat$param$hiv.test.int[1] + 1 / dat$param$tx.init.prob[1]
-  tx.init.time.W <- twind.int + dat$param$hiv.test.int[2] + 1 / dat$param$tx.init.prob[2]
-
-  # Stage for Blacks
-  prop.time.on.tx.B <- dat$param$tx.reinit.prob[1] /
-    (dat$param$tx.halt.prob[1] + dat$param$tx.reinit.prob[1])
-  offon.B <- matrix(c(1:tx.init.time.B, rep(0, tx.init.time.B)),
-                    nrow = tx.init.time.B)
-  numsteps.B <- (dat$param$max.time.off.tx.full.int - tx.init.time.B) /
-    (1 - prop.time.on.tx.B)
-  offon.B <- rbind(offon.B,
-                   cbind(tx.init.time.B + (1 - prop.time.on.tx.B) * 1:numsteps.B,
-                         prop.time.on.tx.B * 1:numsteps.B))
-  offon.B <- round(offon.B)
-  exp.dur.chronic.B <- nrow(offon.B) - vl.acute.int
-  exp.onset.aids.B <- nrow(offon.B)
-  offon.last.B <- offon.B[nrow(offon.B), ]
-  offon.B <- rbind(offon.B,
-                   matrix(c(offon.last.B[1] + (1:vl.aids.int),
-                            rep(offon.last.B[2], vl.aids.int)),
-                          ncol = 2))
-  max.possible.inf.time.B <- nrow(offon.B)
-  offon.B[, 2] <- (1:max.possible.inf.time.B) - offon.B[, 1]
-  stage.B <- rep(c(1, 2, 3, 4), c(vlar.int, vlaf.int, exp.dur.chronic.B, vl.aids.int))
-  stage.time.B <- c(1:vlar.int, 1:vlaf.int, 1:exp.dur.chronic.B, 1:vl.aids.int)
-
-  # Stage for Whites
-  prop.time.on.tx.W <- dat$param$tx.reinit.prob[2] /
-    (dat$param$tx.halt.prob[2] + dat$param$tx.reinit.prob[2])
-  offon.W <- matrix(c(1:tx.init.time.W, rep(0, tx.init.time.W)),
-                    nrow = tx.init.time.W)
-  numsteps.W <- (dat$param$max.time.off.tx.full.int - tx.init.time.W) /
-    (1 - prop.time.on.tx.W)
-  offon.W <- rbind(offon.W,
-                   cbind(tx.init.time.W + (1 - prop.time.on.tx.W) * 1:numsteps.W,
-                         prop.time.on.tx.W * 1:numsteps.W))
-  offon.W <- round(offon.W)
-  exp.dur.chronic.W <- nrow(offon.W) - vl.acute.int
-  exp.onset.aids.W <- nrow(offon.W)
-  offon.last.W <- offon.W[nrow(offon.W), ]
-  offon.W <- rbind(offon.W,
-                   matrix(c(offon.last.W[1] + (1:vl.aids.int),
-                            rep(offon.last.W[2], vl.aids.int)),
-                          ncol = 2))
-  max.possible.inf.time.W <- nrow(offon.W)
-  offon.W[, 2] <- (1:max.possible.inf.time.W) - offon.W[, 1]
-  stage.W <- rep(c(1, 2, 3, 4), c(vlar.int, vlaf.int, exp.dur.chronic.W, vl.aids.int))
-  stage.time.W <- c(1:vlar.int, 1:vlaf.int, 1:exp.dur.chronic.W, 1:vl.aids.int)
-
-  # Vl for Blacks
-  selected <- which(status == 1 & tt.traj == 4 & race == 0)
-  max.inf.time <- pmin(time.sex.active[selected], max.possible.inf.time.B)
-  time.since.inf <- ceiling(runif(length(selected), max = max.inf.time))
-  inf.time[selected] <- 1 - time.since.inf
-  cum.time.on.tx[selected] <- offon.B[time.since.inf, 2]
-  cum.time.off.tx[selected] <- offon.B[time.since.inf, 1]
-  stage[selected] <- stage.B[time.since.inf]
-  stage.time[selected] <- stage.time.B[time.since.inf]
-  tx.status[selected] <- 0
-  tx.status[selected][stage[selected] == 3 & cum.time.on.tx[selected] > 0] <-
-    rbinom(sum(stage[selected] == 3 & cum.time.on.tx[selected] > 0),
-           1, prop.time.on.tx.B)
-  vl[selected] <- (time.since.inf <= vlar.int) * (vlap * time.since.inf / vlar.int) +
-    (time.since.inf > vlar.int) * (time.since.inf <= vlar.int + vlaf.int) *
-    ((vlsp - vlap) * (time.since.inf - vlar.int) / vlaf.int + vlap) +
-    (time.since.inf > vlar.int + vlaf.int) *
-    (time.since.inf <= exp.onset.aids.B) * (vlsp) +
-    (time.since.inf > exp.onset.aids.B) *
-    (vlsp + (time.since.inf - exp.onset.aids.B) * vlds)
-  vl[selected][tx.status[selected] == 1] <- dat$param$vl.full.supp
-
-  # VL for Whites
-  selected <- which(status == 1 & tt.traj == 4 & race == 1)
-  max.inf.time <- pmin(time.sex.active[selected], max.possible.inf.time.W)
-  time.since.inf <- ceiling(runif(length(selected), max = max.inf.time))
-  inf.time[selected] <- 1 - time.since.inf
-  cum.time.on.tx[selected] <- offon.W[time.since.inf, 2]
-  cum.time.off.tx[selected] <- offon.W[time.since.inf, 1]
-  stage[selected] <- stage.W[time.since.inf]
-  stage.time[selected] <- stage.time.W[time.since.inf]
-  tx.status[selected] <- 0
-  tx.status[selected][stage[selected] == 3 & cum.time.on.tx[selected] > 0] <-
-    rbinom(sum(stage[selected] == 3 & cum.time.on.tx[selected] > 0),
-           1, prop.time.on.tx.W)
-  vl[selected] <- (time.since.inf <= vlar.int) * (vlap * time.since.inf / vlar.int) +
-    (time.since.inf > vlar.int) * (time.since.inf <= vlar.int + vlaf.int) *
-    ((vlsp - vlap) * (time.since.inf - vlar.int) / vlaf.int + vlap) +
-    (time.since.inf > vlar.int + vlaf.int) *
-    (time.since.inf <= exp.onset.aids.W) * (vlsp) +
-    (time.since.inf > exp.onset.aids.W) *
-    (vlsp + (time.since.inf - exp.onset.aids.W) * vlds)
-  vl[selected][tx.status[selected] == 1] <- dat$param$vl.full.supp
-
-  # Diagnosis
-  selected <- which(status == 1 & tt.traj == 4)
-  ttntest <- rgeom(length(selected),
-                   1 / (dat$param$hiv.test.int[1] * (race[selected] == 0) +
-                          dat$param$hiv.test.int[2] * (race[selected] == 1)))
-
-  diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
-  last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
-    -ttntest[ttntest > cum.time.off.tx[selected] - twind.int]
-  diag.status[selected][ttntest <= cum.time.off.tx[selected] - twind.int] <- 1
-  diag.status[selected][cum.time.on.tx[selected] > 0] <- 1
-  last.neg.test[selected][cum.time.on.tx[selected] > 0] <- NA
-
-
-  ### Part adherent type
-
-  # Create set of expected values for (cum.time.off.tx,cum.time.on.tx)
-
-  prop.time.on.tx.B <- dat$param$tx.reinit.prob[1] /
-    (dat$param$tx.halt.prob[1] + dat$param$tx.reinit.prob[1])
-  offon.B <- matrix(c(1:tx.init.time.B, rep(0, tx.init.time.B)),
-                    nrow = tx.init.time.B)
-  while (offon.B[nrow(offon.B), 1] / dat$param$max.time.off.tx.part.int +
-         offon.B[nrow(offon.B), 2] / dat$param$max.time.on.tx.part.int < 1) {
-    offon.B <- rbind(offon.B,
-                     offon.B[nrow(offon.B), ] + c(1 - prop.time.on.tx.B,
-                                                  prop.time.on.tx.B))
-  }
-  offon.B <- round(offon.B)
-  exp.dur.chronic.B <- nrow(offon.B) - vl.acute.int
-  exp.onset.aids.B <- nrow(offon.B)
-  offon.last.B <- offon.B[nrow(offon.B), ]
-  offon.B <- rbind(offon.B,
-                   matrix(c(offon.last.B[1] + (1:vl.aids.int),
-                            rep(offon.last.B[2], vl.aids.int)),
-                          ncol = 2))
-  max.possible.inf.time.B <- nrow(offon.B)
-  offon.B[, 2] <- (1:max.possible.inf.time.B) - offon.B[, 1]
-  stage.B <- rep(c(1, 2, 3, 4), c(vlar.int, vlaf.int, exp.dur.chronic.B, vl.aids.int))
-  stage.time.B <- c(1:vlar.int, 1:vlaf.int, 1:exp.dur.chronic.B, 1:vl.aids.int)
-
-  prop.time.on.tx.W <- dat$param$tx.reinit.prob[2] /
-    (dat$param$tx.halt.prob[2] + dat$param$tx.reinit.prob[2])
-  offon.W <- matrix(c(1:tx.init.time.W, rep(0, tx.init.time.W)),
-                    nrow = tx.init.time.W)
-
-  while (offon.W[nrow(offon.W), 1] / dat$param$max.time.off.tx.part.int +
-         offon.W[nrow(offon.W), 2] / dat$param$max.time.on.tx.part.int < 1) {
-    offon.W <- rbind(offon.W,
-                     offon.W[nrow(offon.W), ] + c(1 - prop.time.on.tx.W,
-                                                  prop.time.on.tx.W))
-  }
-  offon.W <- round(offon.W)
-  exp.dur.chronic.W <- nrow(offon.W) - vl.acute.int
-  exp.onset.aids.W <- nrow(offon.W)
-  offon.last.W <- offon.W[nrow(offon.W), ]
-  offon.W <- rbind(offon.W,
-                   matrix(c(offon.last.W[1] + (1:vl.aids.int),
-                            rep(offon.last.W[2], vl.aids.int)),
-                          ncol = 2))
-  max.possible.inf.time.W <- nrow(offon.W)
-  offon.W[, 2] <- (1:max.possible.inf.time.W) - offon.W[, 1]
-  stage.W <- rep(c(1, 2, 3, 4), c(vlar.int, vlaf.int, exp.dur.chronic.W, vl.aids.int))
-  stage.time.W <- c(1:vlar.int, 1:vlaf.int, 1:exp.dur.chronic.W, 1:vl.aids.int)
-
-  # VL for Blacks
-  selected <- which(status == 1 & tt.traj == 3 & race == 0)
-  max.inf.time <- pmin(time.sex.active[selected], max.possible.inf.time.B)
-  time.since.inf <- ceiling(runif(length(selected), max = max.inf.time))
-  inf.time[selected] <- 1 - time.since.inf
-  cum.time.on.tx[selected] <- offon.B[time.since.inf, 2]
-  cum.time.off.tx[selected] <- offon.B[time.since.inf, 1]
-  stage[selected] <- stage.B[time.since.inf]
-  stage.time[selected] <- stage.time.B[time.since.inf]
-  tx.status[selected] <- 0
-  tx.status[selected][stage[selected] == 3 & cum.time.on.tx[selected] > 0] <-
-    rbinom(sum(stage[selected] == 3 & cum.time.on.tx[selected] > 0),
-           1, prop.time.on.tx.B)
-  vl[selected] <- (time.since.inf <= vlar.int) * (vlap * time.since.inf / vlar.int) +
-    (time.since.inf > vlar.int) * (time.since.inf <= vlar.int + vlaf.int) *
-    ((vlsp - vlap) * (time.since.inf - vlar.int) / vlaf.int + vlap) +
-    (time.since.inf > vlar.int + vlaf.int) *
-    (time.since.inf <= exp.onset.aids.B) * (vlsp) +
-    (time.since.inf > exp.onset.aids.B) *
-    (vlsp + (time.since.inf - exp.onset.aids.B) * vlds)
-  vl[selected][tx.status[selected] == 1] <- dat$param$vl.part.supp
-
-  # VL for Whites
-  selected <- which(status == 1 & tt.traj == 3 & race == 1)
-  max.inf.time <- pmin(time.sex.active[selected], max.possible.inf.time.W)
-  time.since.inf <- ceiling(runif(length(selected), max = max.inf.time))
-  inf.time[selected] <- 1 - time.since.inf
-  cum.time.on.tx[selected] <- offon.W[time.since.inf, 2]
-  cum.time.off.tx[selected] <- offon.W[time.since.inf, 1]
-  stage[selected] <- stage.W[time.since.inf]
-  stage.time[selected] <- stage.time.W[time.since.inf]
-  tx.status[selected] <- 0
-  tx.status[selected][stage[selected] == 3 & cum.time.on.tx[selected] > 0] <-
-    rbinom(sum(stage[selected] == 3 & cum.time.on.tx[selected] > 0),
-           1, prop.time.on.tx.W)
-  vl[selected] <- (time.since.inf <= vlar.int) * (vlap * time.since.inf / vlar.int) +
-    (time.since.inf > vlar.int) * (time.since.inf <= vlar.int + vlaf.int) *
-    ((vlsp - vlap) * (time.since.inf - vlar.int) / vlaf.int + vlap) +
-    (time.since.inf > vlar.int + vlaf.int) *
-    (time.since.inf <= exp.onset.aids.W) * (vlsp) +
-    (time.since.inf > exp.onset.aids.W) *
-    (vlsp + (time.since.inf - exp.onset.aids.W) * vlds)
-  vl[selected][tx.status[selected] == 1] <- dat$param$vl.part.supp
-
-  # Implement diagnosis for both
-  selected <- which(status == 1 & tt.traj == 3)
-  ttntest <- rgeom(length(selected),
-                   1 / (dat$param$hiv.test.int[1] * (race[selected] == 0) +
-                          dat$param$hiv.test.int[2] * (race[selected] == 1)))
-
-  diag.status[selected][ttntest > cum.time.off.tx[selected] - twind.int] <- 0
-  last.neg.test[selected][ttntest > cum.time.off.tx[selected] - twind.int] <-
-    -ttntest[ttntest > cum.time.off.tx[selected] - twind.int]
-
-  diag.status[selected][ttntest <= cum.time.off.tx[selected] - twind.int] <- 1
-  diag.status[selected][cum.time.on.tx[selected] > 0] <- 1
-  last.neg.test[selected][cum.time.on.tx[selected] > 0] <- NA
-
-
-  # Last neg test before present for negatives
-  selected <- which(status == 0 & tt.traj %in% c(2, 3, 4))
-  tslt <- rgeom(length(selected),
-                1 / (dat$param$hiv.test.int[1] * (race[selected] == 0) +
-                       dat$param$hiv.test.int[1] * (race[selected] == 1)))
-  last.neg.test[selected] <- -tslt
-
-
-  ## Set all onto dat$attr
-  dat$attr$stage <- stage
-  dat$attr$stage.time <- stage.time
-  dat$attr$inf.time <- inf.time
-  dat$attr$vl <- vl
-  dat$attr$diag.status <- diag.status
-  dat$attr$diag.time <- diag.time
-  dat$attr$last.neg.test <- last.neg.test
-  dat$attr$tx.status <- tx.status
-  dat$attr$cum.time.on.tx <- cum.time.on.tx
-  dat$attr$cum.time.off.tx <- cum.time.off.tx
+  dat$attr$status <- status
+  idsInf <- which(status == 1)
+  dat$attr$stage <- rep(NA, num)
+  dat$attr$stage[idsInf] <- 1
+  dat$attr$stage.time <- rep(NA, num)
+  dat$attr$stage.time[idsInf] <- 0
+  dat$attr$inf.time <- rep(NA, num)
+  dat$attr$inf.time[idsInf] <- 1
+  dat$attr$vl <- rep(NA, num)
+  dat$attr$vl[idsInf] <- 0
+  dat$attr$diag.time <- rep(NA, num)
+  dat$attr$diag.time[idsInf] <- 1
+  dat$attr$last.neg.test <- rep(NA, num)
+  dat$attr$tx.status <- rep(NA, num)
+  dat$attr$tx.status[idsInf] <- 0
+  dat$attr$cum.time.on.tx <- rep(NA, num)
+  dat$attr$cum.time.on.tx[idsInf] <- 0
+  dat$attr$cum.time.off.tx <- rep(NA, num)
+  dat$attr$cum.time.off.tx[idsInf] <- 0
 
   return(dat)
 
