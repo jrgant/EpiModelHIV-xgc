@@ -21,7 +21,7 @@
 #' @export
 #'
 condoms_msm <- function(dat, at) {
-browser()
+
   # Attributes
   race <- dat$attr$race
   age <- dat$attr$age
@@ -88,13 +88,14 @@ browser()
   ptype <- rep(el[, "ptype"], ai.vec)
   cond.prob <- rep(el[, "cond.prob"], ai.vec)
 
-  # PrEP Status (risk compensation)
-  # if (rcomp.prob > 0) {
-  #   idsRC <- which((prepStat[elt[, 1]] == 1 & prepClass[elt[, 1]] %in% rcomp.adh.groups) |
-  #                    (prepStat[elt[, 2]] == 1 & prepClass[elt[, 2]] %in% rcomp.adh.groups))
-  #   uai.prob[idsRC] <- 1 - (1 - uai.prob[idsRC]) * (1 - rcomp.prob)
-  # }
+  # PrEP-related risk compensation
+  if (rcomp.prob > 0) {
+    idsRC <- which((prepStat[el[, 1]] == 1 & prepClass[el[, 1]] %in% rcomp.adh.groups) |
+                   (prepStat[el[, 2]] == 1 & prepClass[el[, 2]] %in% rcomp.adh.groups))
+    cond.prob[idsRC] <- cond.prob[idsRC] * (1 - rcomp.prob)
+  }
 
+  # UAI draw per act
   uai <- rbinom(length(cond.prob), 1, 1 - cond.prob)
 
   # Act list construction
