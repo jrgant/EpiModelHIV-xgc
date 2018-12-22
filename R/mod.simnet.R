@@ -20,7 +20,7 @@ simnet_msm <- function(dat, at) {
   ## Main network
   nwparam.m <- EpiModel::get_nwparam(dat, network = 1)
 
-  dat$attr$deg.pers <- get_degree(dat$el[[2]])
+  dat$attr$deg.casl <- get_degree(dat$el[[2]])
   dat <- tergmLite::updateModelTermInputs(dat, network = 1)
 
   dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],

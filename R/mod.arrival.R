@@ -80,6 +80,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   # Disease status and related
   dat$attr$status[newIds] <- rep(0, nNew)
+  dat$attr$diag.status[newIds] <- rep(0, nNew)
   dat$attr$rGC[newIds] <- dat$attrrGC.timesInf[newIds] <- 0
   dat$attr$uGC[newIds] <- dat$attruGC.timesInf[newIds] <- 0
   dat$attr$rCT[newIds] <- dat$attrrCT.timesInf[newIds] <- 0
@@ -117,7 +118,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   # Degree
   dat$attr$deg.main[newIds] <- 0
-  dat$attr$deg.pers[newIds] <- 0
+  dat$attr$deg.casl[newIds] <- 0
   dat$attr$deg.tot[newIds] <- 0
 
   # One-off risk group
@@ -128,7 +129,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
 
   ## Check attributes written as expected
-  cbind(sapply(dat$attr, function(x) is.na(tail(x, 1))))
+  # cbind(sapply(dat$attr, function(x) is.na(tail(x, 1))))
 
   return(dat)
 }
