@@ -55,7 +55,7 @@ simnet_msm <- function(dat, at) {
   ## One-off network
   nwparam.i <- EpiModel::get_nwparam(dat, network = 3)
 
-  dat$attr$deg.tot <- dat$attr$deg.main + get_degree(dat$el[[2]])
+  dat$attr$deg.tot <- pmin(dat$attr$deg.main + get_degree(dat$el[[2]]), 3)
   dat <- tergmLite::updateModelTermInputs(dat, network = 3)
 
   dat$el[[3]] <- tergmLite::simulate_ergm(p = dat$p[[3]],
