@@ -27,7 +27,7 @@ param <- param_msm(netstats = netstats,
                    a.rate = 0.0004 / 7)
 init <- init_msm(init.hiv.mod = epistats$hiv.mod)
 control <- control_msm(simno = 1,
-                       nsteps = 500,
+                       nsteps = 520,
                        nsims = 1,
                        ncores = 1)
 
@@ -39,21 +39,19 @@ control <- control_msm(simno = 1,
 
 # Testing/Timing ------------------------------------------------------
 
-library(microbenchmark)
-m <- microbenchmark(hivvl_msm(dat, at))
+m <- microbenchmark::microbenchmark(hivvl_msm(dat, at))
 print(m, unit = "ms")
 
-dat <- initialize_msm(est, param, init, control, s = 1) # check
+dat <- initialize_msm(est, param, init, control, s = 1)
 
-# for (at in 2:104) {
-  at = 2
-  dat <- aging_msm(dat, at)        # check
-  dat <- departure_msm(dat, at)    # check
-  dat <- arrival_msm(dat, at)      # check
-  dat <- hivtest_msm(dat, at)      # check
-  dat <- hivtx_msm(dat, at)        # check
-  dat <- hivprogress_msm(dat, at)  # check
-  dat <- hivvl_msm(dat, at)        # check
+for (at in 2:520) {
+  dat <- aging_msm(dat, at)
+  dat <- departure_msm(dat, at)
+  dat <- arrival_msm(dat, at)
+  dat <- hivtest_msm(dat, at)
+  dat <- hivtx_msm(dat, at)
+  dat <- hivprogress_msm(dat, at)
+  dat <- hivvl_msm(dat, at)
   dat <- simnet_msm(dat, at)
   dat <- acts_msm(dat, at)
   dat <- condoms_msm(dat, at)
@@ -64,11 +62,10 @@ dat <- initialize_msm(est, param, init, control, s = 1) # check
   dat <- stirecov_msm(dat, at)
   dat <- stitx_msm(dat, at)
   dat <- prevalence_msm(dat, at)
-  cat(at, ".", sep = "")
-# }
+  verbose.net(dat, "progress", at = at)
+}
 
 nrow(dat$temp$plist)
 table(dat$temp$plist[, "start"])
 table(dat$temp$plist[, "stop"])
 head(dat$temp$plist)
-
