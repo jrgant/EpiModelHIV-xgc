@@ -10,10 +10,12 @@ netstats <- readRDS(file.path(scr.dir, "data/artnet.NetStats.Atlanta.rda"))
 epistats <- readRDS(file.path(scr.dir, "data/artnet.EpiStats.Atlanta.rda"))
 est <- readRDS(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))
 
+file.info(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))$mtime >
+  file.info(file.path(scr.dir, "data/artnet.NetStats.Atlanta.rda"))$mtime
+
 param <- param_msm(netstats = netstats,
-                   acts.model = epistats$acts.mod,
-                   riskh.start = 2,
-                   prep.start = 50,
+                   riskh.start = 500,
+                   prep.start = 500,
                    prep.start.prob = 0.2,
                    prep.adhr.dist = c(0.089, 0.127, 0.785),
                    prep.adhr.hr = c(0.69, 0.19, 0.02),
@@ -21,10 +23,11 @@ param <- param_msm(netstats = netstats,
                    prep.tst.int = 90,
                    prep.risk.int = 182,
                    prep.sti.screen.int = 182,
-                   prep.sti.prob.tx = 1)
+                   prep.sti.prob.tx = 1,
+                   a.rate = 0.0004 / 7)
 init <- init_msm(init.hiv.mod = epistats$hiv.mod)
 control <- control_msm(simno = 1,
-                       nsteps = 200,
+                       nsteps = 500,
                        nsims = 1,
                        ncores = 1)
 
