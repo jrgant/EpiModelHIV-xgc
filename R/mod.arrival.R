@@ -81,10 +81,10 @@ setNewAttr_msm <- function(dat, at, nNew) {
   # Disease status and related
   dat$attr$status[newIds] <- rep(0, nNew)
   dat$attr$diag.status[newIds] <- rep(0, nNew)
-  dat$attr$rGC[newIds] <- dat$attrrGC.timesInf[newIds] <- 0
-  dat$attr$uGC[newIds] <- dat$attruGC.timesInf[newIds] <- 0
-  dat$attr$rCT[newIds] <- dat$attrrCT.timesInf[newIds] <- 0
-  dat$attr$uCT[newIds] <- dat$attruCT.timesInf[newIds] <- 0
+  dat$attr$rGC[newIds] <- dat$attr$GC.timesInf[newIds] <- 0
+  dat$attr$uGC[newIds] <- dat$attr$GC.timesInf[newIds] <- 0
+  dat$attr$rCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
+  dat$attr$uCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
 
   dat$attr$tt.traj[newIds[newB]] <- sample(1:4,
                                            length(newB), replace = TRUE,
