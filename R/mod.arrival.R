@@ -86,12 +86,14 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$rCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
   dat$attr$uCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
 
-  dat$attr$tt.traj[newIds[newB]] <- sample(1:4,
-                                           length(newB), replace = TRUE,
-                                           prob = dat$param$tt.traj.prob[[1]])
-  dat$attr$tt.traj[newIds[newW]] <- sample(1:4,
-                                           length(newW), replace = TRUE,
-                                           prob = dat$param$tt.traj.prob[[2]])
+  dat$attr$tt.traj[newIds[newB]] <- sample(1:3, length(newB), TRUE,
+                                           c(dat$param$tt.part.supp[1],
+                                             dat$param$tt.full.supp[1],
+                                             dat$param$tt.dur.supp[1]))
+  dat$attr$tt.traj[newIds[newW]] <- sample(1:3, length(newW), TRUE,
+                                           c(dat$param$tt.part.supp[2],
+                                             dat$param$tt.full.supp[2],
+                                             dat$param$tt.dur.supp[2]))
 
   # Circumcision
   dat$attr$circ[newIds[newB]] <- rbinom(length(newB), 1, dat$param$circ.prob[1])

@@ -65,26 +65,26 @@ hivvl_msm <- function(dat, at) {
   vl[target] <- new.vl
 
   # 2. men on tx, tt.traj=full, not AIDS
-  target <- which(tx.status == 1 & tt.traj == 4 & stage != 4)
+  target <- which(tx.status == 1 & tt.traj == 2 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.full.supp)
   vl[target] <- new.vl
 
   # 3. men on tx, tt.traj=part, not AIDS
-  target <- which(tx.status == 1 & tt.traj == 3 & stage != 4)
+  target <- which(tx.status == 1 & tt.traj == 1 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.part.supp)
   vl[target] <- new.vl
 
   # 4. men off tx, not naive, tt.traj=full, not AIDS
-  target <- which(tx.status == 0 & tt.traj == 4 &
+  target <- which(tx.status == 0 & tt.traj == 2 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vlsp)
   vl[target] <- new.vl
 
   # 5. men off tx, not naive, tt.traj=part, not AIDS
-  target <- which(tx.status == 0 & tt.traj == 3 &
+  target <- which(tx.status == 0 & tt.traj == 1 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vlsp)
@@ -95,20 +95,20 @@ hivvl_msm <- function(dat, at) {
 
   # 7. men on tx, tt.traj=part, AIDS
   target <- which(tx.status == 1 &
-                  tt.traj == 3 & stage == 4)
+                  tt.traj == 1 & stage == 4)
   current.vl <- vl[target]
   new.vl <- current.vl + vlds
   vl[target] <- new.vl
 
   # 8. men off tx, tt.traj=full, and AIDS
-  target <- which(tx.status == 0 & tt.traj == 4 &
+  target <- which(tx.status == 0 & tt.traj == 2 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]
   new.vl <- current.vl + vlds
   vl[target] <- new.vl
 
   # 9. men off tx, tt.traj=part, and AIDS
-  target <- which(tx.status == 0 & tt.traj == 3 &
+  target <- which(tx.status == 0 & tt.traj == 1 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]
   new.vl <- current.vl + vlds

@@ -5,19 +5,20 @@
 \title{Epidemic Model Parameters}
 \usage{
 param_msm(netstats, hiv.test.int = c(301, 315), test.window.int = 21,
-  tt.traj.prob = list(c(0, 0, 0.433, 0.567), c(0, 0, 0.383, 0.617)),
-  tx.init.prob = c(0.092, 0.127), tx.halt.prob = c(0.0102, 0.0071),
-  tx.reinit.prob = c(0.00066, 0.00291), max.time.off.tx.full.int = 520
-  * 7, max.time.on.tx.part.int = 52 * 15 * 7,
-  max.time.off.tx.part.int = 520 * 7, vl.acute.rise.int = 45,
-  vl.acute.peak = 6.886, vl.acute.fall.int = 45, vl.set.point = 4.5,
-  vl.aids.onset.int = 520 * 7, vl.aids.int = 52 * 2 * 7,
-  vl.fatal = 7, vl.full.supp = 1.5, vl.part.supp = 3.5,
-  vl.tx.down.slope = 0.25, vl.tx.up.slope = 0.25, a.rate = 5e-04/7,
-  arrival.age = 15, URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 *
-  1.09, acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95,
-  cond.fail = c(0.39, 0.21), circ.prob = c(0.874, 0.918),
-  acts.model = epistats$acts.mod, cond.mc.model = epistats$cond.mc.mod,
+  tt.part.supp = c(0.433, 0.383), tt.full.supp = c(0.383, 0.617),
+  tt.dur.supp = c(0, 0), tx.init.prob = c(0.092, 0.127),
+  tx.halt.prob = c(0.0102, 0.0071), tx.reinit.prob = c(0.00066,
+  0.00291), max.time.off.tx.full.int = 520 * 7,
+  max.time.on.tx.part.int = 52 * 15 * 7, max.time.off.tx.part.int = 520
+  * 7, vl.acute.rise.int = 45, vl.acute.peak = 6.886,
+  vl.acute.fall.int = 45, vl.set.point = 4.5, vl.aids.onset.int = 520
+  * 7, vl.aids.int = 52 * 2 * 7, vl.fatal = 7, vl.full.supp = 1.5,
+  vl.part.supp = 3.5, vl.tx.down.slope = 0.25, vl.tx.up.slope = 0.25,
+  a.rate = 5e-04/7, arrival.age = 15, URAI.prob = 0.0082 * 1.09,
+  UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
+  cond.eff = 0.95, cond.fail = c(0.39, 0.21), circ.prob = c(0.874,
+  0.918), acts.model = epistats$acts.mod,
+  cond.mc.model = epistats$cond.mc.mod,
   cond.oo.model = epistats$cond.oo.mod, rgc.tprob = 0.428,
   ugc.tprob = 0.35, rct.tprob = 0.231, uct.tprob = 0.205,
   rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14,
@@ -43,11 +44,14 @@ the standard ARTnet workflow.}
 
 \item{test.window.int}{Length of the HIV test window period in days.}
 
-\item{tt.traj.prob}{Proportion of black/white MSM who enter one of four
-testing/treatment trajectories: never test or treat, test and never
-initiate treatment, test and treated with partial viral suppression,
-and test and treated with full suppression (list of 2 vectors of
-vectors, each of length 4).}
+\item{tt.part.supp}{Proportion of black/white MSM who enter partial viral
+suppression category after ART initiation (vector of length 2).}
+
+\item{tt.full.supp}{Proportion of black/white MSM who enter full viral
+suppression category after ART initiation (vector of length 2).}
+
+\item{tt.dur.supp}{Proportion of black/white MSM who enter durable viral
+suppression category after ART initiation (vector of length 2).}
 
 \item{tx.init.prob}{Probability per time step that a black/white MSM who has
 tested positive will initiate treatment (vector of length 2).}

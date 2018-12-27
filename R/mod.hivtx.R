@@ -31,7 +31,6 @@ hivtx_msm <- function(dat, at) {
   status <- dat$attr$status
   tx.status <- dat$attr$tx.status
   diag.status <- dat$attr$diag.status
-  tt.traj <- dat$attr$tt.traj
   cum.time.on.tx <- dat$attr$cum.time.on.tx
   cum.time.off.tx <- dat$attr$cum.time.off.tx
   stage <- dat$attr$stage
@@ -45,7 +44,6 @@ hivtx_msm <- function(dat, at) {
   tx.init.elig <- which(status == 1 &
                         tx.status == 0 &
                         diag.status == 1 &
-                        tt.traj %in% 3:4 &
                         cum.time.on.tx == 0 &
                         stage != 4)
   rates <- tx.init.prob[race[tx.init.elig] + 1]

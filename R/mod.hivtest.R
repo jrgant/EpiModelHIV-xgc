@@ -24,7 +24,6 @@ hivtest_msm <- function(dat, at) {
   # Attributes
   diag.status <- dat$attr$diag.status
   race <- dat$attr$race
-  tt.traj <- dat$attr$tt.traj
   status <- dat$attr$status
   inf.time <- dat$attr$inf.time
 
@@ -39,8 +38,7 @@ hivtest_msm <- function(dat, at) {
   tsincelntst[is.na(tsincelntst)] <- at - dat$attr$arrival.time[is.na(tsincelntst)]
 
   # General interval testing
-  elig <- which(tt.traj != 1 &
-                (diag.status == 0 | is.na(diag.status)) &
+  elig <- which((diag.status == 0 | is.na(diag.status)) &
                 prepStat == 0)
   # rates by race
   rates <- 1/hiv.test.int[race[elig] + 1]

@@ -125,12 +125,15 @@ init_status_msm <- function(dat) {
   tt.traj <- rep(NA, num)
   ids.B <- which(dat$attr$race == 0)
   ids.W <- which(dat$attr$race == 1)
-  tt.traj[ids.B] <- sample(apportion_lr(length(ids.B), 1:4,
-                                        dat$param$tt.traj.prob[[1]]))
-  tt.traj[ids.W] <- sample(apportion_lr(length(ids.W), 1:4,
-                                        dat$param$tt.traj.prob[[2]]))
+  tt.traj[ids.B] <- sample(1:3, length(ids.B), TRUE,
+                           c(dat$param$tt.part.supp[1],
+                             dat$param$tt.full.supp[1],
+                             dat$param$tt.dur.supp[1]))
+  tt.traj[ids.W] <- sample(1:3, length(ids.W), TRUE,
+                           c(dat$param$tt.part.supp[2],
+                             dat$param$tt.full.supp[2],
+                             dat$param$tt.dur.supp[2]))
   dat$attr$tt.traj <- tt.traj
-
 
   ## Infection-related attributes
   dat$attr$status <- status

@@ -15,11 +15,11 @@
 #' The time spent in chronic stage infection, and thus the time from infection to
 #' AIDS, depends on ART history. For ART-naive persons, time to AIDS is established
 #' by the \code{vl.aids.onset} parameter. For persons ever on ART who fall into
-#' the partially suppressed category (the \code{tt.traj} attribute is \code{3}),
+#' the partially suppressed category (the \code{tt.traj} attribute is \code{1}),
 #' time to AIDS depends on the sum of two ratios: time on treatment over maximum
 #' time on treatment plus time off treatment over maximum time off treatment.
 #' For persons ever on ART who fall into the fully suppressed cateogry
-#' (\code{tt.traj=4}), time to AIDS depends on whether the cumulative time
+#' (\code{tt.traj=2}), time to AIDS depends on whether the cumulative time
 #' off treatment exceeds a time threshold specified in the \code{max.time.off.tx.full}
 #' parameter.
 #'
@@ -77,10 +77,10 @@ hivprogress_msm <- function(dat, at) {
   part.tx.score <- (cum.time.off.tx / max.time.off.tx.part) +
                    (cum.time.on.tx / max.time.on.tx.part)
 
-  aids.part.escape <- which(active == 1 & cum.time.on.tx > 0 & tt.traj == 3 &
+  aids.part.escape <- which(active == 1 & cum.time.on.tx > 0 & tt.traj == 1 &
                             stage == 3 & part.tx.score >= 1 & stage != 4)
 
-  aids.off.tx.full.escape <- which(active == 1 & tx.status == 0 & tt.traj == 4 &
+  aids.off.tx.full.escape <- which(active == 1 & tx.status == 0 & tt.traj == 2 &
                                    cum.time.on.tx > 0 &
                                    cum.time.off.tx >= max.time.off.tx.full &
                                    stage != 4)
