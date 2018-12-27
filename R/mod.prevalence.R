@@ -49,8 +49,16 @@ prevalence_msm <- function(dat, at) {
     sum(prepStat == 1, na.rm = TRUE)
 
   dat$epi$ir100[at] <- (dat$epi$incid[at] / sum(status == 0, na.rm = TRUE)) * 5200
-  dat$epi$ir100.prep[at] <- (dat$epi$incid.prep[at] / sum(status == 0 &
-                                                            (prepStat == 1), na.rm = TRUE)) * 5200
+
+  # Care continuum stats
+  dat$epi$cc.dx[at] <- sum(dat$attr$diag.status == 1, na.rm = TRUE) /
+    sum(status == 1, na.rm = TRUE)
+  dat$epi$cc.linked[at] <- sum(dat$attr$cum.time.on.tx > 0, na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$.cc.tx[at] <- sum(dat$attr$tx.status == 1, na.rm = TRUE) /
+    sum(dat$attr$cum.time.on.tx > 0, na.rm = TRUE)
+  dat$epi$.cc.vsupp[at] <- sum(dat$attr$vl <= log10(50), na.rm = TRUE) /
+    sum(dat$attr$tx.status == 1, na.rm = TRUE)
 
   dat$epi$prepElig[at] <- sum(prepElig == 1, na.rm = TRUE)
   dat$epi$prepCurr[at] <- sum(prepStat == 1, na.rm = TRUE)
@@ -64,10 +72,6 @@ prevalence_msm <- function(dat, at) {
                              (sum(rCT == 0, na.rm = TRUE) +
                                 sum(uCT == 0, na.rm = TRUE))) * 5200
 
-  if (!is.null(dat$epi$incid.B)) {
-    dat$epi$incid.B <- NULL
-    dat$epi$incid.W <- NULL
-  }
 
   return(dat)
 }
