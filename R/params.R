@@ -189,7 +189,7 @@ param_msm <- function(netstats,
                       part.supp.up.slope = 0.25,
 
                       # Demographic
-                      a.rate = 1e-3 / 7,
+                      a.rate = 0.0005 / 7,
                       arrival.age = 15,
 
                       # HIV transmission prob

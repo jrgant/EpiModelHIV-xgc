@@ -78,15 +78,15 @@ update_plist <- function(dat, at, ptype) {
   uid <- dat$attr$uid
   news <- attr(dat$el[[ptype]], "changes")
   news_uid <- cbind(matrix(uid[news[, 1:2]], ncol = 2), news[, 3])
-  news_uid_stop <- news_uid[news_uid[, 3] == 0, ]
+  news_uid_stop <- news_uid[news_uid[, 3] == 0, , drop = FALSE]
   pid_plist1 <- plist1[, 1]*1e7 + plist1[, 2]
   pid_stop <- news_uid_stop[, 1]*1e7 + news_uid_stop[, 2]
   matches_stop <- match(pid_stop, pid_plist1)
   plist1[matches_stop, "stop"] <- at
 
   # look up new formations, row bind them
-  news_uid_start <- news_uid[news_uid[, 3] == 1,]
-  plist1 <- rbind(plist1, cbind(news_uid_start[, 1:2], ptype, at, NA))
+  news_uid_start <- news_uid[news_uid[, 3] == 1, , drop = FALSE]
+  plist1 <- rbind(plist1, cbind(news_uid_start[, 1:2, drop = FALSE], ptype, at, NA))
 
   return(plist1)
 }
