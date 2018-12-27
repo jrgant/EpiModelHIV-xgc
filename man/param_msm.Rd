@@ -32,9 +32,8 @@ param_msm(netstats, hiv.test.int = c(301, 315), test.window.int = 21,
   hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78, hiv.uct.rr = 1.73,
   hiv.dual.rr = 0.2, riskh.start = Inf, prep.start = Inf,
   prep.start.prob = 0.2, prep.adhr.dist = c(0.089, 0.127, 0.784),
-  prep.class.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
-  (2^(-1/780)), prep.tst.int = 90, prep.risk.int = 182,
-  rcomp.prob = 0.41, rcomp.adh.groups = 2:3,
+  prep.adhr.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
+  (2^(-1/781)), prep.tst.int = 90, prep.risk.int = 182,
   prep.sti.screen.int = 182, prep.sti.prob.tx = 1, ...)
 }
 \arguments{
@@ -209,7 +208,7 @@ given dual infection with both gonorrhea and chlamydia.}
 \item{prep.adhr.dist}{Proportion of men who are low, medium, and high
 adherent to PrEP.}
 
-\item{prep.class.hr}{The hazard ratio for infection per act associated with each
+\item{prep.adhr.hr}{The hazard ratio for infection per act associated with each
 level of adherence (from Grant).}
 
 \item{prep.discont.rate}{Rate of random discontinuation from PrEP.}
@@ -219,15 +218,6 @@ overrides the mean testing interval parameters.}
 
 \item{prep.risk.int}{Time window for assessment of risk eligibility for PrEP
 in days.}
-
-\item{rcomp.prob}{Level of risk compensation from 0 to 1, where 0 is no risk
-compensation, 0.5 is a 50% reduction in the probability of condom use
-per act, and 1 is a complete cessation of condom use following PrEP
-initiation.}
-
-\item{rcomp.adh.groups}{PrEP adherence groups for whom risk compensation
-occurs, as a vector with values 1, 2, 3 corresponding to
-low adherence, medium adherence, and high adherence to PrEP.}
 
 \item{prep.sti.screen.int}{Interval in days between STI screening at PrEP visits.}
 

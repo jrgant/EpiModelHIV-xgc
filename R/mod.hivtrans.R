@@ -58,7 +58,7 @@ hivtrans_msm <- function(dat, at) {
   cond.fail <- dat$param$cond.fail
 
   circ.rr <- dat$param$circ.rr
-  prep.hr <- dat$param$prep.class.hr
+  prep.hr <- dat$param$prep.adhr.hr
   hiv.ugc.rr <- dat$param$hiv.ugc.rr
   hiv.uct.rr <- dat$param$hiv.uct.rr
   hiv.rgc.rr <- dat$param$hiv.rgc.rr

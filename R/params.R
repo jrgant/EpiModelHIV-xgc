@@ -88,7 +88,7 @@
 #' @param prep.start.prob Probability of starting PrEP given current indications.
 #' @param prep.adhr.dist Proportion of men who are low, medium, and high
 #'        adherent to PrEP.
-#' @param prep.class.hr The hazard ratio for infection per act associated with each
+#' @param prep.adhr.hr The hazard ratio for infection per act associated with each
 #'        level of adherence (from Grant).
 #'
 #' @param prep.discont.rate Rate of random discontinuation from PrEP.
@@ -97,14 +97,6 @@
 #'        overrides the mean testing interval parameters.
 #' @param prep.risk.int Time window for assessment of risk eligibility for PrEP
 #'        in days.
-#'
-#' @param rcomp.prob Level of risk compensation from 0 to 1, where 0 is no risk
-#'        compensation, 0.5 is a 50% reduction in the probability of condom use
-#'        per act, and 1 is a complete cessation of condom use following PrEP
-#'        initiation.
-#' @param rcomp.adh.groups PrEP adherence groups for whom risk compensation
-#'        occurs, as a vector with values 1, 2, 3 corresponding to
-#'        low adherence, medium adherence, and high adherence to PrEP.
 #'
 #' @param rgc.tprob Probability of rectal gonorrhea infection per act.
 #' @param ugc.tprob Probability of urethral gonorrhea infection per act.
@@ -238,12 +230,10 @@ param_msm <- function(netstats,
                       prep.start = Inf,
                       prep.start.prob = 0.2,
                       prep.adhr.dist = c(0.089, 0.127, 0.784),
-                      prep.class.hr = c(0.69, 0.19, 0.02),
-                      prep.discont.rate = 1 - (2^(-1/780)),
+                      prep.adhr.hr = c(0.69, 0.19, 0.02),
+                      prep.discont.rate = 1 - (2^(-1/781)),
                       prep.tst.int = 90,
                       prep.risk.int = 182,
-                      rcomp.prob = 0.41,
-                      rcomp.adh.groups = 2:3,
                       prep.sti.screen.int = 182,
                       prep.sti.prob.tx = 1,
                       ...) {
