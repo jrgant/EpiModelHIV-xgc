@@ -138,26 +138,39 @@ init_status_msm <- function(dat) {
   ## Infection-related attributes
   dat$attr$status <- status
   idsInf <- which(status == 1)
-  dat$attr$stage <- rep(NA, num)
-  dat$attr$stage[idsInf] <- 1
-  dat$attr$stage.time <- rep(NA, num)
-  dat$attr$stage.time[idsInf] <- 0
+
+  age <- dat$attr$age
+  tunit <- dat$param$time.unit
+  min.ages <- min(dat$param$netstats$demog$ages)
+  time.sex.active <- pmax(1, round((365/tunit)*age[idsInf] - (365/tunit)*min.ages, 0))
+  min.hiv.time <- dat$param$vl.acute.rise.int + dat$param$vl.acute.fall.int
+  max.hiv.time <- dat$param$vl.acute.rise.int + dat$param$vl.acute.fall.int +
+                  dat$param$vl.aids.onset.int
+  time.infected <- pmin(time.sex.active,
+                        sample(min.hiv.time:max.hiv.time, length(idsInf), TRUE))
+
   dat$attr$inf.time <- rep(NA, num)
-  dat$attr$inf.time[idsInf] <- 1
+  dat$attr$inf.time[idsInf] <- -time.infected
+
+  dat$attr$stage <- rep(NA, num)
+  dat$attr$stage.time <- rep(NA, num)
+  dat$attr$stage[idsInf] <- 3
+  dat$attr$stage.time[idsInf] <- time.infected - min.hiv.time
+
   dat$attr$vl <- rep(NA, num)
-  dat$attr$vl[idsInf] <- 0
+  dat$attr$vl[idsInf] <- dat$param$vl.set.point
   dat$attr$diag.time <- rep(NA, num)
-  dat$attr$diag.time[idsInf] <- 1
+  dat$attr$diag.time[idsInf] <- dat$attr$inf.time[idsInf] - mean(dat$param$hiv.test.int)
   dat$attr$last.neg.test <- rep(NA, num)
+
   dat$attr$tx.status <- rep(NA, num)
   dat$attr$tx.status[idsInf] <- 0
   dat$attr$cum.time.on.tx <- rep(NA, num)
   dat$attr$cum.time.on.tx[idsInf] <- 0
   dat$attr$cum.time.off.tx <- rep(NA, num)
-  dat$attr$cum.time.off.tx[idsInf] <- 0
+  dat$attr$cum.time.off.tx[idsInf] <- time.infected
 
   return(dat)
-
 }
 
 
