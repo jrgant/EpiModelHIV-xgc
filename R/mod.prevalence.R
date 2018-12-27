@@ -55,10 +55,18 @@ prevalence_msm <- function(dat, at) {
     sum(status == 1, na.rm = TRUE)
   dat$epi$cc.linked[at] <- sum(dat$attr$cum.time.on.tx > 0, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  dat$epi$.cc.tx[at] <- sum(dat$attr$tx.status == 1, na.rm = TRUE) /
-    sum(dat$attr$cum.time.on.tx > 0, na.rm = TRUE)
-  dat$epi$.cc.vsupp[at] <- sum(dat$attr$vl <= log10(50), na.rm = TRUE) /
-    sum(dat$attr$tx.status == 1, na.rm = TRUE)
+  dat$epi$cc.tx[at] <- sum(dat$attr$tx.status == 1, na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.vsupp[at] <- sum(dat$attr$vl <= log10(50), na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1, na.rm = TRUE)
+
+  # HIV stage
+  dat$epi$hstage.acute[at] <- sum(dat$attr$stage %in% 1:2, na.rm = TRUE) /
+    sum(status == 1, na.rm = TRUE)
+  dat$epi$hstage.chronic[at] <- sum(dat$attr$stage == 3, na.rm = TRUE) /
+    sum(status == 1, na.rm = TRUE)
+  dat$epi$hstage.aids[at] <- sum(dat$attr$stage == 4, na.rm = TRUE) /
+    sum(status == 1, na.rm = TRUE)
 
   dat$epi$prepElig[at] <- sum(prepElig == 1, na.rm = TRUE)
   dat$epi$prepCurr[at] <- sum(prepStat == 1, na.rm = TRUE)
