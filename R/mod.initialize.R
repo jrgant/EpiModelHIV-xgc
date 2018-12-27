@@ -61,9 +61,9 @@ initialize_msm <- function(x, param, init, control, s) {
   # Insertivity Quotient
   ins.quot <- rep(NA, num)
   role.class <- dat$attr$role.class
-  ins.quot[role.class == "I"]  <- 1
-  ins.quot[role.class == "R"]  <- 0
-  ins.quot[role.class == "V"]  <- runif(sum(role.class == "V"))
+  ins.quot[role.class == 0]  <- 1
+  ins.quot[role.class == 1]  <- 0
+  ins.quot[role.class == 2]  <- runif(sum(role.class == 2))
   dat$attr$ins.quot <- ins.quot
 
   # HIV-related attributes
@@ -537,8 +537,8 @@ init_sti_msm <- function(dat) {
   role.class <- dat$attr$role.class
   num <- length(role.class)
 
-  idsUreth <- which(role.class %in% c("I", "V"))
-  idsRect <- which(role.class %in% c("R", "V"))
+  idsUreth <- which(role.class %in% c(0, 2))
+  idsRect <- which(role.class %in% c(1, 2))
 
   uGC <- rGC <- rep(0, num)
   uCT <- rCT <- rep(0, num)

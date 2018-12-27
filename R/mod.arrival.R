@@ -102,18 +102,18 @@ setNewAttr_msm <- function(dat, at, nNew) {
   rc.probs.B <- prop.table(table(ns$role.class[ns$race == 0]))
   rc.probs.W <- prop.table(table(ns$role.class[ns$race == 1]))
 
-  dat$attr$role.class[newIds[newB]] <- sample(c("I", "R", "V"),
+  dat$attr$role.class[newIds[newB]] <- sample(0:2,
                                               length(newB), replace = TRUE,
                                               prob = rc.probs.B)
-  dat$attr$role.class[newIds[newW]] <- sample(c("I", "R", "V"),
+  dat$attr$role.class[newIds[newW]] <- sample(0:2,
                                               length(newW), replace = TRUE,
                                               prob = rc.probs.W)
 
   ins.quot <- rep(NA, nNew)
-  ins.quot[dat$attr$role.class[newIds] == "I"]  <- 1
-  ins.quot[dat$attr$role.class[newIds] == "R"]  <- 0
-  ins.quot[dat$attr$role.class[newIds] == "V"]  <-
-                                  runif(sum(dat$attr$role.class[newIds] == "V"))
+  ins.quot[dat$attr$role.class[newIds] == 0]  <- 1
+  ins.quot[dat$attr$role.class[newIds] == 1]  <- 0
+  ins.quot[dat$attr$role.class[newIds] == 2]  <-
+                                  runif(sum(dat$attr$role.class[newIds] == 2))
   dat$attr$ins.quot[newIds] <- ins.quot
 
   # Degree

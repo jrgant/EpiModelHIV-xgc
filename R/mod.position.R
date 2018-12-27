@@ -41,13 +41,13 @@ position_msm <- function(dat, at) {
   p2.role.class <- role.class[al[, "p2"]]
 
   ins <- rep(NA, length(p1.role.class))
-  ins[which(p1.role.class == "I")] <- 1
-  ins[which(p1.role.class == "R")] <- 0
-  ins[which(p2.role.class == "I")] <- 0
-  ins[which(p2.role.class == "R")] <- 1
+  ins[which(p1.role.class == 0)] <- 1
+  ins[which(p1.role.class == 1)] <- 0
+  ins[which(p2.role.class == 0)] <- 0
+  ins[which(p2.role.class == 1)] <- 1
 
   # Versatile MSM
-  vv <- which(p1.role.class == "V" & p2.role.class == "V")
+  vv <- which(p1.role.class == 2 & p2.role.class == 2)
   p1.ins.prob <- ins.quot[al[, 1][vv]] /
                  (ins.quot[al[, 1][vv]] + ins.quot[al[, 2][vv]])
   p1.ins <- rbinom(length(vv), 1, p1.ins.prob)
