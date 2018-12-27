@@ -45,17 +45,11 @@
 #' @param vl.fatal Viral load in AIDS at which death occurs.
 #' @param vl.full.supp Log10 viral load at full suppression on ART.
 #' @param vl.part.supp Log10 viral load at partial suppression on ART.
-#' @param full.supp.down.slope For full suppressors, number of log10 units that
-#'        viral load falls per time step from treatment initiation or re-initiation
-#'        until the level in \code{vl.full.supp}.
-#' @param full.supp.up.slope For full suppressors, number of log10 units that
-#'        viral load rises per time step from treatment halting until expected
-#'        value.
-#' @param part.supp.down.slope For partial suppressors, number of log10 units
-#'        that viral load falls per time step from treatment initiation or
-#'        re-initiation until the level in \code{vl.part.supp}.
-#' @param part.supp.up.slope For partial suppressors, number of log10 units that
-#'        viral load rises per time step from treatment halting until expected value.
+#' @param vl.tx.down.slope Number of log10 units that viral load falls per time
+#'        step from treatment initiation or re-initiation until the suppression
+#'        level is reached.
+#' @param vl.tx.up.slope Number of log10 units that viral load rises per time
+#'        step from treatment halting until expected value.
 #'
 #' @param a.rate Rate at which MSM enter the population.
 #' @param arrival.age Age (in years) of new arrivals.
@@ -175,10 +169,8 @@ param_msm <- function(netstats,
                       vl.fatal = 7,
                       vl.full.supp = 1.5,
                       vl.part.supp = 3.5,
-                      full.supp.down.slope = 0.25,
-                      full.supp.up.slope = 0.25,
-                      part.supp.down.slope = 0.25,
-                      part.supp.up.slope = 0.25,
+                      vl.tx.down.slope = 0.25,
+                      vl.tx.up.slope = 0.25,
 
                       # Demographic
                       a.rate = 0.0005 / 7,

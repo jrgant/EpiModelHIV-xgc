@@ -13,13 +13,11 @@ param_msm(netstats, hiv.test.int = c(301, 315), test.window.int = 21,
   vl.acute.peak = 6.886, vl.acute.fall.int = 45, vl.set.point = 4.5,
   vl.aids.onset.int = 520 * 7, vl.aids.int = 52 * 2 * 7,
   vl.fatal = 7, vl.full.supp = 1.5, vl.part.supp = 3.5,
-  full.supp.down.slope = 0.25, full.supp.up.slope = 0.25,
-  part.supp.down.slope = 0.25, part.supp.up.slope = 0.25,
-  a.rate = 5e-04/7, arrival.age = 15, URAI.prob = 0.0082 * 1.09,
-  UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
-  cond.eff = 0.95, cond.fail = c(0.39, 0.21), circ.prob = c(0.874,
-  0.918), acts.model = epistats$acts.mod,
-  cond.mc.model = epistats$cond.mc.mod,
+  vl.tx.down.slope = 0.25, vl.tx.up.slope = 0.25, a.rate = 5e-04/7,
+  arrival.age = 15, URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 *
+  1.09, acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95,
+  cond.fail = c(0.39, 0.21), circ.prob = c(0.874, 0.918),
+  acts.model = epistats$acts.mod, cond.mc.model = epistats$cond.mc.mod,
   cond.oo.model = epistats$cond.oo.mod, rgc.tprob = 0.428,
   ugc.tprob = 0.35, rct.tprob = 0.231, uct.tprob = 0.205,
   rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14,
@@ -93,20 +91,12 @@ patient.}
 
 \item{vl.part.supp}{Log10 viral load at partial suppression on ART.}
 
-\item{full.supp.down.slope}{For full suppressors, number of log10 units that
-viral load falls per time step from treatment initiation or re-initiation
-until the level in \code{vl.full.supp}.}
+\item{vl.tx.down.slope}{Number of log10 units that viral load falls per time
+step from treatment initiation or re-initiation until the suppression
+level is reached.}
 
-\item{full.supp.up.slope}{For full suppressors, number of log10 units that
-viral load rises per time step from treatment halting until expected
-value.}
-
-\item{part.supp.down.slope}{For partial suppressors, number of log10 units
-that viral load falls per time step from treatment initiation or
-re-initiation until the level in \code{vl.part.supp}.}
-
-\item{part.supp.up.slope}{For partial suppressors, number of log10 units that
-viral load rises per time step from treatment halting until expected value.}
+\item{vl.tx.up.slope}{Number of log10 units that viral load rises per time
+step from treatment halting until expected value.}
 
 \item{a.rate}{Rate at which MSM enter the population.}
 

@@ -47,11 +47,9 @@ hivvl_msm <- function(dat, at) {
   vldd <- dat$param$vl.aids.int
   vlf  <- dat$param$vl.fatal
   vl.full.supp <- dat$param$vl.full.supp
-  full.supp.down.slope <- dat$param$full.supp.down.slope
+  vl.tx.down.slope <- dat$param$vl.tx.down.slope
   vl.part.supp <- dat$param$vl.part.supp
-  part.supp.down.slope <- dat$param$part.supp.down.slope
-  full.supp.up.slope <- dat$param$full.supp.up.slope
-  part.supp.up.slope <- dat$param$part.supp.up.slope
+  vl.tx.up.slope <- dat$param$vl.tx.up.slope
   vlds <- (vlf - vlsp) / vldd
 
   ## Process
@@ -69,27 +67,27 @@ hivvl_msm <- function(dat, at) {
   # 2. men on tx, tt.traj=full, not AIDS
   target <- which(tx.status == 1 & tt.traj == 4 & stage != 4)
   current.vl <- vl[target]
-  new.vl <- pmax(current.vl - full.supp.down.slope, vl.full.supp)
+  new.vl <- pmax(current.vl - vl.tx.down.slope, vl.full.supp)
   vl[target] <- new.vl
 
   # 3. men on tx, tt.traj=part, not AIDS
   target <- which(tx.status == 1 & tt.traj == 3 & stage != 4)
   current.vl <- vl[target]
-  new.vl <- pmax(current.vl - part.supp.down.slope, vl.part.supp)
+  new.vl <- pmax(current.vl - vl.tx.down.slope, vl.part.supp)
   vl[target] <- new.vl
 
   # 4. men off tx, not naive, tt.traj=full, not AIDS
   target <- which(tx.status == 0 & tt.traj == 4 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
-  new.vl <- pmin(current.vl + full.supp.up.slope, vlsp)
+  new.vl <- pmin(current.vl + vl.tx.up.slope, vlsp)
   vl[target] <- new.vl
 
   # 5. men off tx, not naive, tt.traj=part, not AIDS
   target <- which(tx.status == 0 & tt.traj == 3 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
-  new.vl <- pmin(current.vl + part.supp.up.slope, vlsp)
+  new.vl <- pmin(current.vl + vl.tx.up.slope, vlsp)
   vl[target] <- new.vl
 
   # 6. men on tx, tt.traj=full, AIDS
