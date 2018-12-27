@@ -25,7 +25,7 @@ aging_msm <- function(dat, at) {
 
   age[active == 1] <- age[active == 1] + time.unit / 365
 
-  age.breaks <- c(0, 24, 34, 44, 54, 65, 100)
+  age.breaks <- c(0, 25, 35, 45, 55, 65, 100)
   age.grp[active == 1] <- cut(age[active == 1], age.breaks, labels = FALSE)
 
   dat$attr$age.grp <- age.grp
