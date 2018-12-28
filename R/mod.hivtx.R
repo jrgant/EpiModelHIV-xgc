@@ -34,6 +34,9 @@ hivtx_msm <- function(dat, at) {
   cum.time.on.tx <- dat$attr$cum.time.on.tx
   cum.time.off.tx <- dat$attr$cum.time.off.tx
   stage <- dat$attr$stage
+  tx.period.first <- dat$attr$tx.period.first
+  tx.period.last <- dat$attr$tx.period.last
+  tx.init.time <- dat$attr$tx.init.time
 
   # Parameters
   tx.init.prob <- dat$param$tx.init.prob
@@ -61,17 +64,30 @@ hivtx_msm <- function(dat, at) {
   rates <- tx.reinit.prob[race[tx.reinit.elig] + 1]
   tx.reinit <- tx.reinit.elig[rbinom(length(tx.reinit.elig), 1, rates) == 1]
 
-  ## Update treatment time
+
+  ## Update Attributes
+  tx.status[tx.init] <- 1
+  tx.status[tx.halt] <- 0
+  tx.status[tx.reinit] <- 1
+
   cum.time.on.tx[which(tx.status == 1)] <- cum.time.on.tx[which(tx.status == 1)] + 1
   cum.time.off.tx[which(tx.status == 0)] <- cum.time.off.tx[which(tx.status == 0)] + 1
 
-  ## Update Attributes
-  dat$attr$tx.status[tx.init] <- 1
-  dat$attr$tx.status[tx.halt] <- 0
-  dat$attr$tx.status[tx.reinit] <- 1
+  tx.init.time[tx.init] <- at
 
+  idsSetPeriod <- union(tx.init, tx.reinit)
+  tx.period.first[idsSetPeriod] <- at
+  tx.period.last[idsSetPeriod] <- at
+
+  idsContPeriod <- setdiff(which(tx.status == 1), idsSetPeriod)
+  tx.period.last[idsContPeriod] <- at
+
+  dat$attr$tx.status <- tx.status
   dat$attr$cum.time.on.tx <- cum.time.on.tx
   dat$attr$cum.time.off.tx <- cum.time.off.tx
+  dat$attr$tx.period.first <- tx.period.first
+  dat$attr$tx.period.last <- tx.period.last
+  dat$attr$tx.init.time <- tx.init.time
 
   return(dat)
 }

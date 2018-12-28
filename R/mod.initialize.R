@@ -169,6 +169,9 @@ init_status_msm <- function(dat) {
   dat$attr$cum.time.on.tx[idsInf] <- 0
   dat$attr$cum.time.off.tx <- rep(NA, num)
   dat$attr$cum.time.off.tx[idsInf] <- time.infected
+  dat$attr$tx.period.first <- rep(NA, num)
+  dat$attr$tx.period.last <- rep(NA, num)
+  dat$attr$tx.init.time <- rep(NA, num)
 
   return(dat)
 }
