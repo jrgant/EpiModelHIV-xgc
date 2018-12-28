@@ -118,6 +118,11 @@ hivvl_msm <- function(dat, at) {
   ## Output
   dat$attr$vl <- vl
 
+  idsSupp <- which(vl <= log10(200))
+  idsUsupp <- which(vl > log10(200))
+  dat$attr$vl.last.usupp[idsUsupp] <- at
+  dat$attr$vl.last.supp[idsSupp] <- at
+
   return(dat)
 }
 

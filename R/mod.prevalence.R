@@ -64,6 +64,18 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.tx.ret3m[at] <- sum((at - dat$attr$tx.period.last) <= 52 &
         (dat$attr$tx.period.last - dat$attr$tx.period.first) > 13, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.vsupp[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$diag.status == 1, na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.vsupp.tt1[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 1, na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 1, na.rm = TRUE)
+  dat$epi$cc.vsupp.tt2[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 2, na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 2, na.rm = TRUE)
+  dat$epi$cc.vsupp.tt3[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 3, na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 3, na.rm = TRUE)
+  dat$epi$cc.vsupp.dur1y[at] 1-(sum((at - dat$attr$vl.last.usupp) <= 52 &
+                                      dat$attr$diag.status == 1, na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1, na.rm = TRUE))
+
 
   # HIV stage
   dat$epi$hstage.acute[at] <- sum(dat$attr$stage %in% 1:2, na.rm = TRUE) /
