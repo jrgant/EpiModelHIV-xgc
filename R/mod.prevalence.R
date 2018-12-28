@@ -57,7 +57,7 @@ prevalence_msm <- function(dat, at) {
     sum(dat$attr$diag.status == 1, na.rm = TRUE)
   dat$epi$cc.tx[at] <- sum(dat$attr$tx.status == 1, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  dat$epi$cc.vsupp[at] <- sum(dat$attr$vl <= log10(50), na.rm = TRUE) /
+  dat$epi$cc.vsupp[at] <- sum(dat$attr$vl <= log10(200), na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE)
 
   # HIV stage
