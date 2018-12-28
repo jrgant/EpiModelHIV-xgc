@@ -72,7 +72,7 @@ prevalence_msm <- function(dat, at) {
     sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 2, na.rm = TRUE)
   dat$epi$cc.vsupp.tt3[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 3, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 3, na.rm = TRUE)
-  dat$epi$cc.vsupp.dur1y[at] 1-(sum((at - dat$attr$vl.last.usupp) <= 52 &
+  dat$epi$cc.vsupp.dur1y[at] <- 1-(sum((at - dat$attr$vl.last.usupp) <= 52 &
                                       dat$attr$diag.status == 1, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE))
 
