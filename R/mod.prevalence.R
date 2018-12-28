@@ -55,9 +55,14 @@ prevalence_msm <- function(dat, at) {
     sum(status == 1, na.rm = TRUE)
   dat$epi$cc.linked[at] <- sum(dat$attr$cum.time.on.tx > 0, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.linked1m[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4, na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1, na.rm = TRUE)
   dat$epi$cc.tx[at] <- sum(dat$attr$tx.status == 1, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  dat$epi$cc.vsupp[at] <- sum(dat$attr$vl <= log10(200), na.rm = TRUE) /
+  dat$epi$cc.tx.any1y[at] <- sum((at - dat$attr$tx.period.last <= 52), na.rm = TRUE) /
+    sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.tx.ret3m[at] <- sum((at - dat$attr$tx.period.last) <= 52 &
+        (dat$attr$tx.period.last - dat$attr$tx.period.first) > 13, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE)
 
   # HIV stage
