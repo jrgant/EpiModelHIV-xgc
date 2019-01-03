@@ -163,7 +163,7 @@ init_status_msm <- function(dat) {
   dat$attr$vl.last.supp <- rep(NA, num)
 
   dat$attr$diag.time <- rep(NA, num)
-  dat$attr$diag.time[idsInf] <- dat$attr$inf.time[idsInf] - mean(dat$param$hiv.test.int)
+  dat$attr$diag.time[idsInf] <- dat$attr$inf.time[idsInf] + mean(dat$param$hiv.test.int)
   dat$attr$last.neg.test <- rep(NA, num)
 
   dat$attr$tx.status <- rep(NA, num)
