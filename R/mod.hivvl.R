@@ -64,8 +64,8 @@ hivvl_msm <- function(dat, at) {
             (inf.time.bp.tn > vldo) * (vlsp + (inf.time.bp.tn - vldo) * vlds)
   vl[target] <- new.vl
 
-  # 2. men on tx, tt.traj=full, not AIDS
-  target <- which(tx.status == 1 & tt.traj == 2 & stage != 4)
+  # 2. men on tx, tt.traj=full,dur, not AIDS
+  target <- which(tx.status == 1 & tt.traj %in% 2:3 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.full.supp)
   vl[target] <- new.vl
@@ -76,8 +76,8 @@ hivvl_msm <- function(dat, at) {
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.part.supp)
   vl[target] <- new.vl
 
-  # 4. men off tx, not naive, tt.traj=full, not AIDS
-  target <- which(tx.status == 0 & tt.traj == 2 &
+  # 4. men off tx, not naive, tt.traj=full,dur, not AIDS
+  target <- which(tx.status == 0 & tt.traj %in% 2:3 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vlsp)
@@ -90,7 +90,7 @@ hivvl_msm <- function(dat, at) {
   new.vl <- pmin(current.vl + vl.tx.up.slope, vlsp)
   vl[target] <- new.vl
 
-  # 6. men on tx, tt.traj=full, AIDS
+  # 6. men on tx, tt.traj=full,dur, AIDS
   # Doesn't exist.
 
   # 7. men on tx, tt.traj=part, AIDS
@@ -100,8 +100,8 @@ hivvl_msm <- function(dat, at) {
   new.vl <- current.vl + vlds
   vl[target] <- new.vl
 
-  # 8. men off tx, tt.traj=full, and AIDS
-  target <- which(tx.status == 0 & tt.traj == 2 &
+  # 8. men off tx, tt.traj=full,dur and AIDS
+  target <- which(tx.status == 0 & tt.traj %in% 2:3 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]
   new.vl <- current.vl + vlds
