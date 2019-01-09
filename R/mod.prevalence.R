@@ -48,7 +48,7 @@ prevalence_msm <- function(dat, at) {
   dat$epi$i.prev.prep[at] <- sum(status == 1 & (prepStat == 1), na.rm = TRUE) /
     sum(prepStat == 1, na.rm = TRUE)
 
-  dat$epi$ir100[at] <- (dat$epi$incid[at] / sum(status == 0, na.rm = TRUE)) * 5200
+  dat$epi$ir100[at] <- (dat$epi$incid[at] / sum(status == 0, dat$epi$incid[at], na.rm = TRUE)) * 5200
 
   # Care continuum stats
   dat$epi$cc.dx[at] <- sum(dat$attr$diag.status == 1, na.rm = TRUE) /
@@ -94,11 +94,11 @@ prevalence_msm <- function(dat, at) {
 
   dat$epi$prev.gc[at] <- sum((rGC == 1 | uGC == 1), na.rm = TRUE) / dat$epi$num[at]
   dat$epi$prev.ct[at] <- sum((rCT == 1 | uCT == 1), na.rm = TRUE) / dat$epi$num[at]
-  ir100.rgc <- (dat$epi$incid.rgc[at]/sum(rGC == 0, na.rm = TRUE))*5200
-  ir100.ugc <- (dat$epi$incid.ugc[at]/sum(uGC == 0, na.rm = TRUE))*5200
+  ir100.rgc <- (dat$epi$incid.rgc[at]/sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE))*5200
+  ir100.ugc <- (dat$epi$incid.ugc[at]/sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE))*5200
   dat$epi$ir100.gc[at] <- ir100.rgc + ir100.ugc
-  ir100.rct <- (dat$epi$incid.rct[at]/sum(rCT == 0, na.rm = TRUE))*5200
-  ir100.uct <- (dat$epi$incid.uct[at]/sum(uCT == 0, na.rm = TRUE))*5200
+  ir100.rct <- (dat$epi$incid.rct[at]/sum(rCT == 0, dat$epi$incid.rct[at], na.rm = TRUE))*5200
+  ir100.uct <- (dat$epi$incid.uct[at]/sum(uCT == 0, dat$epi$incid.uct[at], na.rm = TRUE))*5200
   dat$epi$ir100.ct[at] <- ir100.rct + ir100.uct
 
   return(dat)
