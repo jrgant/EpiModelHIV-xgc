@@ -275,13 +275,16 @@ stitrans_msm <- function(dat, at) {
 
   # Summary stats
   dat$epi$incid.gc[at] <- length(idsInf_rgc) + length(idsInf_ugc)
+  dat$epi$incid.rgc[at] <- length(idsInf_rgc)
+  dat$epi$incid.ugc[at] <- length(idsInf_ugc)
   dat$epi$incid.gc.B[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 0)))
   dat$epi$incid.gc.W[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 1)))
 
   dat$epi$incid.ct[at] <- length(idsInf_rct) + length(idsInf_uct)
+  dat$epi$incid.rct[at] <- length(idsInf_rct)
+  dat$epi$incid.uct[at] <- length(idsInf_uct)
   dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 0)))
   dat$epi$incid.ct.W[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 1)))
-
 
   # Check all infected have all STI attributes
   stopifnot(all(!is.na(rGC.infTime[rGC == 1])),

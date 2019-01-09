@@ -94,13 +94,12 @@ prevalence_msm <- function(dat, at) {
 
   dat$epi$prev.gc[at] <- sum((rGC == 1 | uGC == 1), na.rm = TRUE) / dat$epi$num[at]
   dat$epi$prev.ct[at] <- sum((rCT == 1 | uCT == 1), na.rm = TRUE) / dat$epi$num[at]
-  dat$epi$ir100.gc[at] <- (dat$epi$incid.gc[at] /
-                             (sum(rGC == 0, na.rm = TRUE) +
-                                sum(uGC == 0, na.rm = TRUE))) * 5200
-  dat$epi$ir100.ct[at] <- (dat$epi$incid.ct[at] /
-                             (sum(rCT == 0, na.rm = TRUE) +
-                                sum(uCT == 0, na.rm = TRUE))) * 5200
-
+  ir100.rgc <- (dat$epi$incid.rgc[at]/sum(rGC == 0, na.rm = TRUE))*5200
+  ir100.ugc <- (dat$epi$incid.ugc[at]/sum(uGC == 0, na.rm = TRUE))*5200
+  dat$epi$ir100.gc[at] <- ir100.rgc + ir100.ugc
+  ir100.rct <- (dat$epi$incid.rct[at]/sum(rCT == 0, na.rm = TRUE))*5200
+  ir100.uct <- (dat$epi$incid.uct[at]/sum(uCT == 0, na.rm = TRUE))*5200
+  dat$epi$ir100.ct[at] <- ir100.rct + ir100.uct
 
   return(dat)
 }
