@@ -26,12 +26,15 @@ hivtest_msm <- function(dat, at) {
   race <- dat$attr$race
   status <- dat$attr$status
   inf.time <- dat$attr$inf.time
+  stage <- dat$attr$stage
+  late.tester <- dat$attr$late.tester
 
   prepStat <- dat$attr$prepStat
   prep.tst.int <- dat$param$prep.tst.int
 
   # Parameters
   hiv.test.int <- dat$param$hiv.test.int
+  aids.test.int <- dat$param$vl.aids.int/2
   twind.int <- dat$param$test.window.int
 
   tsincelntst <- at - dat$attr$last.neg.test
@@ -39,25 +42,31 @@ hivtest_msm <- function(dat, at) {
 
   # General interval testing
   elig <- which((diag.status == 0 | is.na(diag.status)) &
-                prepStat == 0)
+                prepStat == 0 & late.tester != 1)
   # rates by race
   rates <- 1/hiv.test.int[race[elig] + 1]
-  tst.nprep <- elig[rbinom(length(elig), 1, rates) == 1]
+  idsTstGen <- elig[rbinom(length(elig), 1, rates) == 1]
+
+  # Late (AIDS-stage) testing
+  elig <- which((diag.status == 0 | is.na(diag.status)) &
+                 prepStat == 0 & stage == 4 & late.tester == 1)
+  rates <- 1/aids.test.int
+  idsTstAIDS <- elig[rbinom(length(elig), 1, rates) == 1]
 
   # PrEP testing
-  tst.prep <- which((diag.status == 0 | is.na(diag.status)) &
-                    prepStat == 1 &
-                    tsincelntst >= prep.tst.int)
+  idsTstPrEP <- which((diag.status == 0 | is.na(diag.status)) &
+                      prepStat == 1 &
+                      tsincelntst >= prep.tst.int)
 
-  tst.all <- c(tst.nprep, tst.prep)
+  tstAll <- c(idsTstGen, idsTstAIDS, idsTstPrEP)
 
-  tst.pos <- tst.all[status[tst.all] == 1 & inf.time[tst.all] <= at - twind.int]
-  tst.neg <- setdiff(tst.all, tst.pos)
+  tstPos <- tstAll[status[tstAll] == 1 & inf.time[tstAll] <= at - twind.int]
+  tstNeg <- setdiff(tstAll, tstPos)
 
   # Attributes
-  dat$attr$last.neg.test[tst.neg] <- at
-  dat$attr$diag.status[tst.pos] <- 1
-  dat$attr$diag.time[tst.pos] <- at
+  dat$attr$last.neg.test[tstNeg] <- at
+  dat$attr$diag.status[tstPos] <- 1
+  dat$attr$diag.time[tstPos] <- at
 
   return(dat)
 }

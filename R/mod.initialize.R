@@ -139,6 +139,10 @@ init_status_msm <- function(dat) {
   dat$attr$status <- status
   idsInf <- which(status == 1)
 
+  # Late (AIDS-stage) tester type
+  dat$attr$late.tester <- rep(NA, num)
+  dat$attr$late.tester[idsInf] <- 0
+
   age <- dat$attr$age
   tunit <- dat$param$time.unit
   min.ages <- min(dat$param$netstats$demog$ages)

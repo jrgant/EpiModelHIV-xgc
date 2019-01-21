@@ -212,6 +212,10 @@ hivtrans_msm <- function(dat, at) {
 
     dat$attr$cum.time.on.tx[infected] <- 0
     dat$attr$cum.time.off.tx[infected] <- 0
+
+    rates <- dat$param$hiv.test.late.prob[race[infected] + 1]
+    dat$attr$late.tester[infected] <- rbinom(length(rates), 1, rates)
+
   }
 
   # Summary Output

@@ -151,6 +151,7 @@ param_msm <- function(netstats,
 
                       # Clinical
                       hiv.test.int = c(301, 315),
+                      hiv.test.late.prob = c(0.25, 0.25),
                       test.window.int = 21,
                       tt.part.supp = c(0.20, 0.20),
                       tt.full.supp = c(0.40, 0.40),
