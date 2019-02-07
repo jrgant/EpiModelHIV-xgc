@@ -66,7 +66,7 @@ acts_msm <- function(dat, at) {
                   race.combo = race.combo,
                   comb.age = comb.age,
                   hiv.concord.pos = hiv.concord.pos,
-                  city = dat$param$netstats$demog$city)
+                  city = 1)
   rates <- unname(predict(mod, newdata = x, type = "response"))/52
   ai <- rpois(length(rates), rates)
   el.mc <- cbind(el.mc, durations, ai)

@@ -124,7 +124,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$deg.tot[newIds] <- 0
 
   # One-off risk group
-  dat$attr$risk.grp[newIds] <- apportion_lr(nNew, 1:2, rep(0.5, 2), shuffled = TRUE)
+  dat$attr$risk.grp[newIds] <- apportion_lr(nNew, 1:5, rep(0.2, 5), shuffled = TRUE)
 
   # PrEP
   dat$attr$prepStat[newIds] <- 0

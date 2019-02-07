@@ -51,7 +51,7 @@ condoms_msm <- function(dat, at) {
                   comb.age = comb.age,
                   hiv.concord.pos = hiv.concord.pos,
                   prep = any.prep,
-                  city = dat$param$netstats$demog$city)
+                  city = 1)
   cond.prob <- unname(predict(cond.mc.mod, newdata = x, type = "response"))
   el.mc <- cbind(el.mc, cond.prob)
 
@@ -70,7 +70,7 @@ condoms_msm <- function(dat, at) {
                   comb.age = comb.age,
                   hiv.concord.pos = hiv.concord.pos,
                   prep = any.prep,
-                  city = dat$param$netstats$demog$city)
+                  city = 1)
   cond.prob <- unname(predict(cond.oo.mod, newdata = x, type = "response"))
   el.oo <- cbind(el.oo, cond.prob)
 
