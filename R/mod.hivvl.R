@@ -93,7 +93,7 @@ hivvl_msm <- function(dat, at) {
   # 6. men on tx, tt.traj=full,dur, AIDS
   # Doesn't exist.
 
-  # 7. men on tx, tt.traj=part, AIDS
+  # 7. men on tx, tt.traj=part, AIDS (check this group reduces VL to set point)
   target <- which(tx.status == 1 &
                   tt.traj == 1 & stage == 4)
   current.vl <- vl[target]
@@ -107,7 +107,7 @@ hivvl_msm <- function(dat, at) {
   new.vl <- current.vl + vlds
   vl[target] <- new.vl
 
-  # 9. men off tx, tt.traj=part, and AIDS
+  # 9. men off tx, tt.traj=part, and AIDS (check this group increases VL to right level)
   target <- which(tx.status == 0 & tt.traj == 1 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]

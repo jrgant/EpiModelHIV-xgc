@@ -52,8 +52,7 @@ hivtx_msm <- function(dat, at) {
   tx.init.elig <- which(status == 1 &
                         tx.status == 0 &
                         diag.status == 1 &
-                        cum.time.on.tx == 0 &
-                        stage != 4)
+                        cum.time.on.tx == 0)
   rates <- tx.init.prob[race[tx.init.elig] + 1]
   tx.init <- tx.init.elig[rbinom(length(tx.init.elig), 1, rates) == 1]
 
@@ -74,17 +73,17 @@ hivtx_msm <- function(dat, at) {
 
   ## Restarting
   tx.reinit.part.elig <- which(tx.status == 0 & tt.traj == 1 &
-                               cum.time.on.tx > 0 & stage != 4)
+                               cum.time.on.tx > 0)
   rates.part <- tx.reinit.part.prob[race[tx.reinit.part.elig] + 1]
   tx.reinit.part <- tx.reinit.part.elig[rbinom(length(tx.reinit.part.elig), 1, rates.part) == 1]
 
   tx.reinit.full.elig <- which(tx.status == 0 & tt.traj == 2 &
-                               cum.time.on.tx > 0 & stage != 4)
+                               cum.time.on.tx > 0)
   rates.full <- tx.reinit.part.prob[race[tx.reinit.full.elig] + 1] * tx.reinit.full.rr
   tx.reinit.full <- tx.reinit.full.elig[rbinom(length(tx.reinit.full.elig), 1, rates.full) == 1]
 
   tx.reinit.dur.elig <- which(tx.status == 0 & tt.traj == 3 &
-                              cum.time.on.tx > 0 & stage != 4)
+                              cum.time.on.tx > 0)
   rates.dur <- tx.reinit.part.prob[race[tx.reinit.dur.elig] + 1] * tx.reinit.dur.rr
   tx.reinit.dur <- tx.reinit.dur.elig[rbinom(length(tx.reinit.dur.elig), 1, rates.dur) == 1]
 

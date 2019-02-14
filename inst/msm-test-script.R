@@ -3,15 +3,10 @@ rm(list = ls())
 suppressMessages(library("EpiModelHIV"))
 devtools::load_all("~/Dropbox/Dev/EpiModelHIV/EpiModelHIV-p")
 
-# Main Test Script ----------------------------------------------------
-
-scr.dir <- "~/Dropbox/Projects/NetParams/"
+scr.dir <- "~/Dropbox/Dev/ARTnet/"
 netstats <- readRDS(file.path(scr.dir, "data/artnet.NetStats.Atlanta.rda"))
 epistats <- readRDS(file.path(scr.dir, "data/artnet.EpiStats.Atlanta.rda"))
 est <- readRDS(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))
-
-file.info(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))$mtime >
-  file.info(file.path(scr.dir, "data/artnet.NetStats.Atlanta.rda"))$mtime
 
 param <- param_msm(netstats = netstats,
                    hiv.test.int = c(301, 315),
@@ -66,6 +61,7 @@ plot(sim, y = "hstage.aids", mean.smooth = FALSE)
 plot(sim, y = "ir100.gc", mean.smooth = FALSE, ylim = c(0, 10))
 plot(sim, y = "ir100.ct", mean.smooth = FALSE, ylim = c(0, 10))
 
+
 # Testing/Timing ------------------------------------------------------
 
 m <- microbenchmark::microbenchmark(hivvl_msm(dat, at))
@@ -105,4 +101,9 @@ table(pmain$start)
 hist(pmain$start)
 
 
+
+## TODO:
+# make all late testers go into tt.traj 1 (not full/dur suppressed)
+# updates to VL module for tt.traj=1, on/off treatment
+# stochastic mortality for AIDS cases (based on average AIDS death interval)
 
