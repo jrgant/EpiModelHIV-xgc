@@ -4,45 +4,47 @@
 \alias{param_msm}
 \title{Epidemic Model Parameters}
 \usage{
-param_msm(netstats, hiv.test.int = c(301, 315), test.window.int = 21,
-  tt.part.supp = c(0.433, 0.383), tt.full.supp = c(0.383, 0.617),
-  tt.dur.supp = c(0, 0), tx.init.prob = c(0.092, 0.127),
-  tx.halt.prob = c(0.0102, 0.0071), tx.reinit.prob = c(0.00066,
-  0.00291), max.time.off.tx.full.int = 520 * 7,
-  max.time.on.tx.part.int = 52 * 15 * 7, max.time.off.tx.part.int = 520
-  * 7, vl.acute.rise.int = 45, vl.acute.peak = 6.886,
-  vl.acute.fall.int = 45, vl.set.point = 4.5, vl.aids.onset.int = 520
-  * 7, vl.aids.int = 52 * 2 * 7, vl.fatal = 7, vl.full.supp = 1.5,
-  vl.part.supp = 3.5, vl.tx.down.slope = 0.25, vl.tx.up.slope = 0.25,
-  a.rate = 5e-04/7, arrival.age = 15, URAI.prob = 0.0082 * 1.09,
-  UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
-  cond.eff = 0.95, cond.fail = c(0.39, 0.21), circ.prob = c(0.874,
-  0.918), acts.model = epistats$acts.mod,
-  cond.mc.model = epistats$cond.mc.mod,
-  cond.oo.model = epistats$cond.oo.mod, rgc.tprob = 0.428,
-  ugc.tprob = 0.35, rct.tprob = 0.231, uct.tprob = 0.205,
-  rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.9, rct.sympt.prob = 0.14,
-  uct.sympt.prob = 0.58, rgc.ntx.int = 205.8, ugc.ntx.int = 205.8,
-  gc.tx.int = 2 * 7, rct.ntx.int = 265.1, uct.ntx.int = 265.1,
-  ct.tx.int = 2 * 7, gc.sympt.prob.tx = c(0.86, 0.96),
-  ct.sympt.prob.tx = c(0.72, 0.85), gc.asympt.prob.tx = c(0.1, 0.19),
-  ct.asympt.prob.tx = c(0.05, 0.1), sti.cond.eff = 0.95,
+param_msm(netstats, hiv.test.int = c(301/7, 315/7),
+  hiv.test.late.prob = c(0.25, 0.25), test.window.int = 21/7,
+  tt.part.supp = c(0.2, 0.2), tt.full.supp = c(0.4, 0.4),
+  tt.dur.supp = c(0.4, 0.4), tx.init.prob = c(0.092, 0.127),
+  tx.halt.part.prob = c(0.0102, 0.0071), tx.halt.full.rr = 0.9,
+  tx.halt.dur.rr = 0.5, tx.reinit.part.prob = c(0.00066, 0.00291),
+  tx.reinit.full.rr = 1, tx.reinit.dur.rr = 1,
+  max.time.off.tx.full.int = 520, max.time.on.tx.part.int = 52 * 15,
+  max.time.off.tx.part.int = 520, vl.acute.rise.int = 45/7,
+  vl.acute.peak = 6.886, vl.acute.fall.int = 45/7,
+  vl.set.point = 4.5, vl.aids.onset.int = 520, vl.aids.int = 52 * 2,
+  vl.fatal = 7, vl.full.supp = 1.5, vl.part.supp = 3.5,
+  vl.tx.down.slope = 0.25, vl.tx.up.slope = 0.25, a.rate = 5e-04,
+  arrival.age = 15, URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 *
+  1.09, acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95,
+  cond.fail = c(0.39, 0.21), circ.prob = c(0.874, 0.918),
+  acts.model = epistats$acts.mod, cond.mc.model = epistats$cond.mc.mod,
+  cond.oo.model = epistats$cond.oo.mod, acts.aids.vl = 5.75,
+  rgc.tprob = 0.5364416, ugc.tprob = 0.434692, rct.tprob = 0.2493814,
+  uct.tprob = 0.1944415, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.8,
+  rct.sympt.prob = 0.14, uct.sympt.prob = 0.48, rgc.ntx.int = 205.8,
+  ugc.ntx.int = 205.8, gc.tx.int = 2 * 10, rct.ntx.int = 265.1,
+  uct.ntx.int = 265.1, ct.tx.int = 2 * 10, gc.sympt.prob.tx = c(0.86,
+  0.96), ct.sympt.prob.tx = c(0.72, 0.85), gc.asympt.prob.tx = c(0.1,
+  0.19), ct.asympt.prob.tx = c(0.05, 0.1), sti.cond.eff = 0.95,
   sti.cond.fail = c(0.39, 0.21), hiv.rgc.rr = 2.78,
   hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78, hiv.uct.rr = 1.73,
   hiv.dual.rr = 0.2, riskh.start = Inf, prep.start = Inf,
   prep.start.prob = 0.2, prep.adhr.dist = c(0.089, 0.127, 0.784),
   prep.adhr.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
-  (2^(-1/781)), prep.tst.int = 90, prep.risk.int = 182,
-  prep.sti.screen.int = 182, prep.sti.prob.tx = 1, ...)
+  (2^(-1/781)), prep.tst.int = 90/7, prep.risk.int = 182/7,
+  prep.sti.screen.int = 182/7, prep.sti.prob.tx = 1, ...)
 }
 \arguments{
 \item{netstats}{Target statistics and related network initialization data from
 the standard ARTnet workflow.}
 
-\item{hiv.test.int}{Mean intertest interval in days for black/white MSM
+\item{hiv.test.int}{Mean intertest interval in weeks for black/white MSM
 (vector of length 2).}
 
-\item{test.window.int}{Length of the HIV test window period in days.}
+\item{test.window.int}{Length of the HIV test window period in weeks.}
 
 \item{tt.part.supp}{Proportion of black/white MSM who enter partial viral
 suppression category after ART initiation (vector of length 2).}
@@ -56,38 +58,31 @@ suppression category after ART initiation (vector of length 2).}
 \item{tx.init.prob}{Probability per time step that a black/white MSM who has
 tested positive will initiate treatment (vector of length 2).}
 
-\item{tx.halt.prob}{Probability per time step that a black/white MSM who is
-currently on treatment will halt treatment (vector of length 2).}
-
-\item{tx.reinit.prob}{Probability per time step that a black/white MSM who is
-not currently on treatment but who has been in the past will
-re-initiate treatment (vector of length 2).}
-
-\item{max.time.off.tx.full.int}{Number of days off treatment for a full
+\item{max.time.off.tx.full.int}{Number of weeks off treatment for a full
 suppressor before onset of AIDS, including time before diagnosis.}
 
-\item{max.time.on.tx.part.int}{Number of days on treatment for a
+\item{max.time.on.tx.part.int}{Number of weeks on treatment for a
 partial suppressor beofre onset of AIDS.}
 
-\item{max.time.off.tx.part.int}{Nnumber of days off treatment for a
+\item{max.time.off.tx.part.int}{Nnumber of weeks off treatment for a
 partial suppressor before onset of AIDS, including time before
 diagnosis.}
 
-\item{vl.acute.rise.int}{Number of days to peak viremia during acute
+\item{vl.acute.rise.int}{Number of weeks to peak viremia during acute
 infection.}
 
 \item{vl.acute.peak}{Peak viral load (in log10 units) at the height of acute
 infection.}
 
-\item{vl.acute.fall.int}{Number of days from peak viremia to set-point
+\item{vl.acute.fall.int}{Number of weeks from peak viremia to set-point
 viral load during the acute infection period.}
 
 \item{vl.set.point}{Set point viral load (in log10 units).}
 
-\item{vl.aids.onset.int}{Number of days to AIDS for a treatment-naive
+\item{vl.aids.onset.int}{Number of weeks to AIDS for a treatment-naive
 patient.}
 
-\item{vl.aids.int}{Duration of AIDS stage infection in days.}
+\item{vl.aids.int}{Duration of AIDS stage infection in weeks.}
 
 \item{vl.fatal}{Viral load in AIDS at which death occurs.}
 
@@ -152,17 +147,17 @@ chlamydia.}
 \item{uct.sympt.prob}{Probability of symptoms given infection with urethral
 chlamydia.}
 
-\item{rgc.ntx.int}{Average duration in days of untreated rectal gonorrhea.}
+\item{rgc.ntx.int}{Average duration in weeks of untreated rectal gonorrhea.}
 
-\item{ugc.ntx.int}{Average duration in days of untreated urethral gonorrhea.}
+\item{ugc.ntx.int}{Average duration in weeks of untreated urethral gonorrhea.}
 
-\item{gc.tx.int}{Average duration in days of treated gonorrhea (both sites).}
+\item{gc.tx.int}{Average duration in weeks of treated gonorrhea (both sites).}
 
-\item{rct.ntx.int}{Average in days duration of untreated rectal chlamydia.}
+\item{rct.ntx.int}{Average in weeks duration of untreated rectal chlamydia.}
 
-\item{uct.ntx.int}{Average in days duration of untreated urethral chlamydia.}
+\item{uct.ntx.int}{Average in weeks duration of untreated urethral chlamydia.}
 
-\item{ct.tx.int}{Average in days duration of treated chlamydia (both sites).}
+\item{ct.tx.int}{Average in weeks duration of treated chlamydia (both sites).}
 
 \item{gc.sympt.prob.tx}{Probability of treatment for symptomatic gonorrhea
 for Black/White men (vector of length 2).}
@@ -211,14 +206,21 @@ level of adherence (from Grant).}
 overrides the mean testing interval parameters.}
 
 \item{prep.risk.int}{Time window for assessment of risk eligibility for PrEP
-in days.}
+in weeks.}
 
-\item{prep.sti.screen.int}{Interval in days between STI screening at PrEP visits.}
+\item{prep.sti.screen.int}{Interval in weeks between STI screening at PrEP visits.}
 
 \item{prep.sti.prob.tx}{Probability of treatment given positive screening during
 PrEP visit.}
 
 \item{...}{Additional arguments passed to the function.}
+
+\item{tx.halt.prob}{Probability per time step that a black/white MSM who is
+currently on treatment will halt treatment (vector of length 2).}
+
+\item{tx.reinit.prob}{Probability per time step that a black/white MSM who is
+not currently on treatment but who has been in the past will
+re-initiate treatment (vector of length 2).}
 
 \item{cond.model}{Statistical model object for the probability of condom use
 per act.}

@@ -9,9 +9,9 @@
 #' @param netstats Target statistics and related network initialization data from
 #'        the standard ARTnet workflow.
 #'
-#' @param hiv.test.int Mean intertest interval in days for black/white MSM
+#' @param hiv.test.int Mean intertest interval in weeks for black/white MSM
 #'        (vector of length 2).
-#' @param test.window.int Length of the HIV test window period in days.
+#' @param test.window.int Length of the HIV test window period in weeks.
 #' @param tt.part.supp Proportion of black/white MSM who enter partial viral
 #'        suppression category after ART initiation (vector of length 2).
 #' @param tt.full.supp Proportion of black/white MSM who enter full viral
@@ -27,23 +27,23 @@
 #'        not currently on treatment but who has been in the past will
 #'        re-initiate treatment (vector of length 2).
 
-#' @param max.time.off.tx.full.int Number of days off treatment for a full
+#' @param max.time.off.tx.full.int Number of weeks off treatment for a full
 #'        suppressor before onset of AIDS, including time before diagnosis.
-#' @param max.time.on.tx.part.int Number of days on treatment for a
+#' @param max.time.on.tx.part.int Number of weeks on treatment for a
 #'        partial suppressor beofre onset of AIDS.
-#' @param max.time.off.tx.part.int Nnumber of days off treatment for a
+#' @param max.time.off.tx.part.int Nnumber of weeks off treatment for a
 #'        partial suppressor before onset of AIDS, including time before
 #'        diagnosis.
-#' @param vl.acute.rise.int Number of days to peak viremia during acute
+#' @param vl.acute.rise.int Number of weeks to peak viremia during acute
 #'        infection.
 #' @param vl.acute.peak Peak viral load (in log10 units) at the height of acute
 #'        infection.
-#' @param vl.acute.fall.int Number of days from peak viremia to set-point
+#' @param vl.acute.fall.int Number of weeks from peak viremia to set-point
 #'        viral load during the acute infection period.
 #' @param vl.set.point Set point viral load (in log10 units).
-#' @param vl.aids.onset.int Number of days to AIDS for a treatment-naive
+#' @param vl.aids.onset.int Number of weeks to AIDS for a treatment-naive
 #'        patient.
-#' @param vl.aids.int Duration of AIDS stage infection in days.
+#' @param vl.aids.int Duration of AIDS stage infection in weeks.
 #' @param vl.fatal Viral load in AIDS at which death occurs.
 #' @param vl.full.supp Log10 viral load at full suppression on ART.
 #' @param vl.part.supp Log10 viral load at partial suppression on ART.
@@ -92,7 +92,7 @@
 #' @param prep.tst.int Testing interval for those who are actively on PrEP. This
 #'        overrides the mean testing interval parameters.
 #' @param prep.risk.int Time window for assessment of risk eligibility for PrEP
-#'        in days.
+#'        in weeks.
 #'
 #' @param rgc.tprob Probability of rectal gonorrhea infection per act.
 #' @param ugc.tprob Probability of urethral gonorrhea infection per act.
@@ -107,12 +107,12 @@
 #' @param uct.sympt.prob Probability of symptoms given infection with urethral
 #'        chlamydia.
 #'
-#' @param rgc.ntx.int Average duration in days of untreated rectal gonorrhea.
-#' @param ugc.ntx.int Average duration in days of untreated urethral gonorrhea.
-#' @param gc.tx.int Average duration in days of treated gonorrhea (both sites).
-#' @param rct.ntx.int Average in days duration of untreated rectal chlamydia.
-#' @param uct.ntx.int Average in days duration of untreated urethral chlamydia.
-#' @param ct.tx.int Average in days duration of treated chlamydia (both sites).
+#' @param rgc.ntx.int Average duration in weeks of untreated rectal gonorrhea.
+#' @param ugc.ntx.int Average duration in weeks of untreated urethral gonorrhea.
+#' @param gc.tx.int Average duration in weeks of treated gonorrhea (both sites).
+#' @param rct.ntx.int Average in weeks duration of untreated rectal chlamydia.
+#' @param uct.ntx.int Average in weeks duration of untreated urethral chlamydia.
+#' @param ct.tx.int Average in weeks duration of treated chlamydia (both sites).
 #'
 #' @param gc.sympt.prob.tx Probability of treatment for symptomatic gonorrhea
 #'        for Black/White men (vector of length 2).
@@ -123,7 +123,7 @@
 #' @param ct.asympt.prob.tx Probability of treatment for asymptomatic chlamydia
 #'        for Black/White men (vector of length 2).
 #'
-#' @param prep.sti.screen.int Interval in days between STI screening at PrEP visits.
+#' @param prep.sti.screen.int Interval in weeks between STI screening at PrEP visits.
 #' @param prep.sti.prob.tx Probability of treatment given positive screening during
 #'        PrEP visit.
 #' @param sti.cond.eff Relative risk of STI infection from anal sex when a condom is
@@ -150,9 +150,9 @@
 param_msm <- function(netstats,
 
                       # Clinical
-                      hiv.test.int = c(301, 315),
+                      hiv.test.int = c(301/7, 315/7),
                       hiv.test.late.prob = c(0.25, 0.25),
-                      test.window.int = 21,
+                      test.window.int = 21/7,
                       tt.part.supp = c(0.20, 0.20),
                       tt.full.supp = c(0.40, 0.40),
                       tt.dur.supp = c(0.40, 0.40),
@@ -165,15 +165,15 @@ param_msm <- function(netstats,
                       tx.reinit.dur.rr = 1.0,
 
                       # HIV natural history
-                      max.time.off.tx.full.int = 520 * 7,
-                      max.time.on.tx.part.int = 52 * 15 * 7,
-                      max.time.off.tx.part.int = 520 * 7,
-                      vl.acute.rise.int = 45,
+                      max.time.off.tx.full.int = 520,
+                      max.time.on.tx.part.int = 52 * 15,
+                      max.time.off.tx.part.int = 520,
+                      vl.acute.rise.int = 45/7,
                       vl.acute.peak = 6.886,
-                      vl.acute.fall.int = 45,
+                      vl.acute.fall.int = 45/7,
                       vl.set.point = 4.5,
-                      vl.aids.onset.int = 520 * 7,
-                      vl.aids.int = 52 * 2 * 7,
+                      vl.aids.onset.int = 520,
+                      vl.aids.int = 52 * 2,
                       vl.fatal = 7,
                       vl.full.supp = 1.5,
                       vl.part.supp = 3.5,
@@ -181,7 +181,7 @@ param_msm <- function(netstats,
                       vl.tx.up.slope = 0.25,
 
                       # Demographic
-                      a.rate = 0.0005 / 7,
+                      a.rate = 0.0005,
                       arrival.age = 15,
 
                       # HIV transmission prob
@@ -197,22 +197,23 @@ param_msm <- function(netstats,
                       acts.model = epistats$acts.mod,
                       cond.mc.model = epistats$cond.mc.mod,
                       cond.oo.model = epistats$cond.oo.mod,
+                      acts.aids.vl = 5.75,
 
                       # STI epi
-                      rgc.tprob = 0.428,
-                      ugc.tprob = 0.350,
-                      rct.tprob = 0.231,
-                      uct.tprob = 0.205,
+                      rgc.tprob = 0.5364416,
+                      ugc.tprob = 0.434692,
+                      rct.tprob = 0.2493814,
+                      uct.tprob = 0.1944415,
                       rgc.sympt.prob = 0.16,
-                      ugc.sympt.prob = 0.90,
+                      ugc.sympt.prob = 0.80,
                       rct.sympt.prob = 0.14,
-                      uct.sympt.prob = 0.58,
+                      uct.sympt.prob = 0.48,
                       rgc.ntx.int = 205.8,
                       ugc.ntx.int = 205.8,
-                      gc.tx.int = 2 * 7,
+                      gc.tx.int = 2 * 10,
                       rct.ntx.int = 265.1,
                       uct.ntx.int = 265.1,
-                      ct.tx.int = 2 * 7,
+                      ct.tx.int = 2 * 10,
                       gc.sympt.prob.tx = c(0.86, 0.96),
                       ct.sympt.prob.tx = c(0.72, 0.85),
                       gc.asympt.prob.tx = c(0.10, 0.19),
@@ -232,23 +233,14 @@ param_msm <- function(netstats,
                       prep.adhr.dist = c(0.089, 0.127, 0.784),
                       prep.adhr.hr = c(0.69, 0.19, 0.02),
                       prep.discont.rate = 1 - (2^(-1/781)),
-                      prep.tst.int = 90,
-                      prep.risk.int = 182,
-                      prep.sti.screen.int = 182,
+                      prep.tst.int = 90/7,
+                      prep.risk.int = 182/7,
+                      prep.sti.screen.int = 182/7,
                       prep.sti.prob.tx = 1,
                       ...) {
 
   p <- get_args(formal.args = formals(sys.function()),
                 dot.args = list(...))
-
-  p$time.unit <- 7
-  # p$modes <- 1
-
-  intvars <- grep(names(p), pattern = ".int", fixed = TRUE)
-  p[intvars] <- lapply(p[intvars], FUN = function(x) round(x / p$time.unit))
-
-  ratevars <- grep(names(p), pattern = ".rate", fixed = TRUE)
-  p[ratevars] <- lapply(p[ratevars], FUN = function(x) x * p$time.unit)
 
   class(p) <- "param.net"
   return(p)
@@ -415,8 +407,8 @@ control_msm <- function(simno = 1,
 #' @param aids.stage.mult AIDS stage multiplier for increased infectiousness in
 #'        AIDS above impact of heightened viral load.
 #'
-#' @param vl.acute.topeak Time in days to peak viremia during acute infection.
-#' @param vl.acute.toset Time in days to viral set point following peak viremia.
+#' @param vl.acute.topeak Time in weeks to peak viremia during acute infection.
+#' @param vl.acute.toset Time in weeks to viral set point following peak viremia.
 #' @param vl.acute.peak Log 10 viral load at acute peak.
 #' @param vl.setpoint Log 10 viral load at set point.
 #' @param vl.aidsmax Maximum log 10 viral load during AIDS.
@@ -440,7 +432,7 @@ control_msm <- function(simno = 1,
 #'        adherent.
 #' @param tx.adhere.part Of the not fully adherent proportion, the percent of time
 #'        they are on medication.
-#' @param tx.vlsupp.time Time in days from treatment initiation to viral suppression.
+#' @param tx.vlsupp.time Time in weeks from treatment initiation to viral suppression.
 #' @param tx.vlsupp.level Log 10 viral load level at suppression.
 #' @param tx.cd4.recrat.feml Rate of CD4 recovery under treatment for males.
 #' @param tx.cd4.recrat.male Rate of CD4 recovery under treatment for females.
