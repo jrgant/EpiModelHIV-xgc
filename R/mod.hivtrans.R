@@ -95,7 +95,7 @@ hivtrans_msm <- function(dat, at) {
   ip.rCT <- rCT[disc.ip[, 2]]
 
   # Base TP from VL
-  ip.tprob <- URAI.prob * 2.45^(ip.vl - 4.5)
+  ip.tprob <- pmin(0.99, URAI.prob * 2.45^(ip.vl - 4.5))
 
   # Transform to log odds
   ip.tlo <- log(ip.tprob/(1 - ip.tprob))
@@ -148,7 +148,7 @@ hivtrans_msm <- function(dat, at) {
   rp.uCT <- uCT[disc.rp[, 1]]
 
   # Base TP from VL
-  rp.tprob <- UIAI.prob * 2.45^(rp.vl - 4.5)
+  rp.tprob <- pmin(0.99, UIAI.prob * 2.45^(rp.vl - 4.5))
 
   # Transform to log odds
   rp.tlo <- log(rp.tprob/(1 - rp.tprob))
