@@ -60,13 +60,13 @@ hivprogress_msm <- function(dat, at) {
   stage.time[active == 1] <- stage.time[active == 1] + 1
 
   # Change stage to Acute Falling
-  toAF <- which(active == 1 & time.since.inf == (vl.acute.rise.int + 1))
+  toAF <- which(active == 1 & stage == 1 & time.since.inf >= (vl.acute.rise.int + 1))
   stage[toAF] <- 2
   stage.time[toAF] <- 1
 
   # Change stage to Chronic
-  toC <- which(active == 1 & time.since.inf == (vl.acute.rise.int +
-                                                vl.acute.fall.int + 1))
+  toC <- which(active == 1 & stage == 2 & time.since.inf >= (vl.acute.rise.int +
+                                                             vl.acute.fall.int + 1))
   stage[toC] <- 3
   stage.time[toC] <- 1
 

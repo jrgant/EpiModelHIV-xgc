@@ -100,7 +100,7 @@ prevalence_msm <- function(dat, at) {
   ir100.rct <- (dat$epi$incid.rct[at]/sum(rCT == 0, dat$epi$incid.rct[at], na.rm = TRUE))*5200
   ir100.uct <- (dat$epi$incid.uct[at]/sum(uCT == 0, dat$epi$incid.uct[at], na.rm = TRUE))*5200
   dat$epi$ir100.ct[at] <- ir100.rct + ir100.uct
-  dat$epi$ir100.sti[at] <- dat$epi$ir100.gc[at] + dat$epi$ir100.sti[at]
+  dat$epi$ir100.sti[at] <- dat$epi$ir100.gc[at] + dat$epi$ir100.ct[at]
 
   return(dat)
 }
