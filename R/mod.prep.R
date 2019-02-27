@@ -167,7 +167,6 @@ riskhist_msm <- function(dat, at) {
   uCT.tx <- dat$attr$uCT.tx
 
   ## Parameters
-  time.unit <- dat$param$time.unit
 
   ## Edgelist, adds uai summation per partnership from act list
   pid <- NULL # For R CMD Check
@@ -213,7 +212,7 @@ riskhist_msm <- function(dat, at) {
   ##               partner not tested in past 6 months
   uai.mono1.neg <- intersect(uai.mono1, all.neg)
   part.id1 <- c(el2[el2$p1 %in% uai.mono1.neg, 2], el2[el2$p2 %in% uai.mono1.neg, 1])
-  not.tested.6mo <- since.test[part.id1] > (180/time.unit)
+  not.tested.6mo <- since.test[part.id1] > (180/7)
   part.not.tested.6mo <- uai.mono1.neg[which(not.tested.6mo == TRUE)]
   dat$attr$prep.ind.uai.mono[part.not.tested.6mo] <- at
 
