@@ -24,12 +24,15 @@ acts_msm <- function(dat, at) {
   diag.status <- dat$attr$diag.status
   race <- dat$attr$race
   age <- dat$attr$age
+  stage <- dat$attr$stage
+  vl <- dat$attr$vl
   uid <- dat$attr$uid
 
   plist <- dat$temp$plist
 
   # Parameters
   mod <- dat$param$acts.model
+  acts.aids.vl <- dat$param$acts.aids.vl
 
   # Construct edgelist
   el <- rbind(dat$el[[1]], dat$el[[2]], dat$el[[3]])
@@ -78,6 +81,15 @@ acts_msm <- function(dat, at) {
 
   # Bind el back together
   el <- rbind(el.mc, el.oo)
+
+  # For AIDS cases with VL above acts.aids.vl, reduce their their acts to 0
+  p1HIV <- which(el[, "st1"] == 1)
+  p1AIDS <- stage[el[p1HIV, "p1"]] == 4 & vl[el[p1HIV, "p1"]] >= acts.aids.vl
+  el[p1HIV[p1AIDS == TRUE], "ai"] <- 0
+
+  p2HIV <- which(el[, "st2"] == 1)
+  p2AIDS <- stage[el[p2HIV, "p2"]] == 4 & vl[el[p2HIV, "p2"]] >= acts.aids.vl
+  el[p2HIV[p2AIDS == TRUE], "ai"] <- 0
 
   # Flip order of discordant edges
   disc <- abs(el[, "st1"] - el[, "st2"]) == 1
