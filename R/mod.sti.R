@@ -103,8 +103,9 @@ stitrans_msm <- function(dat, at) {
   idsInf_rgc <- NULL
   if (sum(trans_rgc) > 0) {
     transAL_rgc <- al[allActs_rgc[trans_rgc == 1], , drop = FALSE]
-    idsInf_rgc <- unique(ifelse(uGC[transAL_rgc[, "p1"]] == 1,
-                                transAL_rgc[, "p2"], transAL_rgc[, "p1"]))
+    idsInf_rgc <- c(intersect(al[p1Inf_rgc, "p2"], transAL_rgc[, "p2"]),
+                    intersect(al[p2Inf_rgc, "p1"], transAL_rgc[, "p1"]))
+    stopifnot(all(rGC[idsInf_rgc] == 0))
   }
 
   # Update attributes
@@ -148,8 +149,9 @@ stitrans_msm <- function(dat, at) {
   idsInf_ugc <- NULL
   if (sum(trans_ugc) > 0) {
     transAL_ugc <- al[allActs_ugc[trans_ugc == 1],  , drop = FALSE]
-    idsInf_ugc <- unique(ifelse(uGC[transAL_ugc[, "p1"]] == 1,
-                                transAL_ugc[, "p2"], transAL_ugc[, "p1"]))
+    idsInf_ugc <- c(intersect(al[p1Inf_ugc, "p2"], transAL_ugc[, "p2"]),
+                    intersect(al[p2Inf_ugc, "p1"], transAL_ugc[, "p1"]))
+    stopifnot(all(uGC[idsInf_ugc] == 0))
   }
 
   # Update attributes
@@ -193,8 +195,9 @@ stitrans_msm <- function(dat, at) {
   idsInf_rct <- NULL
   if (sum(trans_rct) > 0) {
     transAL_rct <- al[allActs_rct[trans_rct == 1],  , drop = FALSE]
-    idsInf_rct <- unique(ifelse(uCT[transAL_rct[, "p1"]] == 1,
-                                transAL_rct[, "p2"], transAL_rct[, "p1"]))
+    idsInf_rct <- c(intersect(al[p1Inf_rct, "p2"], transAL_rct[, "p2"]),
+                    intersect(al[p2Inf_rct, "p1"], transAL_rct[, "p1"]))
+    stopifnot(all(rCT[idsInf_rct] == 0))
   }
 
   # Update attributes
@@ -238,8 +241,9 @@ stitrans_msm <- function(dat, at) {
   idsInf_uct <- NULL
   if (sum(trans_uct) > 0) {
     transAL_uct <- al[allActs_uct[trans_uct == 1],  , drop = FALSE]
-    idsInf_uct <- unique(ifelse(uCT[transAL_uct[, "p1"]] == 1,
-                                transAL_uct[, "p2"], transAL_uct[, "p1"]))
+    idsInf_uct <- c(intersect(al[p1Inf_uct, "p2"], transAL_uct[, "p2"]),
+                    intersect(al[p2Inf_uct, "p1"], transAL_uct[, "p1"]))
+    stopifnot(all(uCT[idsInf_uct] == 0))
   }
 
   # Update attributes
@@ -322,7 +326,6 @@ stirecov_msm <- function(dat, at) {
   uct.ntx.int <- dat$param$uct.ntx.int
   ct.tx.int <- dat$param$ct.tx.int
 
-
   # GC Recovery ---------------------------------------------------------
 
   # Untreated (asymptomatic and symptomatic)
@@ -335,10 +338,12 @@ stirecov_msm <- function(dat, at) {
                              (is.na(dat$attr$uGC.tx) | dat$attr$uGC.tx == 0) &
                              (is.na(dat$attr$uGC.tx.prep) | dat$attr$uGC.tx.prep == 0))
 
-  recovRGC_ntx <- idsRGC_ntx[which(rbinom(length(idsRGC_ntx), 1,
-                                          1/rgc.ntx.int) == 1)]
-  recovUGC_ntx <- idsUGC_ntx[which(rbinom(length(idsUGC_ntx), 1,
-                                          1/ugc.ntx.int) == 1)]
+  # recovRGC_ntx <- idsRGC_ntx[which(rbinom(length(idsRGC_ntx), 1,
+  #                                         1/rgc.ntx.int) == 1)]
+  # recovUGC_ntx <- idsUGC_ntx[which(rbinom(length(idsUGC_ntx), 1,
+  #                                         1/ugc.ntx.int) == 1)]
+  recovRGC_ntx <- idsRGC_ntx[at - dat$attr$rGC.infTime[idsRGC_ntx] >= rgc.ntx.int]
+  recovUGC_ntx <- idsUGC_ntx[at - dat$attr$uGC.infTime[idsUGC_ntx] >= ugc.ntx.int]
 
 
   # Treated (asymptomatic and symptomatic)
@@ -349,10 +354,12 @@ stirecov_msm <- function(dat, at) {
                      dat$attr$uGC.infTime < at &
                      (dat$attr$uGC.tx == 1 | dat$attr$uGC.tx.prep == 1))
 
-  recovRGC_tx <- idsRGC_tx[which(rbinom(length(idsRGC_tx), 1,
-                                        1/gc.tx.int) == 1)]
-  recovUGC_tx <- idsUGC_tx[which(rbinom(length(idsUGC_tx), 1,
-                                        1/gc.tx.int) == 1)]
+  # recovRGC_tx <- idsRGC_tx[which(rbinom(length(idsRGC_tx), 1,
+  #                                       1/gc.tx.int) == 1)]
+  # recovUGC_tx <- idsUGC_tx[which(rbinom(length(idsUGC_tx), 1,
+  #                                       1/gc.tx.int) == 1)]
+  recovRGC_tx <- idsRGC_tx[at - dat$attr$rGC.infTime[idsRGC_tx] >= gc.tx.int]
+  recovUGC_tx <- idsUGC_tx[at - dat$attr$uGC.infTime[idsUGC_tx] >= gc.tx.int]
 
   recovRGC <- c(recovRGC_ntx, recovRGC_tx)
   recovUGC <- c(recovUGC_ntx, recovUGC_tx)
@@ -383,11 +390,12 @@ stirecov_msm <- function(dat, at) {
                       (is.na(dat$attr$uCT.tx) | dat$attr$uCT.tx == 0) &
                       (is.na(dat$attr$uCT.tx.prep) | dat$attr$uCT.tx.prep == 0))
 
-  recovRCT_ntx <- idsRCT_ntx[which(rbinom(length(idsRCT_ntx),
-                                          1, 1/rct.ntx.int) == 1)]
-  recovUCT_ntx <- idsUCT_ntx[which(rbinom(length(idsUCT_ntx),
-                                          1, 1/uct.ntx.int) == 1)]
-
+  # recovRCT_ntx <- idsRCT_ntx[which(rbinom(length(idsRCT_ntx),
+  #                                         1, 1/rct.ntx.int) == 1)]
+  # recovUCT_ntx <- idsUCT_ntx[which(rbinom(length(idsUCT_ntx),
+  #                                         1, 1/uct.ntx.int) == 1)]
+  recovRCT_ntx <- idsRCT_ntx[at - dat$attr$rCT.infTime[idsRCT_ntx] >= rct.ntx.int]
+  recovUCT_ntx <- idsUCT_ntx[at - dat$attr$uCT.infTime[idsUCT_ntx] >= uct.ntx.int]
 
   # Treated (asymptomatic and symptomatic)
   idsRCT_tx <- which(dat$attr$rCT == 1 &
@@ -397,10 +405,12 @@ stirecov_msm <- function(dat, at) {
                      dat$attr$uCT.infTime < at &
                      (dat$attr$uCT.tx == 1 | dat$attr$uCT.tx.prep == 1))
 
-  recovRCT_tx <- idsRCT_tx[which(rbinom(length(idsRCT_tx),
-                                        1, 1/ct.tx.int) == 1)]
-  recovUCT_tx <- idsUCT_tx[which(rbinom(length(idsUCT_tx),
-                                        1, 1/ct.tx.int) == 1)]
+  # recovRCT_tx <- idsRCT_tx[which(rbinom(length(idsRCT_tx),
+  #                                       1, 1/ct.tx.int) == 1)]
+  # recovUCT_tx <- idsUCT_tx[which(rbinom(length(idsUCT_tx),
+  #                                       1, 1/ct.tx.int) == 1)]
+  recovRCT_tx <- idsRCT_tx[at - dat$attr$rCT.infTime[idsRCT_tx] >= ct.tx.int]
+  recovUCT_tx <- idsUCT_tx[at - dat$attr$uCT.infTime[idsUCT_tx] >= ct.tx.int]
 
 
   recovRCT <- c(recovRCT_ntx, recovRCT_tx)
