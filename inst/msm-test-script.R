@@ -9,8 +9,8 @@ epistats <- readRDS(file.path(scr.dir, "data/artnet.EpiStats.Atlanta.rda"))
 est <- readRDS(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))
 
 param <- param_msm(netstats = netstats,
-                   hiv.test.int = c(301, 315),
-                   a.rate = 0.00055 / 7,
+                   hiv.test.int = c(43, 45),
+                   a.rate = 0.00055,
                    riskh.start = 2,
                    prep.start = 30,
                    prep.start.prob = 0.10,
@@ -25,10 +25,11 @@ param <- param_msm(netstats = netstats,
                    hiv.ugc.rr = 1.5,
                    hiv.rct.rr = 2.5,
                    hiv.uct.rr = 1.5,
-                   hiv.dual.rr = 0.0)
+                   hiv.dual.rr = 0.0,
+                   acts.aids.vl = 5.75)
 init <- init_msm(init.hiv.mod = epistats$hiv.mod)
 control <- control_msm(simno = 1,
-                       nsteps = 52 * 25,
+                       nsteps = 52 * 10,
                        nsims = 1,
                        ncores = 1)
 
@@ -38,9 +39,9 @@ df <- as.data.frame(sim)
 names(df)
 
 par(mar = c(3,3,1,1), mgp = c(2,1,0))
-plot(sim, y = "i.prev", mean.smooth = FALSE)
+plot(sim, y = "i.prev", mean.smooth = FALSE, ylim = c(0, 1))
 plot(sim, y = "num")
-plot(sim, y = "dep.gen", mean.smooth = FALSE)
+plot(sim, y = "dep.gen", mean.smooth = TRUE)
 plot(sim, y = "dep.AIDS", mean.smooth = FALSE)
 plot(sim, y = "prepCurr")
 plot(sim, y = "cc.dx", mean.smooth = FALSE)
@@ -54,12 +55,15 @@ plot(sim, y = "cc.vsupp.tt2", mean.smooth = FALSE)
 plot(sim, y = "cc.vsupp.tt3", mean.smooth = FALSE)
 plot(sim, y = "cc.vsupp.dur1y", mean.smooth = FALSE)
 
-plot(sim, y = "hstage.acute", mean.smooth = FALSE)
+plot(sim, y = "hstage.acute", mean.smooth = TRUE)
 plot(sim, y = "hstage.chronic", mean.smooth = FALSE)
 plot(sim, y = "hstage.aids", mean.smooth = FALSE)
 
-plot(sim, y = "ir100.gc", mean.smooth = FALSE, ylim = c(0, 10))
-plot(sim, y = "ir100.ct", mean.smooth = FALSE, ylim = c(0, 10))
+plot(sim, y = "ir100.gc", mean.smooth = FALSE)
+plot(sim, y = "ir100.ct", mean.smooth = FALSE)
+plot(sim, y = "ir100.sti", mean.smooth = FALSE)
+plot(sim, y = "prev.gc", mean.smooth = FALSE)
+plot(sim, y = "prev.ct", mean.smooth = FALSE)
 
 
 # Testing/Timing ------------------------------------------------------
@@ -105,5 +109,4 @@ hist(pmain$start)
 ## TODO:
 # make all late testers go into tt.traj 1 (not full/dur suppressed)
 # updates to VL module for tt.traj=1, on/off treatment
-# stochastic mortality for AIDS cases (based on average AIDS death interval)
 
