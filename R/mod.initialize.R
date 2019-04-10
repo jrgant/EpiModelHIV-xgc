@@ -124,12 +124,12 @@ init_status_msm <- function(dat) {
   # Treatment trajectory
   tt.traj <- rep(NA, num)
   races <- sort(unique(dat$attr$race))
-  for (i in seq_along(races)) {
-    ids.race <- which(dat$attr$race == races[i])
+  for (i in races) {
+    ids.race <- which(dat$attr$race == i)
     tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
-                                 c(dat$param$tt.part.supp[i],
-                                   dat$param$tt.full.supp[i],
-                                   dat$param$tt.dur.supp[i]))
+                                 c(dat$param$tt.part.supp[i+1],
+                                   dat$param$tt.full.supp[i+1],
+                                   dat$param$tt.dur.supp[i+1]))
 
   }
   dat$attr$tt.traj <- tt.traj
