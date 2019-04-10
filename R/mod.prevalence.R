@@ -38,10 +38,10 @@ prevalence_msm <- function(dat, at) {
 
   dat$epi$num[at] <- sum(active == 1, na.rm = TRUE)
   dat$epi$num.B[at] <- sum(race == 0, na.rm = TRUE)
-  dat$epi$num.W[at] <- sum(race == 1, na.rm = TRUE)
+  dat$epi$num.H[at] <- sum(race == 1, na.rm = TRUE)
+  dat$epi$num.W[at] <- sum(race == 2, na.rm = TRUE)
 
   dat$epi$s.num[at] <- sum(status == 0, na.rm = TRUE)
-
   dat$epi$i.num[at] <- sum(status == 1, na.rm = TRUE)
 
   dat$epi$i.prev[at] <- dat$epi$i.num[at] / dat$epi$num[at]
