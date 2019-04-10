@@ -102,11 +102,12 @@ hivtrans_msm <- function(dat, at) {
 browser()
   # Condom use
   not.UAI <- which(disc.ip[, "uai"] == 0)
-  not.UAI.B.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == 0))
-  not.UAI.W.ins <- intersect(not.UAI, which(race[disc.ip[, 1]] == 1))
   condom.rr <- rep(NA, nrow(disc.ip))
-  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail[1])
-  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail[2])
+  races <- sort(unique(race[disc.ip[, 1]]))
+  for (i in races) {
+    not.UAI.race <- intersect(not.UAI, which(race[disc.ip[, 1]] == i))
+    condom.rr[not.UAI.race] <- 1 - (cond.eff - cond.fail[i + 1])
+  }
   ip.tlo[not.UAI] <- ip.tlo[not.UAI] + log(condom.rr[not.UAI])
 
   # PrEP, by adherence class
@@ -158,11 +159,12 @@ browser()
 
   # Condom use
   not.UAI <- which(disc.rp[, "uai"] == 0)
-  not.UAI.B.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == 0))
-  not.UAI.W.ins <- intersect(not.UAI, which(race[disc.rp[, 1]] == 1))
   condom.rr <- rep(NA, nrow(disc.rp))
-  condom.rr[not.UAI.B.ins] <- 1 - (cond.eff - cond.fail[1])
-  condom.rr[not.UAI.W.ins] <- 1 - (cond.eff - cond.fail[2])
+  races <- sort(unique(race[disc.rp[, 1]]))
+  for (i in races) {
+    not.UAI.race <- intersect(not.UAI, which(race[disc.rp[, 1]] == i))
+    condom.rr[not.UAI.race] <- 1 - (cond.eff - cond.fail[i + 1])
+  }
   rp.tlo[not.UAI] <- rp.tlo[not.UAI] + log(condom.rr[not.UAI])
 
   # PrEP, by adherence class
