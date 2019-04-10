@@ -99,7 +99,7 @@ hivtrans_msm <- function(dat, at) {
 
   # Transform to log odds
   ip.tlo <- log(ip.tprob/(1 - ip.tprob))
-browser()
+
   # Condom use
   not.UAI <- which(disc.ip[, "uai"] == 0)
   condom.rr <- rep(NA, nrow(disc.ip))
