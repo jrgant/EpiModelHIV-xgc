@@ -37,13 +37,13 @@ departure_msm <- function(dat, at) {
   asmr <- dat$param$netstats$demog$asmr
 
   idsElig <- which(active == 1)
-  idsEligB <- which(active == 1 & race == 0)
-  idsEligW <- which(active == 1 & race == 1)
-
   rates <- rep(NA, length(idsElig))
-  rates[idsEligB] <- asmr[age[idsEligB], "vec.asmr.B"]
-  rates[idsEligW] <- asmr[age[idsEligW], "vec.asmr.W"]
 
+  races <- sort(unique(race))
+  for (i in seq_along(races)) {
+    ids.race <- which(race == races[i])
+    rates[ids.race] <- asmr[age[ids.race], i+1]
+  }
   idsDep <- idsElig[rbinom(length(rates), 1, rates) == 1]
 
   ## HIV-related deaths
