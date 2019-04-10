@@ -49,7 +49,14 @@ acts_msm <- function(dat, at) {
   el.mc <- el[el[, "ptype"] != 3, ]
 
   # Base AI rates based on Poisson model for main/casual
-  race.combo <- race[el.mc[, 1]] + race[el.mc[, 2]]
+  race.combo <- rep(NA, nrow(el.mc))
+  race.combo[race[el.mc[, 1]] == 0 & race[el.mc[, 2]] == 0] <- 0
+  race.combo[race[el.mc[, 1]] == 0 & race[el.mc[, 2]] %in% 1:2] <- 1
+  race.combo[race[el.mc[, 1]] == 1 & race[el.mc[, 2]] %in% c(0, 2)] <- 2
+  race.combo[race[el.mc[, 1]] == 1 & race[el.mc[, 2]] == 1] <- 3
+  race.combo[race[el.mc[, 1]] == 2 & race[el.mc[, 2]] %in% 0:1] <- 4
+  race.combo[race[el.mc[, 1]] == 2 & race[el.mc[, 2]] == 2] <- 5
+
   comb.age <- age[el.mc[, 1]] + age[el.mc[, 2]]
 
   # Current partnership durations
