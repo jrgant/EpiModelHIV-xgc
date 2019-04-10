@@ -9,23 +9,23 @@
 #' @param netstats Target statistics and related network initialization data from
 #'        the standard ARTnet workflow.
 #'
-#' @param hiv.test.int Mean intertest interval in weeks for black/white MSM
-#'        (vector of length 2).
+#' @param hiv.test.int Mean intertest interval in weeks for black/hispanic/white MSM
+#'        (vector of length 3).
 #' @param test.window.int Length of the HIV test window period in weeks.
-#' @param tt.part.supp Proportion of black/white MSM who enter partial viral
-#'        suppression category after ART initiation (vector of length 2).
-#' @param tt.full.supp Proportion of black/white MSM who enter full viral
-#'        suppression category after ART initiation (vector of length 2).
-#' @param tt.dur.supp Proportion of black/white MSM who enter durable viral
-#'        suppression category after ART initiation (vector of length 2).
+#' @param tt.part.supp Proportion of black/hispanic/white MSM who enter partial viral
+#'        suppression category after ART initiation (vector of length 3).
+#' @param tt.full.supp Proportion of black/hispanic/white MSM who enter full viral
+#'        suppression category after ART initiation (vector of length 3).
+#' @param tt.dur.supp Proportion of black/hispanic/white MSM who enter durable viral
+#'        suppression category after ART initiation (vector of length 3).
 #'
-#' @param tx.init.prob Probability per time step that a black/white MSM who has
-#'        tested positive will initiate treatment (vector of length 2).
-#' @param tx.halt.prob Probability per time step that a black/white MSM who is
-#'        currently on treatment will halt treatment (vector of length 2).
-#' @param tx.reinit.prob Probability per time step that a black/white MSM who is
+#' @param tx.init.prob Probability per time step that a black/hispanic/white MSM who has
+#'        tested positive will initiate treatment (vector of length 3).
+#' @param tx.halt.prob Probability per time step that a black/hispanic/white MSM who is
+#'        currently on treatment will halt treatment (vector of length 3).
+#' @param tx.reinit.prob Probability per time step that a black/hispanic/white MSM who is
 #'        not currently on treatment but who has been in the past will
-#'        re-initiate treatment (vector of length 2).
+#'        re-initiate treatment (vector of length 3).
 
 #' @param max.time.off.tx.full.int Number of weeks off treatment for a full
 #'        suppressor before onset of AIDS, including time before diagnosis.
@@ -69,10 +69,10 @@
 #'
 #' @param cond.eff Relative risk of HIV infection from anal sex when a condom is
 #'        used properly (biological efficacy).
-#' @param cond.fail Condom failure rates for HIV for Black/White MSM, as a reduction
-#'        in the cond.eff parameter (vector of length 2).
-#' @param circ.prob Probablity that a black/white new arrival in the population
-#'        will be circumcised (vector of length 2).
+#' @param cond.fail Condom failure rates for HIV for black/hispanic/white MSM, as a reduction
+#'        in the cond.eff parameter (vector of length 3).
+#' @param circ.prob Probablity that a black/hispanic/white new arrival in the population
+#'        will be circumcised (vector of length 3).
 #'
 #' @param acts.model Statistical model object for the rate of acts per partnership
 #'        per year (then transformed into rate per week).
@@ -115,21 +115,21 @@
 #' @param ct.tx.int Average in weeks duration of treated chlamydia (both sites).
 #'
 #' @param gc.sympt.prob.tx Probability of treatment for symptomatic gonorrhea
-#'        for Black/White men (vector of length 2).
+#'        for black/hispanic/white men (vector of length 3).
 #' @param ct.sympt.prob.tx Probability of treatment for symptomatic chlamydia
-#'        for Black/White men (vector of length 2).
+#'        for black/hispanic/white men (vector of length 3).
 #' @param gc.asympt.prob.tx Probability of treatment for asymptomatic gonorrhea
-#'        for Black/White men (vector of length 2).
+#'        for black/hispanic/white men (vector of length 3).
 #' @param ct.asympt.prob.tx Probability of treatment for asymptomatic chlamydia
-#'        for Black/White men (vector of length 2).
+#'        for black/hispanic/white men (vector of length 3).
 #'
 #' @param prep.sti.screen.int Interval in weeks between STI screening at PrEP visits.
 #' @param prep.sti.prob.tx Probability of treatment given positive screening during
 #'        PrEP visit.
 #' @param sti.cond.eff Relative risk of STI infection from anal sex when a condom is
 #'        used properly (biological efficacy).
-#' @param sti.cond.fail Condom failure rates for STI for Black/White MSM, as
-#'        a reduction in the cond.eff parameter (vector of length 2).
+#' @param sti.cond.fail Condom failure rates for STI for black/hispanic/white MSM, as
+#'        a reduction in the cond.eff parameter (vector of length 3).
 #' @param hiv.rgc.rr Relative risk of HIV infection given current rectal gonorrhea.
 #' @param hiv.ugc.rr Relative risk of HIV infection given current urethral gonorrhea.
 #' @param hiv.rct.rr Relative risk of HIV infection given current rectal chlamydia.
@@ -150,17 +150,17 @@
 param_msm <- function(netstats,
 
                       # Clinical
-                      hiv.test.int = c(301/7, 315/7),
-                      hiv.test.late.prob = c(0.25, 0.25),
+                      hiv.test.int = c(301/7, 301/7, 315/7),
+                      hiv.test.late.prob = c(0.25, 0.25, 0.25),
                       test.window.int = 21/7,
-                      tt.part.supp = c(0.20, 0.20),
-                      tt.full.supp = c(0.40, 0.40),
-                      tt.dur.supp = c(0.40, 0.40),
-                      tx.init.prob = c(0.092, 0.127),
-                      tx.halt.part.prob = c(0.0102, 0.0071),
+                      tt.part.supp = c(0.20, 0.20, 0.20),
+                      tt.full.supp = c(0.40, 0.40, 0.40),
+                      tt.dur.supp = c(0.40, 0.40, 0.40),
+                      tx.init.prob = c(0.092, 0.092, 0.127),
+                      tx.halt.part.prob = c(0.0102, 0.0102, 0.0071),
                       tx.halt.full.rr = 0.9,
                       tx.halt.dur.rr = 0.5,
-                      tx.reinit.part.prob = c(0.00066, 0.00291),
+                      tx.reinit.part.prob = c(0.00066, 0.00066, 0.00291),
                       tx.reinit.full.rr = 1.0,
                       tx.reinit.dur.rr = 1.0,
 
@@ -190,8 +190,8 @@ param_msm <- function(netstats,
                       acute.rr = 6,
                       circ.rr = 0.4,
                       cond.eff = 0.95,
-                      cond.fail = c(0.10, 0.10),
-                      circ.prob = c(0.874, 0.918),
+                      cond.fail = c(0.25, 0.25, 0.25),
+                      circ.prob = c(0.874, 0.874, 0.918),
 
                       # Behavioral
                       acts.model = epistats$acts.mod,
@@ -214,12 +214,12 @@ param_msm <- function(netstats,
                       rct.ntx.int = 32,
                       uct.ntx.int = 32,
                       ct.tx.int = 1.4,
-                      gc.sympt.prob.tx = c(0.95, 0.95),
-                      ct.sympt.prob.tx = c(0.9, 0.9),
-                      gc.asympt.prob.tx = c(0.15, 0.15),
-                      ct.asympt.prob.tx = c(0.15, 0.15),
+                      gc.sympt.prob.tx = c(0.95, 0.95, 0.95),
+                      ct.sympt.prob.tx = c(0.9, 0.9, 0.9),
+                      gc.asympt.prob.tx = c(0.15, 0.15, 0.15),
+                      ct.asympt.prob.tx = c(0.15, 0.15, 0.15),
                       sti.cond.eff = 0.9,
-                      sti.cond.fail = c(0.10, 0.10),
+                      sti.cond.fail = c(0.20, 0.20, 0.20),
                       hiv.rgc.rr = 2.78,
                       hiv.ugc.rr = 1.73,
                       hiv.rct.rr = 2.78,
