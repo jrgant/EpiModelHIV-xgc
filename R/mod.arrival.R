@@ -67,10 +67,9 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   dat$attr$arrival.time[newIds] <- rep(at, nNew)
 
-  race.dist.W <- sum(dat$epi$num.W[1])/sum(dat$epi$num[1])
-  race <- rbinom(nNew, 1, race.dist.W)
-  newB <- which(race == 0)
-  newW <- which(race == 1)
+  race.dist <- c(dat$epi$num.B[1], dat$epi$num.H[1], dat$epi$num.W[1])/dat$epi$num[1]
+
+  race <- sample(sort(unique(dat$attr$race)), nNew, TRUE, race.dist)
   dat$attr$race[newIds] <- race
 
   dat$attr$age[newIds] <- rep(dat$param$arrival.age, nNew)
@@ -86,30 +85,35 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$rCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
   dat$attr$uCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
 
-  dat$attr$tt.traj[newIds[newB]] <- sample(1:3, length(newB), TRUE,
-                                           c(dat$param$tt.part.supp[1],
-                                             dat$param$tt.full.supp[1],
-                                             dat$param$tt.dur.supp[1]))
-  dat$attr$tt.traj[newIds[newW]] <- sample(1:3, length(newW), TRUE,
-                                           c(dat$param$tt.part.supp[2],
-                                             dat$param$tt.full.supp[2],
-                                             dat$param$tt.dur.supp[2]))
+  races <- sort(unique(dat$attr$race[newIds]))
+  tt.traj <- rep(NA, nNew)
+  for (i in races) {
+    ids.race <- which(dat$attr$race[newIds] == i)
+    tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
+                                c(dat$param$tt.part.supp[i+1],
+                                  dat$param$tt.full.supp[i+1],
+                                  dat$param$tt.dur.supp[i+1]))
+
+  }
+  dat$attr$tt.traj[newIds] <- tt.traj
 
   # Circumcision
-  dat$attr$circ[newIds[newB]] <- rbinom(length(newB), 1, dat$param$circ.prob[1])
-  dat$attr$circ[newIds[newW]] <- rbinom(length(newW), 1, dat$param$circ.prob[2])
+  circ <- rep(NA, nNew)
+  for (i in races) {
+    ids.race <- which(dat$attr$race[newIds] == i)
+    circ[ids.race] <- rbinom(length(ids.race), 1, dat$param$circ.prob[i+1])
+  }
+  dat$attr$circ[newIds] <- circ
 
   # Role
   ns <- dat$param$netstats$attr
-  rc.probs.B <- prop.table(table(ns$role.class[ns$race == 0]))
-  rc.probs.W <- prop.table(table(ns$role.class[ns$race == 1]))
-
-  dat$attr$role.class[newIds[newB]] <- sample(0:2,
-                                              length(newB), replace = TRUE,
-                                              prob = rc.probs.B)
-  dat$attr$role.class[newIds[newW]] <- sample(0:2,
-                                              length(newW), replace = TRUE,
-                                              prob = rc.probs.W)
+  role.class <- rep(NA, nNew)
+  for (i in races) {
+    ids.race <- which(dat$attr$race[newIds] == i)
+    rc.probs <- prop.table(table(ns$role.class[ns$race == i]))
+    role.class[ids.race] <- sample(0:2, length(ids.race), TRUE, rc.probs)
+  }
+  dat$attr$role.class[newIds] <- role.class
 
   ins.quot <- rep(NA, nNew)
   ins.quot[dat$attr$role.class[newIds] == 0]  <- 1
@@ -128,7 +132,6 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   # PrEP
   dat$attr$prepStat[newIds] <- 0
-
 
   ## Check attributes written as expected
   # cbind(sapply(dat$attr, function(x) is.na(tail(x, 1))))
