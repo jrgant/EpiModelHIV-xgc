@@ -25,67 +25,53 @@ stitx_msm <- function(dat, at) {
 
   ## Symptomatic GC Treatment ##
   idsRGC_tx_sympt <- which(dat$attr$rGC == 1 &
-                             dat$attr$rGC.infTime < at &
-                             dat$attr$rGC.sympt == 1 &
-                             is.na(dat$attr$rGC.tx))
+                           dat$attr$rGC.infTime < at &
+                           dat$attr$rGC.sympt == 1 &
+                           is.na(dat$attr$rGC.tx))
   idsUGC_tx_sympt <- which(dat$attr$uGC == 1 &
-                             dat$attr$uGC.infTime < at &
-                             dat$attr$uGC.sympt == 1 &
-                             is.na(dat$attr$uGC.tx))
-
+                           dat$attr$uGC.infTime < at &
+                           dat$attr$uGC.sympt == 1 &
+                           is.na(dat$attr$uGC.tx))
+browser()
   # Subset by race
-  idsRGC_tx_sympt_B <- intersect(idsRGC_tx_sympt, which(race == 0))
-  idsRGC_tx_sympt_W <- intersect(idsRGC_tx_sympt, which(race == 1))
-  idsUGC_tx_sympt_B <- intersect(idsUGC_tx_sympt, which(race == 0))
-  idsUGC_tx_sympt_W <- intersect(idsUGC_tx_sympt, which(race == 1))
-
-  # Collect over site
-  idsGC_tx_sympt_B <- union(idsRGC_tx_sympt_B, idsUGC_tx_sympt_B)
-  idsGC_tx_sympt_W <- union(idsRGC_tx_sympt_W, idsUGC_tx_sympt_W)
-
-  # Treatment by race
-  txGC_sympt_B <- idsGC_tx_sympt_B[which(rbinom(length(idsGC_tx_sympt_B), 1,
-                                                gc.sympt.prob.tx[1]) == 1)]
-  txGC_sympt_W <- idsGC_tx_sympt_W[which(rbinom(length(idsGC_tx_sympt_W), 1,
-                                                gc.sympt.prob.tx[2]) == 1)]
-  txGC_sympt <- union(txGC_sympt_B, txGC_sympt_W)
+  idsGC_tx_sympt <- union(idsRGC_tx_sympt, idsUGC_tx_sympt)
+  races <- sort(unique(race[idsGC_tx_sympt]))
+  txGC_sympt <- rep(NA, length(idsGC_tx_sympt))
+  for (i in races) {
+    ids.race <- which(race[idsGC_tx_sympt] == i)
+    txGC_sympt[ids.race] <- rbinom(length(ids.race), 1, gc.sympt.prob.tx[i+1])
+  }
+  ids_txGC_sympt <- idsGC_tx_sympt[which(txGC_sympt == 1)]
 
   # Subset by site
-  txRGC_sympt <- intersect(idsRGC_tx_sympt, txGC_sympt)
-  txUGC_sympt <- intersect(idsUGC_tx_sympt, txGC_sympt)
+  txRGC_sympt <- intersect(idsRGC_tx_sympt, ids_txGC_sympt)
+  txUGC_sympt <- intersect(idsUGC_tx_sympt, ids_txGC_sympt)
 
   ## Asymptomatic GC Treatment ##
   idsRGC_tx_asympt <- which(dat$attr$rGC == 1 &
-                              dat$attr$rGC.infTime < at &
-                              dat$attr$rGC.sympt == 0 &
-                              is.na(dat$attr$rGC.tx) &
-                              dat$attr$prepStat == 0)
+                            dat$attr$rGC.infTime < at &
+                            dat$attr$rGC.sympt == 0 &
+                            is.na(dat$attr$rGC.tx) &
+                            dat$attr$prepStat == 0)
   idsUGC_tx_asympt <- which(dat$attr$uGC == 1 &
-                              dat$attr$uGC.infTime < at &
-                              dat$attr$uGC.sympt == 0 &
-                              is.na(dat$attr$uGC.tx) &
-                              dat$attr$prepStat == 0)
+                            dat$attr$uGC.infTime < at &
+                            dat$attr$uGC.sympt == 0 &
+                            is.na(dat$attr$uGC.tx) &
+                            dat$attr$prepStat == 0)
 
   # Subset by race
-  idsRGC_tx_asympt_B <- intersect(idsRGC_tx_asympt, which(race == 0))
-  idsRGC_tx_asympt_W <- intersect(idsRGC_tx_asympt, which(race == 1))
-  idsUGC_tx_asympt_B <- intersect(idsUGC_tx_asympt, which(race == 0))
-  idsUGC_tx_asympt_W <- intersect(idsUGC_tx_asympt, which(race == 1))
-
-  # Collect over site
-  idsGC_tx_asympt_B <- union(idsRGC_tx_asympt_B, idsUGC_tx_asympt_B)
-  idsGC_tx_asympt_W <- union(idsRGC_tx_asympt_W, idsUGC_tx_asympt_W)
-
-  # Treatment by race
-  txGC_asympt_B <- idsGC_tx_asympt_B[which(rbinom(length(idsGC_tx_asympt_B), 1,
-                                                  gc.asympt.prob.tx[1]) == 1)]
-  txGC_asympt_W <- idsGC_tx_asympt_W[which(rbinom(length(idsGC_tx_asympt_W), 1,
-                                                  gc.asympt.prob.tx[2]) == 1)]
-  txGC_asympt <- union(txGC_asympt_B, txGC_asympt_W)
+  idsGC_tx_asympt <- union(idsRGC_tx_asympt, idsUGC_tx_asympt)
+  races <- sort(unique(race[idsGC_tx_asympt]))
+  txGC_asympt <- rep(NA, length(idsGC_tx_asympt))
+  for (i in races) {
+    ids.race <- which(race[idsGC_tx_asympt] == i)
+    txGC_asympt[ids.race] <- rbinom(length(ids.race), 1, gc.asympt.prob.tx[i+1])
+  }
+  ids_txGC_asympt <- idsGC_tx_asympt[which(txGC_asympt == 1)]
 
   # Subset by site
-  txRGC_asympt <- intersect(idsRGC_tx_asympt, txGC_asympt)
-  txUGC_asympt <- intersect(idsUGC_tx_asympt, txGC_asympt)
+  txRGC_asympt <- intersect(idsRGC_tx_asympt, ids_txGC_asympt)
+  txUGC_asympt <- intersect(idsUGC_tx_asympt, ids_txGC_asympt)
 
   ## All Treated GC ##
 
@@ -100,68 +86,54 @@ stitx_msm <- function(dat, at) {
 
   ## Symptomatic CT Treatment ##
   idsRCT_tx_sympt <- which(dat$attr$rCT == 1 &
-                             dat$attr$rCT.infTime < at &
-                             dat$attr$rCT.sympt == 1 &
-                             is.na(dat$attr$rCT.tx))
+                           dat$attr$rCT.infTime < at &
+                           dat$attr$rCT.sympt == 1 &
+                           is.na(dat$attr$rCT.tx))
   idsUCT_tx_sympt <- which(dat$attr$uCT == 1 &
-                             dat$attr$uCT.infTime < at &
-                             dat$attr$uCT.sympt == 1 &
-                             is.na(dat$attr$uCT.tx))
+                           dat$attr$uCT.infTime < at &
+                           dat$attr$uCT.sympt == 1 &
+                           is.na(dat$attr$uCT.tx))
 
   # Subset by race
-  idsRCT_tx_sympt_B <- intersect(idsRCT_tx_sympt, which(race == 0))
-  idsRCT_tx_sympt_W <- intersect(idsRCT_tx_sympt, which(race == 1))
-  idsUCT_tx_sympt_B <- intersect(idsUCT_tx_sympt, which(race == 0))
-  idsUCT_tx_sympt_W <- intersect(idsUCT_tx_sympt, which(race == 1))
-
-  # Collect over site
-  idsCT_tx_sympt_B <- union(idsRCT_tx_sympt_B, idsUCT_tx_sympt_B)
-  idsCT_tx_sympt_W <- union(idsRCT_tx_sympt_W, idsUCT_tx_sympt_W)
-
-  # Treatment by race
-  txCT_sympt_B <- idsCT_tx_sympt_B[which(rbinom(length(idsCT_tx_sympt_B), 1,
-                                                ct.sympt.prob.tx[1]) == 1)]
-  txCT_sympt_W <- idsCT_tx_sympt_W[which(rbinom(length(idsCT_tx_sympt_W), 1,
-                                                ct.sympt.prob.tx[2]) == 1)]
-  txCT_sympt <- union(txCT_sympt_B, txCT_sympt_W)
+  idsCT_tx_sympt <- union(idsRCT_tx_sympt, idsUCT_tx_sympt)
+  races <- sort(unique(race[idsCT_tx_sympt]))
+  txCT_sympt <- rep(NA, length(idsCT_tx_sympt))
+  for (i in races) {
+    ids.race <- which(race[idsCT_tx_sympt] == i)
+    txCT_sympt[ids.race] <- rbinom(length(ids.race), 1, ct.sympt.prob.tx[i+1])
+  }
+  ids_txCT_sympt <- idsCT_tx_sympt[which(txCT_sympt == 1)]
 
   # Subset by site
-  txRCT_sympt <- intersect(idsRCT_tx_sympt, txCT_sympt)
-  txUCT_sympt <- intersect(idsUCT_tx_sympt, txCT_sympt)
+  txRCT_sympt <- intersect(idsRCT_tx_sympt, ids_txCT_sympt)
+  txUCT_sympt <- intersect(idsUCT_tx_sympt, ids_txCT_sympt)
 
 
   ## Asymptomatic CT Treatment ##
   idsRCT_tx_asympt <- which(dat$attr$rCT == 1 &
-                              dat$attr$rCT.infTime < at &
-                              dat$attr$rCT.sympt == 0 &
-                              is.na(dat$attr$rCT.tx) &
-                              dat$attr$prepStat == 0)
+                            dat$attr$rCT.infTime < at &
+                            dat$attr$rCT.sympt == 0 &
+                            is.na(dat$attr$rCT.tx) &
+                            dat$attr$prepStat == 0)
   idsUCT_tx_asympt <- which(dat$attr$uCT == 1 &
-                              dat$attr$uCT.infTime < at &
-                              dat$attr$uCT.sympt == 0 &
-                              is.na(dat$attr$uCT.tx) &
-                              dat$attr$prepStat == 0)
+                            dat$attr$uCT.infTime < at &
+                            dat$attr$uCT.sympt == 0 &
+                            is.na(dat$attr$uCT.tx) &
+                            dat$attr$prepStat == 0)
 
   # Subset by race
-  idsRCT_tx_asympt_B <- intersect(idsRCT_tx_asympt, which(race == 0))
-  idsRCT_tx_asympt_W <- intersect(idsRCT_tx_asympt, which(race == 1))
-  idsUCT_tx_asympt_B <- intersect(idsUCT_tx_asympt, which(race == 0))
-  idsUCT_tx_asympt_W <- intersect(idsUCT_tx_asympt, which(race == 1))
-
-  # Collect over site
-  idsCT_tx_asympt_B <- union(idsRCT_tx_asympt_B, idsUCT_tx_asympt_B)
-  idsCT_tx_asympt_W <- union(idsRCT_tx_asympt_W, idsUCT_tx_asympt_W)
-
-  # Treatment by race
-  txCT_asympt_B <- idsCT_tx_asympt_B[which(rbinom(length(idsCT_tx_asympt_B), 1,
-                                                  ct.asympt.prob.tx[1]) == 1)]
-  txCT_asympt_W <- idsCT_tx_asympt_W[which(rbinom(length(idsCT_tx_asympt_W), 1,
-                                                  ct.asympt.prob.tx[2]) == 1)]
-  txCT_asympt <- union(txCT_asympt_B, txCT_asympt_W)
+  idsCT_tx_asympt <- union(idsRCT_tx_asympt, idsUCT_tx_asympt)
+  races <- sort(unique(race[idsCT_tx_asympt]))
+  txCT_asympt <- rep(NA, length(idsCT_tx_asympt))
+  for (i in races) {
+    ids.race <- which(race[idsCT_tx_asympt] == i)
+    txCT_asympt[ids.race] <- rbinom(length(ids.race), 1, ct.asympt.prob.tx[i+1])
+  }
+  ids_txCT_asympt <- idsCT_tx_asympt[which(txCT_asympt == 1)]
 
   # Subset by site
-  txRCT_asympt <- intersect(idsRCT_tx_asympt, txCT_asympt)
-  txUCT_asympt <- intersect(idsUCT_tx_asympt, txCT_asympt)
+  txRCT_asympt <- intersect(idsRCT_tx_asympt, ids_txCT_asympt)
+  txUCT_asympt <- intersect(idsUCT_tx_asympt, ids_txCT_asympt)
 
   ## All Treated CT ##
   txRCT <- union(txRCT_sympt, txRCT_asympt)
@@ -180,20 +152,20 @@ stitx_msm <- function(dat, at) {
 
   idsRGC_prep_tx <- intersect(idsSTI_screen,
                               which(dat$attr$rGC == 1 &
-                                      dat$attr$rGC.infTime < at &
-                                      is.na(dat$attr$rGC.tx.prep)))
+                                    dat$attr$rGC.infTime < at &
+                                    is.na(dat$attr$rGC.tx.prep)))
   idsUGC_prep_tx <- intersect(idsSTI_screen,
                               which(dat$attr$uGC == 1 &
-                                      dat$attr$uGC.infTime < at &
-                                      is.na(dat$attr$uGC.tx.prep)))
+                                    dat$attr$uGC.infTime < at &
+                                    is.na(dat$attr$uGC.tx.prep)))
   idsRCT_prep_tx <- intersect(idsSTI_screen,
                               which(dat$attr$rCT == 1 &
-                                      dat$attr$rCT.infTime < at &
-                                      is.na(dat$attr$rCT.tx.prep)))
+                                    dat$attr$rCT.infTime < at &
+                                    is.na(dat$attr$rCT.tx.prep)))
   idsUCT_prep_tx <- intersect(idsSTI_screen,
                               which(dat$attr$uCT == 1 &
-                                      dat$attr$uCT.infTime < at &
-                                      is.na(dat$attr$uCT.tx.prep)))
+                                    dat$attr$uCT.infTime < at &
+                                    is.na(dat$attr$uCT.tx.prep)))
 
   txRGC_prep <- idsRGC_prep_tx[which(rbinom(length(idsRGC_prep_tx), 1,
                                             prep.sti.prob.tx) == 1)]
