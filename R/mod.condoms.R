@@ -35,45 +35,47 @@ condoms_msm <- function(dat, at) {
   # Temp edgelist
   el <- dat$temp$el
 
-  ## Main/casual partnerships ##
-  el.mc <- el[el[, "ptype"] != 3, ]
+  race.combo <- rep(NA, nrow(el))
+  race.combo[race[el[, 1]] == 0 & race[el[, 2]] == 0] <- 0
+  race.combo[race[el[, 1]] == 0 & race[el[, 2]] %in% 1:2] <- 1
+  race.combo[race[el[, 1]] == 1 & race[el[, 2]] %in% c(0, 2)] <- 2
+  race.combo[race[el[, 1]] == 1 & race[el[, 2]] == 1] <- 3
+  race.combo[race[el[, 1]] == 2 & race[el[, 2]] %in% 0:1] <- 4
+  race.combo[race[el[, 1]] == 2 & race[el[, 2]] == 2] <- 5
 
-  race.combo <- race[el.mc[, 1]] + race[el.mc[, 2]]
-  comb.age <- age[el.mc[, 1]] + age[el.mc[, 2]]
-  hiv.concord.pos <- rep(0, nrow(el.mc))
-  cp <- which(diag.status[el.mc[, 1]] == 1 & diag.status[el.mc[, 2]] == 1)
+  comb.age <- age[el[, 1]] + age[el[, 2]]
+
+  hiv.concord.pos <- rep(0, nrow(el))
+  cp <- which(diag.status[el[, 1]] == 1 & diag.status[el[, 2]] == 1)
   hiv.concord.pos[cp] <- 1
-  any.prep <- as.numeric((prepStat[el.mc[, 1]] + prepStat[el.mc[, 2]]) > 0)
+
+  any.prep <- as.numeric((prepStat[el[, 1]] + prepStat[el[, 2]]) > 0)
+
+  ## Main/casual partnerships ##
+  mc.parts <- which(el[, "ptype"] != 3)
+  el.mc <- el[mc.parts, ]
 
   x <- data.frame(ptype = el.mc[, "ptype"],
                   duration = el.mc[, "durations"],
-                  race.combo = race.combo,
-                  comb.age = comb.age,
-                  hiv.concord.pos = hiv.concord.pos,
-                  prep = any.prep,
+                  race.combo = race.combo[mc.parts],
+                  comb.age = comb.age[mc.parts],
+                  hiv.concord.pos = hiv.concord.pos[mc.parts],
+                  prep = any.prep[mc.parts],
                   city = 1)
   cond.prob <- unname(predict(cond.mc.mod, newdata = x, type = "response"))
   el.mc <- cbind(el.mc, cond.prob)
 
   ## One-off partnerships ##
-  el.oo <- el[el[, "ptype"] == 3, ]
+  oo.parts <- which(el[, "ptype"] == 3)
+  el.oo <- el[oo.parts, ]
 
-  # TODO: consolidate these calcs in el
-  race.combo <- race[el.oo[, 1]] + race[el.oo[, 2]]
-  comb.age <- age[el.oo[, 1]] + age[el.oo[, 2]]
-  hiv.concord.pos <- rep(0, nrow(el.oo))
-  cp <- which(diag.status[el.oo[, 1]] == 1 & diag.status[el.oo[, 2]] == 1)
-  hiv.concord.pos[cp] <- 1
-  any.prep <- as.numeric((prepStat[el.oo[, 1]] + prepStat[el.oo[, 2]]) > 0)
-
-  x <- data.frame(race.combo = race.combo,
-                  comb.age = comb.age,
-                  hiv.concord.pos = hiv.concord.pos,
-                  prep = any.prep,
+  x <- data.frame(race.combo = race.combo[oo.parts],
+                  comb.age = comb.age[oo.parts],
+                  hiv.concord.pos = hiv.concord.pos[oo.parts],
+                  prep = any.prep[oo.parts],
                   city = 1)
   cond.prob <- unname(predict(cond.oo.mod, newdata = x, type = "response"))
   el.oo <- cbind(el.oo, cond.prob)
-
 
   ## Bind el together
   el <- rbind(el.mc, el.oo)
@@ -85,7 +87,6 @@ condoms_msm <- function(dat, at) {
   p2 <- rep(el[, "p2"], ai.vec)
   ptype <- rep(el[, "ptype"], ai.vec)
   cond.prob <- rep(el[, "cond.prob"], ai.vec)
-
 
   # UAI draw per act
   uai <- rbinom(length(cond.prob), 1, 1 - cond.prob)
