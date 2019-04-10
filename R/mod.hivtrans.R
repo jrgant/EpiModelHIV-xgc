@@ -223,7 +223,8 @@ browser()
   # Summary Output
   dat$epi$incid[at] <- length(infected)
   dat$epi$incid.B[at] <- sum(dat$attr$race[infected] == 0)
-  dat$epi$incid.W[at] <- sum(dat$attr$race[infected] == 1)
+  dat$epi$incid.H[at] <- sum(dat$attr$race[infected] == 1)
+  dat$epi$incid.W[at] <- sum(dat$attr$race[infected] == 2)
 
   return(dat)
 }
