@@ -123,16 +123,15 @@ init_status_msm <- function(dat) {
 
   # Treatment trajectory
   tt.traj <- rep(NA, num)
-  ids.B <- which(dat$attr$race == 0)
-  ids.W <- which(dat$attr$race == 1)
-  tt.traj[ids.B] <- sample(1:3, length(ids.B), TRUE,
-                           c(dat$param$tt.part.supp[1],
-                             dat$param$tt.full.supp[1],
-                             dat$param$tt.dur.supp[1]))
-  tt.traj[ids.W] <- sample(1:3, length(ids.W), TRUE,
-                           c(dat$param$tt.part.supp[2],
-                             dat$param$tt.full.supp[2],
-                             dat$param$tt.dur.supp[2]))
+  races <- sort(unique(dat$attr$race))
+  for (i in seq_along(races)) {
+    ids.race <- which(dat$attr$race == races[i])
+    tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
+                                 c(dat$param$tt.part.supp[i],
+                                   dat$param$tt.full.supp[i],
+                                   dat$param$tt.dur.supp[i]))
+
+  }
   dat$attr$tt.traj <- tt.traj
 
   ## Infection-related attributes
