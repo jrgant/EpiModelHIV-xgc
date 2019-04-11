@@ -73,7 +73,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$race[newIds] <- race
 
   dat$attr$age[newIds] <- rep(dat$param$arrival.age, nNew)
-  age.breaks <- c(0, 25, 35, 45, 55, 65, 100)
+  age.breaks <- dat$param$netstats$demog$age.breaks
   attr_age.grp <- cut(dat$attr$age[newIds], age.breaks, labels = FALSE)
   dat$attr$age.grp[newIds] <- attr_age.grp
 

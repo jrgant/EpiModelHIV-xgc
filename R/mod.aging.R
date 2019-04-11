@@ -23,7 +23,7 @@ aging_msm <- function(dat, at) {
 
   age[active == 1] <- age[active == 1] + 7 / 365
 
-  age.breaks <- c(0, 25, 35, 45, 55, 65, 100)
+  age.breaks <- dat$param$netstats$demog$age.breaks
   age.grp[active == 1] <- cut(age[active == 1], age.breaks, labels = FALSE)
 
   dat$attr$age.grp <- age.grp
