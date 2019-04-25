@@ -42,7 +42,9 @@ hivtest_msm <- function(dat, at) {
 
   # General interval testing
   elig <- which((diag.status == 0 | is.na(diag.status)) &
-                prepStat == 0 & late.tester != 1)
+                prepStat == 0 &
+                (late.tester == 0 | is.na(late.tester)))
+
   # rates by race
   rates <- 1/hiv.test.int[race[elig]]
   idsTstGen <- elig[rbinom(length(elig), 1, rates) == 1]
