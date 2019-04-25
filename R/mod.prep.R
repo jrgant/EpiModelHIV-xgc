@@ -46,6 +46,8 @@ prep_msm <- function(dat, at) {
 
   prep.start.prob <- dat$param$prep.start.prob
   prep.adhr.dist <- dat$param$prep.adhr.dist
+  prep.require.lnt <- dat$param$prep.require.lnt
+  prep.risk.reassess.method <- dat$param$prep.risk.reassess.method
   prep.discont.rate <- dat$param$prep.discont.rate
 
 
@@ -65,6 +67,9 @@ prep_msm <- function(dat, at) {
   # Indications in window
   idsIndic <- which(ind1 >= twind | ind2 >= twind | ind3 >= twind)
 
+  # Set eligibility to 1 if indications
+  prepElig[idsIndic] <- 1
+
   # Set eligibility to 0 if no indications
   prepElig[idsNoIndic] <- 0
 
@@ -72,12 +77,22 @@ prep_msm <- function(dat, at) {
   ## Stoppage ------------------------------------------------------------------
 
   # Indication lapse
-  idsRiskAssess <- which(active == 1 &
-                         prepStat == 1  &
-                         lnt == at &
-                         (at - prepLastRisk) >= 52)
-  prepLastRisk[idsRiskAssess] <- at
-  idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
+  # Rules = None, instant, yearly (CDC guidelines)
+  if (prep.risk.reassess.method == "none") {
+    idsStpInd <- NULL
+  } else if (prep.risk.reassess.method == "inst") {
+    idsRiskAssess <- which(active == 1 &
+                           prepStat == 1)
+    prepLastRisk[idsRiskAssess] <- at
+    idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
+  } else if (prep.risk.reassess.method == "year") {
+    idsRiskAssess <- which(active == 1 &
+                           prepStat == 1 &
+                           lnt == at &
+                           (at - prepLastRisk) >= 52)
+    prepLastRisk[idsRiskAssess] <- at
+    idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
+  }
 
   # Random discontinuation
   idsEligStpRand <- which(active == 1 & prepStat == 1)
@@ -95,7 +110,6 @@ prep_msm <- function(dat, at) {
 
   # Update attributes for stoppers
   prepStat[idsStp] <- 0
-  prepElig[idsStp] <- 0
   prepLastRisk[idsStp] <- NA
   prepStartTime[idsStp] <- NA
   prepLastStiScreen[idsStp] <- NA
@@ -105,11 +119,18 @@ prep_msm <- function(dat, at) {
 
   ## Eligibility ##
 
-  # Indications to start either formulation
-  idsEligStart <- which(active == 1 &
-                          status == 0 &
-                          prepStat == 0 &
-                          lnt == at)
+  # Indications to start
+  if (prep.require.lnt == TRUE) {
+    idsEligStart <- which(active == 1 &
+                            status == 0 &
+                            prepStat == 0 &
+                            lnt == at)
+  } else {
+    idsEligStart <- which(active == 1 &
+                            diag.status == 0 &
+                            prepStat == 0)
+  }
+
   idsEligStart <- intersect(idsIndic, idsEligStart)
   prepElig[idsEligStart] <- 1
 
@@ -125,7 +146,7 @@ prep_msm <- function(dat, at) {
     # PrEP adherence class
     needPC <- which(is.na(prepClass[idsStart]))
     prepClass[idsStart[needPC]] <- sample(x = 1:3, size = length(needPC),
-                                              replace = TRUE, prob = prep.adhr.dist)
+                                          replace = TRUE, prob = prep.adhr.dist)
   }
 
 
