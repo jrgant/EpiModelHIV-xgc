@@ -26,12 +26,21 @@ param <- param_msm(netstats = netstats,
                    hiv.rct.rr = 2.5,
                    hiv.uct.rr = 1.5,
                    hiv.dual.rr = 0.0,
+                   rgc.tprob = 0.35, #0.35,
+                   ugc.tprob = 0.25, #0.25,
+                   rct.tprob = 0.20,
+                   uct.tprob = 0.16,
+                   rgc.ntx.int = 16.8,
+                   ugc.ntx.int = 16.8,
+                   rct.ntx.int = 32,
+                   uct.ntx.int = 32,
                    acts.aids.vl = 5.75)
 init <- init_msm(init.hiv.mod = epistats$hiv.mod)
 control <- control_msm(simno = 1,
-                       nsteps = 52 * 10,
+                       nsteps = 52 * 5,
                        nsims = 1,
-                       ncores = 1)
+                       ncores = 1,
+                       save.nwstats = TRUE)
 
 sim <- netsim(est, param, init, control)
 
@@ -64,6 +73,10 @@ plot(sim, y = "ir100.ct", mean.smooth = FALSE)
 plot(sim, y = "ir100.sti", mean.smooth = FALSE)
 plot(sim, y = "prev.gc", mean.smooth = FALSE)
 plot(sim, y = "prev.ct", mean.smooth = FALSE)
+
+plot(sim, type = "formation", network = 1, plots.joined = FALSE)
+plot(sim, type = "formation", network = 2, plots.joined = FALSE)
+plot(sim, type = "formation", network = 3, plots.joined = FALSE)
 
 
 # Testing/Timing ------------------------------------------------------
