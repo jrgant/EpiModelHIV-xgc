@@ -32,14 +32,14 @@ stitx_msm <- function(dat, at) {
                            dat$attr$uGC.infTime < at &
                            dat$attr$uGC.sympt == 1 &
                            is.na(dat$attr$uGC.tx))
-browser()
+
   # Subset by race
   idsGC_tx_sympt <- union(idsRGC_tx_sympt, idsUGC_tx_sympt)
   races <- sort(unique(race[idsGC_tx_sympt]))
   txGC_sympt <- rep(NA, length(idsGC_tx_sympt))
   for (i in races) {
     ids.race <- which(race[idsGC_tx_sympt] == i)
-    txGC_sympt[ids.race] <- rbinom(length(ids.race), 1, gc.sympt.prob.tx[i+1])
+    txGC_sympt[ids.race] <- rbinom(length(ids.race), 1, gc.sympt.prob.tx[i])
   }
   ids_txGC_sympt <- idsGC_tx_sympt[which(txGC_sympt == 1)]
 
@@ -65,7 +65,7 @@ browser()
   txGC_asympt <- rep(NA, length(idsGC_tx_asympt))
   for (i in races) {
     ids.race <- which(race[idsGC_tx_asympt] == i)
-    txGC_asympt[ids.race] <- rbinom(length(ids.race), 1, gc.asympt.prob.tx[i+1])
+    txGC_asympt[ids.race] <- rbinom(length(ids.race), 1, gc.asympt.prob.tx[i])
   }
   ids_txGC_asympt <- idsGC_tx_asympt[which(txGC_asympt == 1)]
 
@@ -100,7 +100,7 @@ browser()
   txCT_sympt <- rep(NA, length(idsCT_tx_sympt))
   for (i in races) {
     ids.race <- which(race[idsCT_tx_sympt] == i)
-    txCT_sympt[ids.race] <- rbinom(length(ids.race), 1, ct.sympt.prob.tx[i+1])
+    txCT_sympt[ids.race] <- rbinom(length(ids.race), 1, ct.sympt.prob.tx[i])
   }
   ids_txCT_sympt <- idsCT_tx_sympt[which(txCT_sympt == 1)]
 
@@ -127,7 +127,7 @@ browser()
   txCT_asympt <- rep(NA, length(idsCT_tx_asympt))
   for (i in races) {
     ids.race <- which(race[idsCT_tx_asympt] == i)
-    txCT_asympt[ids.race] <- rbinom(length(ids.race), 1, ct.asympt.prob.tx[i+1])
+    txCT_asympt[ids.race] <- rbinom(length(ids.race), 1, ct.asympt.prob.tx[i])
   }
   ids_txCT_asympt <- idsCT_tx_asympt[which(txCT_asympt == 1)]
 

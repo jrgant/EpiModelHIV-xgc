@@ -55,7 +55,7 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$attr$uid <- 1:num
 
   # Circumcision
-  rates <- param$circ.prob[dat$attr$race + 1]
+  rates <- param$circ.prob[dat$attr$race]
   dat$attr$circ <- rbinom(length(rates), 1, rates)
 
   # Insertivity Quotient
@@ -127,9 +127,9 @@ init_status_msm <- function(dat) {
   for (i in races) {
     ids.race <- which(dat$attr$race == i)
     tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
-                                 c(dat$param$tt.part.supp[i+1],
-                                   dat$param$tt.full.supp[i+1],
-                                   dat$param$tt.dur.supp[i+1]))
+                                 c(dat$param$tt.part.supp[i],
+                                   dat$param$tt.full.supp[i],
+                                   dat$param$tt.dur.supp[i]))
 
   }
   dat$attr$tt.traj <- tt.traj

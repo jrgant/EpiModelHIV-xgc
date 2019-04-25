@@ -67,7 +67,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   dat$attr$arrival.time[newIds] <- rep(at, nNew)
 
-  race.dist <- c(dat$epi$num.B[1], dat$epi$num.H[1], dat$epi$num.W[1])/dat$epi$num[1]
+  race.dist <- prop.table(table(dat$param$netstats$attr$race))
 
   race <- sample(sort(unique(dat$attr$race)), nNew, TRUE, race.dist)
   dat$attr$race[newIds] <- race
@@ -90,9 +90,9 @@ setNewAttr_msm <- function(dat, at, nNew) {
   for (i in races) {
     ids.race <- which(dat$attr$race[newIds] == i)
     tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
-                                c(dat$param$tt.part.supp[i+1],
-                                  dat$param$tt.full.supp[i+1],
-                                  dat$param$tt.dur.supp[i+1]))
+                                c(dat$param$tt.part.supp[i],
+                                  dat$param$tt.full.supp[i],
+                                  dat$param$tt.dur.supp[i]))
 
   }
   dat$attr$tt.traj[newIds] <- tt.traj
@@ -101,7 +101,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
   circ <- rep(NA, nNew)
   for (i in races) {
     ids.race <- which(dat$attr$race[newIds] == i)
-    circ[ids.race] <- rbinom(length(ids.race), 1, dat$param$circ.prob[i+1])
+    circ[ids.race] <- rbinom(length(ids.race), 1, dat$param$circ.prob[i])
   }
   dat$attr$circ[newIds] <- circ
 

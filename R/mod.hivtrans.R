@@ -106,7 +106,7 @@ hivtrans_msm <- function(dat, at) {
   races <- sort(unique(race[disc.ip[, 1]]))
   for (i in races) {
     not.UAI.race <- intersect(not.UAI, which(race[disc.ip[, 1]] == i))
-    condom.rr[not.UAI.race] <- 1 - (cond.eff - cond.fail[i + 1])
+    condom.rr[not.UAI.race] <- 1 - (cond.eff - cond.fail[i])
   }
   ip.tlo[not.UAI] <- ip.tlo[not.UAI] + log(condom.rr[not.UAI])
 
@@ -163,7 +163,7 @@ hivtrans_msm <- function(dat, at) {
   races <- sort(unique(race[disc.rp[, 1]]))
   for (i in races) {
     not.UAI.race <- intersect(not.UAI, which(race[disc.rp[, 1]] == i))
-    condom.rr[not.UAI.race] <- 1 - (cond.eff - cond.fail[i + 1])
+    condom.rr[not.UAI.race] <- 1 - (cond.eff - cond.fail[i])
   }
   rp.tlo[not.UAI] <- rp.tlo[not.UAI] + log(condom.rr[not.UAI])
 
@@ -215,16 +215,16 @@ hivtrans_msm <- function(dat, at) {
     dat$attr$cum.time.on.tx[infected] <- 0
     dat$attr$cum.time.off.tx[infected] <- 0
 
-    rates <- dat$param$hiv.test.late.prob[race[infected] + 1]
+    rates <- dat$param$hiv.test.late.prob[race[infected]]
     dat$attr$late.tester[infected] <- rbinom(length(rates), 1, rates)
 
   }
 
   # Summary Output
   dat$epi$incid[at] <- length(infected)
-  dat$epi$incid.B[at] <- sum(dat$attr$race[infected] == 0)
-  dat$epi$incid.H[at] <- sum(dat$attr$race[infected] == 1)
-  dat$epi$incid.W[at] <- sum(dat$attr$race[infected] == 2)
+  dat$epi$incid.B[at] <- sum(dat$attr$race[infected] == 1)
+  dat$epi$incid.H[at] <- sum(dat$attr$race[infected] == 2)
+  dat$epi$incid.W[at] <- sum(dat$attr$race[infected] == 3)
 
   return(dat)
 }

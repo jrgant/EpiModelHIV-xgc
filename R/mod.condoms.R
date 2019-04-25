@@ -36,12 +36,12 @@ condoms_msm <- function(dat, at) {
   el <- dat$temp$el
 
   race.combo <- rep(NA, nrow(el))
-  race.combo[race[el[, 1]] == 0 & race[el[, 2]] == 0] <- 0
-  race.combo[race[el[, 1]] == 0 & race[el[, 2]] %in% 1:2] <- 1
-  race.combo[race[el[, 1]] == 1 & race[el[, 2]] %in% c(0, 2)] <- 2
-  race.combo[race[el[, 1]] == 1 & race[el[, 2]] == 1] <- 3
-  race.combo[race[el[, 1]] == 2 & race[el[, 2]] %in% 0:1] <- 4
-  race.combo[race[el[, 1]] == 2 & race[el[, 2]] == 2] <- 5
+  race.combo[race[el[, 1]] == 1 & race[el[, 2]] == 1] <- 1
+  race.combo[race[el[, 1]] == 1 & race[el[, 2]] %in% 2:3] <- 2
+  race.combo[race[el[, 1]] == 2 & race[el[, 2]] %in% c(1, 3)] <- 3
+  race.combo[race[el[, 1]] == 2 & race[el[, 2]] == 2] <- 4
+  race.combo[race[el[, 1]] == 3 & race[el[, 2]] %in% 1:2] <- 5
+  race.combo[race[el[, 1]] == 3 & race[el[, 2]] == 3] <- 6
 
   comb.age <- age[el[, 1]] + age[el[, 2]]
 

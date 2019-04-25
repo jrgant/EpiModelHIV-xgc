@@ -33,7 +33,6 @@ hivtx_msm <- function(dat, at) {
   diag.status <- dat$attr$diag.status
   cum.time.on.tx <- dat$attr$cum.time.on.tx
   cum.time.off.tx <- dat$attr$cum.time.off.tx
-  stage <- dat$attr$stage
   tx.period.first <- dat$attr$tx.period.first
   tx.period.last <- dat$attr$tx.period.last
   tx.init.time <- dat$attr$tx.init.time
@@ -53,20 +52,20 @@ hivtx_msm <- function(dat, at) {
                         tx.status == 0 &
                         diag.status == 1 &
                         cum.time.on.tx == 0)
-  rates <- tx.init.prob[race[tx.init.elig] + 1]
+  rates <- tx.init.prob[race[tx.init.elig]]
   tx.init <- tx.init.elig[rbinom(length(tx.init.elig), 1, rates) == 1]
 
   ## Halting
   tx.halt.part.elig <- which(tx.status == 1 & tt.traj == 1)
-  rates.part <- tx.halt.part.prob[race[tx.halt.part.elig] + 1]
+  rates.part <- tx.halt.part.prob[race[tx.halt.part.elig]]
   tx.halt.part <- tx.halt.part.elig[rbinom(length(tx.halt.part.elig), 1, rates.part) == 1]
 
   tx.halt.full.elig <- which(tx.status == 1 & tt.traj == 2)
-  rates.full <- tx.halt.part.prob[race[tx.halt.full.elig] + 1] * tx.halt.full.rr
+  rates.full <- tx.halt.part.prob[race[tx.halt.full.elig]] * tx.halt.full.rr
   tx.halt.full <- tx.halt.full.elig[rbinom(length(tx.halt.full.elig), 1, rates.full) == 1]
 
   tx.halt.dur.elig <- which(tx.status == 1 & tt.traj == 3)
-  rates.dur <- tx.halt.part.prob[race[tx.halt.dur.elig] + 1] * tx.halt.dur.rr
+  rates.dur <- tx.halt.part.prob[race[tx.halt.dur.elig]] * tx.halt.dur.rr
   tx.halt.dur <- tx.halt.dur.elig[rbinom(length(tx.halt.dur.elig), 1, rates.dur) == 1]
 
   tx.halt <- c(tx.halt.part, tx.halt.full, tx.halt.dur)
@@ -74,17 +73,17 @@ hivtx_msm <- function(dat, at) {
   ## Restarting
   tx.reinit.part.elig <- which(tx.status == 0 & tt.traj == 1 &
                                cum.time.on.tx > 0)
-  rates.part <- tx.reinit.part.prob[race[tx.reinit.part.elig] + 1]
+  rates.part <- tx.reinit.part.prob[race[tx.reinit.part.elig]]
   tx.reinit.part <- tx.reinit.part.elig[rbinom(length(tx.reinit.part.elig), 1, rates.part) == 1]
 
   tx.reinit.full.elig <- which(tx.status == 0 & tt.traj == 2 &
                                cum.time.on.tx > 0)
-  rates.full <- tx.reinit.part.prob[race[tx.reinit.full.elig] + 1] * tx.reinit.full.rr
+  rates.full <- tx.reinit.part.prob[race[tx.reinit.full.elig]] * tx.reinit.full.rr
   tx.reinit.full <- tx.reinit.full.elig[rbinom(length(tx.reinit.full.elig), 1, rates.full) == 1]
 
   tx.reinit.dur.elig <- which(tx.status == 0 & tt.traj == 3 &
                               cum.time.on.tx > 0)
-  rates.dur <- tx.reinit.part.prob[race[tx.reinit.dur.elig] + 1] * tx.reinit.dur.rr
+  rates.dur <- tx.reinit.part.prob[race[tx.reinit.dur.elig]] * tx.reinit.dur.rr
   tx.reinit.dur <- tx.reinit.dur.elig[rbinom(length(tx.reinit.dur.elig), 1, rates.dur) == 1]
 
   tx.reinit <- c(tx.reinit.part, tx.reinit.full, tx.reinit.dur)

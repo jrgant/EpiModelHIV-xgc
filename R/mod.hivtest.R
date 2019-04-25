@@ -44,7 +44,7 @@ hivtest_msm <- function(dat, at) {
   elig <- which((diag.status == 0 | is.na(diag.status)) &
                 prepStat == 0 & late.tester != 1)
   # rates by race
-  rates <- 1/hiv.test.int[race[elig] + 1]
+  rates <- 1/hiv.test.int[race[elig]]
   idsTstGen <- elig[rbinom(length(elig), 1, rates) == 1]
 
   # Late (AIDS-stage) testing

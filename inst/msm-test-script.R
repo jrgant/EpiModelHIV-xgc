@@ -9,14 +9,14 @@ epistats <- readRDS(file.path(scr.dir, "data/artnet.EpiStats.Atlanta.rda"))
 est <- readRDS(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))
 
 param <- param_msm(netstats = netstats,
-                   hiv.test.int = c(43, 45),
+                   hiv.test.int = c(43, 43, 45),
                    a.rate = 0.00055,
                    riskh.start = 2,
                    prep.start = 30,
                    prep.start.prob = 0.10,
-                   tt.part.supp = c(0.20, 0.20),
-                   tt.full.supp = c(0.40, 0.40),
-                   tt.dur.supp = c(0.40, 0.40),
+                   tt.part.supp = c(0.20, 0.20, 0.20),
+                   tt.full.supp = c(0.40, 0.40, 0.40),
+                   tt.dur.supp = c(0.40, 0.40, 0.40),
                    tx.halt.full.rr = 0.8,
                    tx.halt.dur.rr = 0.1,
                    tx.reinit.full.rr = 2.0,

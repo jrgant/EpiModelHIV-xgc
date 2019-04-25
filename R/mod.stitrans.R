@@ -90,7 +90,7 @@ stitrans_msm <- function(dat, at) {
   condom.rr <- rep(NA, length(races))
   for (i in sort(unique(races))) {
     ids.race <- which(races == i)
-    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i + 1])
+    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
   }
 
   tlo_rgc[uai_rgc == 0] <- tlo_rgc[uai_rgc == 0] + log(condom.rr[uai_rgc == 0])
@@ -138,7 +138,7 @@ stitrans_msm <- function(dat, at) {
   condom.rr <- rep(NA, length(races))
   for (i in sort(unique(races))) {
     ids.race <- which(races == i)
-    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i + 1])
+    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
   }
 
   tlo_ugc[uai_ugc == 0] <- tlo_ugc[uai_ugc == 0] + log(condom.rr[uai_ugc == 0])
@@ -186,7 +186,7 @@ stitrans_msm <- function(dat, at) {
   condom.rr <- rep(NA, length(races))
   for (i in sort(unique(races))) {
     ids.race <- which(races == i)
-    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i + 1])
+    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
   }
 
   tlo_rct[uai_rct == 0] <- tlo_rct[uai_rct == 0] + log(condom.rr[uai_rct == 0])
@@ -234,7 +234,7 @@ stitrans_msm <- function(dat, at) {
   condom.rr <- rep(NA, length(races))
   for (i in sort(unique(races))) {
     ids.race <- which(races == i)
-    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i + 1])
+    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
   }
 
   tlo_uct[uai_uct == 0] <- tlo_uct[uai_uct == 0] + log(condom.rr[uai_uct == 0])
@@ -289,14 +289,16 @@ stitrans_msm <- function(dat, at) {
   dat$epi$incid.gc[at] <- length(idsInf_rgc) + length(idsInf_ugc)
   dat$epi$incid.rgc[at] <- length(idsInf_rgc)
   dat$epi$incid.ugc[at] <- length(idsInf_ugc)
-  dat$epi$incid.gc.B[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 0)))
-  dat$epi$incid.gc.W[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 1)))
+  dat$epi$incid.gc.B[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 1)))
+  dat$epi$incid.gc.H[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 2)))
+  dat$epi$incid.gc.W[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 3)))
 
   dat$epi$incid.ct[at] <- length(idsInf_rct) + length(idsInf_uct)
   dat$epi$incid.rct[at] <- length(idsInf_rct)
   dat$epi$incid.uct[at] <- length(idsInf_uct)
-  dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 0)))
-  dat$epi$incid.ct.W[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 1)))
+  dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 1)))
+  dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 2)))
+  dat$epi$incid.ct.W[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 3)))
 
   # Check all infected have all STI attributes
   stopifnot(all(!is.na(rGC.infTime[rGC == 1])),
