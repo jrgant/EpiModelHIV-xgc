@@ -107,9 +107,11 @@ stirecov_msm <- function(dat, at) {
   recovRCT_tx <- idsRCT_tx[at - dat$attr$rCT.infTime[idsRCT_tx] >= ct.tx.int]
   recovUCT_tx <- idsUCT_tx[at - dat$attr$uCT.infTime[idsUCT_tx] >= ct.tx.int]
 
-
   recovRCT <- c(recovRCT_ntx, recovRCT_tx)
   recovUCT <- c(recovUCT_ntx, recovUCT_tx)
+
+
+  # Output ------------------------------------------------------------------
 
   dat$attr$rCT[recovRCT] <- 0
   dat$attr$rCT.sympt[recovRCT] <- NA
@@ -122,6 +124,11 @@ stirecov_msm <- function(dat, at) {
   dat$attr$uCT.infTime[recovUCT] <- NA
   dat$attr$uCT.tx[recovUCT] <- NA
   dat$attr$uCT.tx.prep[recovUCT] <- NA
+
+  # dat$epi$recov.rgc[at] <- length(recovRGC)
+  # dat$epi$recov.ugc[at] <- length(recovUGC)
+  # dat$epi$recov.rct[at] <- length(recovRCT)
+  # dat$epi$recov.uct[at] <- length(recovUCT)
 
   return(dat)
 }
