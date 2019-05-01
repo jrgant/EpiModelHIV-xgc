@@ -30,7 +30,7 @@
 hivvl_msm <- function(dat, at) {
 
   # Attributes
-  inf.time.bp <- at - dat$attr$inf.time
+  time.inf <- at - dat$attr$inf.time
   cum.time.on.tx <- dat$attr$cum.time.on.tx
   status <- dat$attr$status
   tt.traj <- dat$attr$tt.traj
@@ -39,30 +39,30 @@ hivvl_msm <- function(dat, at) {
   tx.status <- dat$attr$tx.status
 
   # Parameters
-  vlard <- dat$param$vl.acute.rise.int
-  vlap <- dat$param$vl.acute.peak
-  vlafd <- dat$param$vl.acute.fall.int
-  vlsp <- dat$param$vl.set.point
-  vldo <- dat$param$vl.aids.onset
-  vldd <- dat$param$vl.aids.int
-  vlf  <- dat$param$vl.fatal
+  acute.rise.int <- dat$param$vl.acute.rise.int
+  acute.peak <- dat$param$vl.acute.peak
+  acute.fall.int <- dat$param$vl.acute.fall.int
+  vl.set.point <- dat$param$vl.set.point
+  vl.aids.onset <- dat$param$vl.aids.onset
+  vl.aids.int <- dat$param$vl.aids.int
+  vl.fatal <- dat$param$vl.fatal
   vl.full.supp <- dat$param$vl.full.supp
   vl.tx.down.slope <- dat$param$vl.tx.down.slope
   vl.part.supp <- dat$param$vl.part.supp
   vl.tx.up.slope <- dat$param$vl.tx.up.slope
-  vlds <- (vlf - vlsp) / vldd
+  vl.aids.slope <- (vl.fatal - vl.set.point) / vl.aids.int
 
   ## Process
-
+browser()
   # 1. tx-naive men
-  target <- which(status == 1 & cum.time.on.tx == 0)
-  inf.time.bp.tn <- inf.time.bp[target]
-  new.vl <- (inf.time.bp.tn <= vlard) * (vlap * inf.time.bp.tn / vlard) +
-            (inf.time.bp.tn > vlard) * (inf.time.bp.tn <= vlard + vlafd) *
-               ((vlsp - vlap) * (inf.time.bp.tn - vlard) / vlafd + vlap) +
-            (inf.time.bp.tn > vlard + vlafd) * (inf.time.bp.tn <= vldo) * (vlsp) +
-            (inf.time.bp.tn > vldo) * (vlsp + (inf.time.bp.tn - vldo) * vlds)
-  vl[target] <- new.vl
+  idsElig1 <- which(status == 1 & cum.time.on.tx == 0)
+  time.inf1 <- time.inf[idsElig1]
+  new.vl <- (time.inf1 <= acute.rise.int) * (acute.peak * time.inf1 / acute.rise.int) +
+            (time.inf1 > acute.rise.int) * (time.inf1 <= acute.rise.int + acute.fall.int) *
+               ((vl.set.point - acute.peak) * (time.inf1 - acute.rise.int) / acute.fall.int + acute.peak) +
+            (time.inf1 > acute.rise.int + acute.fall.int) * (time.inf1 <= vl.aids.onset) * (vl.set.point) +
+            (time.inf1 > vl.aids.onset) * (vl.set.point + (time.inf1 - vl.aids.onset) * vl.aids.slope)
+  vl[idsElig1] <- new.vl
 
   # 2. men on tx, tt.traj=full,dur, not AIDS
   target <- which(tx.status == 1 & tt.traj %in% 2:3 & stage != 4)
@@ -80,14 +80,14 @@ hivvl_msm <- function(dat, at) {
   target <- which(tx.status == 0 & tt.traj %in% 2:3 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
-  new.vl <- pmin(current.vl + vl.tx.up.slope, vlsp)
+  new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
   vl[target] <- new.vl
 
   # 5. men off tx, not naive, tt.traj=part, not AIDS
   target <- which(tx.status == 0 & tt.traj == 1 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
-  new.vl <- pmin(current.vl + vl.tx.up.slope, vlsp)
+  new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
   vl[target] <- new.vl
 
   # 6. men on tx, tt.traj=full,dur, AIDS
@@ -97,21 +97,21 @@ hivvl_msm <- function(dat, at) {
   target <- which(tx.status == 1 &
                   tt.traj == 1 & stage == 4)
   current.vl <- vl[target]
-  new.vl <- current.vl + vlds
+  new.vl <- current.vl + vl.aids.slope
   vl[target] <- new.vl
 
   # 8. men off tx, tt.traj=full,dur and AIDS
   target <- which(tx.status == 0 & tt.traj %in% 2:3 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]
-  new.vl <- current.vl + vlds
+  new.vl <- current.vl + vl.aids.slope
   vl[target] <- new.vl
 
   # 9. men off tx, tt.traj=part, and AIDS (check this group increases VL to right level)
   target <- which(tx.status == 0 & tt.traj == 1 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]
-  new.vl <- current.vl + vlds
+  new.vl <- current.vl + vl.aids.slope
   vl[target] <- new.vl
 
 
