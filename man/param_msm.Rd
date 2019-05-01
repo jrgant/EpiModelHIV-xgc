@@ -44,6 +44,9 @@ the standard ARTnet workflow.}
 \item{hiv.test.int}{Mean intertest interval in weeks for black/hispanic/white MSM
 (vector of length 3).}
 
+\item{hiv.test.late.prob}{Proportion of black/hispanic/white MSM who test only
+during AIDS stage infection (vector of length 3).}
+
 \item{test.window.int}{Length of the HIV test window period in weeks.}
 
 \item{tt.part.supp}{Proportion of black/hispanic/white MSM who enter partial viral
@@ -57,6 +60,26 @@ suppression category after ART initiation (vector of length 3).}
 
 \item{tx.init.prob}{Probability per time step that a black/hispanic/white MSM who has
 tested positive will initiate treatment (vector of length 3).}
+
+\item{tx.halt.part.prob}{Probability per time step that a black/hispanic/white
+MSM who have started treatment and assigned to the partial VL suppression
+category will stop treatment (vector of length 3).}
+
+\item{tx.halt.full.rr}{Relative reduction in \code{tx.halt.part.prob} for MSM
+in the full VL suppression category.}
+
+\item{tx.halt.dur.rr}{Relative reduction in \code{tx.halt.part.prob} for MSM
+in the durable VL suppression category.}
+
+\item{tx.reinit.part.prob}{Probability per time step that a black/hispanic/white
+MSM who has stopped treatment and assigned to the partial VL suppression
+category will restart treatment (vector of length 3).}
+
+\item{tx.reinit.full.rr}{Relative reduction in \code{tx.reinit.part.prob} for MSM
+in the full VL suppression category.}
+
+\item{tx.reinit.dur.rr}{Relative reduction in \code{tx.reinit.part.prob} for MSM
+in the durable VL suppression category.}
 
 \item{max.time.off.tx.full.int}{Number of weeks off treatment for a full
 suppressor before onset of AIDS, including time before diagnosis.}
@@ -123,6 +146,10 @@ in the cond.eff parameter (vector of length 3).}
 
 \item{circ.prob}{Probablity that a black/hispanic/white new arrival in the population
 will be circumcised (vector of length 3).}
+
+\item{epistats}{GLMs for epidemiological parameter from the standard ARTnet workflow.}
+
+\item{acts.aids.vl}{Viral load level after which sexual act rate goes to zero.}
 
 \item{rgc.tprob}{Probability of rectal gonorrhea infection per act.}
 
@@ -211,19 +238,6 @@ in weeks.}
 PrEP visit.}
 
 \item{...}{Additional arguments passed to the function.}
-
-\item{tx.halt.prob}{Probability per time step that a black/hispanic/white MSM who is
-currently on treatment will halt treatment (vector of length 3).}
-
-\item{tx.reinit.prob}{Probability per time step that a black/hispanic/white MSM who is
-not currently on treatment but who has been in the past will
-re-initiate treatment (vector of length 3).}
-
-\item{acts.model}{Statistical model object for the rate of acts per partnership
-per year (then transformed into rate per week).}
-
-\item{cond.model}{Statistical model object for the probability of condom use
-per act.}
 }
 \value{
 A list object of class \code{param_msm}, which can be passed to

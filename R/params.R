@@ -11,6 +11,8 @@
 #'
 #' @param hiv.test.int Mean intertest interval in weeks for black/hispanic/white MSM
 #'        (vector of length 3).
+#' @param hiv.test.late.prob Proportion of black/hispanic/white MSM who test only
+#'        during AIDS stage infection (vector of length 3).
 #' @param test.window.int Length of the HIV test window period in weeks.
 #' @param tt.part.supp Proportion of black/hispanic/white MSM who enter partial viral
 #'        suppression category after ART initiation (vector of length 3).
@@ -21,12 +23,20 @@
 #'
 #' @param tx.init.prob Probability per time step that a black/hispanic/white MSM who has
 #'        tested positive will initiate treatment (vector of length 3).
-#' @param tx.halt.prob Probability per time step that a black/hispanic/white MSM who is
-#'        currently on treatment will halt treatment (vector of length 3).
-#' @param tx.reinit.prob Probability per time step that a black/hispanic/white MSM who is
-#'        not currently on treatment but who has been in the past will
-#'        re-initiate treatment (vector of length 3).
-
+#' @param tx.halt.part.prob Probability per time step that a black/hispanic/white
+#'        MSM who have started treatment and assigned to the partial VL suppression
+#'        category will stop treatment (vector of length 3).
+#' @param tx.halt.full.rr Relative reduction in \code{tx.halt.part.prob} for MSM
+#'        in the full VL suppression category.
+#' @param tx.halt.dur.rr Relative reduction in \code{tx.halt.part.prob} for MSM
+#'        in the durable VL suppression category.
+#' @param tx.reinit.part.prob Probability per time step that a black/hispanic/white
+#'        MSM who has stopped treatment and assigned to the partial VL suppression
+#'        category will restart treatment (vector of length 3).
+#' @param tx.reinit.full.rr Relative reduction in \code{tx.reinit.part.prob} for MSM
+#'        in the full VL suppression category.
+#' @param tx.reinit.dur.rr Relative reduction in \code{tx.reinit.part.prob} for MSM
+#'        in the durable VL suppression category.
 #' @param max.time.off.tx.full.int Number of weeks off treatment for a full
 #'        suppressor before onset of AIDS, including time before diagnosis.
 #' @param max.time.on.tx.part.int Number of weeks on treatment for a
@@ -74,10 +84,8 @@
 #' @param circ.prob Probablity that a black/hispanic/white new arrival in the population
 #'        will be circumcised (vector of length 3).
 #'
-#' @param acts.model Statistical model object for the rate of acts per partnership
-#'        per year (then transformed into rate per week).
-#' @param cond.model Statistical model object for the probability of condom use
-#'        per act.
+#' @param epistats GLMs for epidemiological parameter from the standard ARTnet workflow.
+#' @param acts.aids.vl Viral load level after which sexual act rate goes to zero.
 #'
 #' @param riskh.start Time step at which behavioral risk history assessment occurs.
 #' @param prep.start Time step at which the PrEP intervention should start.
@@ -250,7 +258,6 @@ param_msm <- function(netstats,
 #' @description Sets the initial conditions for a stochastic epidemic models
 #'              simulated with \code{\link{netsim}}.
 #'
-#' @param init.hiv.mod Logistic regression model for initial HIV status
 #' @param prev.ugc Initial prevalence of urethral gonorrhea.
 #' @param prev.rgc Initial prevalence of rectal gonorrhea.
 #' @param prev.uct Initial prevalence of urethral chlamydia.
@@ -264,8 +271,7 @@ param_msm <- function(netstats,
 #' @keywords msm
 #'
 #' @export
-init_msm <- function(init.hiv.mod,
-                     prev.ugc = 0.005,
+init_msm <- function(prev.ugc = 0.005,
                      prev.rgc = 0.005,
                      prev.uct = 0.013,
                      prev.rct = 0.013,
