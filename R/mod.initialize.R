@@ -149,8 +149,10 @@ init_status_msm <- function(dat) {
   min.hiv.time <- dat$param$vl.acute.rise.int + dat$param$vl.acute.fall.int
   max.hiv.time <- dat$param$vl.acute.rise.int + dat$param$vl.acute.fall.int +
                   dat$param$vl.aids.onset.int
-  time.infected <- pmin(time.sex.active,
-                        sample(min.hiv.time:max.hiv.time, length(idsInf), TRUE))
+
+  time.infected <- round(pmax(min.hiv.time,
+                            pmin(time.sex.active,
+                              sample(min.hiv.time:max.hiv.time, length(idsInf), TRUE))))
 
   dat$attr$inf.time <- rep(NA, num)
   dat$attr$inf.time[idsInf] <- -time.infected
