@@ -85,10 +85,14 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$rCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
   dat$attr$uCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
 
+  rates <- dat$param$hiv.test.late.prob[race]
+  dat$attr$late.tester[newIds] <- rbinom(length(rates), 1, rates)
+
   races <- sort(unique(dat$attr$race[newIds]))
   tt.traj <- rep(NA, nNew)
+  tt.traj[which(dat$attr$late.tester[newIds] == 1)] <- 1
   for (i in races) {
-    ids.race <- which(dat$attr$race[newIds] == i)
+    ids.race <- which(dat$attr$race[newIds] == i & dat$attr$late.tester[newIds] != 1)
     tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
                                 c(dat$param$tt.part.supp[i],
                                   dat$param$tt.full.supp[i],

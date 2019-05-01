@@ -121,11 +121,16 @@ init_status_msm <- function(dat) {
   # Sub in diag.status from model for status
   status <- dat$attr$diag.status
 
+  # Late (AIDS-stage) tester type
+  rates <- dat$param$hiv.test.late.prob[dat$attr$race]
+  dat$attr$late.tester <- rbinom(length(rates), 1, rates)
+
   # Treatment trajectory
   tt.traj <- rep(NA, num)
+  tt.traj[dat$attr$late.tester == 1] <- 1
   races <- sort(unique(dat$attr$race))
   for (i in races) {
-    ids.race <- which(dat$attr$race == i)
+    ids.race <- which(dat$attr$race == i & dat$attr$late.tester != 1)
     tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
                                  c(dat$param$tt.part.supp[i],
                                    dat$param$tt.full.supp[i],
@@ -137,10 +142,6 @@ init_status_msm <- function(dat) {
   ## Infection-related attributes
   dat$attr$status <- status
   idsInf <- which(status == 1)
-
-  # Late (AIDS-stage) tester type
-  dat$attr$late.tester <- rep(NA, num)
-  dat$attr$late.tester[idsInf] <- 0
 
   age <- dat$attr$age
   min.ages <- min(dat$param$netstats$demog$ages)
