@@ -47,7 +47,7 @@ hivprogress_msm <- function(dat, at) {
   # Parameters
   vl.acute.rise.int <- dat$param$vl.acute.rise.int
   vl.acute.fall.int <- dat$param$vl.acute.fall.int
-  vl.aids.onset <- dat$param$vl.aids.onset
+  vl.aids.onset.int <- dat$param$vl.aids.onset.int
   max.time.off.tx.part <- dat$param$max.time.off.tx.part
   max.time.on.tx.part <- dat$param$max.time.on.tx.part
 
@@ -72,7 +72,7 @@ hivprogress_msm <- function(dat, at) {
 
   # Change stage to AIDS
   aids.tx.naive <- which(active == 1 & status == 1 & cum.time.on.tx == 0 &
-                         (time.since.inf >= vl.aids.onset) & stage != 4)
+                         (time.since.inf >= vl.aids.onset.int) & stage != 4)
 
   part.tx.score <- (cum.time.off.tx / max.time.off.tx.part) +
                    (cum.time.on.tx / max.time.on.tx.part)
