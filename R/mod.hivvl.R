@@ -43,25 +43,39 @@ hivvl_msm <- function(dat, at) {
   acute.peak <- dat$param$vl.acute.peak
   acute.fall.int <- dat$param$vl.acute.fall.int
   vl.set.point <- dat$param$vl.set.point
-  vl.aids.onset <- dat$param$vl.aids.onset # change that name
-  vl.aids.int <- dat$param$vl.aids.int # change that name
+  aids.onset <- dat$param$vl.aids.onset
+  aids.int <- dat$param$vl.aids.int
   vl.fatal <- dat$param$vl.fatal
   vl.full.supp <- dat$param$vl.full.supp
   vl.tx.down.slope <- dat$param$vl.tx.down.slope
   vl.part.supp <- dat$param$vl.part.supp
   vl.tx.up.slope <- dat$param$vl.tx.up.slope
-  vl.aids.slope <- (vl.fatal - vl.set.point) / vl.aids.int
+  vl.aids.slope <- (vl.fatal - vl.set.point) / aids.int
 
   ## Process
-browser()
+# browser()
   # 1. TX-naive
   idsElig1 <- which(status == 1 & cum.time.on.tx == 0)
   time.inf1 <- time.inf[idsElig1]
-  new.vl <- (time.inf1 <= acute.rise.int) * (acute.peak * time.inf1 / acute.rise.int) +
-            (time.inf1 > acute.rise.int) * (time.inf1 <= acute.rise.int + acute.fall.int) *
-               ((vl.set.point - acute.peak) * (time.inf1 - acute.rise.int) / acute.fall.int + acute.peak) +
-            (time.inf1 > acute.rise.int + acute.fall.int) * (time.inf1 <= vl.aids.onset) * (vl.set.point) +
-            (time.inf1 > vl.aids.onset) * (vl.set.point + (time.inf1 - vl.aids.onset) * vl.aids.slope)
+  new.vl <- rep(NA, length(idsElig1))
+
+  # Acute rising
+  idsElig1.AR <- which(stage[idsElig1] == 1)
+  new.vl[idsElig1.AR] <- acute.peak * time.inf1[idsElig1.AR] / acute.rise.int
+
+  # Acute falling
+  idsElig1.AF <- which(stage[idsElig1] == 2)
+  new.vl[idsElig1.AF] <- ((vl.set.point - acute.peak) *
+                            (time.inf1[idsElig1.AF] - acute.rise.int) / acute.fall.int + acute.peak)
+
+  # Chronic
+  idsElig1.C <- which(stage[idsElig1] == 3)
+  new.vl[idsElig1.C] <- vl.set.point
+
+  # AIDS
+  idsElig1.A <- which(stage[idsElig1] == 4)
+  new.vl[idsElig1.A] <- vl.set.point + (time.inf1[idsElig1.A] - aids.onset) * vl.aids.slope
+
   vl[idsElig1] <- new.vl
 
   # 2. On tx, tt.traj=full,dur, not AIDS
