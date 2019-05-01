@@ -43,8 +43,8 @@ hivvl_msm <- function(dat, at) {
   acute.peak <- dat$param$vl.acute.peak
   acute.fall.int <- dat$param$vl.acute.fall.int
   vl.set.point <- dat$param$vl.set.point
-  vl.aids.onset <- dat$param$vl.aids.onset
-  vl.aids.int <- dat$param$vl.aids.int
+  vl.aids.onset <- dat$param$vl.aids.onset # change that name
+  vl.aids.int <- dat$param$vl.aids.int # change that name
   vl.fatal <- dat$param$vl.fatal
   vl.full.supp <- dat$param$vl.full.supp
   vl.tx.down.slope <- dat$param$vl.tx.down.slope
@@ -54,7 +54,7 @@ hivvl_msm <- function(dat, at) {
 
   ## Process
 browser()
-  # 1. tx-naive men
+  # 1. TX-naive
   idsElig1 <- which(status == 1 & cum.time.on.tx == 0)
   time.inf1 <- time.inf[idsElig1]
   new.vl <- (time.inf1 <= acute.rise.int) * (acute.peak * time.inf1 / acute.rise.int) +
@@ -64,50 +64,50 @@ browser()
             (time.inf1 > vl.aids.onset) * (vl.set.point + (time.inf1 - vl.aids.onset) * vl.aids.slope)
   vl[idsElig1] <- new.vl
 
-  # 2. men on tx, tt.traj=full,dur, not AIDS
+  # 2. On tx, tt.traj=full,dur, not AIDS
   target <- which(tx.status == 1 & tt.traj %in% 2:3 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.full.supp)
   vl[target] <- new.vl
 
-  # 3. men on tx, tt.traj=part, not AIDS
+  # 3. On tx, tt.traj=part, not AIDS
   target <- which(tx.status == 1 & tt.traj == 1 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.part.supp)
   vl[target] <- new.vl
 
-  # 4. men off tx, not naive, tt.traj=full,dur, not AIDS
+  # 4. Off tx, not naive, tt.traj=full,dur, not AIDS
   target <- which(tx.status == 0 & tt.traj %in% 2:3 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
   vl[target] <- new.vl
 
-  # 5. men off tx, not naive, tt.traj=part, not AIDS
+  # 5. Off tx, not naive, tt.traj=part, not AIDS
   target <- which(tx.status == 0 & tt.traj == 1 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
   vl[target] <- new.vl
 
-  # 6. men on tx, tt.traj=full,dur, AIDS
-  # Doesn't exist.
+  # 6. On tx, tt.traj=full,dur, AIDS
+  # NA
 
-  # 7. men on tx, tt.traj=part, AIDS (check this group reduces VL to set point)
+  # 7. On tx, tt.traj=part, AIDS (check this group reduces VL to set point)
   target <- which(tx.status == 1 &
                   tt.traj == 1 & stage == 4)
   current.vl <- vl[target]
   new.vl <- current.vl + vl.aids.slope
   vl[target] <- new.vl
 
-  # 8. men off tx, tt.traj=full,dur and AIDS
+  # 8. Off tx, tt.traj=full,dur and AIDS
   target <- which(tx.status == 0 & tt.traj %in% 2:3 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]
   new.vl <- current.vl + vl.aids.slope
   vl[target] <- new.vl
 
-  # 9. men off tx, tt.traj=part, and AIDS (check this group increases VL to right level)
+  # 9. Off tx, tt.traj=part, and AIDS (check this group increases VL to right level)
   target <- which(tx.status == 0 & tt.traj == 1 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]
