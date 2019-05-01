@@ -29,8 +29,8 @@ condoms_msm <- function(dat, at) {
   prepStat <- dat$attr$prepStat
 
   # Condom Use Models
-  cond.mc.mod <- dat$param$cond.mc.mod
-  cond.oo.mod <- dat$param$cond.oo.mod
+  cond.mc.mod <- dat$param$epistats$cond.mc.mod
+  cond.oo.mod <- dat$param$epistats$cond.oo.mod
 
   # Temp edgelist
   el <- dat$temp$el

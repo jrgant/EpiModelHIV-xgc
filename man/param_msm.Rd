@@ -20,9 +20,7 @@ param_msm(netstats, hiv.test.int = c(301/7, 301/7, 315/7),
   vl.tx.up.slope = 0.25, a.rate = 5e-04, arrival.age = 15,
   URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 * 1.09, acute.rr = 6,
   circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.25, 0.25, 0.25),
-  circ.prob = c(0.874, 0.874, 0.918), acts.model = epistats$acts.mod,
-  cond.mc.model = epistats$cond.mc.mod,
-  cond.oo.model = epistats$cond.oo.mod, acts.aids.vl = 7,
+  circ.prob = c(0.874, 0.874, 0.918), epistats, acts.aids.vl = 7,
   rgc.tprob = 0.35, ugc.tprob = 0.25, rct.tprob = 0.2,
   uct.tprob = 0.16, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.8,
   rct.sympt.prob = 0.14, uct.sympt.prob = 0.58, rgc.ntx.int = 16.8,
@@ -126,9 +124,6 @@ in the cond.eff parameter (vector of length 3).}
 \item{circ.prob}{Probablity that a black/hispanic/white new arrival in the population
 will be circumcised (vector of length 3).}
 
-\item{acts.model}{Statistical model object for the rate of acts per partnership
-per year (then transformed into rate per week).}
-
 \item{rgc.tprob}{Probability of rectal gonorrhea infection per act.}
 
 \item{ugc.tprob}{Probability of urethral gonorrhea infection per act.}
@@ -223,6 +218,9 @@ currently on treatment will halt treatment (vector of length 3).}
 \item{tx.reinit.prob}{Probability per time step that a black/hispanic/white MSM who is
 not currently on treatment but who has been in the past will
 re-initiate treatment (vector of length 3).}
+
+\item{acts.model}{Statistical model object for the rate of acts per partnership
+per year (then transformed into rate per week).}
 
 \item{cond.model}{Statistical model object for the probability of condom use
 per act.}

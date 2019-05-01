@@ -47,7 +47,7 @@ initialize_msm <- function(x, param, init, control, s) {
   dat <- init_tergmLite(dat)
 
   ## Nodal Attributes Setup ##
-  dat$attr <- netstats$attr
+  dat$attr <- param$netstats$attr
 
   num <- network.size(nw[[1]])
   dat$attr$active <- rep(1, num)

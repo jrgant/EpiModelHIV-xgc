@@ -194,9 +194,7 @@ param_msm <- function(netstats,
                       circ.prob = c(0.874, 0.874, 0.918),
 
                       # Behavioral
-                      acts.model = epistats$acts.mod,
-                      cond.mc.model = epistats$cond.mc.mod,
-                      cond.oo.model = epistats$cond.oo.mod,
+                      epistats,
                       acts.aids.vl = 7,
 
                       # STI epi
