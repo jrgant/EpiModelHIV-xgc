@@ -31,7 +31,7 @@ acts_msm <- function(dat, at) {
   plist <- dat$temp$plist
 
   # Parameters
-  acts.mod <- dat$param$epistats$acts.model
+  acts.mod <- dat$param$epistats$acts.mod
   acts.aids.vl <- dat$param$acts.aids.vl
 
   # Construct edgelist
