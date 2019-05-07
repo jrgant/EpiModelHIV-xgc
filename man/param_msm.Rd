@@ -35,7 +35,7 @@ param_msm(netstats, hiv.test.int = c(301/7, 301/7, 315/7),
   0.127, 0.784), prep.adhr.hr = c(0.69, 0.19, 0.02),
   prep.discont.rate = 1 - (2^(-1/781)), prep.tst.int = 90/7,
   prep.risk.int = 182/7, prep.sti.screen.int = 182/7,
-  prep.sti.prob.tx = 1, ...)
+  prep.sti.prob.tx = 1, prep.risk.reassess.method = "year", ...)
 }
 \arguments{
 \item{netstats}{Target statistics and related network initialization data from
@@ -236,6 +236,10 @@ in weeks.}
 
 \item{prep.sti.prob.tx}{Probability of treatment given positive screening during
 PrEP visit.}
+
+\item{prep.risk.reassess.method}{Interval for reassessment of risk indications
+of active PrEP users, either \code{"none"} for no reassessment,
+\code{"inst"} for weekly, or \code{"year"} for year.}
 
 \item{...}{Additional arguments passed to the function.}
 }

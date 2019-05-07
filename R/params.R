@@ -94,6 +94,9 @@
 #'        adherent to PrEP.
 #' @param prep.adhr.hr The hazard ratio for infection per act associated with each
 #'        level of adherence (from Grant).
+#' @param prep.risk.reassess.method Interval for reassessment of risk indications
+#'        of active PrEP users, either \code{"none"} for no reassessment,
+#'        \code{"inst"} for weekly, or \code{"year"} for year.
 #'
 #' @param prep.discont.rate Rate of random discontinuation from PrEP.
 #'
@@ -243,6 +246,7 @@ param_msm <- function(netstats,
                       prep.risk.int = 182/7,
                       prep.sti.screen.int = 182/7,
                       prep.sti.prob.tx = 1,
+                      prep.risk.reassess.method = "year",
                       ...) {
 
   p <- get_args(formal.args = formals(sys.function()),
