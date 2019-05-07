@@ -335,6 +335,7 @@ init_msm <- function(prev.ugc = 0.005,
 #'        external text files.
 #' @param save.nwstats Calculate and save network statistics as defined in the
 #'        \code{simnet} modules.
+#' @param save.clin.hist Save individual-level clinical history matrices.
 #' @param truncate.plist Truncate the cumulative partnership list to only include
 #'        active partnerships.
 #' @param verbose If \code{TRUE}, print out simulation progress to the console
@@ -373,6 +374,7 @@ control_msm <- function(simno = 1,
                         prev.FUN = prevalence_msm,
                         verbose.FUN = verbose.net,
                         save.nwstats = FALSE,
+                        save.clin.hist = FALSE,
                         truncate.plist = TRUE,
                         verbose = TRUE,
                         ...) {

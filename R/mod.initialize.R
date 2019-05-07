@@ -97,6 +97,11 @@ initialize_msm <- function(x, param, init, control, s) {
   colnames(plist)[1:2] <- c("p1", "p2")
   dat$temp$plist <- plist
 
+  # Clinical history
+  if (dat$control$save.clin.hist == TRUE) {
+    dat <- save_clin_hist(dat, at = 1)
+  }
+
   # dat$param$netstats <- NULL
   class(dat) <- "dat"
   return(dat)

@@ -137,9 +137,31 @@ hivvl_msm <- function(dat, at) {
   dat$attr$vl.last.usupp[idsUsupp] <- at
   dat$attr$vl.last.supp[idsSupp] <- at
 
+  if (dat$control$save.clin.hist == TRUE) {
+    dat <- save_clin_hist(dat, at)
+  }
+
   return(dat)
 }
 
+save_clin_hist <- function(dat, at) {
+
+  browser()
+  if (is.null(dat$temp$clin.hist)) {
+    m <- list()
+    for (i in 1:3) {
+      m[[i]] <- array(dim = c(length(dat$attr$active), dat$control$nsteps))
+    }
+  } else {
+    m <- dat$temp$clin.hist
+  }
+  m[[1]][, at] <- dat$attr$vl
+  m[[2]][, at] <- dat$attr$stage
+  m[[3]][, at] <- dat$attr$tx.status
+
+  dat$temp$clin.hist <- m
+  return(dat)
+}
 
 
 #' @export

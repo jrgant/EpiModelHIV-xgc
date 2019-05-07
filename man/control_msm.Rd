@@ -15,7 +15,7 @@ control_msm(simno = 1, nsims = 1, ncores = 1, nsteps = 100,
   stitrans.FUN = stitrans_msm, stirecov.FUN = stirecov_msm,
   stitx.FUN = stitx_msm, prev.FUN = prevalence_msm,
   verbose.FUN = verbose.net, save.nwstats = FALSE,
-  truncate.plist = TRUE, verbose = TRUE, ...)
+  save.clin.hist = FALSE, truncate.plist = TRUE, verbose = TRUE, ...)
 }
 \arguments{
 \item{simno}{Unique ID for the simulation run, used for file naming purposes
@@ -80,6 +80,8 @@ external text files.}
 
 \item{save.nwstats}{Calculate and save network statistics as defined in the
 \code{simnet} modules.}
+
+\item{save.clin.hist}{Save individual-level clinical history matrices.}
 
 \item{truncate.plist}{Truncate the cumulative partnership list to only include
 active partnerships.}

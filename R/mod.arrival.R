@@ -137,6 +137,17 @@ setNewAttr_msm <- function(dat, at, nNew) {
   # PrEP
   dat$attr$prepStat[newIds] <- 0
 
+  # Update clinical history
+  if (dat$control$save.clin.hist == TRUE) {
+    if (length(newIds) > 0) browser()
+    m <- dat$temp$clin.hist
+    for (i in 1:length(m)) {
+      new.m <- array(dim = c(length(newIds), dat$control$nsteps))
+      m[[i]] <- rbind(m[[i]], new.m)
+    }
+    dat$temp$clin.hist <- m
+  }
+
   ## Check attributes written as expected
   # cbind(sapply(dat$attr, function(x) is.na(tail(x, 1))))
 
