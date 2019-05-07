@@ -78,7 +78,7 @@ hivvl_msm <- function(dat, at) {
 
   vl[idsElig1] <- new.vl
 
-  # 2. On tx, tt.traj=full,dur, not AIDS
+  # 2. On tx, tt.traj=full/dur, not AIDS
   target <- which(tx.status == 1 & tt.traj %in% 2:3 & stage != 4)
   current.vl <- vl[target]
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.full.supp)
@@ -90,7 +90,7 @@ hivvl_msm <- function(dat, at) {
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.part.supp)
   vl[target] <- new.vl
 
-  # 4. Off tx, not naive, tt.traj=full,dur, not AIDS
+  # 4. Off tx, not naive, tt.traj=full/dur, not AIDS
   target <- which(tx.status == 0 & tt.traj %in% 2:3 &
                   cum.time.on.tx > 0 & stage != 4)
   current.vl <- vl[target]
@@ -104,7 +104,7 @@ hivvl_msm <- function(dat, at) {
   new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
   vl[target] <- new.vl
 
-  # 6. On tx, tt.traj=full,dur, AIDS
+  # 6. On tx, tt.traj=full/dur, AIDS
   # NA
 
   # 7. On tx, tt.traj=part, AIDS (check this group reduces VL to set point)
@@ -114,7 +114,7 @@ hivvl_msm <- function(dat, at) {
   new.vl <- current.vl + vl.aids.slope
   vl[target] <- new.vl
 
-  # 8. Off tx, tt.traj=full,dur and AIDS
+  # 8. Off tx, tt.traj=full/dur and AIDS
   target <- which(tx.status == 0 & tt.traj %in% 2:3 &
                   cum.time.on.tx > 0 & stage == 4)
   current.vl <- vl[target]
