@@ -122,13 +122,13 @@ prep_msm <- function(dat, at) {
   # Indications to start
   if (prep.require.lnt == TRUE) {
     idsEligStart <- which(active == 1 &
-                            status == 0 &
-                            prepStat == 0 &
-                            lnt == at)
+                          status == 0 &
+                          prepStat == 0 &
+                          lnt == at)
   } else {
     idsEligStart <- which(active == 1 &
-                            diag.status == 0 &
-                            prepStat == 0)
+                          diag.status == 0 &
+                          prepStat == 0)
   }
 
   idsEligStart <- intersect(idsIndic, idsEligStart)
