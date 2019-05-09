@@ -138,7 +138,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$prepStat[newIds] <- 0
 
   # Update clinical history
-  if (dat$control$save.clin.hist == TRUE) {
+  if (dat$control$save.clin.hist == TRUE & length(newIds) > 0) {
     m <- dat$temp$clin.hist
     for (i in 1:length(m)) {
       new.m <- array(dim = c(length(newIds), dat$control$nsteps))

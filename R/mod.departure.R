@@ -66,7 +66,7 @@ departure_msm <- function(dat, at) {
   }
 
   # Update clinical history
-  if (dat$control$save.clin.hist == TRUE) {
+  if (dat$control$save.clin.hist == TRUE & length(idsDepAll) > 0) {
     m <- dat$temp$clin.hist
     for (i in 1:length(m)) {
       m[[i]] <- m[[i]][-idsDepAll, ]
