@@ -142,7 +142,7 @@ hivvl_msm <- function(dat, at) {
   # 8b. Off tx, tt.traj=part/full/dur and AIDS, VL >= set.point
   idsElig8 <- which(tx.status == 0 & cuml.time.on.tx > 0 & stage == 4 & vl >= vl.set.point)
   current.vl <- vl[idsElig8]
-  new.vl <- current.vl + vl.aids.slope
+  new.vl <- pmin(current.vl + vl.aids.slope, vl.fatal)
   vl[idsElig8] <- new.vl
 
 
