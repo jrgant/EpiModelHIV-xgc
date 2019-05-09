@@ -48,6 +48,7 @@ hivvl_msm <- function(dat, at) {
   vl.fatal <- dat$param$vl.fatal
   vl.full.supp <- dat$param$vl.full.supp
   vl.tx.down.slope <- dat$param$vl.tx.down.slope
+  vl.tx.aids.down.slope <- dat$param$vl.tx.aids.down.slope
   vl.part.supp <- dat$param$vl.part.supp
   vl.tx.up.slope <- dat$param$vl.tx.up.slope
   vl.aids.slope <- (vl.fatal - vl.set.point) / aids.int
@@ -108,36 +109,32 @@ hivvl_msm <- function(dat, at) {
   vl[idsElig4b] <- new.vl
 
 
+  # 5. Off tx, not naive, tt.traj=part/full/dur, Chronic
+  idsElig5 <- which(tx.status == 0 & cuml.time.on.tx > 0 & stage == 3)
   current.vl <- vl[idsElig5]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
   vl[idsElig5] <- new.vl
 
 
   # 6. On tx, tt.traj=full/dur, AIDS
-  # NA
+  idsElig6 <- which(tx.status == 1 & tt.traj %in% 2:3 & stage == 4)
+  current.vl <- vl[idsElig6]
+  new.vl <- pmax(current.vl - vl.tx.aids.down.slope, vl.full.supp)
+  vl[idsElig6] <- new.vl
 
 
-  # 7. On tx, tt.traj=part, AIDS (check this group reduces VL to set point)
-  idsElig7 <- which(tx.status == 1 & tt.traj == 1 & stage == 4)
+  # 7. On tx, tt.traj=part, AIDS
+  idsElig7 <- which(tx.status == 1 & tt.traj == 1 & stage != 4)
   current.vl <- vl[idsElig7]
-  new.vl <- current.vl + vl.aids.slope
+  new.vl <- pmax(current.vl - vl.tx.aids.down.slope, vl.part.supp)
   vl[idsElig7] <- new.vl
 
 
-  # 8. Off tx, tt.traj=full/dur and AIDS
-  idsElig8 <- which(tx.status == 0 & tt.traj %in% 2:3 &
-                    cuml.time.on.tx > 0 & stage == 4)
+  # 8. Off tx, tt.traj=part/full/dur and AIDS
+  idsElig8 <- which(tx.status == 0 & cuml.time.on.tx > 0 & stage == 4)
   current.vl <- vl[idsElig8]
   new.vl <- current.vl + vl.aids.slope
   vl[idsElig8] <- new.vl
-
-
-  # 9. Off tx, tt.traj=part, and AIDS (check this group increases VL to right level)
-  idsElig9 <- which(tx.status == 0 & tt.traj == 1 &
-                    cuml.time.on.tx > 0 & stage == 4)
-  current.vl <- vl[idsElig9]
-  new.vl <- current.vl + vl.aids.slope
-  vl[idsElig9] <- new.vl
 
 
   ## Output

@@ -17,9 +17,10 @@ param_msm(netstats, hiv.test.int = c(301/7, 301/7, 315/7),
   vl.acute.peak = 6.886, vl.acute.fall.int = 6.4, vl.set.point = 4.5,
   vl.aids.onset.int = 520, vl.aids.int = 104, vl.fatal = 7,
   vl.full.supp = 1.5, vl.part.supp = 3.5, vl.tx.down.slope = 0.25,
-  vl.tx.up.slope = 0.25, a.rate = 5e-04, arrival.age = 15,
-  URAI.prob = 0.0082 * 1.09, UIAI.prob = 0.0031 * 1.09, acute.rr = 6,
-  circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.25, 0.25, 0.25),
+  vl.tx.aids.down.slope = 0.25, vl.tx.up.slope = 0.25,
+  a.rate = 5e-04, arrival.age = 15, URAI.prob = 0.0082 * 1.09,
+  UIAI.prob = 0.0031 * 1.09, acute.rr = 6, circ.rr = 0.4,
+  cond.eff = 0.95, cond.fail = c(0.25, 0.25, 0.25),
   circ.prob = c(0.874, 0.874, 0.918), epistats, acts.aids.vl = 7,
   rgc.tprob = 0.35, ugc.tprob = 0.25, rct.tprob = 0.2,
   uct.tprob = 0.16, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.8,
@@ -116,7 +117,11 @@ patient.}
 
 \item{vl.tx.down.slope}{Number of log10 units that viral load falls per time
 step from treatment initiation or re-initiation until the suppression
-level is reached.}
+level is reached (pre-AIDS stages).}
+
+\item{vl.tx.aids.down.slope}{Number of log10 units that viral load falls per time
+step from treatment initiation or re-initiation until the suppression
+level is reached (AIDS stage).}
 
 \item{vl.tx.up.slope}{Number of log10 units that viral load rises per time
 step from treatment halting until expected value.}

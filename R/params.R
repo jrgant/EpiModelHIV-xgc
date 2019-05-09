@@ -59,7 +59,10 @@
 #' @param vl.part.supp Log10 viral load at partial suppression on ART.
 #' @param vl.tx.down.slope Number of log10 units that viral load falls per time
 #'        step from treatment initiation or re-initiation until the suppression
-#'        level is reached.
+#'        level is reached (pre-AIDS stages).
+#' @param vl.tx.aids.down.slope Number of log10 units that viral load falls per time
+#'        step from treatment initiation or re-initiation until the suppression
+#'        level is reached (AIDS stage).
 #' @param vl.tx.up.slope Number of log10 units that viral load rises per time
 #'        step from treatment halting until expected value.
 #'
@@ -191,6 +194,7 @@ param_msm <- function(netstats,
                       vl.full.supp = 1.5,
                       vl.part.supp = 3.5,
                       vl.tx.down.slope = 0.25,
+                      vl.tx.aids.down.slope = 0.25,
                       vl.tx.up.slope = 0.25,
 
                       # Demographic
