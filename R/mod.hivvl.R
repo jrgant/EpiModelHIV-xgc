@@ -62,7 +62,7 @@ hivvl_msm <- function(dat, at) {
 
   # Acute rising
   idsElig1.AR <- which(stage[idsElig1] == 1)
-  new.vl[idsElig1.AR] <- acute.peak * time.inf1[idsElig1.AR] / acute.rise.int
+  new.vl[idsElig1.AR] <- pmin(acute.peak, acute.peak * time.inf1[idsElig1.AR] / acute.rise.int)
 
   # Acute falling
   idsElig1.AF <- which(stage[idsElig1] == 2)
