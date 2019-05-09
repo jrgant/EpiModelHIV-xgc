@@ -124,7 +124,7 @@ hivvl_msm <- function(dat, at) {
 
 
   # 7. On tx, tt.traj=part, AIDS
-  idsElig7 <- which(tx.status == 1 & tt.traj == 1 & stage != 4)
+  idsElig7 <- which(tx.status == 1 & tt.traj == 1 & stage == 4)
   current.vl <- vl[idsElig7]
   new.vl <- pmax(current.vl - vl.tx.aids.down.slope, vl.part.supp)
   vl[idsElig7] <- new.vl
