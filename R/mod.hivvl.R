@@ -94,13 +94,15 @@ hivvl_msm <- function(dat, at) {
   vl[idsElig3] <- new.vl
 
 
-  # 4a. Off tx, not naive, tt.traj=part/full/dur, Acute
+  # 4a. Off tx, not naive, tt.traj=part/full/dur, Acute rising
   idsElig4a <- which(tx.status == 0 & cuml.time.on.tx > 0 & stage == 1)
   current.vl <- vl[idsElig4a]
   max.vl <- acute.peak * time.inf[idsElig4a] / acute.rise.int
   new.vl <- pmin(current.vl + vl.tx.up.slope, max.vl)
   vl[idsElig4a] <- new.vl
 
+
+  # 4b. Off tx, not naive, tt.traj=part/full/dur, Acute falling
   idsElig4b <- which(tx.status == 0 & cuml.time.on.tx > 0 & stage == 2)
   current.vl <- vl[idsElig4b]
   max.vl <- ((vl.set.point - acute.peak) *
@@ -130,8 +132,15 @@ hivvl_msm <- function(dat, at) {
   vl[idsElig7] <- new.vl
 
 
-  # 8. Off tx, tt.traj=part/full/dur and AIDS
-  idsElig8 <- which(tx.status == 0 & cuml.time.on.tx > 0 & stage == 4)
+  # 8a. Off tx, tt.traj=part/full/dur and AIDS, VL < set.point
+  idsElig8 <- which(tx.status == 0 & cuml.time.on.tx > 0 & stage == 4 & vl < vl.set.point)
+  current.vl <- vl[idsElig8]
+  new.vl <- current.vl + vl.tx.up.slope
+  vl[idsElig8] <- new.vl
+
+
+  # 8b. Off tx, tt.traj=part/full/dur and AIDS, VL >= set.point
+  idsElig8 <- which(tx.status == 0 & cuml.time.on.tx > 0 & stage == 4 & vl >= vl.set.point)
   current.vl <- vl[idsElig8]
   new.vl <- current.vl + vl.aids.slope
   vl[idsElig8] <- new.vl
