@@ -80,7 +80,7 @@ hivprogress_msm <- function(dat, at) {
   aids.part.escape <- which(active == 1 & cuml.time.on.tx > 0 & tt.traj == 1 &
                             stage == 3 & part.tx.score >= 1 & stage != 4)
 
-  aids.off.tx.full.escape <- which(active == 1 & tx.status == 0 & tt.traj == 2 &
+  aids.off.tx.full.escape <- which(active == 1 & tx.status == 0 & tt.traj %in% 2:3 &
                                    cuml.time.on.tx > 0 &
                                    cuml.time.off.tx >= max.time.off.tx.full &
                                    stage != 4)
