@@ -57,7 +57,7 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.testpy[at] <- 1-sum((at - dat$attr$last.neg.test) > 52 & status == 0,
       is.na(dat$attr$last.neg.test) & status == 0, na.rm = TRUE) /
     sum(status == 0)
-  dat$epi$cc.linked[at] <- sum(dat$attr$cum.time.on.tx > 0, na.rm = TRUE) /
+  dat$epi$cc.linked[at] <- sum(dat$attr$cuml.time.on.tx > 0, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE)
   dat$epi$cc.linked1m[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE)

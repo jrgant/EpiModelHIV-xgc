@@ -17,7 +17,7 @@ individual-level attributes, and summary statistics.}
 }
 \value{
 This function returns the \code{dat} object with updated \code{tx.status},
-\code{tx.init.time}, \code{cum.time.on.tx}, \code{cum.time.off.tx} attributes.
+\code{tx.init.time}, \code{cuml.time.on.tx}, \code{cuml.time.off.tx} attributes.
 }
 \description{
 Module function for anti-retroviral treatment initiation and

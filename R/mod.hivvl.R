@@ -31,7 +31,7 @@ hivvl_msm <- function(dat, at) {
 
   # Attributes
   time.inf <- at - dat$attr$inf.time
-  cum.time.on.tx <- dat$attr$cum.time.on.tx
+  cuml.time.on.tx <- dat$attr$cuml.time.on.tx
   status <- dat$attr$status
   tt.traj <- dat$attr$tt.traj
   stage <- dat$attr$stage
@@ -55,7 +55,7 @@ hivvl_msm <- function(dat, at) {
   ## Process
 
   # 1. TX-naive
-  idsElig1 <- which(status == 1 & cum.time.on.tx == 0)
+  idsElig1 <- which(status == 1 & cuml.time.on.tx == 0)
   time.inf1 <- time.inf[idsElig1]
   new.vl <- rep(NA, length(idsElig1))
 
@@ -92,14 +92,14 @@ hivvl_msm <- function(dat, at) {
 
   # 4. Off tx, not naive, tt.traj=full/dur, not AIDS
   idsElig4 <- which(tx.status == 0 & tt.traj %in% 2:3 &
-                    cum.time.on.tx > 0 & stage != 4)
+                    cuml.time.on.tx > 0 & stage != 4)
   current.vl <- vl[idsElig4]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
   vl[idsElig4] <- new.vl
 
   # 5. Off tx, not naive, tt.traj=part, not AIDS
   idsElig5 <- which(tx.status == 0 & tt.traj == 1 &
-                  cum.time.on.tx > 0 & stage != 4)
+                    cuml.time.on.tx > 0 & stage != 4)
   current.vl <- vl[idsElig5]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
   vl[idsElig5] <- new.vl
@@ -115,14 +115,14 @@ hivvl_msm <- function(dat, at) {
 
   # 8. Off tx, tt.traj=full/dur and AIDS
   idsElig8 <- which(tx.status == 0 & tt.traj %in% 2:3 &
-                  cum.time.on.tx > 0 & stage == 4)
+                    cuml.time.on.tx > 0 & stage == 4)
   current.vl <- vl[idsElig8]
   new.vl <- current.vl + vl.aids.slope
   vl[idsElig8] <- new.vl
 
   # 9. Off tx, tt.traj=part, and AIDS (check this group increases VL to right level)
   idsElig9 <- which(tx.status == 0 & tt.traj == 1 &
-                    cum.time.on.tx > 0 & stage == 4)
+                    cuml.time.on.tx > 0 & stage == 4)
   current.vl <- vl[idsElig9]
   new.vl <- current.vl + vl.aids.slope
   vl[idsElig9] <- new.vl

@@ -37,8 +37,8 @@ hivprogress_msm <- function(dat, at) {
   active <- dat$attr$active
   status <- dat$attr$status
   time.since.inf <- at - dat$attr$inf.time
-  cum.time.on.tx <- dat$attr$cum.time.on.tx
-  cum.time.off.tx <- dat$attr$cum.time.off.tx
+  cuml.time.on.tx <- dat$attr$cuml.time.on.tx
+  cuml.time.off.tx <- dat$attr$cuml.time.off.tx
   stage <- dat$attr$stage
   stage.time <- dat$attr$stage.time
   tt.traj <- dat$attr$tt.traj
@@ -71,18 +71,18 @@ hivprogress_msm <- function(dat, at) {
   stage.time[toC] <- 1
 
   # Change stage to AIDS
-  aids.tx.naive <- which(active == 1 & status == 1 & cum.time.on.tx == 0 &
+  aids.tx.naive <- which(active == 1 & status == 1 & cuml.time.on.tx == 0 &
                          (time.since.inf >= vl.aids.onset.int) & stage != 4)
 
-  part.tx.score <- (cum.time.off.tx / max.time.off.tx.part) +
-                   (cum.time.on.tx / max.time.on.tx.part)
+  part.tx.score <- (cuml.time.off.tx / max.time.off.tx.part) +
+                   (cuml.time.on.tx / max.time.on.tx.part)
 
-  aids.part.escape <- which(active == 1 & cum.time.on.tx > 0 & tt.traj == 1 &
+  aids.part.escape <- which(active == 1 & cuml.time.on.tx > 0 & tt.traj == 1 &
                             stage == 3 & part.tx.score >= 1 & stage != 4)
 
   aids.off.tx.full.escape <- which(active == 1 & tx.status == 0 & tt.traj == 2 &
-                                   cum.time.on.tx > 0 &
-                                   cum.time.off.tx >= max.time.off.tx.full &
+                                   cuml.time.on.tx > 0 &
+                                   cuml.time.off.tx >= max.time.off.tx.full &
                                    stage != 4)
 
   isAIDS <- c(aids.tx.naive, aids.part.escape, aids.off.tx.full.escape)

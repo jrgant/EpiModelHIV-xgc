@@ -212,8 +212,8 @@ hivtrans_msm <- function(dat, at) {
     dat$attr$diag.status[infected] <- 0
     dat$attr$tx.status[infected] <- 0
 
-    dat$attr$cum.time.on.tx[infected] <- 0
-    dat$attr$cum.time.off.tx[infected] <- 0
+    dat$attr$cuml.time.on.tx[infected] <- 0
+    dat$attr$cuml.time.off.tx[infected] <- 0
 
   }
 

@@ -18,7 +18,7 @@
 #'
 #' @return
 #' This function returns the \code{dat} object with updated \code{tx.status},
-#' \code{tx.init.time}, \code{cum.time.on.tx}, \code{cum.time.off.tx} attributes.
+#' \code{tx.init.time}, \code{cuml.time.on.tx}, \code{cuml.time.off.tx} attributes.
 #'
 #' @keywords module msm
 #'
@@ -31,8 +31,8 @@ hivtx_msm <- function(dat, at) {
   status <- dat$attr$status
   tx.status <- dat$attr$tx.status
   diag.status <- dat$attr$diag.status
-  cum.time.on.tx <- dat$attr$cum.time.on.tx
-  cum.time.off.tx <- dat$attr$cum.time.off.tx
+  cuml.time.on.tx <- dat$attr$cuml.time.on.tx
+  cuml.time.off.tx <- dat$attr$cuml.time.off.tx
   tx.period.first <- dat$attr$tx.period.first
   tx.period.last <- dat$attr$tx.period.last
   tx.init.time <- dat$attr$tx.init.time
@@ -51,7 +51,7 @@ hivtx_msm <- function(dat, at) {
   tx.init.elig <- which(status == 1 &
                         tx.status == 0 &
                         diag.status == 1 &
-                        cum.time.on.tx == 0)
+                        cuml.time.on.tx == 0)
   rates <- tx.init.prob[race[tx.init.elig]]
   tx.init <- tx.init.elig[rbinom(length(tx.init.elig), 1, rates) == 1]
 
@@ -72,17 +72,17 @@ hivtx_msm <- function(dat, at) {
 
   ## Restarting
   tx.reinit.part.elig <- which(tx.status == 0 & tt.traj == 1 &
-                               cum.time.on.tx > 0)
+                               cuml.time.on.tx > 0)
   rates.part <- tx.reinit.part.prob[race[tx.reinit.part.elig]]
   tx.reinit.part <- tx.reinit.part.elig[rbinom(length(tx.reinit.part.elig), 1, rates.part) == 1]
 
   tx.reinit.full.elig <- which(tx.status == 0 & tt.traj == 2 &
-                               cum.time.on.tx > 0)
+                               cuml.time.on.tx > 0)
   rates.full <- tx.reinit.part.prob[race[tx.reinit.full.elig]] * tx.reinit.full.rr
   tx.reinit.full <- tx.reinit.full.elig[rbinom(length(tx.reinit.full.elig), 1, rates.full) == 1]
 
   tx.reinit.dur.elig <- which(tx.status == 0 & tt.traj == 3 &
-                              cum.time.on.tx > 0)
+                              cuml.time.on.tx > 0)
   rates.dur <- tx.reinit.part.prob[race[tx.reinit.dur.elig]] * tx.reinit.dur.rr
   tx.reinit.dur <- tx.reinit.dur.elig[rbinom(length(tx.reinit.dur.elig), 1, rates.dur) == 1]
 
@@ -93,8 +93,8 @@ hivtx_msm <- function(dat, at) {
   tx.status[tx.halt] <- 0
   tx.status[tx.reinit] <- 1
 
-  cum.time.on.tx[which(tx.status == 1)] <- cum.time.on.tx[which(tx.status == 1)] + 1
-  cum.time.off.tx[which(tx.status == 0)] <- cum.time.off.tx[which(tx.status == 0)] + 1
+  cuml.time.on.tx[which(tx.status == 1)] <- cuml.time.on.tx[which(tx.status == 1)] + 1
+  cuml.time.off.tx[which(tx.status == 0)] <- cuml.time.off.tx[which(tx.status == 0)] + 1
 
   tx.init.time[tx.init] <- at
 
@@ -106,8 +106,8 @@ hivtx_msm <- function(dat, at) {
   tx.period.last[idsContPeriod] <- at
 
   dat$attr$tx.status <- tx.status
-  dat$attr$cum.time.on.tx <- cum.time.on.tx
-  dat$attr$cum.time.off.tx <- cum.time.off.tx
+  dat$attr$cuml.time.on.tx <- cuml.time.on.tx
+  dat$attr$cuml.time.off.tx <- cuml.time.off.tx
   dat$attr$tx.period.first <- tx.period.first
   dat$attr$tx.period.last <- tx.period.last
   dat$attr$tx.init.time <- tx.init.time
