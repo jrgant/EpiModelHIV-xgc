@@ -9,6 +9,7 @@ epistats <- readRDS(file.path(scr.dir, "data/artnet.EpiStats.Atlanta.rda"))
 est <- readRDS(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))
 
 param <- param_msm(netstats = netstats,
+                   epistats = epistats,
                    hiv.test.int = c(43, 43, 45),
                    a.rate = 0.00055,
                    riskh.start = 2,
@@ -26,8 +27,8 @@ param <- param_msm(netstats = netstats,
                    hiv.rct.rr = 2.5,
                    hiv.uct.rr = 1.5,
                    hiv.dual.rr = 0.0,
-                   rgc.tprob = 0.35, #0.35,
-                   ugc.tprob = 0.25, #0.25,
+                   rgc.tprob = 0.35,
+                   ugc.tprob = 0.25,
                    rct.tprob = 0.20,
                    uct.tprob = 0.16,
                    rgc.ntx.int = 16.8,
@@ -35,12 +36,13 @@ param <- param_msm(netstats = netstats,
                    rct.ntx.int = 32,
                    uct.ntx.int = 32,
                    acts.aids.vl = 5.75)
-init <- init_msm(init.hiv.mod = epistats$hiv.mod)
+init <- init_msm()
 control <- control_msm(simno = 1,
                        nsteps = 52 * 5,
                        nsims = 1,
                        ncores = 1,
-                       save.nwstats = TRUE)
+                       save.nwstats = TRUE,
+                       save.clin.hist = TRUE)
 
 sim <- netsim(est, param, init, control)
 

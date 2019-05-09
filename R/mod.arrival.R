@@ -139,7 +139,6 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   # Update clinical history
   if (dat$control$save.clin.hist == TRUE) {
-    if (length(newIds) > 0) browser()
     m <- dat$temp$clin.hist
     for (i in 1:length(m)) {
       new.m <- array(dim = c(length(newIds), dat$control$nsteps))

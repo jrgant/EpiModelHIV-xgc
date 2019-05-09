@@ -53,7 +53,7 @@ hivvl_msm <- function(dat, at) {
   vl.aids.slope <- (vl.fatal - vl.set.point) / aids.int
 
   ## Process
-# browser()
+
   # 1. TX-naive
   idsElig1 <- which(status == 1 & cum.time.on.tx == 0)
   time.inf1 <- time.inf[idsElig1]
@@ -146,7 +146,6 @@ hivvl_msm <- function(dat, at) {
 
 save_clin_hist <- function(dat, at) {
 
-  browser()
   if (is.null(dat$temp$clin.hist)) {
     m <- list()
     for (i in 1:3) {
