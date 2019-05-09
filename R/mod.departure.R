@@ -32,6 +32,8 @@ departure_msm <- function(dat, at) {
   active <- dat$attr$active
   age <- floor(dat$attr$age)
   race <- dat$attr$race
+  stage <- dat$attr$stage
+  tx.status <- dat$attr$tx.status
 
   vl.aids.int <- dat$param$vl.aids.int
   asmr <- dat$param$netstats$demog$asmr
@@ -47,7 +49,7 @@ departure_msm <- function(dat, at) {
   idsDep <- idsElig[rbinom(length(rates), 1, rates) == 1]
 
   ## HIV-related deaths
-  idsEligAIDS <- which(dat$attr$stage == 4)
+  idsEligAIDS <- which(stage == 4 & tx.status == 0)
   idsDepAIDS <- idsEligAIDS[rbinom(length(idsEligAIDS), 1, 1/vl.aids.int) == 1]
 
   idsDepAll <- unique(c(idsDep, idsDepAIDS))
