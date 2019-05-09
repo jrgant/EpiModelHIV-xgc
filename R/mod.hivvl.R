@@ -79,54 +79,53 @@ hivvl_msm <- function(dat, at) {
   vl[idsElig1] <- new.vl
 
   # 2. On tx, tt.traj=full/dur, not AIDS
-  target <- which(tx.status == 1 & tt.traj %in% 2:3 & stage != 4)
-  current.vl <- vl[target]
+  idsElig2 <- which(tx.status == 1 & tt.traj %in% 2:3 & stage != 4)
+  current.vl <- vl[idsElig2]
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.full.supp)
-  vl[target] <- new.vl
+  vl[idsElig2] <- new.vl
 
   # 3. On tx, tt.traj=part, not AIDS
-  target <- which(tx.status == 1 & tt.traj == 1 & stage != 4)
-  current.vl <- vl[target]
+  idsElig3 <- which(tx.status == 1 & tt.traj == 1 & stage != 4)
+  current.vl <- vl[idsElig3]
   new.vl <- pmax(current.vl - vl.tx.down.slope, vl.part.supp)
-  vl[target] <- new.vl
+  vl[idsElig3] <- new.vl
 
   # 4. Off tx, not naive, tt.traj=full/dur, not AIDS
-  target <- which(tx.status == 0 & tt.traj %in% 2:3 &
-                  cum.time.on.tx > 0 & stage != 4)
-  current.vl <- vl[target]
+  idsElig4 <- which(tx.status == 0 & tt.traj %in% 2:3 &
+                    cum.time.on.tx > 0 & stage != 4)
+  current.vl <- vl[idsElig4]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
-  vl[target] <- new.vl
+  vl[idsElig4] <- new.vl
 
   # 5. Off tx, not naive, tt.traj=part, not AIDS
-  target <- which(tx.status == 0 & tt.traj == 1 &
+  idsElig5 <- which(tx.status == 0 & tt.traj == 1 &
                   cum.time.on.tx > 0 & stage != 4)
-  current.vl <- vl[target]
+  current.vl <- vl[idsElig5]
   new.vl <- pmin(current.vl + vl.tx.up.slope, vl.set.point)
-  vl[target] <- new.vl
+  vl[idsElig5] <- new.vl
 
   # 6. On tx, tt.traj=full/dur, AIDS
   # NA
 
   # 7. On tx, tt.traj=part, AIDS (check this group reduces VL to set point)
-  target <- which(tx.status == 1 &
-                  tt.traj == 1 & stage == 4)
-  current.vl <- vl[target]
+  idsElig7 <- which(tx.status == 1 & tt.traj == 1 & stage == 4)
+  current.vl <- vl[idsElig7]
   new.vl <- current.vl + vl.aids.slope
-  vl[target] <- new.vl
+  vl[idsElig7] <- new.vl
 
   # 8. Off tx, tt.traj=full/dur and AIDS
-  target <- which(tx.status == 0 & tt.traj %in% 2:3 &
+  idsElig8 <- which(tx.status == 0 & tt.traj %in% 2:3 &
                   cum.time.on.tx > 0 & stage == 4)
-  current.vl <- vl[target]
+  current.vl <- vl[idsElig8]
   new.vl <- current.vl + vl.aids.slope
-  vl[target] <- new.vl
+  vl[idsElig8] <- new.vl
 
   # 9. Off tx, tt.traj=part, and AIDS (check this group increases VL to right level)
-  target <- which(tx.status == 0 & tt.traj == 1 &
-                  cum.time.on.tx > 0 & stage == 4)
-  current.vl <- vl[target]
+  idsElig9 <- which(tx.status == 0 & tt.traj == 1 &
+                    cum.time.on.tx > 0 & stage == 4)
+  current.vl <- vl[idsElig9]
   new.vl <- current.vl + vl.aids.slope
-  vl[target] <- new.vl
+  vl[idsElig9] <- new.vl
 
 
   ## Output
