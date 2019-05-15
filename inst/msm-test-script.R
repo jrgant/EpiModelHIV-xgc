@@ -38,13 +38,30 @@ param <- param_msm(netstats = netstats,
                    acts.aids.vl = 5.75)
 init <- init_msm()
 control <- control_msm(simno = 1,
-                       nsteps = 52 * 5,
+                       nsteps = 52 * 2,
                        nsims = 1,
                        ncores = 1,
-                       save.nwstats = TRUE,
-                       save.clin.hist = TRUE)
+                       save.nwstats = FALSE,
+                       save.clin.hist = FALSE)
 
 sim <- netsim(est, param, init, control)
+
+# Explore clinical history
+par(mar = c(3,3,1,1), mgp = c(2,1,0))
+m1 <- sim$temp[[1]]$clin.hist[[1]]
+m2 <- sim$temp[[1]]$clin.hist[[2]]
+m3 <- sim$temp[[1]]$clin.hist[[3]]
+a <- sim$attr[[1]]
+h <- which(a$status == 1)
+
+m1[h[1:10], 95:104]
+aids <- which(a$stage == 4)
+id <- h[58]
+plot(m1[id, ], type = "o", ylim = c(1, 7))
+data.frame(vl = m1[id, ], stage = m2[id, ], tx = m3[id, ])
+a$tt.traj[id]
+matplot(t(m1[h[1:500], ]), type = "l", lty = 1, ylim = c(1, 7))
+
 
 df <- as.data.frame(sim)
 names(df)
@@ -118,10 +135,3 @@ plist <- as.data.frame(dat$temp$plist)
 pmain <- filter(plist, ptype == 2)
 table(pmain$start)
 hist(pmain$start)
-
-
-
-## TODO:
-# make all late testers go into tt.traj 1 (not full/dur suppressed)
-# updates to VL module for tt.traj=1, on/off treatment
-
