@@ -30,6 +30,7 @@ prevalence_msm <- function(dat, at) {
 
   prepElig <- dat$attr$prepElig
   prepStat <- dat$attr$prepStat
+  prepClass <- dat$attr$prepClass
 
   rGC <- dat$attr$rGC
   uGC <- dat$attr$uGC
@@ -91,6 +92,7 @@ prevalence_msm <- function(dat, at) {
 
   dat$epi$prepElig[at] <- sum(prepElig == 1, na.rm = TRUE)
   dat$epi$prepCurr[at] <- sum(prepStat == 1, na.rm = TRUE)
+  dat$epi$prepCurr.hadr[at] <- sum(prepStat == 1 & prepClass == 3, na.rm = TRUE)
 
   dat$epi$prev.gc[at] <- sum((rGC == 1 | uGC == 1), na.rm = TRUE) / dat$epi$num[at]
   dat$epi$prev.ct[at] <- sum((rCT == 1 | uCT == 1), na.rm = TRUE) / dat$epi$num[at]

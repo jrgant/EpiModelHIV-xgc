@@ -202,8 +202,8 @@ param_msm <- function(netstats,
                       arrival.age = 15,
 
                       # HIV transmission prob
-                      URAI.prob = 0.0082 * 1.09,
-                      UIAI.prob = 0.0031 * 1.09,
+                      URAI.prob = 0.008938,
+                      UIAI.prob = 0.003379,
                       acute.rr = 6,
                       circ.rr = 0.4,
                       cond.eff = 0.95,
