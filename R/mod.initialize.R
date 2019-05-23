@@ -102,6 +102,11 @@ initialize_msm <- function(x, param, init, control, s) {
     dat <- save_clin_hist(dat, at = 1)
   }
 
+  # Network statistics
+  if (dat$control$save.nwstats == TRUE) {
+    dat <- calc_nwstats(dat, at = 1)
+  }
+
   # dat$param$netstats <- NULL
   class(dat) <- "dat"
   return(dat)
