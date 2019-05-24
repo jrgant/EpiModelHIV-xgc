@@ -32,6 +32,8 @@ condoms_msm <- function(dat, at) {
   cond.mc.mod <- dat$param$epistats$cond.mc.mod
   cond.oo.mod <- dat$param$epistats$cond.oo.mod
 
+  cond.scale <- dat$param$cond.scale
+
   # Temp edgelist
   el <- dat$temp$el
 
@@ -87,6 +89,8 @@ condoms_msm <- function(dat, at) {
   p2 <- rep(el[, "p2"], ai.vec)
   ptype <- rep(el[, "ptype"], ai.vec)
   cond.prob <- rep(el[, "cond.prob"], ai.vec)
+
+  cond.prob <- cond.prob * cond.scale
 
   # UAI draw per act
   uai <- rbinom(length(cond.prob), 1, 1 - cond.prob)
