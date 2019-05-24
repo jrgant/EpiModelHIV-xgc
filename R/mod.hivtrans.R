@@ -52,6 +52,7 @@ hivtrans_msm <- function(dat, at) {
   # Parameters
   URAI.prob <- dat$param$URAI.prob
   UIAI.prob <- dat$param$UIAI.prob
+  trans.scale <- dat$param$trans.scale
   acute.rr <- dat$param$acute.rr
 
   cond.eff <- dat$param$cond.eff
@@ -95,7 +96,7 @@ hivtrans_msm <- function(dat, at) {
   ip.rCT <- rCT[disc.ip[, 2]]
 
   # Base TP from VL
-  ip.tprob <- pmin(0.99, URAI.prob * 2.45^(ip.vl - 4.5))
+  ip.tprob <- pmin(0.99, URAI.prob * 2.45^(ip.vl - 4.5) * trans.scale)
 
   # Transform to log odds
   ip.tlo <- log(ip.tprob/(1 - ip.tprob))
@@ -149,7 +150,7 @@ hivtrans_msm <- function(dat, at) {
   rp.uCT <- uCT[disc.rp[, 1]]
 
   # Base TP from VL
-  rp.tprob <- pmin(0.99, UIAI.prob * 2.45^(rp.vl - 4.5))
+  rp.tprob <- pmin(0.99, UIAI.prob * 2.45^(rp.vl - 4.5) * trans.scale)
 
   # Transform to log odds
   rp.tlo <- log(rp.tprob/(1 - rp.tprob))

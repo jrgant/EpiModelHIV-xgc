@@ -19,8 +19,8 @@ param_msm(netstats, hiv.test.int = c(301/7, 301/7, 315/7),
   vl.full.supp = 1.5, vl.part.supp = 3.5, vl.tx.down.slope = 0.25,
   vl.tx.aids.down.slope = 0.25, vl.tx.up.slope = 0.25,
   a.rate = 5e-04, arrival.age = 15, URAI.prob = 0.008938,
-  UIAI.prob = 0.003379, acute.rr = 6, circ.rr = 0.4,
-  cond.eff = 0.95, cond.fail = c(0.25, 0.25, 0.25),
+  UIAI.prob = 0.003379, trans.scale = 1, acute.rr = 6,
+  circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.25, 0.25, 0.25),
   circ.prob = c(0.874, 0.874, 0.918), epistats, acts.aids.vl = 7,
   rgc.tprob = 0.35, ugc.tprob = 0.25, rct.tprob = 0.2,
   uct.tprob = 0.16, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.8,
@@ -137,6 +137,9 @@ load.}
 \item{UIAI.prob}{Probability of transmission for an uncircumcised man having
 unprotected insertive anal intercourse with an infected man at set
 point viral load.}
+
+\item{trans.scale}{Relative scalar on base transmission probabilities for model
+calibration.}
 
 \item{acute.rr}{Relative risk of infection (compared to that predicted by
 elevated viral load) when positive partner is in the acute stage.}
