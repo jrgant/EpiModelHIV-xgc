@@ -22,22 +22,22 @@ param_msm(netstats, hiv.test.int = c(301/7, 301/7, 315/7),
   UIAI.prob = 0.003379, trans.scale = 1, acute.rr = 6,
   circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.25, 0.25, 0.25),
   circ.prob = c(0.874, 0.874, 0.918), epistats, acts.aids.vl = 7,
-  rgc.tprob = 0.35, ugc.tprob = 0.25, rct.tprob = 0.2,
-  uct.tprob = 0.16, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.8,
-  rct.sympt.prob = 0.14, uct.sympt.prob = 0.58, rgc.ntx.int = 16.8,
-  ugc.ntx.int = 16.8, gc.tx.int = 1.4, rct.ntx.int = 32,
-  uct.ntx.int = 32, ct.tx.int = 1.4, gc.sympt.prob.tx = c(0.95, 0.95,
-  0.95), ct.sympt.prob.tx = c(0.9, 0.9, 0.9),
-  gc.asympt.prob.tx = c(0.15, 0.15, 0.15), ct.asympt.prob.tx = c(0.15,
-  0.15, 0.15), sti.cond.eff = 0.9, sti.cond.fail = c(0.2, 0.2, 0.2),
-  hiv.rgc.rr = 2.78, hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78,
-  hiv.uct.rr = 1.73, hiv.dual.rr = 0.2, riskh.start = Inf,
-  prep.start = Inf, prep.start.prob = 0.2, prep.adhr.dist = c(0.089,
-  0.127, 0.784), prep.adhr.hr = c(0.69, 0.19, 0.02),
-  prep.discont.rate = 1 - (2^(-1/781)), prep.tst.int = 90/7,
-  prep.risk.int = 182/7, prep.sti.screen.int = 182/7,
-  prep.sti.prob.tx = 1, prep.risk.reassess.method = "year",
-  prep.require.lnt = TRUE, ...)
+  acts.scale = 1, rgc.tprob = 0.35, ugc.tprob = 0.25,
+  rct.tprob = 0.2, uct.tprob = 0.16, rgc.sympt.prob = 0.16,
+  ugc.sympt.prob = 0.8, rct.sympt.prob = 0.14, uct.sympt.prob = 0.58,
+  rgc.ntx.int = 16.8, ugc.ntx.int = 16.8, gc.tx.int = 1.4,
+  rct.ntx.int = 32, uct.ntx.int = 32, ct.tx.int = 1.4,
+  gc.sympt.prob.tx = c(0.95, 0.95, 0.95), ct.sympt.prob.tx = c(0.9,
+  0.9, 0.9), gc.asympt.prob.tx = c(0.15, 0.15, 0.15),
+  ct.asympt.prob.tx = c(0.15, 0.15, 0.15), sti.cond.eff = 0.9,
+  sti.cond.fail = c(0.2, 0.2, 0.2), hiv.rgc.rr = 2.78,
+  hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78, hiv.uct.rr = 1.73,
+  hiv.dual.rr = 0.2, riskh.start = Inf, prep.start = Inf,
+  prep.start.prob = 0.2, prep.adhr.dist = c(0.089, 0.127, 0.784),
+  prep.adhr.hr = c(0.69, 0.19, 0.02), prep.discont.rate = 1 -
+  (2^(-1/781)), prep.tst.int = 90/7, prep.risk.int = 182/7,
+  prep.sti.screen.int = 182/7, prep.sti.prob.tx = 1,
+  prep.risk.reassess.method = "year", prep.require.lnt = TRUE, ...)
 }
 \arguments{
 \item{netstats}{Target statistics and related network initialization data from
@@ -159,6 +159,8 @@ will be circumcised (vector of length 3).}
 \item{epistats}{GLMs for epidemiological parameter from the standard ARTnet workflow.}
 
 \item{acts.aids.vl}{Viral load level after which sexual act rate goes to zero.}
+
+\item{acts.scale}{Scalar for main/casual act rate for model calibration.}
 
 \item{rgc.tprob}{Probability of rectal gonorrhea infection per act.}
 

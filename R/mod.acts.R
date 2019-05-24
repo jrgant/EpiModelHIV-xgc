@@ -33,6 +33,7 @@ acts_msm <- function(dat, at) {
   # Parameters
   acts.mod <- dat$param$epistats$acts.mod
   acts.aids.vl <- dat$param$acts.aids.vl
+  acts.scale <- dat$param$acts.scale
 
   # Construct edgelist
   el <- rbind(dat$el[[1]], dat$el[[2]], dat$el[[3]])
@@ -78,6 +79,7 @@ acts_msm <- function(dat, at) {
                   hiv.concord.pos = hiv.concord.pos,
                   city = 1)
   rates <- unname(predict(acts.mod, newdata = x, type = "response"))/52
+  rates <- rates * acts.scale
   ai <- rpois(length(rates), rates)
   el.mc <- cbind(el.mc, durations, ai)
 

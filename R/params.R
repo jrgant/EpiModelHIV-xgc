@@ -91,6 +91,7 @@
 #'
 #' @param epistats GLMs for epidemiological parameter from the standard ARTnet workflow.
 #' @param acts.aids.vl Viral load level after which sexual act rate goes to zero.
+#' @param acts.scale Scalar for main/casual act rate for model calibration.
 #'
 #' @param riskh.start Time step at which behavioral risk history assessment occurs.
 #' @param prep.start Time step at which the PrEP intervention should start.
@@ -216,6 +217,7 @@ param_msm <- function(netstats,
                       # Behavioral
                       epistats,
                       acts.aids.vl = 7,
+                      acts.scale = 1,
 
                       # STI epi
                       rgc.tprob = 0.35,
