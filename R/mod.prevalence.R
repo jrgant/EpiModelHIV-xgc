@@ -54,6 +54,8 @@ prevalence_msm <- function(dat, at) {
 
   dat$epi$ir100[at] <- (dat$epi$incid[at] / sum(status == 0, dat$epi$incid[at], na.rm = TRUE)) * 5200
 
+  dat$epi$R0.mean[at] <- mean(dat$attr$count.trans[status == 1], na.rm = TRUE)
+
   # Care continuum stats
   dat$epi$cc.dx[at] <- sum(dat$attr$diag.status == 1, na.rm = TRUE) /
     sum(status == 1, na.rm = TRUE)
@@ -83,7 +85,6 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.vsupp.dur1y[at] <- 1-(sum((at - dat$attr$vl.last.usupp) <= 52 &
                                       dat$attr$diag.status == 1, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE))
-
 
   # HIV stage
   dat$epi$hstage.acute[at] <- sum(dat$attr$stage %in% 1:2, na.rm = TRUE) /

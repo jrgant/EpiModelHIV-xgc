@@ -85,6 +85,8 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$rCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
   dat$attr$uCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
 
+  dat$attr$count.trans[newIds] <- 0
+
   rates <- dat$param$hiv.test.late.prob[race]
   dat$attr$late.tester[newIds] <- rbinom(length(rates), 1, rates)
 

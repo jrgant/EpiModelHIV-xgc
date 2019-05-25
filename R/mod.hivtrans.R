@@ -205,6 +205,8 @@ hivtrans_msm <- function(dat, at) {
   if (sum(trans.ip, trans.rp) > 0) {
     infected <- c(disc.ip[trans.ip == 1, 2],
                   disc.rp[trans.rp == 1, 1])
+
+    # Attributes of newly infected
     dat$attr$status[infected] <- 1
     dat$attr$inf.time[infected] <- at
     dat$attr$vl[infected] <- 0
@@ -212,10 +214,16 @@ hivtrans_msm <- function(dat, at) {
     dat$attr$stage.time[infected] <- 0
     dat$attr$diag.status[infected] <- 0
     dat$attr$tx.status[infected] <- 0
-
     dat$attr$cuml.time.on.tx[infected] <- 0
     dat$attr$cuml.time.off.tx[infected] <- 0
 
+    # Attributes of transmitter
+    transmitter <- c(disc.ip[trans.ip == 1, 1],
+                     disc.rp[trans.rp == 1, 2])
+    tab.trans <- table(transmitter)
+    uni.trans <- as.numeric(names(tab.trans))
+    dat$attr$count.trans[uni.trans] <- dat$attr$count.trans[uni.trans] +
+                                       as.numeric(tab.trans)
   }
 
   # Summary Output

@@ -32,6 +32,7 @@ departure_msm <- function(dat, at) {
   active <- dat$attr$active
   age <- floor(dat$attr$age)
   race <- dat$attr$race
+  status <- dat$attr$status
   stage <- dat$attr$stage
   tx.status <- dat$attr$tx.status
 
@@ -53,6 +54,17 @@ departure_msm <- function(dat, at) {
   idsDepAIDS <- idsEligAIDS[rbinom(length(idsEligAIDS), 1, 1/vl.aids.int) == 1]
 
   idsDepAll <- unique(c(idsDep, idsDepAIDS))
+
+  if (at == 2) {
+    dat$temp$R0 <- NA
+  }
+  if (length(idsDepAll) > 0) {
+    depHIV <- intersect(idsDepAll, which(status == 1))
+    if (length(depHIV) > 0) {
+      newR0 <- dat$attr$count.trans[depHIV]
+      dat$temp$R0 <- c(dat$temp$R0, newR0)
+    }
+  }
 
   if (length(idsDepAll) > 0) {
     dat$attr$active[idsDepAll] <- 0

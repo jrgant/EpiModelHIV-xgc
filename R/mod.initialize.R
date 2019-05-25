@@ -190,6 +190,8 @@ init_status_msm <- function(dat) {
   dat$attr$tx.period.last <- rep(NA, num)
   dat$attr$tx.init.time <- rep(NA, num)
 
+  dat$attr$count.trans <- rep(0, num)
+
   return(dat)
 }
 
