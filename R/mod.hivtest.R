@@ -48,18 +48,23 @@ hivtest_msm <- function(dat, at) {
   rates <- hiv.test.rate[race[elig]]
   idsTstGen <- elig[rbinom(length(elig), 1, rates) == 1]
 
-  # Late (AIDS-stage) testing
-  elig <- which((diag.status == 0 | is.na(diag.status)) &
-                 prepStat == 0 & stage == 4 & late.tester == 1)
-  rates <- 1/aids.test.int
-  idsTstAIDS <- elig[rbinom(length(elig), 1, rates) == 1]
+  # Late testing (Neg, then AIDS)
+  eligNeg <- which((diag.status == 0 | is.na(diag.status)) &
+                   prepStat == 0 & status == 0 & late.tester == 1)
+  ratesNeg <- 1/(12*52)
+  idsTstLate <- eligNeg[rbinom(length(eligNeg), 1, ratesNeg) == 1]
+
+  eligAIDS <- which((diag.status == 0 | is.na(diag.status)) &
+                   prepStat == 0 & stage == 4 & late.tester == 1)
+  ratesAIDS <- 1/aids.test.int
+  idsTstAIDS <- eligAIDS[rbinom(length(eligAIDS), 1, ratesAIDS) == 1]
 
   # PrEP testing
   idsTstPrEP <- which((diag.status == 0 | is.na(diag.status)) &
                       prepStat == 1 &
                       tsincelntst >= prep.tst.int)
 
-  tstAll <- c(idsTstGen, idsTstAIDS, idsTstPrEP)
+  tstAll <- c(idsTstGen, idsTstLate, idsTstAIDS, idsTstPrEP)
 
   tstPos <- tstAll[status[tstAll] == 1 & inf.time[tstAll] <= at - twind.int]
   tstNeg <- setdiff(tstAll, tstPos)
