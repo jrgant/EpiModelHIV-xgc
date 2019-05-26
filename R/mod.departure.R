@@ -36,7 +36,7 @@ departure_msm <- function(dat, at) {
   stage <- dat$attr$stage
   tx.status <- dat$attr$tx.status
 
-  vl.aids.int <- dat$param$vl.aids.int
+  aids.mr <- dat$param$aids.mr
   asmr <- dat$param$netstats$demog$asmr
 
   idsElig <- which(active == 1)
@@ -51,19 +51,18 @@ departure_msm <- function(dat, at) {
 
   ## HIV-related deaths
   idsEligAIDS <- which(stage == 4 & tx.status == 0)
-  idsDepAIDS <- idsEligAIDS[rbinom(length(idsEligAIDS), 1, 1/vl.aids.int) == 1]
+  idsDepAIDS <- idsEligAIDS[rbinom(length(idsEligAIDS), 1, aids.mr) == 1]
 
   idsDepAll <- unique(c(idsDep, idsDepAIDS))
+  depHIV <- intersect(idsDepAll, which(status == 1))
 
+  # Cumulative R0 calculations
   if (at == 2) {
     dat$temp$R0 <- NA
   }
-  if (length(idsDepAll) > 0) {
-    depHIV <- intersect(idsDepAll, which(status == 1))
-    if (length(depHIV) > 0) {
-      newR0 <- dat$attr$count.trans[depHIV]
-      dat$temp$R0 <- c(dat$temp$R0, newR0)
-    }
+  if (length(depHIV) > 0) {
+    newR0 <- dat$attr$count.trans[depHIV]
+    dat$temp$R0 <- c(dat$temp$R0, newR0)
   }
 
   if (length(idsDepAll) > 0) {
@@ -89,6 +88,7 @@ departure_msm <- function(dat, at) {
   ## Summary Output
   dat$epi$dep.gen[at] <- length(idsDep)
   dat$epi$dep.AIDS[at] <- length(idsDepAIDS)
+  dat$epi$dep.HIV[at] <- length(depHIV)
 
   return(dat)
 }

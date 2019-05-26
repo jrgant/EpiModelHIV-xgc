@@ -200,6 +200,7 @@ param_msm <- function(netstats,
                       vl.tx.down.slope = 0.25,
                       vl.tx.aids.down.slope = 0.25,
                       vl.tx.up.slope = 0.25,
+                      aids.mr = 1/104,
 
                       # Demographic
                       a.rate = 0.0005,

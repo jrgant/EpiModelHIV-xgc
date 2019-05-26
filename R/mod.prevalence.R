@@ -93,6 +93,8 @@ prevalence_msm <- function(dat, at) {
                                       dat$attr$diag.status == 1, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1, na.rm = TRUE))
 
+  dat$epi$cc.HIV.mr[at] <- dat$epi$dep.HIV[at]/dat$epi$i.num[at]
+
   # HIV stage
   dat$epi$hstage.acute[at] <- sum(dat$attr$stage %in% 1:2, na.rm = TRUE) /
     sum(status == 1, na.rm = TRUE)
