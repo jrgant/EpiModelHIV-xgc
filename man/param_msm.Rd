@@ -4,7 +4,7 @@
 \alias{param_msm}
 \title{Epidemic Model Parameters}
 \usage{
-param_msm(netstats, hiv.test.int = c(301/7, 301/7, 315/7),
+param_msm(netstats, hiv.test.rate = c(0.01325, 0.0125, 0.0124),
   hiv.test.late.prob = c(0.25, 0.25, 0.25), test.window.int = 21/7,
   tt.part.supp = c(0.2, 0.2, 0.2), tt.full.supp = c(0.4, 0.4, 0.4),
   tt.dur.supp = c(0.4, 0.4, 0.4), tx.init.prob = c(0.092, 0.092,
@@ -44,8 +44,8 @@ param_msm(netstats, hiv.test.int = c(301/7, 301/7, 315/7),
 \item{netstats}{Target statistics and related network initialization data from
 the standard ARTnet workflow.}
 
-\item{hiv.test.int}{Mean intertest interval in weeks for black/hispanic/white MSM
-(vector of length 3).}
+\item{hiv.test.rate}{Mean probability of HIV testing per week for
+black/hispanic/white MSM (vector of length 3).}
 
 \item{hiv.test.late.prob}{Proportion of black/hispanic/white MSM who test only
 during AIDS stage infection (vector of length 3).}

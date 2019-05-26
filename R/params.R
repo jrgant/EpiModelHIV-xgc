@@ -9,8 +9,8 @@
 #' @param netstats Target statistics and related network initialization data from
 #'        the standard ARTnet workflow.
 #'
-#' @param hiv.test.int Mean intertest interval in weeks for black/hispanic/white MSM
-#'        (vector of length 3).
+#' @param hiv.test.rate Mean probability of HIV testing per week for
+#'        black/hispanic/white MSM (vector of length 3).
 #' @param hiv.test.late.prob Proportion of black/hispanic/white MSM who test only
 #'        during AIDS stage infection (vector of length 3).
 #' @param test.window.int Length of the HIV test window period in weeks.
@@ -170,7 +170,7 @@
 param_msm <- function(netstats,
 
                       # Clinical
-                      hiv.test.int = c(301/7, 301/7, 315/7),
+                      hiv.test.rate = c(0.01325, 0.0125, 0.0124),
                       hiv.test.late.prob = c(0.25, 0.25, 0.25),
                       test.window.int = 21/7,
                       tt.part.supp = c(0.20, 0.20, 0.20),

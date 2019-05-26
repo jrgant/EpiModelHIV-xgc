@@ -33,7 +33,7 @@ hivtest_msm <- function(dat, at) {
   prep.tst.int <- dat$param$prep.tst.int
 
   # Parameters
-  hiv.test.int <- dat$param$hiv.test.int
+  hiv.test.rate <- dat$param$hiv.test.rate
   aids.test.int <- dat$param$vl.aids.int/2
   twind.int <- dat$param$test.window.int
 
@@ -45,7 +45,7 @@ hivtest_msm <- function(dat, at) {
                 prepStat == 0 & late.tester == 0)
 
   # Interval testing rates by race
-  rates <- 1/hiv.test.int[race[elig]]
+  rates <- hiv.test.rate[race[elig]]
   idsTstGen <- elig[rbinom(length(elig), 1, rates) == 1]
 
   # Late (AIDS-stage) testing
