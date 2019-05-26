@@ -20,7 +20,7 @@
 #' time on treatment plus time off treatment over maximum time off treatment.
 #' For persons ever on ART who fall into the fully suppressed cateogry
 #' (\code{tt.traj=2}), time to AIDS depends on whether the cumulative time
-#' off treatment exceeds a time threshold specified in the \code{max.time.off.tx.full}
+#' off treatment exceeds a time threshold specified in the \code{max.time.off.tx.full.int}
 #' parameter.
 #'
 #' @return
@@ -48,10 +48,9 @@ hivprogress_msm <- function(dat, at) {
   vl.acute.rise.int <- dat$param$vl.acute.rise.int
   vl.acute.fall.int <- dat$param$vl.acute.fall.int
   vl.aids.onset.int <- dat$param$vl.aids.onset.int
-  max.time.off.tx.part <- dat$param$max.time.off.tx.part
-  max.time.on.tx.part <- dat$param$max.time.on.tx.part
-
-  max.time.off.tx.full <- dat$param$max.time.off.tx.full
+  max.time.off.tx.part.int <- dat$param$max.time.off.tx.part.int
+  max.time.on.tx.part.int <- dat$param$max.time.on.tx.part.int
+  max.time.off.tx.full.int <- dat$param$max.time.off.tx.full.int
 
 
   ## Process
@@ -74,27 +73,25 @@ hivprogress_msm <- function(dat, at) {
   aids.tx.naive <- which(active == 1 & status == 1 & cuml.time.on.tx == 0 &
                          (time.since.inf >= vl.aids.onset.int) & stage != 4)
 
-  part.tx.score <- (cuml.time.off.tx / max.time.off.tx.part) +
-                   (cuml.time.on.tx / max.time.on.tx.part)
+  part.tx.score <- (cuml.time.off.tx / max.time.off.tx.part.int) +
+                   (cuml.time.on.tx / max.time.on.tx.part.int)
 
   aids.part.escape <- which(active == 1 & cuml.time.on.tx > 0 & tt.traj == 1 &
                             stage == 3 & part.tx.score >= 1 & stage != 4)
 
   aids.off.tx.full.escape <- which(active == 1 & tx.status == 0 & tt.traj %in% 2:3 &
                                    cuml.time.on.tx > 0 &
-                                   cuml.time.off.tx >= max.time.off.tx.full &
+                                   cuml.time.off.tx >= max.time.off.tx.full.int &
                                    stage != 4)
 
   isAIDS <- c(aids.tx.naive, aids.part.escape, aids.off.tx.full.escape)
   stage[isAIDS] <- 4
   stage.time[isAIDS] <- 1
-  # tt.traj[isAIDS] <- 1
 
 
   ## Output
   dat$attr$stage <- stage
   dat$attr$stage.time <- stage.time
-  # dat$attr$tt.traj <- tt.traj
 
   return(dat)
 }

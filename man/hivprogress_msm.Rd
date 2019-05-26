@@ -34,7 +34,7 @@ time to AIDS depends on the sum of two ratios: time on treatment over maximum
 time on treatment plus time off treatment over maximum time off treatment.
 For persons ever on ART who fall into the fully suppressed cateogry
 (\code{tt.traj=2}), time to AIDS depends on whether the cumulative time
-off treatment exceeds a time threshold specified in the \code{max.time.off.tx.full}
+off treatment exceeds a time threshold specified in the \code{max.time.off.tx.full.int}
 parameter.
 }
 \keyword{module}
