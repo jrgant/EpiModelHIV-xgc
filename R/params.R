@@ -203,7 +203,7 @@ param_msm <- function(netstats,
                       aids.mr = 1/104,
 
                       # Demographic
-                      a.rate = 0.0005,
+                      a.rate = 0.00052,
                       arrival.age = 15,
 
                       # HIV transmission prob
