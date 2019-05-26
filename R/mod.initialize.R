@@ -170,6 +170,9 @@ init_status_msm <- function(dat) {
   dat$attr$stage[idsInf] <- 3
   dat$attr$stage.time[idsInf] <- time.infected - min.hiv.time
 
+  dat$attr$diag.stage <- rep(NA, num)
+  dat$attr$diag.stage[idsInf] <- dat$attr$stage[idsInf]
+
   dat$attr$vl <- rep(NA, num)
   dat$attr$vl[idsInf] <- dat$param$vl.set.point
   dat$attr$vl.last.usupp <- rep(NA, num)

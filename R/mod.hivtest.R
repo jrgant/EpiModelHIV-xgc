@@ -73,6 +73,7 @@ hivtest_msm <- function(dat, at) {
   dat$attr$last.neg.test[tstNeg] <- at
   dat$attr$diag.status[tstPos] <- 1
   dat$attr$diag.time[tstPos] <- at
+  dat$attr$diag.stage[tstPos] <- stage[tstPos]
 
   return(dat)
 }
