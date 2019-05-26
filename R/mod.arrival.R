@@ -92,9 +92,8 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   races <- sort(unique(dat$attr$race[newIds]))
   tt.traj <- rep(NA, nNew)
-  tt.traj[which(dat$attr$late.tester[newIds] == 1)] <- 1
   for (i in races) {
-    ids.race <- which(dat$attr$race[newIds] == i & dat$attr$late.tester[newIds] != 1)
+    ids.race <- which(dat$attr$race[newIds] == i)
     tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
                                 c(dat$param$tt.part.supp[i],
                                   dat$param$tt.full.supp[i],
