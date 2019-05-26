@@ -127,6 +127,9 @@ level is reached (AIDS stage).}
 \item{vl.tx.up.slope}{Number of log10 units that viral load rises per time
 step from treatment halting until expected value.}
 
+\item{aids.mr}{Mortality rate of persons in the AIDS stage who are currently
+off ART.}
+
 \item{a.rate}{Rate at which MSM enter the population.}
 
 \item{arrival.age}{Age (in years) of new arrivals.}
