@@ -61,8 +61,8 @@ prevalence_msm <- function(dat, at) {
 
   dat$epi$ir100[at] <- (dat$epi$incid[at] / sum(status == 0, dat$epi$incid[at], na.rm = TRUE)) * 5200
 
-  dat$epi$R0.mean.cs[at] <- mean(dat$attr$count.trans[status == 1], na.rm = TRUE)
-  dat$epi$R0.mean.cens[at] <- suppressWarnings(mean(tail(dat$temp$R0, 500), na.rm = TRUE))
+  # dat$epi$R0.mean.cs[at] <- mean(dat$attr$count.trans[status == 1], na.rm = TRUE)
+  # dat$epi$R0.mean.cens[at] <- suppressWarnings(mean(tail(dat$temp$R0, 500), na.rm = TRUE))
 
   # Care continuum stats
   dat$epi$cc.dx[at] <- sum(diag.status == 1, na.rm = TRUE) / sum(status == 1, na.rm = TRUE)

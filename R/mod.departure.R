@@ -57,13 +57,13 @@ departure_msm <- function(dat, at) {
   depHIV <- intersect(idsDepAll, which(status == 1))
 
   # Cumulative R0 calculations
-  if (at == 2) {
-    dat$temp$R0 <- NA
-  }
-  if (length(depHIV) > 0) {
-    newR0 <- dat$attr$count.trans[depHIV]
-    dat$temp$R0 <- c(dat$temp$R0, newR0)
-  }
+  # if (at == 2) {
+  #   dat$temp$R0 <- NA
+  # }
+  # if (length(depHIV) > 0) {
+  #   newR0 <- dat$attr$count.trans[depHIV]
+  #   dat$temp$R0 <- c(dat$temp$R0, newR0)
+  # }
 
   if (length(idsDepAll) > 0) {
     dat$attr$active[idsDepAll] <- 0
