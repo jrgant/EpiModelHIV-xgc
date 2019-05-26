@@ -185,8 +185,8 @@ param_msm <- function(netstats,
                       tx.reinit.dur.rr = 1.0,
 
                       # HIV natural history
-                      max.time.off.tx.full.int = 520,
-                      max.time.on.tx.part.int = 52 * 15,
+                      max.time.off.tx.full.int = 52 * 20,
+                      max.time.on.tx.part.int = 52 * 20,
                       max.time.off.tx.part.int = 520,
                       vl.acute.rise.int = 6.4,
                       vl.acute.peak = 6.886,
