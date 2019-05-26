@@ -39,16 +39,16 @@ prevalence_msm <- function(dat, at) {
   rCT <- dat$attr$rCT
   uCT <- dat$attr$uCT
 
+  # Pop Size / Demog
   dat$epi$num[at] <- sum(active == 1, na.rm = TRUE)
   dat$epi$num.B[at] <- sum(race == 1, na.rm = TRUE)
   dat$epi$num.H[at] <- sum(race == 2, na.rm = TRUE)
   dat$epi$num.W[at] <- sum(race == 3, na.rm = TRUE)
-
   dat$epi$age.mean[at] <- mean(age, na.rm = TRUE)
-
   dat$epi$s.num[at] <- sum(status == 0, na.rm = TRUE)
   dat$epi$i.num[at] <- sum(status == 1, na.rm = TRUE)
 
+  # Prev / Incid
   dat$epi$i.prev[at] <- dat$epi$i.num[at] / dat$epi$num[at]
   dat$epi$i.prev.B[at] <- sum(race == 1 & status == 1, na.rm = TRUE) / sum(race == 1, na.rm = TRUE)
   dat$epi$i.prev.H[at] <- sum(race == 2 & status == 1, na.rm = TRUE) / sum(race == 2, na.rm = TRUE)
@@ -64,49 +64,93 @@ prevalence_msm <- function(dat, at) {
   # dat$epi$R0.mean.cs[at] <- mean(dat$attr$count.trans[status == 1], na.rm = TRUE)
   # dat$epi$R0.mean.cens[at] <- suppressWarnings(mean(tail(dat$temp$R0, 500), na.rm = TRUE))
 
-  # Care continuum stats
+  # Care continuum stats (primary)
   dat$epi$cc.dx[at] <- sum(diag.status == 1, na.rm = TRUE) / sum(status == 1, na.rm = TRUE)
-  dat$epi$cc.dx.delay[at] <- mean(dat$attr$diag.time - dat$attr$inf.time, na.rm = TRUE)
-  dat$epi$cc.testpy[at] <- 1-sum((at - dat$attr$last.neg.test) > 52 & status == 0,
-      is.na(dat$attr$last.neg.test) & status == 0, na.rm = TRUE) /
-    sum(status == 0)
-  dat$epi$cc.linked[at] <- sum(dat$attr$cuml.time.on.tx > 0, na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.dx.B[at] <- sum(diag.status == 1 & race == 1, na.rm = TRUE) /
+                         sum(status == 1 & race == 1, na.rm = TRUE)
+  dat$epi$cc.dx.H[at] <- sum(diag.status == 1 & race == 2, na.rm = TRUE) /
+                         sum(status == 1 & race == 2, na.rm = TRUE)
+  dat$epi$cc.dx.W[at] <- sum(diag.status == 1 & race == 3, na.rm = TRUE) /
+                         sum(status == 1 & race == 3, na.rm = TRUE)
+
   dat$epi$cc.linked1m[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4, na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  dat$epi$cc.tx[at] <- sum(dat$attr$tx.status == 1, na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1, na.rm = TRUE)
+                             sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.linked1m.B[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4 & race == 1, na.rm = TRUE) /
+                               sum(dat$attr$diag.status == 1 & race == 1, na.rm = TRUE)
+  dat$epi$cc.linked1m.H[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4 & race == 2, na.rm = TRUE) /
+                               sum(dat$attr$diag.status == 1 & race == 2, na.rm = TRUE)
+  dat$epi$cc.linked1m.W[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4 & race == 3, na.rm = TRUE) /
+                               sum(dat$attr$diag.status == 1 & race == 3, na.rm = TRUE)
+
   dat$epi$cc.tx.any1y[at] <- sum((at - dat$attr$tx.period.last <= 52), na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  dat$epi$cc.tx.ret3m[at] <- sum((at - dat$attr$tx.period.last) <= 52 &
-        (dat$attr$tx.period.last - dat$attr$tx.period.first) > 13, na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1, na.rm = TRUE)
+                             sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.tx.any1y.B[at] <- sum((at - dat$attr$tx.period.last <= 52) & race == 1, na.rm = TRUE) /
+                               sum(dat$attr$diag.status == 1 & race == 1, na.rm = TRUE)
+  dat$epi$cc.tx.any1y.H[at] <- sum((at - dat$attr$tx.period.last <= 52) & race == 2, na.rm = TRUE) /
+                               sum(dat$attr$diag.status == 1 & race == 2, na.rm = TRUE)
+  dat$epi$cc.tx.any1y.W[at] <- sum((at - dat$attr$tx.period.last <= 52) & race == 3, na.rm = TRUE) /
+                               sum(dat$attr$diag.status == 1 & race == 3, na.rm = TRUE)
+
   dat$epi$cc.vsupp[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$diag.status == 1, na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  dat$epi$cc.vsupp.tt1[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 1, na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 1, na.rm = TRUE)
-  dat$epi$cc.vsupp.tt2[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 2, na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 2, na.rm = TRUE)
-  dat$epi$cc.vsupp.tt3[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 3, na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 3, na.rm = TRUE)
-  dat$epi$cc.vsupp.dur1y[at] <- 1-(sum((at - dat$attr$vl.last.usupp) <= 52 &
-                                      dat$attr$diag.status == 1, na.rm = TRUE) /
-    sum(dat$attr$diag.status == 1, na.rm = TRUE))
+                          sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.vsupp.B[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$diag.status == 1 &
+                                  race == 1, na.rm = TRUE) /
+                            sum(dat$attr$diag.status == 1 & race == 1, na.rm = TRUE)
+  dat$epi$cc.vsupp.H[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$diag.status == 1 &
+                                  race == 2, na.rm = TRUE) /
+                            sum(dat$attr$diag.status == 1 & race == 2, na.rm = TRUE)
+  dat$epi$cc.vsupp.W[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$diag.status == 1 &
+                                  race == 3, na.rm = TRUE) /
+                            sum(dat$attr$diag.status == 1 & race == 3, na.rm = TRUE)
+
+  dat$epi$cc.vsupp.dur1y[at] <- 1 - (sum((at - dat$attr$vl.last.usupp) <= 52 &
+                                         dat$attr$diag.status == 1, na.rm = TRUE) /
+                                     sum(dat$attr$diag.status == 1, na.rm = TRUE))
+  dat$epi$cc.vsupp.dur1y.B[at] <- 1 - (sum((at - dat$attr$vl.last.usupp) <= 52 &
+                                         dat$attr$diag.status == 1 & race == 1, na.rm = TRUE) /
+                                     sum(dat$attr$diag.status == 1 & race == 1, na.rm = TRUE))
+  dat$epi$cc.vsupp.dur1y.H[at] <- 1 - (sum((at - dat$attr$vl.last.usupp) <= 52 &
+                                           dat$attr$diag.status == 1 & race == 2, na.rm = TRUE) /
+                                       sum(dat$attr$diag.status == 1 & race == 2, na.rm = TRUE))
+  dat$epi$cc.vsupp.dur1y.W[at] <- 1 - (sum((at - dat$attr$vl.last.usupp) <= 52 &
+                                           dat$attr$diag.status == 1 & race == 3, na.rm = TRUE) /
+                                       sum(dat$attr$diag.status == 1 & race == 3, na.rm = TRUE))
 
   dat$epi$cc.HIV.mr[at] <- dat$epi$dep.HIV[at]/dat$epi$i.num[at]
 
+  # Care continuum stats (secondary)
+  # dat$epi$cc.dx.delay[at] <- mean(dat$attr$diag.time - dat$attr$inf.time, na.rm = TRUE)
+  # dat$epi$cc.testpy[at] <- 1-sum((at - dat$attr$last.neg.test) > 52 & status == 0,
+  #     is.na(dat$attr$last.neg.test) & status == 0, na.rm = TRUE) /
+  #   sum(status == 0)
+  # dat$epi$cc.linked[at] <- sum(dat$attr$cuml.time.on.tx > 0, na.rm = TRUE) /
+  #   sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  # dat$epi$cc.tx[at] <- sum(dat$attr$tx.status == 1, na.rm = TRUE) /
+  #   sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  # dat$epi$cc.tx.ret3m[at] <- sum((at - dat$attr$tx.period.last) <= 52 &
+  #       (dat$attr$tx.period.last - dat$attr$tx.period.first) > 13, na.rm = TRUE) /
+  #   sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  # dat$epi$cc.vsupp.tt1[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 1, na.rm = TRUE) /
+  #   sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 1, na.rm = TRUE)
+  # dat$epi$cc.vsupp.tt2[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 2, na.rm = TRUE) /
+  #   sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 2, na.rm = TRUE)
+  # dat$epi$cc.vsupp.tt3[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 3, na.rm = TRUE) /
+  #   sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 3, na.rm = TRUE)
+
+
   # HIV stage
   dat$epi$hstage.acute[at] <- sum(dat$attr$stage %in% 1:2, na.rm = TRUE) /
-    sum(status == 1, na.rm = TRUE)
+                              sum(status == 1, na.rm = TRUE)
   dat$epi$hstage.chronic[at] <- sum(dat$attr$stage == 3, na.rm = TRUE) /
-    sum(status == 1, na.rm = TRUE)
+                                sum(status == 1, na.rm = TRUE)
   dat$epi$hstage.aids[at] <- sum(dat$attr$stage == 4, na.rm = TRUE) /
-    sum(status == 1, na.rm = TRUE)
+                             sum(status == 1, na.rm = TRUE)
 
   dat$epi$prepElig[at] <- sum(prepElig == 1, na.rm = TRUE)
   dat$epi$prepCurr[at] <- sum(prepStat == 1, na.rm = TRUE)
   dat$epi$prepCurr.hadr[at] <- sum(prepStat == 1 & prepClass == 3, na.rm = TRUE)
 
+  # STIs
   dat$epi$prev.gc[at] <- sum((rGC == 1 | uGC == 1), na.rm = TRUE) / dat$epi$num[at]
   dat$epi$prev.ct[at] <- sum((rCT == 1 | uCT == 1), na.rm = TRUE) / dat$epi$num[at]
   ir100.rgc <- (dat$epi$incid.rgc[at]/sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE))*5200
