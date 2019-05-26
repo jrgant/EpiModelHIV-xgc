@@ -26,6 +26,7 @@ prevalence_msm <- function(dat, at) {
 
   active <- dat$attr$active
   status <- dat$attr$status
+  diag.status <- dat$attr$diag.status
   race <- dat$attr$race
   age <- dat$attr$age
 
@@ -49,8 +50,14 @@ prevalence_msm <- function(dat, at) {
   dat$epi$i.num[at] <- sum(status == 1, na.rm = TRUE)
 
   dat$epi$i.prev[at] <- dat$epi$i.num[at] / dat$epi$num[at]
-  dat$epi$i.prev.prep[at] <- sum(status == 1 & (prepStat == 1), na.rm = TRUE) /
-    sum(prepStat == 1, na.rm = TRUE)
+  dat$epi$i.prev.B[at] <- sum(race == 1 & status == 1, na.rm = TRUE) / sum(race == 1, na.rm = TRUE)
+  dat$epi$i.prev.H[at] <- sum(race == 2 & status == 1, na.rm = TRUE) / sum(race == 2, na.rm = TRUE)
+  dat$epi$i.prev.W[at] <- sum(race == 3 & status == 1, na.rm = TRUE) / sum(race == 3, na.rm = TRUE)
+
+  dat$epi$i.prev.dx[at] <- sum(diag.status == 1, na.rm = TRUE) / dat$epi$num[at]
+  dat$epi$i.prev.dx.B[at] <- sum(race == 1 & diag.status == 1, na.rm = TRUE) / sum(race == 1, na.rm = TRUE)
+  dat$epi$i.prev.dx.H[at] <- sum(race == 2 & diag.status == 1, na.rm = TRUE) / sum(race == 2, na.rm = TRUE)
+  dat$epi$i.prev.dx.W[at] <- sum(race == 3 & diag.status == 1, na.rm = TRUE) / sum(race == 3, na.rm = TRUE)
 
   dat$epi$ir100[at] <- (dat$epi$incid[at] / sum(status == 0, dat$epi$incid[at], na.rm = TRUE)) * 5200
 
@@ -58,8 +65,7 @@ prevalence_msm <- function(dat, at) {
   dat$epi$R0.mean.cens[at] <- suppressWarnings(mean(tail(dat$temp$R0, 500), na.rm = TRUE))
 
   # Care continuum stats
-  dat$epi$cc.dx[at] <- sum(dat$attr$diag.status == 1, na.rm = TRUE) /
-    sum(status == 1, na.rm = TRUE)
+  dat$epi$cc.dx[at] <- sum(diag.status == 1, na.rm = TRUE) / sum(status == 1, na.rm = TRUE)
   dat$epi$cc.dx.delay[at] <- mean(dat$attr$diag.time - dat$attr$inf.time, na.rm = TRUE)
   dat$epi$cc.testpy[at] <- 1-sum((at - dat$attr$last.neg.test) > 52 & status == 0,
       is.na(dat$attr$last.neg.test) & status == 0, na.rm = TRUE) /
