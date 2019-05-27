@@ -74,13 +74,18 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.dx.W[at] <- sum(diag.status == 1 & race == 3, na.rm = TRUE) /
                          sum(status == 1 & race == 3, na.rm = TRUE)
 
-  dat$epi$cc.dx.late[at] <- sum(diag.status == 1 & diag.stage == 4, na.rm = TRUE) /
+  dat$epi$cc.dx.acute[at] <- sum(diag.status == 1 & diag.stage %in% 1:2, na.rm = TRUE) /
+                             sum(diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.dx.chronic[at] <- sum(diag.status == 1 & diag.stage == 3, na.rm = TRUE) /
+                               sum(diag.status == 1, na.rm = TRUE)
+
+  dat$epi$cc.dx.aids[at] <- sum(diag.status == 1 & diag.stage == 4, na.rm = TRUE) /
                             sum(diag.status == 1, na.rm = TRUE)
-  dat$epi$cc.dx.late.B[at] <- sum(diag.status == 1 & diag.stage == 4 & race == 1, na.rm = TRUE) /
+  dat$epi$cc.dx.aids.B[at] <- sum(diag.status == 1 & diag.stage == 4 & race == 1, na.rm = TRUE) /
                               sum(diag.status == 1 & race == 1, na.rm = TRUE)
-  dat$epi$cc.dx.late.H[at] <- sum(diag.status == 1 & diag.stage == 4 & race == 2, na.rm = TRUE) /
+  dat$epi$cc.dx.aids.H[at] <- sum(diag.status == 1 & diag.stage == 4 & race == 2, na.rm = TRUE) /
                               sum(diag.status == 1 & race == 2, na.rm = TRUE)
-  dat$epi$cc.dx.late.W[at] <- sum(diag.status == 1 & diag.stage == 4 & race == 3, na.rm = TRUE) /
+  dat$epi$cc.dx.aids.W[at] <- sum(diag.status == 1 & diag.stage == 4 & race == 3, na.rm = TRUE) /
                               sum(diag.status == 1 & race == 3, na.rm = TRUE)
 
   dat$epi$cc.linked1m[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4, na.rm = TRUE) /
