@@ -134,7 +134,7 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.HIV.mr[at] <- dat$epi$dep.HIV[at]/dat$epi$i.num[at]
 
   # Care continuum stats (secondary)
-  dat$epi$cc.test.int[at] <- mean(at - dat$attr$last.neg.test & diag.status == 0, na.rm = TRUE)
+  dat$epi$cc.test.int[at] <- mean(at - dat$attr$last.neg.test[diag.status == 0], na.rm = TRUE)
 
   # dat$epi$cc.dx.delay[at] <- mean(dat$attr$diag.time - dat$attr$inf.time, na.rm = TRUE)
   # dat$epi$cc.testpy[at] <- 1-sum((at - dat$attr$last.neg.test) > 52 & status == 0,
