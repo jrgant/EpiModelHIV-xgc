@@ -135,6 +135,14 @@ prevalence_msm <- function(dat, at) {
 
   # Care continuum stats (secondary)
   dat$epi$cc.test.int[at] <- mean(at - dat$attr$last.neg.test[diag.status == 0], na.rm = TRUE)
+  dat$epi$cc.test.int.B[at] <- mean(at - dat$attr$last.neg.test[diag.status == 0 & race == 1], na.rm = TRUE)
+  dat$epi$cc.test.int.H[at] <- mean(at - dat$attr$last.neg.test[diag.status == 0 & race == 2], na.rm = TRUE)
+  dat$epi$cc.test.int.W[at] <- mean(at - dat$attr$last.neg.test[diag.status == 0 & race == 3], na.rm = TRUE)
+
+  dat$epi$cc.dx.delay[at] <- mean(dat$attr$diag.time - dat$attr$inf.time, na.rm = TRUE)
+  dat$epi$cc.dx.delay.B[at] <- mean(dat$attr$diag.time[race == 1] - dat$attr$inf.time[race == 1], na.rm = TRUE)
+  dat$epi$cc.dx.delay.H[at] <- mean(dat$attr$diag.time[race == 2] - dat$attr$inf.time[race == 2], na.rm = TRUE)
+  dat$epi$cc.dx.delay.W[at] <- mean(dat$attr$diag.time[race == 3] - dat$attr$inf.time[race == 3], na.rm = TRUE)
 
   # dat$epi$cc.dx.delay[at] <- mean(dat$attr$diag.time - dat$attr$inf.time, na.rm = TRUE)
   # dat$epi$cc.testpy[at] <- 1-sum((at - dat$attr$last.neg.test) > 52 & status == 0,
