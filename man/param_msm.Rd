@@ -15,14 +15,14 @@ param_msm(netstats, hiv.test.rate = c(0.01325, 0.0125, 0.0124),
   max.time.off.tx.full.int = 52 * 20, max.time.on.tx.part.int = 52 *
   15, max.time.off.tx.part.int = 52 * 15, vl.acute.rise.int = 6.4,
   vl.acute.peak = 6.886, vl.acute.fall.int = 6.4, vl.set.point = 4.5,
-  vl.aids.onset.int = 520, vl.aids.int = 104, vl.fatal = 7,
+  vl.aids.onset.int = 520, vl.aids.int = 104, vl.aids.peak = 7,
   vl.full.supp = 1.5, vl.part.supp = 3.5, vl.tx.down.slope = 0.25,
   vl.tx.aids.down.slope = 0.25, vl.tx.up.slope = 0.25,
   aids.mr = 1/104, a.rate = 0.00052, arrival.age = 15,
   URAI.prob = 0.008938, UIAI.prob = 0.003379, trans.scale = 1,
   acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.25,
   0.25, 0.25), circ.prob = c(0.874, 0.874, 0.918), epistats,
-  acts.aids.vl = 7, acts.scale = 1, cond.scale = 1,
+  acts.aids.vl = 5.75, acts.scale = 1, cond.scale = 1,
   rgc.tprob = 0.35, ugc.tprob = 0.25, rct.tprob = 0.2,
   uct.tprob = 0.16, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.8,
   rct.sympt.prob = 0.14, uct.sympt.prob = 0.58, rgc.ntx.int = 16.8,
@@ -110,7 +110,7 @@ patient.}
 
 \item{vl.aids.int}{Duration of AIDS stage infection in weeks.}
 
-\item{vl.fatal}{Viral load in AIDS at which death occurs.}
+\item{vl.aids.peak}{Maximum viral load during AIDS stage.}
 
 \item{vl.full.supp}{Log10 viral load at full suppression on ART.}
 

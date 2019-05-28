@@ -45,13 +45,13 @@ hivvl_msm <- function(dat, at) {
   vl.set.point <- dat$param$vl.set.point
   aids.onset <- dat$param$vl.aids.onset
   aids.int <- dat$param$vl.aids.int
-  vl.fatal <- dat$param$vl.fatal
+  vl.aids.peak <- dat$param$vl.aids.peak
   vl.full.supp <- dat$param$vl.full.supp
   vl.tx.down.slope <- dat$param$vl.tx.down.slope
   vl.tx.aids.down.slope <- dat$param$vl.tx.aids.down.slope
   vl.part.supp <- dat$param$vl.part.supp
   vl.tx.up.slope <- dat$param$vl.tx.up.slope
-  vl.aids.slope <- (vl.fatal - vl.set.point) / aids.int
+  vl.aids.slope <- (vl.aids.peak - vl.set.point) / aids.int
 
   ## Process ##
 
@@ -142,7 +142,7 @@ hivvl_msm <- function(dat, at) {
   # 8b. Off tx, tt.traj=part/full/dur and AIDS, VL >= set.point
   idsElig8 <- which(tx.status == 0 & cuml.time.on.tx > 0 & stage == 4 & vl >= vl.set.point)
   current.vl <- vl[idsElig8]
-  new.vl <- pmin(current.vl + vl.aids.slope, vl.fatal)
+  new.vl <- pmin(current.vl + vl.aids.slope, vl.aids.peak)
   vl[idsElig8] <- new.vl
 
 

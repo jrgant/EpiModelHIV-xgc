@@ -54,7 +54,7 @@
 #' @param vl.aids.onset.int Number of weeks to AIDS for a treatment-naive
 #'        patient.
 #' @param vl.aids.int Duration of AIDS stage infection in weeks.
-#' @param vl.fatal Viral load in AIDS at which death occurs.
+#' @param vl.aids.peak Maximum viral load during AIDS stage.
 #' @param vl.full.supp Log10 viral load at full suppression on ART.
 #' @param vl.part.supp Log10 viral load at partial suppression on ART.
 #' @param vl.tx.down.slope Number of log10 units that viral load falls per time
@@ -196,7 +196,7 @@ param_msm <- function(netstats,
                       vl.set.point = 4.5,
                       vl.aids.onset.int = 520,
                       vl.aids.int = 104,
-                      vl.fatal = 7,
+                      vl.aids.peak = 7,
                       vl.full.supp = 1.5,
                       vl.part.supp = 3.5,
                       vl.tx.down.slope = 0.25,
@@ -220,7 +220,7 @@ param_msm <- function(netstats,
 
                       # Behavioral
                       epistats,
-                      acts.aids.vl = 7,
+                      acts.aids.vl = 5.75,
                       acts.scale = 1,
                       cond.scale = 1,
 
