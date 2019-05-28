@@ -23,20 +23,20 @@
 #'
 #' @param tx.init.prob Probability per time step that a black/hispanic/white MSM who has
 #'        tested positive will initiate treatment (vector of length 3).
-#' @param tx.halt.part.prob Probability per time step that a black/hispanic/white
+#' @param tx.halt.part.prob Probability per time step that black/hispanic/white
 #'        MSM who have started treatment and assigned to the partial VL suppression
 #'        category will stop treatment (vector of length 3).
-#' @param tx.halt.full.rr Relative reduction in \code{tx.halt.part.prob} for MSM
-#'        in the full VL suppression category.
-#' @param tx.halt.dur.rr Relative reduction in \code{tx.halt.part.prob} for MSM
-#'        in the durable VL suppression category.
+#' @param tx.halt.full.rr Relative reduction in \code{tx.halt.part.prob} for
+#'        black/hispanic/white MSM in the full VL suppression category (vector of length 3).
+#' @param tx.halt.dur.rr Relative reduction in \code{tx.halt.part.prob} for
+#'        black/hispanic/white MSM in the durable VL suppression category (vector of length 3).
 #' @param tx.reinit.part.prob Probability per time step that a black/hispanic/white
 #'        MSM who has stopped treatment and assigned to the partial VL suppression
 #'        category will restart treatment (vector of length 3).
-#' @param tx.reinit.full.rr Relative reduction in \code{tx.reinit.part.prob} for MSM
-#'        in the full VL suppression category.
-#' @param tx.reinit.dur.rr Relative reduction in \code{tx.reinit.part.prob} for MSM
-#'        in the durable VL suppression category.
+#' @param tx.reinit.full.rr Relative reduction in \code{tx.reinit.part.prob} for
+#'        black/hispanic/white MSM in the full VL suppression category (vector of length 3).
+#' @param tx.reinit.dur.rr Relative reduction in \code{tx.reinit.part.prob} for
+#'        black/hispanic/white MSM in the durable VL suppression category (vector of length 3).
 #' @param max.time.off.tx.full.int Number of weeks off treatment for a full
 #'        suppressor before onset of AIDS, including time before diagnosis.
 #' @param max.time.on.tx.part.int Number of weeks on treatment for a
@@ -180,11 +180,11 @@ param_msm <- function(netstats,
                       tt.dur.supp = c(0.40, 0.40, 0.40),
                       tx.init.prob = c(0.092, 0.092, 0.127),
                       tx.halt.part.prob = c(0.0102, 0.0102, 0.0071),
-                      tx.halt.full.rr = 0.9,
-                      tx.halt.dur.rr = 0.5,
+                      tx.halt.full.rr = c(0.9, 0.9, 0.9),
+                      tx.halt.dur.rr = c(0.5, 0.5, 0.5),
                       tx.reinit.part.prob = c(0.00066, 0.00066, 0.00291),
-                      tx.reinit.full.rr = 1.0,
-                      tx.reinit.dur.rr = 1.0,
+                      tx.reinit.full.rr = c(1.0, 1.0, 1.0),
+                      tx.reinit.dur.rr = c(1.0, 1.0, 1.0),
 
                       # HIV natural history
                       max.time.off.tx.full.int = 52 * 20,

@@ -61,11 +61,11 @@ hivtx_msm <- function(dat, at) {
   tx.halt.part <- tx.halt.part.elig[rbinom(length(tx.halt.part.elig), 1, rates.part) == 1]
 
   tx.halt.full.elig <- which(tx.status == 1 & tt.traj == 2)
-  rates.full <- tx.halt.part.prob[race[tx.halt.full.elig]] * tx.halt.full.rr
+  rates.full <- tx.halt.part.prob[race[tx.halt.full.elig]] * tx.halt.full.rr[race[tx.halt.full.elig]]
   tx.halt.full <- tx.halt.full.elig[rbinom(length(tx.halt.full.elig), 1, rates.full) == 1]
 
   tx.halt.dur.elig <- which(tx.status == 1 & tt.traj == 3)
-  rates.dur <- tx.halt.part.prob[race[tx.halt.dur.elig]] * tx.halt.dur.rr
+  rates.dur <- tx.halt.part.prob[race[tx.halt.dur.elig]] * tx.halt.dur.rr[race[tx.halt.dur.elig]]
   tx.halt.dur <- tx.halt.dur.elig[rbinom(length(tx.halt.dur.elig), 1, rates.dur) == 1]
 
   tx.halt <- c(tx.halt.part, tx.halt.full, tx.halt.dur)
@@ -78,12 +78,12 @@ hivtx_msm <- function(dat, at) {
 
   tx.reinit.full.elig <- which(tx.status == 0 & tt.traj == 2 &
                                cuml.time.on.tx > 0)
-  rates.full <- tx.reinit.part.prob[race[tx.reinit.full.elig]] * tx.reinit.full.rr
+  rates.full <- tx.reinit.part.prob[race[tx.reinit.full.elig]] * tx.reinit.full.rr[race[tx.reinit.full.elig]]
   tx.reinit.full <- tx.reinit.full.elig[rbinom(length(tx.reinit.full.elig), 1, rates.full) == 1]
 
   tx.reinit.dur.elig <- which(tx.status == 0 & tt.traj == 3 &
                               cuml.time.on.tx > 0)
-  rates.dur <- tx.reinit.part.prob[race[tx.reinit.dur.elig]] * tx.reinit.dur.rr
+  rates.dur <- tx.reinit.part.prob[race[tx.reinit.dur.elig]] * tx.reinit.dur.rr[race[tx.reinit.dur.elig]]
   tx.reinit.dur <- tx.reinit.dur.elig[rbinom(length(tx.reinit.dur.elig), 1, rates.dur) == 1]
 
   tx.reinit <- c(tx.reinit.part, tx.reinit.full, tx.reinit.dur)
