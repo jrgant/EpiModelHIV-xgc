@@ -50,6 +50,7 @@ departure_msm <- function(dat, at) {
 
   idsDepAll <- unique(c(idsDep, idsDepAIDS))
   depHIV <- intersect(idsDepAll, which(status == 1))
+  depHIV.old <- intersect(depHIV, which(age >= 65))
 
   # Cumulative R0 calculations
   # if (at == 2) {
@@ -84,6 +85,7 @@ departure_msm <- function(dat, at) {
   dat$epi$dep.gen[at] <- length(idsDep)
   dat$epi$dep.AIDS[at] <- length(idsDepAIDS)
   dat$epi$dep.HIV[at] <- length(depHIV)
+  dat$epi$dep.HIV.old[at] <- length(depHIV.old)
 
   return(dat)
 }
