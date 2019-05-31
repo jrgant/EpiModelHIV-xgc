@@ -93,5 +93,9 @@ hivprogress_msm <- function(dat, at) {
   dat$attr$stage <- stage
   dat$attr$stage.time <- stage.time
 
+  dat$epi$new.aids.tot[at] <- length(isAIDS)
+  dat$epi$new.aids.part[at] <- length(aids.part.escape)
+  dat$epi$new.aids.full[at] <- length(aids.off.tx.full.escape)
+
   return(dat)
 }
