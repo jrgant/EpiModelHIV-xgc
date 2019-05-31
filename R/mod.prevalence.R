@@ -131,7 +131,7 @@ prevalence_msm <- function(dat, at) {
                                            dat$attr$diag.status == 1 & race == 3, na.rm = TRUE) /
                                        sum(dat$attr$diag.status == 1 & race == 3, na.rm = TRUE))
 
-  dat$epi$cc.HIV.mr[at] <- dat$epi$dep.HIV[at]/dat$epi$i.num[at]
+  dat$epi$cc.HIV.mr[at] <- (dat$epi$dep.HIV[at]/dat$epi$i.num[at])*52
 
   # Care continuum stats (secondary)
   dat$epi$cc.test.int[at] <- mean(at - dat$attr$last.neg.test[diag.status == 0], na.rm = TRUE)
