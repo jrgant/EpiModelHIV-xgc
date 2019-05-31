@@ -12,8 +12,8 @@ param_msm(netstats, hiv.test.rate = c(0.01325, 0.0125, 0.0124),
   tx.halt.full.rr = c(0.9, 0.9, 0.9), tx.halt.dur.rr = c(0.5, 0.5,
   0.5), tx.reinit.part.prob = c(0.00066, 0.00066, 0.00291),
   tx.reinit.full.rr = c(1, 1, 1), tx.reinit.dur.rr = c(1, 1, 1),
-  max.time.off.tx.full.int = 52 * 20, max.time.on.tx.part.int = 52 *
-  15, max.time.off.tx.part.int = 52 * 15, vl.acute.rise.int = 6.4,
+  max.time.off.tx.full.int = 52 * 15, max.time.on.tx.part.int = 52 *
+  10, max.time.off.tx.part.int = 52 * 10, vl.acute.rise.int = 6.4,
   vl.acute.peak = 6.886, vl.acute.fall.int = 6.4, vl.set.point = 4.5,
   vl.aids.onset.int = 520, vl.aids.int = 104, vl.aids.peak = 7,
   vl.full.supp = 1.5, vl.part.supp = 3.5, vl.tx.down.slope = 0.25,
