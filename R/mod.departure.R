@@ -45,7 +45,7 @@ departure_msm <- function(dat, at) {
   idsDep <- idsElig[rbinom(length(rates), 1, rates) == 1]
 
   ## HIV-related deaths
-  idsEligAIDS <- which(stage == 4 & tx.status == 0)
+  idsEligAIDS <- which(stage == 4)
   idsDepAIDS <- idsEligAIDS[rbinom(length(idsEligAIDS), 1, aids.mr) == 1]
 
   idsDepAll <- unique(c(idsDep, idsDepAIDS))
