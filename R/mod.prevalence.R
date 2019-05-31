@@ -67,6 +67,8 @@ prevalence_msm <- function(dat, at) {
 
   # Care continuum stats (primary)
   dat$epi$cc.dx[at] <- sum(diag.status == 1, na.rm = TRUE) / sum(status == 1, na.rm = TRUE)
+  dat$epi$cc.dx.10y[at] <- sum(diag.status == 1 & at - dat$attr$inf.time <= 520, na.rm = TRUE) /
+                           sum(status == 1 & at - dat$attr$inf.time <= 520, na.rm = TRUE)
   dat$epi$cc.dx.B[at] <- sum(diag.status == 1 & race == 1, na.rm = TRUE) /
                          sum(status == 1 & race == 1, na.rm = TRUE)
   dat$epi$cc.dx.H[at] <- sum(diag.status == 1 & race == 2, na.rm = TRUE) /
