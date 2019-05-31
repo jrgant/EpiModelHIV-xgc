@@ -112,6 +112,9 @@ hivtx_msm <- function(dat, at) {
   dat$attr$tx.period.last <- tx.period.last
   dat$attr$tx.init.time <- tx.init.time
 
+  dat$epi$mean.tx.on[at] <- mean(cuml.time.on.tx, na.rm = TRUE)
+  dat$epi$mean.tx.off[at] <- mean(cuml.time.off.tx, na.rm = TRUE)
+
   return(dat)
 }
 
