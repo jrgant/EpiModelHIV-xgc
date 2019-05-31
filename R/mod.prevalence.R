@@ -90,6 +90,10 @@ prevalence_msm <- function(dat, at) {
 
   dat$epi$cc.linked1m[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4, na.rm = TRUE) /
                              sum(dat$attr$diag.status == 1, na.rm = TRUE)
+  dat$epi$cc.linked1m.10y[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4 &
+                                       at - dat$attr$diag.time <= 520, na.rm = TRUE) /
+                                 sum(dat$attr$diag.status == 1 &
+                                       at - dat$attr$diag.time <= 520, na.rm = TRUE)
   dat$epi$cc.linked1m.B[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4 & race == 1, na.rm = TRUE) /
                                sum(dat$attr$diag.status == 1 & race == 1, na.rm = TRUE)
   dat$epi$cc.linked1m.H[at] <- sum(dat$attr$tx.init.time - dat$attr$diag.time <= 4 & race == 2, na.rm = TRUE) /
