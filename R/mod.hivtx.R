@@ -115,6 +115,9 @@ hivtx_msm <- function(dat, at) {
   dat$epi$mean.tx.on[at] <- mean(cuml.time.on.tx, na.rm = TRUE)
   dat$epi$mean.tx.off[at] <- mean(cuml.time.off.tx, na.rm = TRUE)
 
+  dat$epi$mean.tx.on.part[at] <- mean(cuml.time.on.tx[tt.traj == 1], na.rm = TRUE)
+  dat$epi$mean.tx.off.part[at] <- mean(cuml.time.off.tx[tt.traj == 1], na.rm = TRUE)
+
   return(dat)
 }
 
