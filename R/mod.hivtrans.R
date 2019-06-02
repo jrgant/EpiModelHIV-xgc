@@ -96,7 +96,7 @@ hivtrans_msm <- function(dat, at) {
   ip.rCT <- rCT[disc.ip[, 2]]
 
   # Base TP from VL
-  ip.tprob <- pmin(0.99, URAI.prob * 2.45^(ip.vl - 4.5) * trans.scale)
+  ip.tprob <- pmin(0.99, URAI.prob * 2.45^(ip.vl - 4.5))
 
   # Transform to log odds
   ip.tlo <- log(ip.tprob/(1 - ip.tprob))
@@ -131,7 +131,11 @@ hivtrans_msm <- function(dat, at) {
     max(log(hiv.rgc.rr), log(hiv.rct.rr)) +
     min(log(hiv.rgc.rr), log(hiv.rct.rr)) * hiv.dual.rr
 
-  # Retransformation to probability
+  # Race-specific scalar for calibration
+  races <- race[disc.ip[, 2]]
+  ip.tlo <- ip.tlo + log(trans.scale[races])
+
+  # Convert back to probability
   ip.tprob <- plogis(ip.tlo)
   stopifnot(ip.tprob >= 0, ip.tprob <= 1)
 
@@ -188,7 +192,11 @@ hivtrans_msm <- function(dat, at) {
     max(log(hiv.ugc.rr), log(hiv.uct.rr)) +
     min(log(hiv.ugc.rr), log(hiv.uct.rr)) * hiv.dual.rr
 
-  # Retransformation to probability
+  # Race-specific scalar for calibration
+  races <- race[disc.rp[, 1]]
+  rp.tlo <- rp.tlo + log(trans.scale[races])
+
+  # Convert back to probability
   rp.tprob <- plogis(rp.tlo)
   stopifnot(rp.tprob >= 0, rp.tprob <= 1)
 

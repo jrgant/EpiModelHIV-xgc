@@ -19,10 +19,10 @@ param_msm(netstats, hiv.test.rate = c(0.01325, 0.0125, 0.0124),
   vl.full.supp = 1.5, vl.part.supp = 3.5, vl.tx.down.slope = 0.25,
   vl.tx.aids.down.slope = 0.25, vl.tx.up.slope = 0.25,
   aids.mr = 1/104, a.rate = 0.00052, arrival.age = 15,
-  URAI.prob = 0.008938, UIAI.prob = 0.003379, trans.scale = 1,
-  acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95, cond.fail = c(0.25,
-  0.25, 0.25), circ.prob = c(0.874, 0.874, 0.918), epistats,
-  acts.aids.vl = 5.75, acts.scale = 1, cond.scale = 1,
+  URAI.prob = 0.008938, UIAI.prob = 0.003379, trans.scale = c(1, 1,
+  1), acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95,
+  cond.fail = c(0.25, 0.25, 0.25), circ.prob = c(0.874, 0.874, 0.918),
+  epistats, acts.aids.vl = 5.75, acts.scale = 1, cond.scale = 1,
   rgc.tprob = 0.35, ugc.tprob = 0.25, rct.tprob = 0.2,
   uct.tprob = 0.16, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.8,
   rct.sympt.prob = 0.14, uct.sympt.prob = 0.58, rgc.ntx.int = 16.8,
@@ -142,8 +142,8 @@ load.}
 unprotected insertive anal intercourse with an infected man at set
 point viral load.}
 
-\item{trans.scale}{Relative scalar on base transmission probabilities for model
-calibration.}
+\item{trans.scale}{Relative scalar on base infection probabilities for model
+calibration for black/hispanic/white men (vector of length 3).}
 
 \item{acute.rr}{Relative risk of infection (compared to that predicted by
 elevated viral load) when positive partner is in the acute stage.}

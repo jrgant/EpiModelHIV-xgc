@@ -77,8 +77,8 @@
 #' @param UIAI.prob Probability of transmission for an uncircumcised man having
 #'        unprotected insertive anal intercourse with an infected man at set
 #'        point viral load.
-#' @param trans.scale Relative scalar on base transmission probabilities for model
-#'        calibration.
+#' @param trans.scale Relative scalar on base infection probabilities for model
+#'        calibration for black/hispanic/white men (vector of length 3).
 #' @param acute.rr Relative risk of infection (compared to that predicted by
 #'        elevated viral load) when positive partner is in the acute stage.
 #' @param circ.rr Relative risk of infection from insertive anal sex when the
@@ -211,7 +211,7 @@ param_msm <- function(netstats,
                       # HIV transmission prob
                       URAI.prob = 0.008938,
                       UIAI.prob = 0.003379,
-                      trans.scale = 1,
+                      trans.scale = c(1, 1, 1),
                       acute.rr = 6,
                       circ.rr = 0.4,
                       cond.eff = 0.95,
