@@ -154,7 +154,7 @@ hivtrans_msm <- function(dat, at) {
   rp.uCT <- uCT[disc.rp[, 1]]
 
   # Base TP from VL
-  rp.tprob <- pmin(0.99, UIAI.prob * 2.45^(rp.vl - 4.5) * trans.scale)
+  rp.tprob <- pmin(0.99, UIAI.prob * 2.45^(rp.vl - 4.5))
 
   # Transform to log odds
   rp.tlo <- log(rp.tprob/(1 - rp.tprob))
