@@ -205,6 +205,9 @@ riskhist_msm <- function(dat, at) {
     dat$attr$prep.ind.uai.nmain <- rep(NA, n)
     dat$attr$prep.ind.sti <- rep(NA, n)
   }
+  if (is.null(dat$attr$prep.ind.uai.conc)) {
+    dat$attr$prep.ind.uai.conc <- rep(NA, n)
+  }
 
   ## Degree ##
   main.deg <- get_degree(dat$el[[1]])
@@ -234,6 +237,12 @@ riskhist_msm <- function(dat, at) {
   not.tested.6mo <- since.test[part.id1] > (180/7)
   part.not.tested.6mo <- uai.mono1.neg[which(not.tested.6mo == TRUE)]
   dat$attr$prep.ind.uai.mono[part.not.tested.6mo] <- at
+
+  ## Condition 2a: UAI + concurrency
+  el2.uai <- el2[el2$uai > 0, ]
+  vec <- c(el2.uai[, 1], el2.uai[, 2])
+  uai.conc <- unique(vec[duplicated(vec)])
+  dat$attr$prep.ind.uai.conc[uai.conc] <- at
 
   ## Condition 2b: UAI in non-main partnerships
   uai.nmain <- unique(c(el2$p1[el2$st1 == 0 & el2$uai > 0 & el2$ptype %in% 2:3],
