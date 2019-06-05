@@ -63,9 +63,13 @@ prep_msm <- function(dat, at) {
   idsNoIndic <- which((ind1 < twind | is.na(ind1)) &
                       (ind2 < twind | is.na(ind2)) &
                       (ind3 < twind | is.na(ind3)))
+  base.cond.no <- which(active == 0 | diag.status == 1)
+  idsNoIndic <- union(idsNoIndic, base.cond.no)
 
   # Indications in window
   idsIndic <- which(ind1 >= twind | ind2 >= twind | ind3 >= twind)
+  base.cond.yes <- which(active == 1 & diag.status == 0)
+  idsIndic <- intersect(idsIndic, base.cond.yes)
 
   # Set eligibility to 1 if indications
   prepElig[idsIndic] <- 1
@@ -120,14 +124,9 @@ prep_msm <- function(dat, at) {
 
   # Indications to start
   if (prep.require.lnt == TRUE) {
-    idsEligStart <- which(active == 1 &
-                          status == 0 &
-                          prepStat == 0 &
-                          lnt == at)
+    idsEligStart <- which(prepStat == 0 & lnt == at)
   } else {
-    idsEligStart <- which(active == 1 &
-                          diag.status == 0 &
-                          prepStat == 0)
+    idsEligStart <- which(prepStat == 0)
   }
 
   idsEligStart <- intersect(idsIndic, idsEligStart)
