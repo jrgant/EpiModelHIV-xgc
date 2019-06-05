@@ -81,8 +81,7 @@ prep_msm <- function(dat, at) {
   if (prep.risk.reassess.method == "none") {
     idsStpInd <- NULL
   } else if (prep.risk.reassess.method == "inst") {
-    idsRiskAssess <- which(active == 1 &
-                           prepStat == 1)
+    idsRiskAssess <- which(active == 1 & prepStat == 1)
     prepLastRisk[idsRiskAssess] <- at
     idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
   } else if (prep.risk.reassess.method == "year") {
