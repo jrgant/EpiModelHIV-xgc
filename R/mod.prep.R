@@ -54,7 +54,8 @@ prep_msm <- function(dat, at) {
   # Indications -------------------------------------------------------------
 
   ind1 <- dat$attr$prep.ind.uai.mono
-  ind2 <- dat$attr$prep.ind.uai.nmain
+  # ind2 <- dat$attr$prep.ind.uai.nmain
+  ind2 <- dat$attr$prep.ind.uai.conc
   ind3 <- dat$attr$prep.ind.sti
 
   twind <- at - dat$param$prep.risk.int
