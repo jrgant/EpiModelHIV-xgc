@@ -151,6 +151,9 @@ prep_msm <- function(dat, at) {
 
   ## Output --------------------------------------------------------------------
 
+  # Random discontinuation
+  dat$epi$prep.rand.stop[at] <- length(idsStpRand)
+
   # Attributes
   dat$attr$prepElig <- prepElig
   dat$attr$prepStat <- prepStat
