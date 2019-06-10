@@ -29,6 +29,7 @@ prevalence_msm <- function(dat, at) {
   diag.status <- dat$attr$diag.status
   diag.stage <- dat$attr$diag.stage
   diag.time <- dat$attr$diag.time
+  aids.time <- dat$attr$aids.time
   inf.time <- dat$attr$inf.time
   race <- dat$attr$race
   age <- dat$attr$age
@@ -82,17 +83,17 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.dx.W[at] <- sum(diag.status == 1 & inf.time >= 2 & race == 3, na.rm = TRUE) /
                          sum(status == 1 & inf.time >= 2 & race == 3, na.rm = TRUE)
 
-  dat$epi$cc.dx.acute[at] <- sum(diag.status == 1 & inf.time >= 2 & diag.stage %in% 1:2, na.rm = TRUE) /
-                             sum(diag.status == 1 & inf.time >= 2, na.rm = TRUE)
-  dat$epi$cc.dx.chronic[at] <- sum(diag.status == 1 & inf.time >= 2 & diag.stage == 3, na.rm = TRUE) /
-                               sum(diag.status == 1 & inf.time >= 2, na.rm = TRUE)
-  dat$epi$cc.dx.aids[at] <- sum(diag.status == 1 & diag.stage == 4 & inf.time >= 2, na.rm = TRUE) /
+  dat$epi$cc.dx.aids[at] <- sum(diag.status == 1 & stage == 4 & inf.time >= 2 &
+                                  aids.time - diag.time <= 52, na.rm = TRUE) /
                             sum(diag.status == 1 & inf.time >= 2, na.rm = TRUE)
-  dat$epi$cc.dx.aids.B[at] <- sum(diag.status == 1 & diag.stage == 4 & inf.time >= 2 & race == 1, na.rm = TRUE) /
+  dat$epi$cc.dx.aids.B[at] <- sum(diag.status == 1 & stage == 4 & inf.time >= 2 &
+                                    aids.time - diag.time <= 52 & race == 1, na.rm = TRUE) /
                               sum(diag.status == 1 & inf.time >= 2 & race == 1, na.rm = TRUE)
-  dat$epi$cc.dx.aids.H[at] <- sum(diag.status == 1 & diag.stage == 4 & inf.time >= 2 & race == 2, na.rm = TRUE) /
+  dat$epi$cc.dx.aids.H[at] <- sum(diag.status == 1 & stage == 4 &  inf.time >= 2 &
+                                    aids.time - diag.time <= 52 & race == 2, na.rm = TRUE) /
                               sum(diag.status == 1 & inf.time >= 2 & race == 2, na.rm = TRUE)
-  dat$epi$cc.dx.aids.W[at] <- sum(diag.status == 1 & diag.stage == 4 & inf.time >= 2 & race == 3, na.rm = TRUE) /
+  dat$epi$cc.dx.aids.W[at] <- sum(diag.status == 1 & stage == 4 & inf.time >= 2 &
+                                    aids.time - diag.time <= 52 & race == 3, na.rm = TRUE) /
                               sum(diag.status == 1 & inf.time >= 2 & race == 3, na.rm = TRUE)
 
   dat$epi$cc.linked1m[at] <- sum(tx.init.time - diag.time <= 4 & diag.time >= 2, na.rm = TRUE) /
