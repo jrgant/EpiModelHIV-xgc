@@ -155,7 +155,7 @@ init_status_msm <- function(dat) {
   age <- dat$attr$age
   min.ages <- min(dat$param$netstats$demog$ages)
   time.sex.active <- pmax(1, round((365/7)*age[idsInf] - (365/7)*min.ages, 0))
-  min.hiv.time <- dat$param$vl.acute.rise.int + dat$param$vl.acute.fall.int
+  min.hiv.time <- round(dat$param$vl.acute.rise.int + dat$param$vl.acute.fall.int)
   max.hiv.time <- dat$param$vl.aids.onset.int
 
   time.infected <- round(pmax(min.hiv.time,
@@ -179,7 +179,7 @@ init_status_msm <- function(dat) {
   dat$attr$vl.last.supp <- rep(NA, num)
 
   dat$attr$diag.time <- rep(NA, num)
-  dat$attr$diag.time[idsInf] <- dat$attr$inf.time[idsInf] + mean(1/dat$param$hiv.test.int)
+  dat$attr$diag.time[idsInf] <- dat$attr$inf.time[idsInf] + round(mean(1/dat$param$hiv.test.rate))
   dat$attr$last.neg.test <- rep(NA, num)
 
   dat$attr$tx.status <- rep(NA, num)
