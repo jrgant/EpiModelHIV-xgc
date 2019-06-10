@@ -41,6 +41,7 @@ hivprogress_msm <- function(dat, at) {
   cuml.time.off.tx <- dat$attr$cuml.time.off.tx
   stage <- dat$attr$stage
   stage.time <- dat$attr$stage.time
+  aids.time <- dat$attr$aids.time
   tt.traj <- dat$attr$tt.traj
   tx.status <- dat$attr$tx.status
 
@@ -87,11 +88,12 @@ hivprogress_msm <- function(dat, at) {
   isAIDS <- c(aids.tx.naive, aids.part.escape, aids.off.tx.full.escape)
   stage[isAIDS] <- 4
   stage.time[isAIDS] <- 1
-
+  aids.time[isAIDS] <- at
 
   ## Output
   dat$attr$stage <- stage
   dat$attr$stage.time <- stage.time
+  dat$attr$aids.time <- aids.time
 
   dat$epi$new.aids.tot[at] <- length(isAIDS)
   dat$epi$new.aids.part[at] <- length(aids.part.escape)
