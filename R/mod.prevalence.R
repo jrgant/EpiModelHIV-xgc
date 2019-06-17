@@ -178,7 +178,6 @@ prevalence_msm <- function(dat, at) {
 
 
   # HIV screening outcomes
-  if (at > 52*66) browser()
   dat$epi$mean.neg.tests[at] <- mean(dat$attr$num.neg.tests[diag.status == 0], na.rm = TRUE)
   dat$epi$mean.neg.tests.B[at] <- mean(dat$attr$num.neg.tests[diag.status == 0 & race == 1], na.rm = TRUE)
   dat$epi$mean.neg.tests.H[at] <- mean(dat$attr$num.neg.tests[diag.status == 0 & race == 2], na.rm = TRUE)
