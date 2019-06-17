@@ -75,9 +75,6 @@ hivtest_msm <- function(dat, at) {
   dat$attr$diag.time[tstPos] <- at
   dat$attr$diag.stage[tstPos] <- stage[tstPos]
 
-  if (is.null(dat$attr$num.neg.tests)) {
-    dat$attr$num.neg.tests <- rep(0, length(status))
-  }
   if (at >= 52*65) {
     dat$attr$num.neg.tests[tstNeg] <- dat$attr$num.neg.tests[tstNeg] + 1
   }

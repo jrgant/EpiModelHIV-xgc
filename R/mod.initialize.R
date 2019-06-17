@@ -194,6 +194,7 @@ init_status_msm <- function(dat) {
   dat$attr$tx.init.time <- rep(NA, num)
 
   dat$attr$count.trans <- rep(0, num)
+  dat$attr$num.neg.tests <- rep(0, length(status))
 
   return(dat)
 }
