@@ -177,6 +177,22 @@ prevalence_msm <- function(dat, at) {
   #   sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 3, na.rm = TRUE)
 
 
+  # HIV screening outcomes
+  if (at > 52*66) browser()
+  dat$epi$mean.neg.tests[at] <- mean(dat$attr$num.neg.tests[diag.status == 0], na.rm = TRUE)
+  dat$epi$mean.neg.tests.B[at] <- mean(dat$attr$num.neg.tests[diag.status == 0 & race == 1], na.rm = TRUE)
+  dat$epi$mean.neg.tests.H[at] <- mean(dat$attr$num.neg.tests[diag.status == 0 & race == 2], na.rm = TRUE)
+  dat$epi$mean.neg.tests.W[at] <- mean(dat$attr$num.neg.tests[diag.status == 0 & race == 2], na.rm = TRUE)
+
+  dat$epi$test.past.year[at] <- sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0, na.rm = TRUE) /
+    sum(diag.status == 0, na.rm = TRUE)
+  dat$epi$test.past.year.B[at] <- sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 1, na.rm = TRUE) /
+    sum(diag.status == 0 & race == 1, na.rm = TRUE)
+  dat$epi$test.past.year.H[at] <- sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 2, na.rm = TRUE) /
+    sum(diag.status == 0 & race == 2, na.rm = TRUE)
+  dat$epi$test.past.year.W[at] <- sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 3, na.rm = TRUE) /
+    sum(diag.status == 0 & race == 3, na.rm = TRUE)
+
   # HIV stage
   dat$epi$hstage.acute[at] <- sum(stage %in% 1:2 & diag.time >= 2, na.rm = TRUE) /
                               sum(status == 1 & diag.time >= 2, na.rm = TRUE)

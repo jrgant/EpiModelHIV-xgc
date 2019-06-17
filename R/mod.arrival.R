@@ -138,6 +138,9 @@ setNewAttr_msm <- function(dat, at, nNew) {
   # PrEP
   dat$attr$prepStat[newIds] <- 0
 
+  # HIV screening
+  dat$attr$num.neg.tests[newIds] <- 0
+
   # Update clinical history
   if (dat$control$save.clin.hist == TRUE & length(newIds) > 0) {
     m <- dat$temp$clin.hist
