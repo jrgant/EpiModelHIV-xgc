@@ -201,7 +201,15 @@ prevalence_msm <- function(dat, at) {
                              sum(status == 1 & diag.time >= 2, na.rm = TRUE)
 
   dat$epi$prepElig[at] <- sum(prepElig == 1, na.rm = TRUE)
+  dat$epi$prepElig.B[at] <- sum(prepElig == 1 & race == 1, na.rm = TRUE)
+  dat$epi$prepElig.H[at] <- sum(prepElig == 1 & race == 2, na.rm = TRUE)
+  dat$epi$prepElig.W[at] <- sum(prepElig == 1 & race == 3, na.rm = TRUE)
+
   dat$epi$prepCurr[at] <- sum(prepStat == 1, na.rm = TRUE)
+  dat$epi$prepCurr.B[at] <- sum(prepStat == 1 & race == 1, na.rm = TRUE)
+  dat$epi$prepCurr.H[at] <- sum(prepStat == 1 & race == 2, na.rm = TRUE)
+  dat$epi$prepCurr.W[at] <- sum(prepStat == 1 & race == 3, na.rm = TRUE)
+
   dat$epi$prepCurr.hadr[at] <- sum(prepStat == 1 & prepClass == 3, na.rm = TRUE)
 
   # STIs
