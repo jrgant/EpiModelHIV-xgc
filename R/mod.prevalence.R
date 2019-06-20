@@ -149,6 +149,14 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.dx.delay.W[at] <- mean(diag.time[diag.time >= 2 & race == 3] -
                                       inf.time[diag.time >= 2 & race == 3], na.rm = TRUE)
 
+  dat$epi$cc.dx.delay.int[at] <- mean(diag.time[diag.time >= 3380] - inf.time[diag.time >= 3380], na.rm = TRUE)
+  dat$epi$cc.dx.delay.int.B[at] <- mean(diag.time[diag.time >= 3380 & race == 1] -
+                                      inf.time[diag.time >= 3380 & race == 1], na.rm = TRUE)
+  dat$epi$cc.dx.delay.int.H[at] <- mean(diag.time[diag.time >= 3380 & race == 2] -
+                                      inf.time[diag.time >= 3380 & race == 2], na.rm = TRUE)
+  dat$epi$cc.dx.delay.int.W[at] <- mean(diag.time[diag.time >= 3380 & race == 3] -
+                                      inf.time[diag.time >= 3380 & race == 3], na.rm = TRUE)
+
   # dat$epi$cc.tx.any1y[at] <- sum((at - dat$attr$tx.period.last <= 52), na.rm = TRUE) /
   #   sum(dat$attr$diag.status == 1, na.rm = TRUE)
   # dat$epi$cc.tx.any1y.B[at] <- sum((at - dat$attr$tx.period.last <= 52) & race == 1, na.rm = TRUE) /
