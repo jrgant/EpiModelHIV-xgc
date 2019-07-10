@@ -108,6 +108,15 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.linked1m.W[at] <- sum(tx.init.time - diag.time <= 4 & diag.time >= 2 & race == 3, na.rm = TRUE) /
                                sum(diag.status == 1 & diag.time >= 2 & race == 3, na.rm = TRUE)
 
+  dat$epi$cc.linked1m.int[at] <- sum(tx.init.time - diag.time <= 4 & diag.time >= 3380, na.rm = TRUE) /
+                                 sum(dat$attr$diag.status == 1 & diag.time >= 3380, na.rm = TRUE)
+  dat$epi$cc.linked1m.int.B[at] <- sum(tx.init.time - diag.time <= 4 & diag.time >= 3380 & race == 1, na.rm = TRUE) /
+                                   sum(diag.status == 1 & diag.time >= 3380 & race == 1, na.rm = TRUE)
+  dat$epi$cc.linked1m.int.H[at] <- sum(tx.init.time - diag.time <= 4 & diag.time >= 3380 & race == 2, na.rm = TRUE) /
+                                   sum(diag.status == 1 & diag.time >= 3380 & race == 2, na.rm = TRUE)
+  dat$epi$cc.linked1m.int.W[at] <- sum(tx.init.time - diag.time <= 4 & diag.time >= 3380 & race == 3, na.rm = TRUE) /
+                                   sum(diag.status == 1 & diag.time >= 3380 & race == 3, na.rm = TRUE)
+
   dat$epi$cc.vsupp[at] <- sum(vl <= log10(200) & diag.status == 1 & diag.time >= 2, na.rm = TRUE) /
                           sum(diag.status == 1 & diag.time >= 2, na.rm = TRUE)
   dat$epi$cc.vsupp.B[at] <- sum(vl <= log10(200) & diag.status == 1 &
@@ -119,6 +128,15 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.vsupp.W[at] <- sum(vl <= log10(200) & diag.status == 1 &
                                 diag.time >= 2 & race == 3, na.rm = TRUE) /
                             sum(diag.status == 1 & diag.time >= 2 & race == 3, na.rm = TRUE)
+
+  dat$epi$cc.vsupp.all[at] <- sum(vl <= log10(200) & status == 1 & inf.time >= 2, na.rm = TRUE) /
+                              sum(status == 1 & inf.time >= 2, na.rm = TRUE)
+  dat$epi$cc.vsupp.all.B[at] <- sum(vl <= log10(200) & status == 1 & inf.time >= 2 & race == 1, na.rm = TRUE) /
+                                sum(diag.status == 1 & diag.time >= 2 & race == 1, na.rm = TRUE)
+  dat$epi$cc.vsupp.all.H[at] <- sum(vl <= log10(200) & status == 1 & inf.time >= 2 & race == 2, na.rm = TRUE) /
+                                sum(status == 1 & inf.time >= 2 & race == 2, na.rm = TRUE)
+  dat$epi$cc.vsupp.all.W[at] <- sum(vl <= log10(200) & status == 1 & inf.time >= 2 & race == 3, na.rm = TRUE) /
+                                sum(status == 1 & inf.time >= 2 & race == 3, na.rm = TRUE)
 
   dat$epi$cc.vsupp.dur1y[at] <- 1 - (sum((at - vl.last.usupp) <= 52 & diag.time >= 2 &
                                          diag.status == 1, na.rm = TRUE) /
