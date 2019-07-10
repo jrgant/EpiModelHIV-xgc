@@ -132,7 +132,7 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.vsupp.all[at] <- sum(vl <= log10(200) & status == 1 & inf.time >= 2, na.rm = TRUE) /
                               sum(status == 1 & inf.time >= 2, na.rm = TRUE)
   dat$epi$cc.vsupp.all.B[at] <- sum(vl <= log10(200) & status == 1 & inf.time >= 2 & race == 1, na.rm = TRUE) /
-                                sum(diag.status == 1 & diag.time >= 2 & race == 1, na.rm = TRUE)
+                                sum(status == 1 & inf.time >= 2 & race == 1, na.rm = TRUE)
   dat$epi$cc.vsupp.all.H[at] <- sum(vl <= log10(200) & status == 1 & inf.time >= 2 & race == 2, na.rm = TRUE) /
                                 sum(status == 1 & inf.time >= 2 & race == 2, na.rm = TRUE)
   dat$epi$cc.vsupp.all.W[at] <- sum(vl <= log10(200) & status == 1 & inf.time >= 2 & race == 3, na.rm = TRUE) /
