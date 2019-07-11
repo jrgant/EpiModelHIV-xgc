@@ -47,6 +47,17 @@ hivtx_msm <- function(dat, at) {
   tx.reinit.full.rr <- dat$param$tx.reinit.full.rr
   tx.reinit.dur.rr <- dat$param$tx.reinit.full.rr
 
+  if (at == 3381) {
+    races <- sort(unique(race))
+    for (i in races) {
+      ids.race <- which(dat$attr$race == i)
+      tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
+                                  c(dat$param$tt.part.supp[i],
+                                    dat$param$tt.full.supp[i],
+                                    dat$param$tt.dur.supp[i]))
+    }
+  }
+
   ## Initiation
   tx.init.elig <- which(status == 1 &
                         tx.status == 0 &
@@ -105,6 +116,7 @@ hivtx_msm <- function(dat, at) {
   idsContPeriod <- setdiff(which(tx.status == 1), idsSetPeriod)
   tx.period.last[idsContPeriod] <- at
 
+  dat$attr$tt.traj <- tt.traj
   dat$attr$tx.status <- tx.status
   dat$attr$cuml.time.on.tx <- cuml.time.on.tx
   dat$attr$cuml.time.off.tx <- cuml.time.off.tx
