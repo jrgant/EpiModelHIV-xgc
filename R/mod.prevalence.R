@@ -56,6 +56,9 @@ prevalence_msm <- function(dat, at) {
   dat$epi$age.mean[at] <- mean(age, na.rm = TRUE)
   dat$epi$s.num[at] <- sum(status == 0, na.rm = TRUE)
   dat$epi$i.num[at] <- sum(status == 1, na.rm = TRUE)
+  dat$epi$i.num.B[at] <- sum(status == 1 & race == 1, na.rm = TRUE)
+  dat$epi$i.num.H[at] <- sum(status == 1 & race == 2, na.rm = TRUE)
+  dat$epi$i.num.W[at] <- sum(status == 1 & race == 3, na.rm = TRUE)
 
   # Prev / Incid
   dat$epi$i.prev[at] <- dat$epi$i.num[at] / dat$epi$num[at]
@@ -73,8 +76,6 @@ prevalence_msm <- function(dat, at) {
   dat$epi$ir100.H[at] <- (dat$epi$incid.H[at] / sum(status == 0 & race == 2, dat$epi$incid.H[at], na.rm = TRUE)) * 5200
   dat$epi$ir100.W[at] <- (dat$epi$incid.W[at] / sum(status == 0 & race == 3, dat$epi$incid.W[at], na.rm = TRUE)) * 5200
 
-  # dat$epi$R0.mean.cs[at] <- mean(dat$attr$count.trans[status == 1], na.rm = TRUE)
-  # dat$epi$R0.mean.cens[at] <- suppressWarnings(mean(tail(dat$temp$R0, 500), na.rm = TRUE))
 
   # Care continuum stats (primary)
   dat$epi$cc.dx[at] <- sum(diag.status == 1 & inf.time >= 2, na.rm = TRUE) /

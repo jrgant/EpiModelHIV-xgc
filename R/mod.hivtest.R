@@ -75,9 +75,23 @@ hivtest_msm <- function(dat, at) {
   dat$attr$diag.time[tstPos] <- at
   dat$attr$diag.stage[tstPos] <- stage[tstPos]
 
+  # Summary stats
   if (at >= 52*65) {
     dat$attr$num.neg.tests[tstNeg] <- dat$attr$num.neg.tests[tstNeg] + 1
   }
+  dat$epi$tot.tests[at] <- length(tstAll)
+  dat$epi$tot.tests.B[at] <- length(intersect(tstAll, race == 1))
+  dat$epi$tot.tests.H[at] <- length(intersect(tstAll, race == 2))
+  dat$epi$tot.tests.W[at] <- length(intersect(tstAll, race == 3))
+  dat$epi$tot.tests.nprep[at] <- length(c(idsTstGen, idsTstLate, idsTstAIDS))
+
+  # number of new diagnoses by timing
+  dat$epi$newDx[at] <- length(tstPos)
+  diag.time <- dat$attr$diag.time
+  dat$epi$newDx45[at] <- length(intersect(tstPos, which(diag.time[tstPos] - inf.time[tstPos] <= 45/7)))
+  dat$epi$newDx140[at] <- length(intersect(tstPos, which(diag.time[tstPos] - inf.time[tstPos] <= 140/7)))
+  dat$epi$newDx200[at] <- length(intersect(tstPos, which(diag.time[tstPos] - inf.time[tstPos] <= 200/7)))
+  dat$epi$newDx2y[at] <- length(intersect(tstPos, which(diag.time[tstPos] - inf.time[tstPos] > 104)))
 
   return(dat)
 }
