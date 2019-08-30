@@ -85,6 +85,8 @@ hivtest_msm <- function(dat, at) {
   dat$epi$tot.tests.W[at] <- length(intersect(tstAll, which(race == 3)))
   dat$epi$tot.tests.nprep[at] <- length(c(idsTstGen, idsTstLate, idsTstAIDS))
 
+  dat$epi$tot.neg.tests[at] <- length(tstNeg)
+
   # number of new diagnoses by timing
   dat$epi$newDx[at] <- length(tstPos)
   diag.time <- dat$attr$diag.time

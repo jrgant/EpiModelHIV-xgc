@@ -60,6 +60,8 @@ prevalence_msm <- function(dat, at) {
   dat$epi$i.num.H[at] <- sum(status == 1 & race == 2, na.rm = TRUE)
   dat$epi$i.num.W[at] <- sum(status == 1 & race == 3, na.rm = TRUE)
 
+  dat$epi$i.num.dx[at] <- sum(diag.status == 1, na.rm = TRUE)
+
   # Prev / Incid
   dat$epi$i.prev[at] <- dat$epi$i.num[at] / dat$epi$num[at]
   dat$epi$i.prev.B[at] <- sum(race == 1 & status == 1, na.rm = TRUE) / sum(race == 1, na.rm = TRUE)
