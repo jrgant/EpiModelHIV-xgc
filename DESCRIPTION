@@ -9,8 +9,7 @@ Authors@R: c(person("Samuel M.", "Jenness", role = c("cre", "aut"), email = "sam
              person("Kevin", "Weiss", role = "aut", email = "kevin.weiss@emory.edu"))
 Maintainer: Samuel M. Jenness <samuel.m.jenness@emory.edu>
 Description: EpiModelHIV provides extensions to our general EpiModel package to allow for simulating HIV transmission
-  dynamics among two populations: men who have sex with men (MSM) in the United States and heterosexual adults in
-  sub-Saharan Africa.
+  dynamics among two populations: men who have sex with men (MSM) in the United States and heterosexual adults in sub-Saharan Africa.
 License: GPL-3
 Depends:
     R (>= 3.5.0),
@@ -28,6 +27,6 @@ Suggests:
     knitr,
     testthat
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 LazyData: true
 Encoding: UTF-8
