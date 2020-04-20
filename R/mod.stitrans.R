@@ -17,14 +17,16 @@ stitrans_msm <- function(dat, at) {
   # Acquisition probabilities given contact with infected man
   rgc.tprob <- dat$param$rgc.tprob
   ugc.tprob <- dat$param$ugc.tprob
-  rct.tprob <- dat$param$rct.tprob
-  uct.tprob <- dat$param$uct.tprob
+  pgc.tprob <- dat$param$pgc.tprob
+  ## rct.tprob <- dat$param$rct.tprob
+  ## uct.tprob <- dat$param$uct.tprob
 
   # Probability of symptoms given infection
   rgc.sympt.prob <- dat$param$rgc.sympt.prob
   ugc.sympt.prob <- dat$param$ugc.sympt.prob
-  rct.sympt.prob <- dat$param$rct.sympt.prob
-  uct.sympt.prob <- dat$param$uct.sympt.prob
+  pgc.sympt.prob <- dat$param$pgc.sympt.prob
+  ## rct.sympt.prob <- dat$param$rct.sympt.prob
+  ## uct.sympt.prob <- dat$param$uct.sympt.prob
 
   # Relative risk of infection given condom use during act
   sti.cond.eff <- dat$param$sti.cond.eff
@@ -38,26 +40,30 @@ stitrans_msm <- function(dat, at) {
   # Current infection state
   rGC <- dat$attr$rGC
   uGC <- dat$attr$uGC
-  rCT <- dat$attr$rCT
-  uCT <- dat$attr$uCT
+  pGC <- dat$attr$pGC
+  ## rCT <- dat$attr$rCT
+  ## uCT <- dat$attr$uCT
 
   # n Times infected
   rGC.timesInf <- dat$attr$rGC.timesInf
   uGC.timesInf <- dat$attr$uGC.timesInf
-  rCT.timesInf <- dat$attr$rCT.timesInf
-  uCT.timesInf <- dat$attr$uCT.timesInf
+  pGC.timesInf <- dat$attr$pGC.timeInf
+  ## rCT.timesInf <- dat$attr$rCT.timesInf
+  ## uCT.timesInf <- dat$attr$uCT.timesInf
 
   # Infection time
   rGC.infTime <- dat$attr$rGC.infTime
   uGC.infTime <- dat$attr$uGC.infTime
-  rCT.infTime <- dat$attr$rCT.infTime
-  uCT.infTime <- dat$attr$uCT.infTime
+  pGC.infTime <- dat$attr$pGC.infTime
+  ## rCT.infTime <- dat$attr$rCT.infTime
+  ## uCT.infTime <- dat$attr$uCT.infTime
 
   # Infection symptoms (non-varying)
   rGC.sympt <- dat$attr$rGC.sympt
   uGC.sympt <- dat$attr$uGC.sympt
-  rCT.sympt <- dat$attr$rCT.sympt
-  uCT.sympt <- dat$attr$uCT.sympt
+  pGC.sympt <- dat$attr$pGC.sympt
+  ## rCT.sympt <- dat$attr$rCT.sympt
+  ## uCT.sympt <- dat$attr$uCT.sympt
 
 
   # Pull act list
@@ -165,100 +171,100 @@ stitrans_msm <- function(dat, at) {
   uGC.timesInf[idsInf_ugc] <- uGC.timesInf[idsInf_ugc] + 1
 
 
-  # Rectal CT -----------------------------------------------------------
+  ## # Rectal CT -----------------------------------------------------------
 
-  # Requires: uCT in insertive man, and no rCT in receptive man
-  p1Inf_rct <- which(uCT[al[, "p1"]] == 1 & uCT.infTime[al[, "p1"]] < at &
-                     rCT[al[, "p2"]] == 0 & al[, "ins"] %in% c(1, 2))
-  p2Inf_rct <- which(uCT[al[, "p2"]] == 1 & uCT.infTime[al[, "p2"]] < at &
-                     rCT[al[, "p1"]] == 0 & al[, "ins"] %in% c(0, 2))
-  allActs_rct <- c(p1Inf_rct, p2Inf_rct)
+  ## # Requires: uCT in insertive man, and no rCT in receptive man
+  ## p1Inf_rct <- which(uCT[al[, "p1"]] == 1 & uCT.infTime[al[, "p1"]] < at &
+  ##                    rCT[al[, "p2"]] == 0 & al[, "ins"] %in% c(1, 2))
+  ## p2Inf_rct <- which(uCT[al[, "p2"]] == 1 & uCT.infTime[al[, "p2"]] < at &
+  ##                    rCT[al[, "p1"]] == 0 & al[, "ins"] %in% c(0, 2))
+  ## allActs_rct <- c(p1Inf_rct, p2Inf_rct)
 
-  # UAI modifier
-  uai_rct <- al[allActs_rct, "uai"]
-  tprob_rct <- rep(rct.tprob, length(allActs_rct))
+  ## # UAI modifier
+  ## uai_rct <- al[allActs_rct, "uai"]
+  ## tprob_rct <- rep(rct.tprob, length(allActs_rct))
 
-  # Transform to log odds
-  tlo_rct <- log(tprob_rct/(1 - tprob_rct))
+  ## # Transform to log odds
+  ## tlo_rct <- log(tprob_rct/(1 - tprob_rct))
 
-  # Modify log odds by race-specific condom effectiveness
-  races <- c(race[al[p1Inf_rct, "p1"]], race[al[p2Inf_rct, "p2"]])
-  condom.rr <- rep(NA, length(races))
-  for (i in sort(unique(races))) {
-    ids.race <- which(races == i)
-    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
-  }
+  ## # Modify log odds by race-specific condom effectiveness
+  ## races <- c(race[al[p1Inf_rct, "p1"]], race[al[p2Inf_rct, "p2"]])
+  ## condom.rr <- rep(NA, length(races))
+  ## for (i in sort(unique(races))) {
+  ##   ids.race <- which(races == i)
+  ##   condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
+  ## }
 
-  tlo_rct[uai_rct == 0] <- tlo_rct[uai_rct == 0] + log(condom.rr[uai_rct == 0])
+  ## tlo_rct[uai_rct == 0] <- tlo_rct[uai_rct == 0] + log(condom.rr[uai_rct == 0])
 
-  # Back-transform to probability
-  tprob_rct <- plogis(tlo_rct)
+  ## # Back-transform to probability
+  ## tprob_rct <- plogis(tlo_rct)
 
-  # Stochastic transmission
-  trans_rct <- rbinom(length(allActs_rct), 1, tprob_rct)
+  ## # Stochastic transmission
+  ## trans_rct <- rbinom(length(allActs_rct), 1, tprob_rct)
 
-  # Determine the newly infected partner
-  idsInf_rct <- NULL
-  if (sum(trans_rct) > 0) {
-    transAL_rct <- al[allActs_rct[trans_rct == 1],  , drop = FALSE]
-    idsInf_rct <- c(intersect(al[p1Inf_rct, "p2"], transAL_rct[, "p2"]),
-                    intersect(al[p2Inf_rct, "p1"], transAL_rct[, "p1"]))
-    stopifnot(all(rCT[idsInf_rct] == 0))
-  }
+  ## # Determine the newly infected partner
+  ## idsInf_rct <- NULL
+  ## if (sum(trans_rct) > 0) {
+  ##   transAL_rct <- al[allActs_rct[trans_rct == 1],  , drop = FALSE]
+  ##   idsInf_rct <- c(intersect(al[p1Inf_rct, "p2"], transAL_rct[, "p2"]),
+  ##                   intersect(al[p2Inf_rct, "p1"], transAL_rct[, "p1"]))
+  ##   stopifnot(all(rCT[idsInf_rct] == 0))
+  ## }
 
-  # Update attributes
-  rCT[idsInf_rct] <- 1
-  rCT.infTime[idsInf_rct] <- at
-  rCT.sympt[idsInf_rct] <- rbinom(length(idsInf_rct), 1, rct.sympt.prob)
-  rCT.timesInf[idsInf_rct] <- rCT.timesInf[idsInf_rct] + 1
+  ## # Update attributes
+  ## rCT[idsInf_rct] <- 1
+  ## rCT.infTime[idsInf_rct] <- at
+  ## rCT.sympt[idsInf_rct] <- rbinom(length(idsInf_rct), 1, rct.sympt.prob)
+  ## rCT.timesInf[idsInf_rct] <- rCT.timesInf[idsInf_rct] + 1
 
 
-  # Urethral CT ---------------------------------------------------------
+  ## # Urethral CT ---------------------------------------------------------
 
-  # Requires: rCT in receptive man, and no uCT in insertive man
-  p1Inf_uct <- which(rCT[al[, "p1"]] == 1 & rCT.infTime[al[, "p1"]] < at &
-                     uCT[al[, "p2"]] == 0 & al[, "ins"] %in% c(0, 2))
-  p2Inf_uct <- which(rCT[al[, "p2"]] == 1 & rCT.infTime[al[, "p2"]] < at &
-                     uCT[al[, "p1"]] == 0 & al[, "ins"] %in% c(1, 2))
-  allActs_uct <- c(p1Inf_uct, p2Inf_uct)
+  ## # Requires: rCT in receptive man, and no uCT in insertive man
+  ## p1Inf_uct <- which(rCT[al[, "p1"]] == 1 & rCT.infTime[al[, "p1"]] < at &
+  ##                    uCT[al[, "p2"]] == 0 & al[, "ins"] %in% c(0, 2))
+  ## p2Inf_uct <- which(rCT[al[, "p2"]] == 1 & rCT.infTime[al[, "p2"]] < at &
+  ##                    uCT[al[, "p1"]] == 0 & al[, "ins"] %in% c(1, 2))
+  ## allActs_uct <- c(p1Inf_uct, p2Inf_uct)
 
-  # UAI modifier
-  uai_uct <- al[allActs_uct, "uai"]
-  tprob_uct <- rep(uct.tprob, length(allActs_uct))
+  ## # UAI modifier
+  ## uai_uct <- al[allActs_uct, "uai"]
+  ## tprob_uct <- rep(uct.tprob, length(allActs_uct))
 
-  # Transform to log odds
-  tlo_uct <- log(tprob_uct/(1 - tprob_uct))
+  ## # Transform to log odds
+  ## tlo_uct <- log(tprob_uct/(1 - tprob_uct))
 
-  # Modify log odds by race-specific condom effectiveness
-  races <- c(race[al[p1Inf_uct, "p2"]], race[al[p2Inf_uct, "p1"]])
-  condom.rr <- rep(NA, length(races))
-  for (i in sort(unique(races))) {
-    ids.race <- which(races == i)
-    condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
-  }
+  ## # Modify log odds by race-specific condom effectiveness
+  ## races <- c(race[al[p1Inf_uct, "p2"]], race[al[p2Inf_uct, "p1"]])
+  ## condom.rr <- rep(NA, length(races))
+  ## for (i in sort(unique(races))) {
+  ##   ids.race <- which(races == i)
+  ##   condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
+  ## }
 
-  tlo_uct[uai_uct == 0] <- tlo_uct[uai_uct == 0] + log(condom.rr[uai_uct == 0])
+  ## tlo_uct[uai_uct == 0] <- tlo_uct[uai_uct == 0] + log(condom.rr[uai_uct == 0])
 
-  # Back-transform to probability
-  tprob_uct <- plogis(tlo_uct)
+  ## # Back-transform to probability
+  ## tprob_uct <- plogis(tlo_uct)
 
-  # Stochastic transmission
-  trans_uct <- rbinom(length(allActs_uct), 1, tprob_uct)
+  ## # Stochastic transmission
+  ## trans_uct <- rbinom(length(allActs_uct), 1, tprob_uct)
 
-  # Determine the newly infected partner
-  idsInf_uct <- NULL
-  if (sum(trans_uct) > 0) {
-    transAL_uct <- al[allActs_uct[trans_uct == 1],  , drop = FALSE]
-    idsInf_uct <- c(intersect(al[p1Inf_uct, "p2"], transAL_uct[, "p2"]),
-                    intersect(al[p2Inf_uct, "p1"], transAL_uct[, "p1"]))
-    stopifnot(all(uCT[idsInf_uct] == 0))
-  }
+  ## # Determine the newly infected partner
+  ## idsInf_uct <- NULL
+  ## if (sum(trans_uct) > 0) {
+  ##   transAL_uct <- al[allActs_uct[trans_uct == 1],  , drop = FALSE]
+  ##   idsInf_uct <- c(intersect(al[p1Inf_uct, "p2"], transAL_uct[, "p2"]),
+  ##                   intersect(al[p2Inf_uct, "p1"], transAL_uct[, "p1"]))
+  ##   stopifnot(all(uCT[idsInf_uct] == 0))
+  ## }
 
-  # Update attributes
-  uCT[idsInf_uct] <- 1
-  uCT.infTime[idsInf_uct] <- at
-  uCT.sympt[idsInf_uct] <- rbinom(length(idsInf_uct), 1, uct.sympt.prob)
-  uCT.timesInf[idsInf_uct] <- uCT.timesInf[idsInf_uct] + 1
+  ## # Update attributes
+  ## uCT[idsInf_uct] <- 1
+  ## uCT.infTime[idsInf_uct] <- at
+  ## uCT.sympt[idsInf_uct] <- rbinom(length(idsInf_uct), 1, uct.sympt.prob)
+  ## uCT.timesInf[idsInf_uct] <- uCT.timesInf[idsInf_uct] + 1
 
 
   # Output --------------------------------------------------------------
