@@ -4,85 +4,137 @@
 \alias{param_msm}
 \title{Epidemic Model Parameters}
 \usage{
-param_msm(netstats, hiv.test.rate = c(0.01325, 0.0125, 0.0124),
-  hiv.test.late.prob = c(0.25, 0.25, 0.25), test.window.int = 21/7,
-  tt.part.supp = c(0.2, 0.2, 0.2), tt.full.supp = c(0.4, 0.4, 0.4),
-  tt.dur.supp = c(0.4, 0.4, 0.4), tx.init.prob = c(0.092, 0.092,
-  0.127), tx.halt.part.prob = c(0.0102, 0.0102, 0.0071),
-  tx.halt.full.rr = c(0.9, 0.9, 0.9), tx.halt.dur.rr = c(0.5, 0.5,
-  0.5), tx.reinit.part.prob = c(0.00066, 0.00066, 0.00291),
-  tx.reinit.full.rr = c(1, 1, 1), tx.reinit.dur.rr = c(1, 1, 1),
-  max.time.off.tx.full.int = 52 * 15, max.time.on.tx.part.int = 52 *
-  10, max.time.off.tx.part.int = 52 * 10, vl.acute.rise.int = 6.4,
-  vl.acute.peak = 6.886, vl.acute.fall.int = 6.4, vl.set.point = 4.5,
-  vl.aids.onset.int = 520, vl.aids.int = 104, vl.aids.peak = 7,
-  vl.full.supp = 1.5, vl.part.supp = 3.5, vl.tx.down.slope = 0.25,
-  vl.tx.aids.down.slope = 0.25, vl.tx.up.slope = 0.25,
-  aids.mr = 1/104, a.rate = 0.00052, arrival.age = 15,
-  URAI.prob = 0.008938, UIAI.prob = 0.003379, trans.scale = c(1, 1,
-  1), acute.rr = 6, circ.rr = 0.4, cond.eff = 0.95,
-  cond.fail = c(0.25, 0.25, 0.25), circ.prob = c(0.874, 0.874, 0.918),
-  epistats, acts.aids.vl = 5.75, acts.scale = 1, cond.scale = 1,
-  rgc.tprob = 0.35, ugc.tprob = 0.25, rct.tprob = 0.2,
-  uct.tprob = 0.16, rgc.sympt.prob = 0.16, ugc.sympt.prob = 0.8,
-  rct.sympt.prob = 0.14, uct.sympt.prob = 0.58, rgc.ntx.int = 16.8,
-  ugc.ntx.int = 16.8, gc.tx.int = 1.4, rct.ntx.int = 32,
-  uct.ntx.int = 32, ct.tx.int = 1.4, gc.sympt.prob.tx = c(0.95, 0.95,
-  0.95), ct.sympt.prob.tx = c(0.9, 0.9, 0.9),
-  gc.asympt.prob.tx = c(0.15, 0.15, 0.15), ct.asympt.prob.tx = c(0.15,
-  0.15, 0.15), sti.cond.eff = 0.9, sti.cond.fail = c(0.2, 0.2, 0.2),
-  hiv.rgc.rr = 2.78, hiv.ugc.rr = 1.73, hiv.rct.rr = 2.78,
-  hiv.uct.rr = 1.73, hiv.dual.rr = 0.2, riskh.start = Inf,
-  prep.start = Inf, prep.start.prob = 0.2, prep.adhr.dist = c(0.089,
-  0.127, 0.784), prep.adhr.hr = c(0.69, 0.19, 0.01),
-  prep.discont.rate = 1 - (2^(-1/(224.4237/7))), prep.tst.int = 90/7,
-  prep.risk.int = 182/7, prep.sti.screen.int = 182/7,
-  prep.sti.prob.tx = 1, prep.risk.reassess.method = "year",
-  prep.require.lnt = TRUE, ...)
+param_msm(
+  netstats,
+  hiv.test.rate = c(0.01325, 0.0125, 0.0124),
+  hiv.test.late.prob = c(0.25, 0.25, 0.25),
+  test.window.int = 21/7,
+  tt.part.supp = c(0.2, 0.2, 0.2),
+  tt.full.supp = c(0.4, 0.4, 0.4),
+  tt.dur.supp = c(0.4, 0.4, 0.4),
+  tx.init.prob = c(0.092, 0.092, 0.127),
+  tx.halt.part.prob = c(0.0102, 0.0102, 0.0071),
+  tx.halt.full.rr = c(0.9, 0.9, 0.9),
+  tx.halt.dur.rr = c(0.5, 0.5, 0.5),
+  tx.reinit.part.prob = c(0.00066, 0.00066, 0.00291),
+  tx.reinit.full.rr = c(1, 1, 1),
+  tx.reinit.dur.rr = c(1, 1, 1),
+  max.time.off.tx.full.int = 52 * 15,
+  max.time.on.tx.part.int = 52 * 10,
+  max.time.off.tx.part.int = 52 * 10,
+  vl.acute.rise.int = 6.4,
+  vl.acute.peak = 6.886,
+  vl.acute.fall.int = 6.4,
+  vl.set.point = 4.5,
+  vl.aids.onset.int = 520,
+  vl.aids.int = 104,
+  vl.aids.peak = 7,
+  vl.full.supp = 1.5,
+  vl.part.supp = 3.5,
+  vl.tx.down.slope = 0.25,
+  vl.tx.aids.down.slope = 0.25,
+  vl.tx.up.slope = 0.25,
+  aids.mr = 1/104,
+  a.rate = 0.00052,
+  arrival.age = 15,
+  URAI.prob = 0.008938,
+  UIAI.prob = 0.003379,
+  trans.scale = c(1, 1, 1),
+  acute.rr = 6,
+  circ.rr = 0.4,
+  cond.eff = 0.95,
+  cond.fail = c(0.25, 0.25, 0.25, 0.25),
+  circ.prob = c(0.874, 0.874, 0.918, 0.918),
+  epistats,
+  acts.aids.vl = 5.75,
+  acts.scale = 1,
+  cond.scale = 1,
+  rgc.tprob = 0.35,
+  ugc.tprob = 0.25,
+  pgc.tprob = 0.25,
+  rct.tprob = 0.2,
+  uct.tprob = 0.16,
+  rgc.sympt.prob = 0.16,
+  ugc.sympt.prob = 0.8,
+  pgc.sympt.prob = 0,
+  rct.sympt.prob = 0.14,
+  uct.sympt.prob = 0.58,
+  rgc.ntx.int = 16.8,
+  ugc.ntx.int = 16.8,
+  pgc.ntx.int = 16.8,
+  gc.tx.int = 1.4,
+  rct.ntx.int = 32,
+  uct.ntx.int = 32,
+  ct.tx.int = 1.4,
+  gc.sympt.prob.tx = c(0.95, 0.95, 0.95),
+  ct.sympt.prob.tx = c(0.9, 0.9, 0.9),
+  gc.asympt.prob.tx = c(0.15, 0.15, 0.15),
+  ct.asympt.prob.tx = c(0.15, 0.15, 0.15),
+  sti.cond.eff = 0.9,
+  sti.cond.fail = c(0.2, 0.2, 0.2),
+  hiv.rgc.rr = 2.78,
+  hiv.ugc.rr = 1.73,
+  hiv.rct.rr = 2.78,
+  hiv.uct.rr = 1.73,
+  hiv.dual.rr = 0.2,
+  riskh.start = Inf,
+  prep.start = Inf,
+  prep.start.prob = 0.2,
+  prep.adhr.dist = c(0.089, 0.127, 0.784),
+  prep.adhr.hr = c(0.69, 0.19, 0.01),
+  prep.discont.rate = 1 - (2^(-1/(224.4237/7))),
+  prep.tst.int = 90/7,
+  prep.risk.int = 182/7,
+  prep.sti.screen.int = 182/7,
+  prep.sti.prob.tx = 1,
+  prep.risk.reassess.method = "year",
+  prep.require.lnt = TRUE,
+  ...
+)
 }
 \arguments{
 \item{netstats}{Target statistics and related network initialization data from
 the standard ARTnet workflow.}
 
 \item{hiv.test.rate}{Mean probability of HIV testing per week for
-black/hispanic/white MSM (vector of length 3).}
+black/hispanic/other/white MSM (vector of length 4).}
 
-\item{hiv.test.late.prob}{Proportion of black/hispanic/white MSM who test only
-during AIDS stage infection (vector of length 3).}
+\item{hiv.test.late.prob}{Proportion of black/hispanic/other/white MSM who test only
+during AIDS stage infection (vector of length 4).}
 
 \item{test.window.int}{Length of the HIV test window period in weeks.}
 
-\item{tt.part.supp}{Proportion of black/hispanic/white MSM who enter partial viral
-suppression category after ART initiation (vector of length 3).}
+\item{tt.part.supp}{Proportion of black/hispanic/other/white MSM who enter partial viral
+suppression category after ART initiation (vector of length 4).}
 
-\item{tt.full.supp}{Proportion of black/hispanic/white MSM who enter full viral
-suppression category after ART initiation (vector of length 3).}
+\item{tt.full.supp}{Proportion of black/hispanic/other/white MSM who enter full viral
+suppression category after ART initiation (vector of length 4).}
 
-\item{tt.dur.supp}{Proportion of black/hispanic/white MSM who enter durable viral
-suppression category after ART initiation (vector of length 3).}
+\item{tt.dur.supp}{Proportion of black/hispanic/other/white MSM who enter durable viral
+suppression category after ART initiation (vector of length 4).}
 
-\item{tx.init.prob}{Probability per time step that a black/hispanic/white MSM who has
-tested positive will initiate treatment (vector of length 3).}
+\item{tx.init.prob}{Probability per time step that a black/hispanic/other/white MSM who has
+tested positive will initiate treatment (vector of length 4).}
 
-\item{tx.halt.part.prob}{Probability per time step that black/hispanic/white
+\item{tx.halt.part.prob}{Probability per time step that black/hispanic/other/white
 MSM who have started treatment and assigned to the partial VL suppression
-category will stop treatment (vector of length 3).}
+category will stop treatment (vector of length 4).}
 
 \item{tx.halt.full.rr}{Relative reduction in \code{tx.halt.part.prob} for
-black/hispanic/white MSM in the full VL suppression category (vector of length 3).}
+black/hispanic/other/white MSM in the full VL suppression category (vector of length 4).}
 
 \item{tx.halt.dur.rr}{Relative reduction in \code{tx.halt.part.prob} for
-black/hispanic/white MSM in the durable VL suppression category (vector of length 3).}
+black/hispanic/other/white MSM in the durable VL suppression category (vector of length 4).}
 
-\item{tx.reinit.part.prob}{Probability per time step that a black/hispanic/white
+\item{tx.reinit.part.prob}{Probability per time step that a black/hispanic/other/white
 MSM who has stopped treatment and assigned to the partial VL suppression
-category will restart treatment (vector of length 3).}
+category will restart treatment (vector of length 4).}
 
 \item{tx.reinit.full.rr}{Relative reduction in \code{tx.reinit.part.prob} for
-black/hispanic/white MSM in the full VL suppression category (vector of length 3).}
+black/hispanic/other/white MSM in the full VL suppression category (vector of length 4).}
 
 \item{tx.reinit.dur.rr}{Relative reduction in \code{tx.reinit.part.prob} for
-black/hispanic/white MSM in the durable VL suppression category (vector of length 3).}
+black/hispanic/other/white MSM in the durable VL suppression category (vector of length 4).}
 
 \item{max.time.off.tx.full.int}{Number of weeks off treatment for a full
 suppressor before onset of AIDS, including time before diagnosis.}
@@ -143,7 +195,7 @@ unprotected insertive anal intercourse with an infected man at set
 point viral load.}
 
 \item{trans.scale}{Relative scalar on base infection probabilities for model
-calibration for black/hispanic/white men (vector of length 3).}
+calibration for black/hispanic/other/white men (vector of length 4).}
 
 \item{acute.rr}{Relative risk of infection (compared to that predicted by
 elevated viral load) when positive partner is in the acute stage.}
@@ -154,11 +206,11 @@ negative insertive partner is circumcised.}
 \item{cond.eff}{Relative risk of HIV infection from anal sex when a condom is
 used properly (biological efficacy).}
 
-\item{cond.fail}{Condom failure rates for HIV for black/hispanic/white MSM, as a reduction
-in the cond.eff parameter (vector of length 3).}
+\item{cond.fail}{Condom failure rates for HIV for black/hispanic/other/white MSM, as a reduction
+in the cond.eff parameter (vector of length 4).}
 
-\item{circ.prob}{Probablity that a black/hispanic/white new arrival in the population
-will be circumcised (vector of length 3).}
+\item{circ.prob}{Probablity that a black/hispanic/other/white new arrival in the population
+will be circumcised (vector of length 4).}
 
 \item{epistats}{GLMs for epidemiological parameter from the standard ARTnet workflow.}
 
@@ -172,6 +224,8 @@ will be circumcised (vector of length 3).}
 
 \item{ugc.tprob}{Probability of urethral gonorrhea infection per act.}
 
+\item{pgc.tprob}{Probability of pharyngeal gonorrhea infection per act.}
+
 \item{rct.tprob}{Probability of rectal chlamydia infection per act.}
 
 \item{uct.tprob}{Probability of urethral chlamydia infection per act.}
@@ -180,6 +234,9 @@ will be circumcised (vector of length 3).}
 gonorrhea.}
 
 \item{ugc.sympt.prob}{Probability of symptoms given infection with urethral
+gonorrhea.}
+
+\item{pgc.sympt.prob}{Probability of symptoms given infection with pharyngeal
 gonorrhea.}
 
 \item{rct.sympt.prob}{Probability of symptoms given infection with rectal
@@ -201,22 +258,22 @@ chlamydia.}
 \item{ct.tx.int}{Average in weeks duration of treated chlamydia (both sites).}
 
 \item{gc.sympt.prob.tx}{Probability of treatment for symptomatic gonorrhea
-for black/hispanic/white men (vector of length 3).}
+for black/hispanic/other/white men (vector of length 4).}
 
 \item{ct.sympt.prob.tx}{Probability of treatment for symptomatic chlamydia
-for black/hispanic/white men (vector of length 3).}
+for black/hispanic/other/white men (vector of length 4).}
 
 \item{gc.asympt.prob.tx}{Probability of treatment for asymptomatic gonorrhea
-for black/hispanic/white men (vector of length 3).}
+for black/hispanic/other/white men (vector of length 4).}
 
 \item{ct.asympt.prob.tx}{Probability of treatment for asymptomatic chlamydia
-for black/hispanic/white men (vector of length 3).}
+for black/hispanic/other/white men (vector of length 4).}
 
 \item{sti.cond.eff}{Relative risk of STI infection from anal sex when a condom is
 used properly (biological efficacy).}
 
-\item{sti.cond.fail}{Condom failure rates for STI for black/hispanic/white MSM, as
-a reduction in the cond.eff parameter (vector of length 3).}
+\item{sti.cond.fail}{Condom failure rates for STI for black/hispanic/other/white MSM, as
+a reduction in the cond.eff parameter (vector of length 4).}
 
 \item{hiv.rgc.rr}{Relative risk of HIV infection given current rectal gonorrhea.}
 
