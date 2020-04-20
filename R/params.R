@@ -10,33 +10,33 @@
 #'        the standard ARTnet workflow.
 #'
 #' @param hiv.test.rate Mean probability of HIV testing per week for
-#'        black/hispanic/white MSM (vector of length 3).
-#' @param hiv.test.late.prob Proportion of black/hispanic/white MSM who test only
-#'        during AIDS stage infection (vector of length 3).
+#'        black/hispanic/other/white MSM (vector of length 4).
+#' @param hiv.test.late.prob Proportion of black/hispanic/other/white MSM who test only
+#'        during AIDS stage infection (vector of length 4).
 #' @param test.window.int Length of the HIV test window period in weeks.
-#' @param tt.part.supp Proportion of black/hispanic/white MSM who enter partial viral
-#'        suppression category after ART initiation (vector of length 3).
-#' @param tt.full.supp Proportion of black/hispanic/white MSM who enter full viral
-#'        suppression category after ART initiation (vector of length 3).
-#' @param tt.dur.supp Proportion of black/hispanic/white MSM who enter durable viral
-#'        suppression category after ART initiation (vector of length 3).
+#' @param tt.part.supp Proportion of black/hispanic/other/white MSM who enter partial viral
+#'        suppression category after ART initiation (vector of length 4).
+#' @param tt.full.supp Proportion of black/hispanic/other/white MSM who enter full viral
+#'        suppression category after ART initiation (vector of length 4).
+#' @param tt.dur.supp Proportion of black/hispanic/other/white MSM who enter durable viral
+#'        suppression category after ART initiation (vector of length 4).
 #'
-#' @param tx.init.prob Probability per time step that a black/hispanic/white MSM who has
-#'        tested positive will initiate treatment (vector of length 3).
-#' @param tx.halt.part.prob Probability per time step that black/hispanic/white
+#' @param tx.init.prob Probability per time step that a black/hispanic/other/white MSM who has
+#'        tested positive will initiate treatment (vector of length 4).
+#' @param tx.halt.part.prob Probability per time step that black/hispanic/other/white
 #'        MSM who have started treatment and assigned to the partial VL suppression
-#'        category will stop treatment (vector of length 3).
+#'        category will stop treatment (vector of length 4).
 #' @param tx.halt.full.rr Relative reduction in \code{tx.halt.part.prob} for
-#'        black/hispanic/white MSM in the full VL suppression category (vector of length 3).
+#'        black/hispanic/other/white MSM in the full VL suppression category (vector of length 4).
 #' @param tx.halt.dur.rr Relative reduction in \code{tx.halt.part.prob} for
-#'        black/hispanic/white MSM in the durable VL suppression category (vector of length 3).
-#' @param tx.reinit.part.prob Probability per time step that a black/hispanic/white
+#'        black/hispanic/other/white MSM in the durable VL suppression category (vector of length 4).
+#' @param tx.reinit.part.prob Probability per time step that a black/hispanic/other/white
 #'        MSM who has stopped treatment and assigned to the partial VL suppression
-#'        category will restart treatment (vector of length 3).
+#'        category will restart treatment (vector of length 4).
 #' @param tx.reinit.full.rr Relative reduction in \code{tx.reinit.part.prob} for
-#'        black/hispanic/white MSM in the full VL suppression category (vector of length 3).
+#'        black/hispanic/other/white MSM in the full VL suppression category (vector of length 4).
 #' @param tx.reinit.dur.rr Relative reduction in \code{tx.reinit.part.prob} for
-#'        black/hispanic/white MSM in the durable VL suppression category (vector of length 3).
+#'        black/hispanic/other/white MSM in the durable VL suppression category (vector of length 4).
 #' @param max.time.off.tx.full.int Number of weeks off treatment for a full
 #'        suppressor before onset of AIDS, including time before diagnosis.
 #' @param max.time.on.tx.part.int Number of weeks on treatment for a
@@ -78,7 +78,7 @@
 #'        unprotected insertive anal intercourse with an infected man at set
 #'        point viral load.
 #' @param trans.scale Relative scalar on base infection probabilities for model
-#'        calibration for black/hispanic/white men (vector of length 3).
+#'        calibration for black/hispanic/other/white men (vector of length 4).
 #' @param acute.rr Relative risk of infection (compared to that predicted by
 #'        elevated viral load) when positive partner is in the acute stage.
 #' @param circ.rr Relative risk of infection from insertive anal sex when the
@@ -86,10 +86,10 @@
 #'
 #' @param cond.eff Relative risk of HIV infection from anal sex when a condom is
 #'        used properly (biological efficacy).
-#' @param cond.fail Condom failure rates for HIV for black/hispanic/white MSM, as a reduction
-#'        in the cond.eff parameter (vector of length 3).
-#' @param circ.prob Probablity that a black/hispanic/white new arrival in the population
-#'        will be circumcised (vector of length 3).
+#' @param cond.fail Condom failure rates for HIV for black/hispanic/other/white MSM, as a reduction
+#'        in the cond.eff parameter (vector of length 4).
+#' @param circ.prob Probablity that a black/hispanic/other/white new arrival in the population
+#'        will be circumcised (vector of length 4).
 #'
 #' @param epistats GLMs for epidemiological parameter from the standard ARTnet workflow.
 #' @param acts.aids.vl Viral load level after which sexual act rate goes to zero.
@@ -118,11 +118,14 @@
 #'
 #' @param rgc.tprob Probability of rectal gonorrhea infection per act.
 #' @param ugc.tprob Probability of urethral gonorrhea infection per act.
+#' @param pgc.tprob Probability of pharyngeal gonorrhea infection per act.
 #' @param rct.tprob Probability of rectal chlamydia infection per act.
 #' @param uct.tprob Probability of urethral chlamydia infection per act.
 #' @param rgc.sympt.prob Probability of symptoms given infection with rectal
 #'        gonorrhea.
 #' @param ugc.sympt.prob Probability of symptoms given infection with urethral
+#'        gonorrhea.
+#' @param pgc.sympt.prob Probability of symptoms given infection with pharyngeal
 #'        gonorrhea.
 #' @param rct.sympt.prob Probability of symptoms given infection with rectal
 #'        chlamydia.
@@ -137,21 +140,21 @@
 #' @param ct.tx.int Average in weeks duration of treated chlamydia (both sites).
 #'
 #' @param gc.sympt.prob.tx Probability of treatment for symptomatic gonorrhea
-#'        for black/hispanic/white men (vector of length 3).
+#'        for black/hispanic/other/white men (vector of length 4).
 #' @param ct.sympt.prob.tx Probability of treatment for symptomatic chlamydia
-#'        for black/hispanic/white men (vector of length 3).
+#'        for black/hispanic/other/white men (vector of length 4).
 #' @param gc.asympt.prob.tx Probability of treatment for asymptomatic gonorrhea
-#'        for black/hispanic/white men (vector of length 3).
+#'        for black/hispanic/other/white men (vector of length 4).
 #' @param ct.asympt.prob.tx Probability of treatment for asymptomatic chlamydia
-#'        for black/hispanic/white men (vector of length 3).
+#'        for black/hispanic/other/white men (vector of length 4).
 #'
 #' @param prep.sti.screen.int Interval in weeks between STI screening at PrEP visits.
 #' @param prep.sti.prob.tx Probability of treatment given positive screening during
 #'        PrEP visit.
 #' @param sti.cond.eff Relative risk of STI infection from anal sex when a condom is
 #'        used properly (biological efficacy).
-#' @param sti.cond.fail Condom failure rates for STI for black/hispanic/white MSM, as
-#'        a reduction in the cond.eff parameter (vector of length 3).
+#' @param sti.cond.fail Condom failure rates for STI for black/hispanic/other/white MSM, as
+#'        a reduction in the cond.eff parameter (vector of length 4).
 #' @param hiv.rgc.rr Relative risk of HIV infection given current rectal gonorrhea.
 #' @param hiv.ugc.rr Relative risk of HIV infection given current urethral gonorrhea.
 #' @param hiv.rct.rr Relative risk of HIV infection given current rectal chlamydia.
@@ -215,8 +218,8 @@ param_msm <- function(netstats,
                       acute.rr = 6,
                       circ.rr = 0.4,
                       cond.eff = 0.95,
-                      cond.fail = c(0.25, 0.25, 0.25),
-                      circ.prob = c(0.874, 0.874, 0.918),
+                      cond.fail = c(0.25, 0.25, 0.25, 0.25),
+                      circ.prob = c(0.874, 0.874, 0.918, 0.918), # @TODO: Other set to White probability
 
                       # Behavioral
                       epistats,
@@ -228,13 +231,17 @@ param_msm <- function(netstats,
                       rgc.tprob = 0.35,
                       ugc.tprob = 0.25,
                       pgc.tprob = 0.25,
+
                       rct.tprob = 0.20,
                       uct.tprob = 0.16,
+
                       rgc.sympt.prob = 0.16,
                       ugc.sympt.prob = 0.80,
                       pgc.sympt.prob = 0,
+
                       rct.sympt.prob = 0.14,
                       uct.sympt.prob = 0.58,
+
                       rgc.ntx.int = 16.8,
                       ugc.ntx.int = 16.8,
                       pgc.ntx.int = 16.8,
@@ -284,6 +291,7 @@ param_msm <- function(netstats,
 #'
 #' @param prev.ugc Initial prevalence of urethral gonorrhea.
 #' @param prev.rgc Initial prevalence of rectal gonorrhea.
+#' @param prev.pgc Initial prevalence of pharyngeal gonorrhea.
 #' @param prev.uct Initial prevalence of urethral chlamydia.
 #' @param prev.rct Initial prevalence of rectal chlamydia.
 #' @param ... Additional arguments passed to function.
@@ -297,6 +305,7 @@ param_msm <- function(netstats,
 #' @export
 init_msm <- function(prev.ugc = 0.005,
                      prev.rgc = 0.005,
+                     prev.pgc = 0.005,
                      prev.uct = 0.013,
                      prev.rct = 0.013,
                      ...) {
