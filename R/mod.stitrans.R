@@ -272,49 +272,71 @@ stitrans_msm <- function(dat, at) {
   # attributes
   dat$attr$rGC <- rGC
   dat$attr$uGC <- uGC
-  dat$attr$rCT <- rCT
-  dat$attr$uCT <- uCT
+  dat$attr$pGC <- pGC
+  ## dat$attr$rCT <- rCT
+  ## dat$attr$uCT <- uCT
 
   dat$attr$rGC.infTime <- rGC.infTime
   dat$attr$uGC.infTime <- uGC.infTime
-  dat$attr$rCT.infTime <- rCT.infTime
-  dat$attr$uCT.infTime <- uCT.infTime
+  dat$attr$pGC.infTime <- pGC.infTime
+  ## dat$attr$rCT.infTime <- rCT.infTime
+  ## dat$attr$uCT.infTime <- uCT.infTime
 
   dat$attr$rGC.timesInf <- rGC.timesInf
   dat$attr$uGC.timesInf <- uGC.timesInf
-  dat$attr$rCT.timesInf <- rCT.timesInf
-  dat$attr$uCT.timesInf <- uCT.timesInf
+  dat$attr$pGC.timesInf <- pGC.timesInf
+  ## dat$attr$rCT.timesInf <- rCT.timesInf
+  ## dat$attr$uCT.timesInf <- uCT.timesInf
 
   dat$attr$rGC.sympt <- rGC.sympt
   dat$attr$uGC.sympt <- uGC.sympt
-  dat$attr$rCT.sympt <- rCT.sympt
-  dat$attr$uCT.sympt <- uCT.sympt
+  dat$attr$pGC.sympt <- pGC.sympt
+  ## dat$attr$rCT.sympt <- rCT.sympt
+  ## dat$attr$uCT.sympt <- uCT.sympt
 
 
   # Summary stats
-  dat$epi$incid.gc[at] <- length(idsInf_rgc) + length(idsInf_ugc)
+
+  ## GC incidence by anatomic site
+  dat$epi$incid.gc[at] <- length(idsInf_rgc) + length(idsInf_ugc) + length(idsInf_pgc)
   dat$epi$incid.rgc[at] <- length(idsInf_rgc)
   dat$epi$incid.ugc[at] <- length(idsInf_ugc)
-  dat$epi$incid.gc.B[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 1)))
-  dat$epi$incid.gc.H[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 2)))
-  dat$epi$incid.gc.W[at] <- length(intersect(union(idsInf_rgc, idsInf_ugc), which(race == 3)))
+  dat$epi$incid.pgc[at] <- length(idsInf_pgc)
 
-  dat$epi$incid.ct[at] <- length(idsInf_rct) + length(idsInf_uct)
-  dat$epi$incid.rct[at] <- length(idsInf_rct)
-  dat$epi$incid.uct[at] <- length(idsInf_uct)
-  dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 1)))
-  dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 2)))
-  dat$epi$incid.ct.W[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 3)))
+  ## by race/ethnicity
+  dat$epi$incid.gc.B[at] <- length(
+    intersect(union(idsInf_rgc, idsInf_ugc, idsInf_pgc), which(race == 1))
+  )
+  dat$epi$incid.gc.H[at] <- length(
+    intersect(union(idsInf_rgc, idsInf_ugc, idsInf_pgc), which(race == 2))
+  )
+  dat$epi$incid.gc.O[at] <- length(
+    intersect(union(idsInf_rgc, idsInf_ugc, idsInf_pgc), which(race == 3))
+  )
+  dat$epi$incid.gc.W[at] <- length(
+    intersect(union(idsInf_rgc, idsInf_ugc, idsInf_pgc), which(race == 4))
+  )
+
+  ## dat$epi$incid.ct[at] <- length(idsInf_rct) + length(idsInf_uct)
+  ## dat$epi$incid.rct[at] <- length(idsInf_rct)
+  ## dat$epi$incid.uct[at] <- length(idsInf_uct)
+  ## dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 1)))
+  ## dat$epi$incid.ct.B[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 2)))
+  ## dat$epi$incid.ct.W[at] <- length(intersect(union(idsInf_rct, idsInf_uct), which(race == 3)))
 
   # Check all infected have all STI attributes
-  stopifnot(all(!is.na(rGC.infTime[rGC == 1])),
-            all(!is.na(rGC.sympt[rGC == 1])),
-            all(!is.na(uGC.infTime[uGC == 1])),
-            all(!is.na(uGC.sympt[uGC == 1])),
-            all(!is.na(rCT.infTime[rCT == 1])),
-            all(!is.na(rCT.sympt[rCT == 1])),
-            all(!is.na(uCT.infTime[uCT == 1])),
-            all(!is.na(uCT.sympt[uCT == 1])))
+  stopifnot(
+    all(!is.na(rGC.infTime[rGC == 1])),
+    all(!is.na(rGC.sympt[rGC == 1])),
+    all(!is.na(uGC.infTime[uGC == 1])),
+    all(!is.na(uGC.sympt[uGC == 1])),
+    all(!is.na(pGC.infTime[pGC == 1])),
+    all(!is.na(pGC.sympt[pGC == 1]))
+    ## all(!is.na(rCT.infTime[rCT == 1])),
+    ## all(!is.na(rCT.sympt[rCT == 1])),
+    ## all(!is.na(uCT.infTime[uCT == 1])),
+    ## all(!is.na(uCT.sympt[uCT == 1]))
+  )
 
   return(dat)
 }
