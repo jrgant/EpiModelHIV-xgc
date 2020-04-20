@@ -1,50 +1,142 @@
 
-rm(list = ls())
 suppressMessages(library("EpiModelHIV"))
-devtools::load_all("~/Dropbox/Dev/EpiModelHIV/EpiModelHIV-p")
 
-scr.dir <- "~/Dropbox/Dev/ARTnet/"
-netstats <- readRDS(file.path(scr.dir, "data/artnet.NetStats.Atlanta.rda"))
-epistats <- readRDS(file.path(scr.dir, "data/artnet.EpiStats.Atlanta.rda"))
-est <- readRDS(file.path(scr.dir, "data/artnet.NetEst.Atlanta.rda"))
+# @ TODO:
+# eventually import netstats, epistats, and netest into this package
+data.dir <- "C:/Users/jason/Documents/Github/egcmsm/egcmsm_artnet"
 
-param <- param_msm(netstats = netstats,
-                   epistats = epistats,
-                   hiv.test.int = c(43, 43, 45),
-                   a.rate = 0.00055,
-                   riskh.start = 2,
-                   prep.start = 30,
-                   prep.start.prob = 0.10,
-                   tt.part.supp = c(0.20, 0.20, 0.20),
-                   tt.full.supp = c(0.40, 0.40, 0.40),
-                   tt.dur.supp = c(0.40, 0.40, 0.40),
-                   tx.halt.full.rr = 0.8,
-                   tx.halt.dur.rr = 0.1,
-                   tx.reinit.full.rr = 2.0,
-                   tx.reinit.dur.rr = 5.0,
-                   hiv.rgc.rr = 2.5,
-                   hiv.ugc.rr = 1.5,
-                   hiv.rct.rr = 2.5,
-                   hiv.uct.rr = 1.5,
-                   hiv.dual.rr = 0.0,
-                   rgc.tprob = 0.35,
-                   ugc.tprob = 0.25,
-                   rct.tprob = 0.20,
-                   uct.tprob = 0.16,
-                   rgc.ntx.int = 16.8,
-                   ugc.ntx.int = 16.8,
-                   rct.ntx.int = 32,
-                   uct.ntx.int = 32,
-                   acts.aids.vl = 5.75)
-init <- init_msm()
-control <- control_msm(simno = 1,
-                       nsteps = 52 * 2,
-                       nsims = 1,
-                       ncores = 1,
-                       save.nwstats = FALSE,
-                       save.clin.hist = FALSE)
+netstats <- readRDS(file.path(data.dir, "netstats/netstats.Rds"))
+est <- readRDS(file.path(data.dir, "netest/netest.Rds"))
+epistats <- list()
 
-sim <- netsim(est, param, init, control)
+## Parameters for simplified model without HIV
+
+## @NOTE: Where original parameters had unique values for each race/ethnic group,
+##        Other value takes the value assigned to White.
+
+param_xgc <- param_msm(
+
+  # external objects
+  netstats = netstats,
+  epistats = epistats,
+
+  # demography
+  a.rate = 0.00055,   # TODO: tweak this "birth rate" if needed
+
+  # gonorrhea parameters
+  rgc.tprob = 0.25,   # TODO: update all transmission probs
+  ugc.tprob = 0.25,   # TODO: update all transmission probs
+  pgc.tprob = 0.25,   # TODO: update all transmission probs
+  rgc.ntx.int = 16.8, # TODO: update all duration probs
+  ugc.ntx.int = 16.8, # TODO: update all duration probs
+  pgc.ntx.int = 16.8, # TODO: update all duration probs
+
+  # STI testing
+  gc.sympt.prob.tx = rep(0.7, 4),   # TODO: update all transmission probs
+  gc.asympt.prob.tx = rep(0.2, 4),  # TODO: update all transmission probs
+
+  # HIV testing
+  hiv.test.rate = c(
+    0.01325,
+    0.0125,
+    0.0124,
+    0.0124
+  ), # @ORIG, HIV test rate by race
+  hiv.test.late.prob = rep(0.25, 4), # @ORIG, proportion of MSM testing only at late-stage (AIDS)
+
+  # HIV treatment parameters
+  tt.part.supp = rep(0.2, 4), # ORIGPARAM, partial VLS post ART start
+  tt.full.supp = rep(0.4, 4), # ORIGPARAM, full VLS w/ post ART start
+  tt.dur.supp = rep(0.4, 4),  # ORIGPARAM, durable VLS post ART start
+  tx.init.prob = c(
+    0.092,
+    0.092,
+    0.127,
+    0.127
+  ), # @ORIG
+  tx.halt.part.prob = c(
+    0.0102,
+    0.0102,
+    0.0071,
+    0.0071
+  ), # @ORIG
+  tx.halt.full.rr = rep(0.9, 4), # ORIGPARAM
+  tx.halt.dur.rr = rep(0.5, 4),  # ORIGPARAM
+  tx.reinit.part.prob = c(
+    0.00066,
+    0.00066,
+    0.00291,
+    0.00291
+  ), # @ORIG
+  tx.reinit.full.rr = rep(1.0, 4), # ORIGPARAM
+  tx.reinit.dur.rr = rep(1.0, 4),  # ORIGPARAM
+
+  # scaling parameters
+  trans.scale = rep(1.0, 4), # ORIGPARAM
+  sti.cond.eff = 0.8,        # TODO: condom efficacy for anal sex
+  cond.eff = 0.95,           # ORIGPARAM, condom eff anal HIV transmission
+  cond.fail = rep(0.25, 4),
+  circ.prob = c(
+    0.874,
+    0.874,
+    0.918,
+    0.918
+  ) # TODO: Other set to White probability (find alternate value)
+)
+
+init_xgc <- init_msm(
+  prev.ugc = 0.05,  # TODO: update initialization prevelance
+  prev.rgc = 0.05,  # TODO: update initialization prevelance
+  prev.pgc = 0.05,  # TODO: update initialization prevelance
+  prev.uct = 0,
+  prev.rct = 0
+)
+
+control_xgc <- control_msm(
+  simno = 1,
+  nsteps = 10,
+  nsims = 1,
+  ncores = 1,
+  initialize.FUN = initialize_msm,
+  aging.FUN = NULL,
+  departure.FUN = NULL,
+  arrival.FUN = NULL,
+  hivtest.FUN = NULL,
+  hivtx.FUN = NULL,
+  hivprogress.FUN = NULL,
+  hivvl.FUN = NULL,
+  resim_nets.FUN = NULL,
+  acts.FUN = NULL,
+  condoms.FUN = NULL,
+  position.FUN = NULL,
+  prep.FUN = NULL,
+  hivtrans.FUN = NULL,
+  # stitrans.FUN = stitrans_msm,
+  stirecov.FUN = NULL,
+  stitx.FUN = NULL,
+  #  prev.FUN = prevalence_msm
+  # aging.FUN = aging_msm,
+  # departure.FUN = departure_msm,
+  # arrival.FUN = arrival_msm,
+  # # hivtest.FUN = hivtest_msm,
+  # # hivtx.FUN = hivtx_msm,
+  # # hivprogress.FUN = hivprogress_msm,
+  # # hivvl.FUN = hivvl_msm,
+  # resim_nets.FUN = simnet_msm,
+  # acts.FUN = acts_msm,
+  # condoms.FUN = condoms_msm,
+  # position.FUN = position_msm,
+  # prep.FUN = prep_msm,
+  # # hivtrans.FUN = hivtrans_msm,
+  # stitrans.FUN = stitrans_msm,
+  # stirecov.FUN = stirecov_msm,
+  # stitx.FUN = stitx_msm,
+  # prev.FUN = prevalence_msm,
+  # verbose.FUN = verbose.net
+)
+
+sim <- netsim(est, param_xgc, init_xgc, control_xgc)
+names(sim$attr[[1]])
 
 # Explore clinical history
 par(mar = c(3,3,1,1), mgp = c(2,1,0))
@@ -53,6 +145,7 @@ m2 <- sim$temp[[1]]$clin.hist[[2]]
 m3 <- sim$temp[[1]]$clin.hist[[3]]
 a <- sim$attr[[1]]
 h <- which(a$status == 1)
+
 
 m1[h[1:10], 95:104]
 aids <- which(a$stage == 4)
@@ -103,7 +196,7 @@ plot(sim, type = "formation", network = 3, plots.joined = FALSE)
 m <- microbenchmark::microbenchmark(hivvl_msm(dat, at))
 print(m, unit = "ms")
 
-dat <- initialize_msm(est, param, init, control, s = 1)
+dat <- initialize_msm(est, param_xgc, init_xgc, control_xgc, s = 1)
 
 for (at in 2:200) {
   dat <- aging_msm(dat, at)
