@@ -170,6 +170,9 @@ stitrans_msm <- function(dat, at) {
   uGC.sympt[idsInf_ugc] <- rbinom(length(idsInf_ugc), 1, ugc.sympt.prob)
   uGC.timesInf[idsInf_ugc] <- uGC.timesInf[idsInf_ugc] + 1
 
+  # Pharyngeal GC ----------------------------------------------------------
+
+  # TODO 2020-04-20: Fill out pharyngeal GC section
 
   ## # Rectal CT -----------------------------------------------------------
 
