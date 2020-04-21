@@ -45,8 +45,9 @@ prevalence_msm <- function(dat, at) {
 
   rGC <- dat$attr$rGC
   uGC <- dat$attr$uGC
-  rCT <- dat$attr$rCT
-  uCT <- dat$attr$uCT
+  pGC <- dat$attr$pGC
+  ## rCT <- dat$attr$rCT
+  ## uCT <- dat$attr$uCT
 
   # Pop Size / Demog
 
@@ -377,15 +378,16 @@ prevalence_msm <- function(dat, at) {
   dat$epi$prepCurr.hadr[at] <- sum(prepStat == 1 & prepClass == 3, na.rm = TRUE)
 
   # STIs
-  dat$epi$prev.gc[at] <- sum((rGC == 1 | uGC == 1), na.rm = TRUE) / dat$epi$num[at]
-  dat$epi$prev.ct[at] <- sum((rCT == 1 | uCT == 1), na.rm = TRUE) / dat$epi$num[at]
-  ir100.rgc <- (dat$epi$incid.rgc[at]/sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE))*5200
-  ir100.ugc <- (dat$epi$incid.ugc[at]/sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE))*5200
-  dat$epi$ir100.gc[at] <- ir100.rgc + ir100.ugc
-  ir100.rct <- (dat$epi$incid.rct[at]/sum(rCT == 0, dat$epi$incid.rct[at], na.rm = TRUE))*5200
-  ir100.uct <- (dat$epi$incid.uct[at]/sum(uCT == 0, dat$epi$incid.uct[at], na.rm = TRUE))*5200
-  dat$epi$ir100.ct[at] <- ir100.rct + ir100.uct
-  dat$epi$ir100.sti[at] <- dat$epi$ir100.gc[at] + dat$epi$ir100.ct[at]
+  dat$epi$prev.gc[at] <- sum((rGC == 1 | uGC == 1 | pGC == 1), na.rm = TRUE) / dat$epi$num[at]
+  # dat$epi$prev.ct[at] <- sum((rCT == 1 | uCT == 1), na.rm = TRUE) / dat$epi$num[at]
+  ir100.rgc <- (dat$epi$incid.rgc[at]/sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE)) * 5200
+  ir100.ugc <- (dat$epi$incid.ugc[at]/sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE)) * 5200
+  ir100.pgc <- (dat$epi$incid.pgc[at]/sum(pGC == 0, dat$epi$incid.pgc[at], na.rm = TRUE)) * 5200
+  dat$epi$ir100.gc[at] <- ir100.rgc + ir100.ugc + ir100.pgc
+  ## ir100.rct <- (dat$epi$incid.rct[at]/sum(rCT == 0, dat$epi$incid.rct[at], na.rm = TRUE)) * 5200
+  ## ir100.uct <- (dat$epi$incid.uct[at]/sum(uCT == 0, dat$epi$incid.uct[at], na.rm = TRUE)) * 5200
+  ## dat$epi$ir100.ct[at] <- ir100.rct + ir100.uct
+  ## dat$epi$ir100.sti[at] <- dat$epi$ir100.gc[at] + dat$epi$ir100.ct[at]
 
   return(dat)
 }
