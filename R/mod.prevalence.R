@@ -154,8 +154,7 @@ prevalence_msm <- function(dat, at) {
 
   ## Linked to care
   dat$epi$cc.linked1m[at] <-
-    sum(tx.init.time - diag.time <= 4 & dia
-        g.time >= 2, na.rm = TRUE) /
+    sum(tx.init.time - diag.time <= 4 & diag.time >= 2, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1 & diag.time >= 2, na.rm = TRUE)
 
   dat$epi$cc.linked1m.B[at] <-
