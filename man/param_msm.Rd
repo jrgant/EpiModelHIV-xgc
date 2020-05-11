@@ -47,7 +47,8 @@ param_msm(
   circ.prob = c(0.874, 0.874, 0.918, 0.918),
   epistats,
   acts.aids.vl = 5.75,
-  acts.scale = 1,
+  ai.acts.scale = 1,
+  oi.acts.scale = 1,
   cond.scale = 1,
   rgc.tprob = 0.35,
   ugc.tprob = 0.25,
@@ -205,7 +206,9 @@ will be circumcised (vector of length 4).}
 
 \item{acts.aids.vl}{Viral load level after which sexual act rate goes to zero.}
 
-\item{acts.scale}{Scalar for main/casual act rate for model calibration.}
+\item{ai.acts.scale}{Scalar for main/casual anal sex act rate for model calibration.}
+
+\item{oi.acts.scale}{Scalar for main/casual oral sex act rate for model calibration.}
 
 \item{cond.scale}{Scalar for condom use probability for model calibration.}
 

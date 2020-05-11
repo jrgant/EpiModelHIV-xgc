@@ -93,7 +93,8 @@
 #'
 #' @param epistats GLMs for epidemiological parameter from the standard ARTnet workflow.
 #' @param acts.aids.vl Viral load level after which sexual act rate goes to zero.
-#' @param acts.scale Scalar for main/casual act rate for model calibration.
+#' @param ai.acts.scale Scalar for main/casual anal sex act rate for model calibration.
+#' @param oi.acts.scale Scalar for main/casual oral sex act rate for model calibration.
 #' @param cond.scale Scalar for condom use probability for model calibration.
 #'
 #' @param riskh.start Time step at which behavioral risk history assessment occurs.
@@ -208,7 +209,8 @@ param_msm <- function(netstats,
                       # Behavioral
                       epistats,
                       acts.aids.vl = 5.75,
-                      acts.scale = 1,
+                      ai.acts.scale = 1,
+                      oi.acts.scale = 1,
                       cond.scale = 1,
 
                       # STI epi
