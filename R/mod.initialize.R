@@ -223,8 +223,6 @@ init_sti_msm <- function(dat) {
 
   uGC <- rGC <- pGC <- rep(0, num)
 
-  # uCT <- rCT <- rep(0, num)
-
   # Initialize GC infection at all anatomic sites
 
   ## urethral
@@ -283,32 +281,6 @@ init_sti_msm <- function(dat) {
 
   dat$attr$rGC.tx <- dat$attr$uGC.tx <- dat$attr$pGC.tx <- rep(NA, num)
   dat$attr$rGC.tx.prep <- dat$attr$uGC.tx.prep <- dat$attr$pGC.tx.prep <- rep(NA, num)
-
-  # Initialize CT infection at both sites
-  ## idsUCT <- sample(idsUreth, size = round(dat$init$prev.uct * num), FALSE)
-  ## uCT[idsUCT] <- 1
-
-  ## idsRCT <- sample(setdiff(idsRect, idsUCT), size = round(dat$init$prev.rct * num), FALSE)
-  ## rCT[idsRCT] <- 1
-
-  ## dat$attr$rCT <- rCT
-  ## dat$attr$uCT <- uCT
-
-  ## dat$attr$rCT.sympt <- dat$attr$uCT.sympt <- rep(NA, num)
-  ## dat$attr$rCT.sympt[rCT == 1] <- rbinom(sum(rCT == 1), 1, dat$param$rct.sympt.prob)
-  ## dat$attr$uCT.sympt[uCT == 1] <- rbinom(sum(uCT == 1), 1, dat$param$uct.sympt.prob)
-
-  ## dat$attr$rCT.infTime <- dat$attr$uCT.infTime <- rep(NA, num)
-  ## dat$attr$rCT.infTime[dat$attr$rCT == 1] <- 1
-  ## dat$attr$uCT.infTime[dat$attr$uCT == 1] <- 1
-
-  ## dat$attr$rCT.timesInf <- rep(0, num)
-  ## dat$attr$rCT.timesInf[rCT == 1] <- 1
-  ## dat$attr$uCT.timesInf <- rep(0, num)
-  ## dat$attr$uCT.timesInf[uCT == 1] <- 1
-
-  ## dat$attr$rCT.tx <- dat$attr$uCT.tx <- rep(NA, num)
-  ## dat$attr$rCT.tx.prep <- dat$attr$uCT.tx.prep <- rep(NA, num)
 
   return(dat)
 

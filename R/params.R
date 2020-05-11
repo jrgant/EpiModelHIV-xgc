@@ -119,33 +119,19 @@
 #' @param rgc.tprob Probability of rectal gonorrhea infection per act.
 #' @param ugc.tprob Probability of urethral gonorrhea infection per act.
 #' @param pgc.tprob Probability of pharyngeal gonorrhea infection per act.
-#' @param rct.tprob Probability of rectal chlamydia infection per act.
-#' @param uct.tprob Probability of urethral chlamydia infection per act.
 #' @param rgc.sympt.prob Probability of symptoms given infection with rectal
 #'        gonorrhea.
 #' @param ugc.sympt.prob Probability of symptoms given infection with urethral
 #'        gonorrhea.
 #' @param pgc.sympt.prob Probability of symptoms given infection with pharyngeal
 #'        gonorrhea.
-#' @param rct.sympt.prob Probability of symptoms given infection with rectal
-#'        chlamydia.
-#' @param uct.sympt.prob Probability of symptoms given infection with urethral
-#'        chlamydia.
-#'
 #' @param rgc.ntx.int Average duration in weeks of untreated rectal gonorrhea.
 #' @param ugc.ntx.int Average duration in weeks of untreated urethral gonorrhea.
 #' @param gc.tx.int Average duration in weeks of treated gonorrhea (both sites).
-#' @param rct.ntx.int Average in weeks duration of untreated rectal chlamydia.
-#' @param uct.ntx.int Average in weeks duration of untreated urethral chlamydia.
-#' @param ct.tx.int Average in weeks duration of treated chlamydia (both sites).
 #'
 #' @param gc.sympt.prob.tx Probability of treatment for symptomatic gonorrhea
 #'        for black/hispanic/other/white men (vector of length 4).
-#' @param ct.sympt.prob.tx Probability of treatment for symptomatic chlamydia
-#'        for black/hispanic/other/white men (vector of length 4).
 #' @param gc.asympt.prob.tx Probability of treatment for asymptomatic gonorrhea
-#'        for black/hispanic/other/white men (vector of length 4).
-#' @param ct.asympt.prob.tx Probability of treatment for asymptomatic chlamydia
 #'        for black/hispanic/other/white men (vector of length 4).
 #'
 #' @param prep.sti.screen.int Interval in weeks between STI screening at PrEP visits.
@@ -157,8 +143,6 @@
 #'        a reduction in the cond.eff parameter (vector of length 4).
 #' @param hiv.rgc.rr Relative risk of HIV infection given current rectal gonorrhea.
 #' @param hiv.ugc.rr Relative risk of HIV infection given current urethral gonorrhea.
-#' @param hiv.rct.rr Relative risk of HIV infection given current rectal chlamydia.
-#' @param hiv.uct.rr Relative risk of HIV infection given current urethral chlamydia.
 #' @param hiv.dual.rr Additive proportional risk, from 0 to 1, for HIV infection
 #'        given dual infection with both gonorrhea and chlamydia.
 #'
@@ -232,33 +216,20 @@ param_msm <- function(netstats,
                       ugc.tprob = 0.25,
                       pgc.tprob = 0.25,
 
-                      rct.tprob = 0.20,
-                      uct.tprob = 0.16,
-
                       rgc.sympt.prob = 0.16,
                       ugc.sympt.prob = 0.80,
                       pgc.sympt.prob = 0,
-
-                      rct.sympt.prob = 0.14,
-                      uct.sympt.prob = 0.58,
 
                       rgc.ntx.int = 16.8,
                       ugc.ntx.int = 16.8,
                       pgc.ntx.int = 16.8,
                       gc.tx.int = 1.4,
-                      rct.ntx.int = 32,
-                      uct.ntx.int = 32,
-                      ct.tx.int = 1.4,
                       gc.sympt.prob.tx = c(0.95, 0.95, 0.95),
-                      ct.sympt.prob.tx = c(0.9, 0.9, 0.9),
                       gc.asympt.prob.tx = c(0.15, 0.15, 0.15),
-                      ct.asympt.prob.tx = c(0.15, 0.15, 0.15),
                       sti.cond.eff = 0.9,
                       sti.cond.fail = c(0.20, 0.20, 0.20),
                       hiv.rgc.rr = 2.78,
                       hiv.ugc.rr = 1.73,
-                      hiv.rct.rr = 2.78,
-                      hiv.uct.rr = 1.73,
                       hiv.dual.rr = 0.2,
 
                       # PrEP
@@ -292,8 +263,6 @@ param_msm <- function(netstats,
 #' @param prev.ugc Initial prevalence of urethral gonorrhea.
 #' @param prev.rgc Initial prevalence of rectal gonorrhea.
 #' @param prev.pgc Initial prevalence of pharyngeal gonorrhea.
-#' @param prev.uct Initial prevalence of urethral chlamydia.
-#' @param prev.rct Initial prevalence of rectal chlamydia.
 #' @param ... Additional arguments passed to function.
 #'
 #' @return
@@ -306,8 +275,6 @@ param_msm <- function(netstats,
 init_msm <- function(prev.ugc = 0.005,
                      prev.rgc = 0.005,
                      prev.pgc = 0.005,
-                     prev.uct = 0.013,
-                     prev.rct = 0.013,
                      ...) {
 
   p <- get_args(formal.args = formals(sys.function()),
@@ -351,11 +318,11 @@ init_msm <- function(prev.ugc = 0.005,
 #' @param position.FUN Module function to simulate sexual position within acts.
 #' @param hivtrans.FUN Module function to stochastically simulate HIV transmission
 #'        over acts given individual and dyadic attributes.
-#' @param stitrans.FUN Module function to simulate GC/CT transmission over current
+#' @param stitrans.FUN Module function to simulate GC transmission over current
 #'        edgelist.
-#' @param stirecov.FUN Module function to simulate recovery from GC/CT, heterogeneous
+#' @param stirecov.FUN Module function to simulate recovery from GC, heterogeneous
 #'        by disease, site, symptoms, and treatment status.
-#' @param stitx.FUN Module function to simulate treatment of GC/CT.
+#' @param stitx.FUN Module function to simulate treatment of GC.
 #' @param prev.FUN Module function to calculate prevalence summary statistics.
 #' @param verbose.FUN Module function to print model progress to the console or
 #'        external text files.

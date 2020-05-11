@@ -52,30 +52,19 @@ param_msm(
   rgc.tprob = 0.35,
   ugc.tprob = 0.25,
   pgc.tprob = 0.25,
-  rct.tprob = 0.2,
-  uct.tprob = 0.16,
   rgc.sympt.prob = 0.16,
   ugc.sympt.prob = 0.8,
   pgc.sympt.prob = 0,
-  rct.sympt.prob = 0.14,
-  uct.sympt.prob = 0.58,
   rgc.ntx.int = 16.8,
   ugc.ntx.int = 16.8,
   pgc.ntx.int = 16.8,
   gc.tx.int = 1.4,
-  rct.ntx.int = 32,
-  uct.ntx.int = 32,
-  ct.tx.int = 1.4,
   gc.sympt.prob.tx = c(0.95, 0.95, 0.95),
-  ct.sympt.prob.tx = c(0.9, 0.9, 0.9),
   gc.asympt.prob.tx = c(0.15, 0.15, 0.15),
-  ct.asympt.prob.tx = c(0.15, 0.15, 0.15),
   sti.cond.eff = 0.9,
   sti.cond.fail = c(0.2, 0.2, 0.2),
   hiv.rgc.rr = 2.78,
   hiv.ugc.rr = 1.73,
-  hiv.rct.rr = 2.78,
-  hiv.uct.rr = 1.73,
   hiv.dual.rr = 0.2,
   riskh.start = Inf,
   prep.start = Inf,
@@ -226,10 +215,6 @@ will be circumcised (vector of length 4).}
 
 \item{pgc.tprob}{Probability of pharyngeal gonorrhea infection per act.}
 
-\item{rct.tprob}{Probability of rectal chlamydia infection per act.}
-
-\item{uct.tprob}{Probability of urethral chlamydia infection per act.}
-
 \item{rgc.sympt.prob}{Probability of symptoms given infection with rectal
 gonorrhea.}
 
@@ -239,34 +224,16 @@ gonorrhea.}
 \item{pgc.sympt.prob}{Probability of symptoms given infection with pharyngeal
 gonorrhea.}
 
-\item{rct.sympt.prob}{Probability of symptoms given infection with rectal
-chlamydia.}
-
-\item{uct.sympt.prob}{Probability of symptoms given infection with urethral
-chlamydia.}
-
 \item{rgc.ntx.int}{Average duration in weeks of untreated rectal gonorrhea.}
 
 \item{ugc.ntx.int}{Average duration in weeks of untreated urethral gonorrhea.}
 
 \item{gc.tx.int}{Average duration in weeks of treated gonorrhea (both sites).}
 
-\item{rct.ntx.int}{Average in weeks duration of untreated rectal chlamydia.}
-
-\item{uct.ntx.int}{Average in weeks duration of untreated urethral chlamydia.}
-
-\item{ct.tx.int}{Average in weeks duration of treated chlamydia (both sites).}
-
 \item{gc.sympt.prob.tx}{Probability of treatment for symptomatic gonorrhea
 for black/hispanic/other/white men (vector of length 4).}
 
-\item{ct.sympt.prob.tx}{Probability of treatment for symptomatic chlamydia
-for black/hispanic/other/white men (vector of length 4).}
-
 \item{gc.asympt.prob.tx}{Probability of treatment for asymptomatic gonorrhea
-for black/hispanic/other/white men (vector of length 4).}
-
-\item{ct.asympt.prob.tx}{Probability of treatment for asymptomatic chlamydia
 for black/hispanic/other/white men (vector of length 4).}
 
 \item{sti.cond.eff}{Relative risk of STI infection from anal sex when a condom is
@@ -278,10 +245,6 @@ a reduction in the cond.eff parameter (vector of length 4).}
 \item{hiv.rgc.rr}{Relative risk of HIV infection given current rectal gonorrhea.}
 
 \item{hiv.ugc.rr}{Relative risk of HIV infection given current urethral gonorrhea.}
-
-\item{hiv.rct.rr}{Relative risk of HIV infection given current rectal chlamydia.}
-
-\item{hiv.uct.rr}{Relative risk of HIV infection given current urethral chlamydia.}
 
 \item{hiv.dual.rr}{Additive proportional risk, from 0 to 1, for HIV infection
 given dual infection with both gonorrhea and chlamydia.}

@@ -84,13 +84,13 @@ partnerships.}
 \item{hivtrans.FUN}{Module function to stochastically simulate HIV transmission
 over acts given individual and dyadic attributes.}
 
-\item{stitrans.FUN}{Module function to simulate GC/CT transmission over current
+\item{stitrans.FUN}{Module function to simulate GC transmission over current
 edgelist.}
 
-\item{stirecov.FUN}{Module function to simulate recovery from GC/CT, heterogeneous
+\item{stirecov.FUN}{Module function to simulate recovery from GC, heterogeneous
 by disease, site, symptoms, and treatment status.}
 
-\item{stitx.FUN}{Module function to simulate treatment of GC/CT.}
+\item{stitx.FUN}{Module function to simulate treatment of GC.}
 
 \item{prev.FUN}{Module function to calculate prevalence summary statistics.}
 

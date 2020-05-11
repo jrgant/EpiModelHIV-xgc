@@ -13,7 +13,7 @@ individual-level attributes, and summary statistics.}
 \item{at}{Current time step.}
 }
 \description{
-Stochastically simulates GC/CT transmission given the current
+Stochastically simulates GC transmission given the current
              state of the edgelist.
 }
 \keyword{module}
