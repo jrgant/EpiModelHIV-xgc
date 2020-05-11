@@ -77,13 +77,14 @@ setNewAttr_msm <- function(dat, at, nNew) {
   attr_age.grp <- cut(dat$attr$age[newIds], age.breaks, labels = FALSE)
   dat$attr$age.grp[newIds] <- attr_age.grp
 
-  # Disease status and related
+  # Assign HIV status and related
   dat$attr$status[newIds] <- rep(0, nNew)
   dat$attr$diag.status[newIds] <- rep(0, nNew)
+
+  # Assign GC status
   dat$attr$rGC[newIds] <- dat$attr$GC.timesInf[newIds] <- 0
   dat$attr$uGC[newIds] <- dat$attr$GC.timesInf[newIds] <- 0
-  dat$attr$rCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
-  dat$attr$uCT[newIds] <- dat$attr$CT.timesInf[newIds] <- 0
+  dat$attr$pGC[newIds] <- dat$attr$GC.timesInf[newIds] <- 0
 
   dat$attr$count.trans[newIds] <- 0
 
@@ -124,7 +125,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
   ins.quot[dat$attr$role.class[newIds] == 0]  <- 1
   ins.quot[dat$attr$role.class[newIds] == 1]  <- 0
   ins.quot[dat$attr$role.class[newIds] == 2]  <-
-                                  runif(sum(dat$attr$role.class[newIds] == 2))
+    runif(sum(dat$attr$role.class[newIds] == 2))
   dat$attr$ins.quot[newIds] <- ins.quot
 
   # Degree

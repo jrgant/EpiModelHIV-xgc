@@ -58,7 +58,7 @@ initialize_msm <- function(x, param, init, control, s) {
   rates <- param$circ.prob[dat$attr$race]
   dat$attr$circ <- rbinom(length(rates), 1, rates)
 
-  # Insertivity Quotient
+  # Insertativity Quotient
   ins.quot <- rep(NA, num)
   role.class <- dat$attr$role.class
   ins.quot[role.class == 0]  <- 1
@@ -99,12 +99,12 @@ initialize_msm <- function(x, param, init, control, s) {
 
   # Clinical history
   if (dat$control$save.clin.hist == TRUE) {
-    dat <- save_clin_hist(dat, at = 1)
+    dat <- save_clin_hist(dat, at = 1) # assigned in mod.hivvl.R (not exported to namespace)
   }
 
   # Network statistics
   if (dat$control$save.nwstats == TRUE) {
-    dat <- calc_nwstats(dat, at = 1)
+    dat <- calc_nwstats(dat, at = 1) # assigned in mod.simnet.R (not exported to namespace)
   }
 
   # dat$param$netstats <- NULL
@@ -219,61 +219,68 @@ init_sti_msm <- function(dat) {
 
   idsUreth <- which(role.class %in% c(0, 2))
   idsRect <- which(role.class %in% c(1, 2))
+  idsPhar <- which(role.class %in% 0:2)
 
-  uGC <- rGC <- rep(0, num)
-  uCT <- rCT <- rep(0, num)
+  uGC <- rGC <- pGC <- rep(0, num)
 
-  # Initialize GC infection at both sites
-  idsUGC <- sample(idsUreth, size = round(dat$init$prev.ugc * num), FALSE)
+  # Initialize GC infection at all anatomic sites
+
+  ## urethral
+  idsUGC <- sample(
+    idsUreth,
+    size = round(dat$init$prev.ugc * num),
+    FALSE
+  )
+
   uGC[idsUGC] <- 1
 
-  idsRGC <- sample(setdiff(idsRect, idsUGC), size = round(dat$init$prev.rgc * num), FALSE)
+  ## rectal
+  idsRGC <- sample(
+    setdiff(idsRect, idsUGC),
+    size = round(dat$init$prev.rgc * num),
+    FALSE
+  )
+
   rGC[idsRGC] <- 1
+
+  ## pharyngeal
+  idsPGC <- sample(
+    setdiff(idsRect, idsUGC),
+    size = round(dat$init$prev.pgc * num),
+    FALSE
+  )
+
+  pGC[idsPGC] <- 1
 
   dat$attr$rGC <- rGC
   dat$attr$uGC <- uGC
+  dat$attr$pGC <- pGC
 
-  dat$attr$rGC.sympt <- dat$attr$uGC.sympt <- rep(NA, num)
+  # Set GC gonorrhea symptom status
+  dat$attr$rGC.sympt <- dat$attr$uGC.sympt <- dat$attr$pGC.sympt <- rep(NA, num)
   dat$attr$rGC.sympt[rGC == 1] <- rbinom(sum(rGC == 1), 1, dat$param$rgc.sympt.prob)
   dat$attr$uGC.sympt[uGC == 1] <- rbinom(sum(uGC == 1), 1, dat$param$ugc.sympt.prob)
+  dat$attr$pGC.sympt[pGC == 1] <- rbinom(sum(pGC == 1), 1, dat$param$pgc.sympt.prob)
 
-  dat$attr$rGC.infTime <- dat$attr$uGC.infTime <- rep(NA, length(dat$attr$active))
+  # Set GC infection time
+  # TODO: Expand to account for variable
+  dat$attr$rGC.infTime <- dat$attr$uGC.infTime <- dat$attr$pGC.infTime <- rep(NA, length(dat$attr$active))
+
   dat$attr$rGC.infTime[rGC == 1] <- 1
   dat$attr$uGC.infTime[uGC == 1] <- 1
+  dat$attr$pGC.infTime[pGC == 1] <- 1
 
   dat$attr$rGC.timesInf <- rep(0, num)
   dat$attr$rGC.timesInf[rGC == 1] <- 1
+
   dat$attr$uGC.timesInf <- rep(0, num)
   dat$attr$uGC.timesInf[uGC == 1] <- 1
 
-  dat$attr$rGC.tx <- dat$attr$uGC.tx <- rep(NA, num)
-  dat$attr$rGC.tx.prep <- dat$attr$uGC.tx.prep <- rep(NA, num)
+  dat$attr$pGC.timesInf <- rep(0, num)
+  dat$attr$pGC.timesInf[pGC == 1] <- 1
 
-  # Initialize CT infection at both sites
-  idsUCT <- sample(idsUreth, size = round(dat$init$prev.uct * num), FALSE)
-  uCT[idsUCT] <- 1
-
-  idsRCT <- sample(setdiff(idsRect, idsUCT), size = round(dat$init$prev.rct * num), FALSE)
-  rCT[idsRCT] <- 1
-
-  dat$attr$rCT <- rCT
-  dat$attr$uCT <- uCT
-
-  dat$attr$rCT.sympt <- dat$attr$uCT.sympt <- rep(NA, num)
-  dat$attr$rCT.sympt[rCT == 1] <- rbinom(sum(rCT == 1), 1, dat$param$rct.sympt.prob)
-  dat$attr$uCT.sympt[uCT == 1] <- rbinom(sum(uCT == 1), 1, dat$param$uct.sympt.prob)
-
-  dat$attr$rCT.infTime <- dat$attr$uCT.infTime <- rep(NA, num)
-  dat$attr$rCT.infTime[dat$attr$rCT == 1] <- 1
-  dat$attr$uCT.infTime[dat$attr$uCT == 1] <- 1
-
-  dat$attr$rCT.timesInf <- rep(0, num)
-  dat$attr$rCT.timesInf[rCT == 1] <- 1
-  dat$attr$uCT.timesInf <- rep(0, num)
-  dat$attr$uCT.timesInf[uCT == 1] <- 1
-
-  dat$attr$rCT.tx <- dat$attr$uCT.tx <- rep(NA, num)
-  dat$attr$rCT.tx.prep <- dat$attr$uCT.tx.prep <- rep(NA, num)
+  dat$attr$rGC.tx <- dat$attr$uGC.tx <- dat$attr$pGC.tx <- rep(NA, num)
+  dat$attr$rGC.tx.prep <- dat$attr$uGC.tx.prep <- dat$attr$pGC.tx.prep <- rep(NA, num)
 
   return(dat)
 
@@ -595,4 +602,3 @@ initTx_het <- function(dat) {
 
   return(dat)
 }
-

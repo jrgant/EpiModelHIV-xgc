@@ -4,17 +4,14 @@
 \alias{init_msm}
 \title{Epidemic Model Initial Conditions}
 \usage{
-init_msm(prev.ugc = 0.005, prev.rgc = 0.005, prev.uct = 0.013,
-  prev.rct = 0.013, ...)
+init_msm(prev.ugc = 0.005, prev.rgc = 0.005, prev.pgc = 0.005, ...)
 }
 \arguments{
 \item{prev.ugc}{Initial prevalence of urethral gonorrhea.}
 
 \item{prev.rgc}{Initial prevalence of rectal gonorrhea.}
 
-\item{prev.uct}{Initial prevalence of urethral chlamydia.}
-
-\item{prev.rct}{Initial prevalence of rectal chlamydia.}
+\item{prev.pgc}{Initial prevalence of pharyngeal gonorrhea.}
 
 \item{...}{Additional arguments passed to function.}
 }
