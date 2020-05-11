@@ -21,7 +21,7 @@
 #' @keywords module msm
 #'
 initialize_msm <- function(x, param, init, control, s) {
-  
+
   ## Master Data List Setup ##
   dat <- list()
   dat$param <- param
@@ -67,7 +67,7 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$attr$ins.quot <- ins.quot
 
   # HIV-related attributes
-  # dat <- init_status_msm(dat)
+  dat <- init_status_msm(dat)
 
   # STI Status
   dat <- init_sti_msm(dat)
