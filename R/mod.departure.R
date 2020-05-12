@@ -36,12 +36,14 @@ departure_msm <- function(dat, at) {
 
   idsElig <- which(active == 1)
   rates <- rep(NA, length(idsElig))
-
   races <- sort(unique(race))
+
   for (i in seq_along(races)) {
     ids.race <- which(race == races[i])
-    rates[ids.race] <- asmr[age[ids.race], i + 1]
+    ages <- age[ids.race]
+    rates[ids.race] <- asmr[match(ages, asmr$age), i + 1, with = FALSE][[1]]
   }
+
   idsDep <- idsElig[rbinom(length(rates), 1, rates) == 1]
 
   ## HIV-related deaths
@@ -51,15 +53,6 @@ departure_msm <- function(dat, at) {
   idsDepAll <- unique(c(idsDep, idsDepAIDS))
   depHIV <- intersect(idsDepAll, which(status == 1))
   depHIV.old <- intersect(depHIV, which(age >= 65))
-
-  # Cumulative R0 calculations
-  # if (at == 2) {
-  #   dat$temp$R0 <- NA
-  # }
-  # if (length(depHIV) > 0) {
-  #   newR0 <- dat$attr$count.trans[depHIV]
-  #   dat$temp$R0 <- c(dat$temp$R0, newR0)
-  # }
 
   if (length(idsDepAll) > 0) {
     dat$attr$active[idsDepAll] <- 0
