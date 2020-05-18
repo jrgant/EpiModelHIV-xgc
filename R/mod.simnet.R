@@ -23,11 +23,13 @@ simnet_msm <- function(dat, at) {
   dat$attr$deg.casl <- get_degree(dat$el[[2]])
   dat <- tergmLite::updateModelTermInputs(dat, network = 1)
 
-  dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
-                                             el = dat$el[[1]],
-                                             coef.form = nwparam.m$coef.form,
-                                             coef.diss = nwparam.m$coef.diss$coef.adj,
-                                             save.changes = TRUE)
+  dat$el[[1]] <- tergmLite::simulate_network(
+    p = dat$p[[1]],
+    el = dat$el[[1]],
+    coef.form = nwparam.m$coef.form,
+    coef.diss = nwparam.m$coef.diss$coef.adj,
+    save.changes = TRUE
+  )
 
   plist1 <- update_plist(dat, at, ptype = 1)
 
@@ -38,11 +40,13 @@ simnet_msm <- function(dat, at) {
   dat$attr$deg.main <- get_degree(dat$el[[1]])
   dat <- tergmLite::updateModelTermInputs(dat, network = 2)
 
-  dat$el[[2]] <- tergmLite::simulate_network(p = dat$p[[2]],
-                                             el = dat$el[[2]],
-                                             coef.form = nwparam.p$coef.form,
-                                             coef.diss = nwparam.p$coef.diss$coef.adj,
-                                             save.changes = TRUE)
+  dat$el[[2]] <- tergmLite::simulate_network(
+    p = dat$p[[2]],
+    el = dat$el[[2]],
+    coef.form = nwparam.p$coef.form,
+    coef.diss = nwparam.p$coef.diss$coef.adj,
+    save.changes = TRUE
+  )
 
   plist2 <- update_plist(dat, at, ptype = 2)
 
@@ -55,12 +59,13 @@ simnet_msm <- function(dat, at) {
   ## One-off network
   nwparam.i <- EpiModel::get_nwparam(dat, network = 3)
 
-  dat$attr$deg.tot <- pmin(dat$attr$deg.main + get_degree(dat$el[[2]]), 3)
   dat <- tergmLite::updateModelTermInputs(dat, network = 3)
 
-  dat$el[[3]] <- tergmLite::simulate_ergm(p = dat$p[[3]],
-                                          el = dat$el[[3]],
-                                          coef = nwparam.i$coef.form)
+  dat$el[[3]] <- tergmLite::simulate_ergm(
+    p = dat$p[[3]],
+    el = dat$el[[3]],
+    coef = nwparam.i$coef.form
+  )
 
   if (dat$control$save.nwstats == TRUE) {
     dat <- calc_nwstats(dat, at)
@@ -71,6 +76,7 @@ simnet_msm <- function(dat, at) {
 
 # updates the partnership list
 update_plist <- function(dat, at, ptype) {
+
   # pull existing partner type specific list
   plist1 <- dat$temp$plist[dat$temp$plist[, "ptype"] == ptype, ]
 
