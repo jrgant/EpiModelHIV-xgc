@@ -31,9 +31,11 @@ acts_msm <- function(dat, at) {
   plist <- dat$temp$plist
 
   # Parameters
-  acts.mod <- dat$param$epistats$acts.mod
+  ai.acts.mod <- dat$param$epistats$ai.acts.mod
+  oi.acts.mod <- dat$param$epistats$oi.acts.mod
   acts.aids.vl <- dat$param$acts.aids.vl
-  acts.scale <- dat$param$acts.scale
+  ai.acts.scale <- dat$param$ai.acts.scale
+  oi.acts.scale <- dat$param$oi.acts.scale
 
   # Construct edgelist
   el <- rbind(dat$el[[1]], dat$el[[2]], dat$el[[3]])
@@ -49,20 +51,50 @@ acts_msm <- function(dat, at) {
   # Subset to main/casual
   el.mc <- el[el[, "ptype"] != 3, ]
 
-  # Base AI rates based on Poisson model for main/casual
+  # Get ego/partner race combination
   race.combo <- rep(NA, nrow(el.mc))
-  race.combo[race[el.mc[, 1]] == 1 & race[el.mc[, 2]] == 1] <- 1
-  race.combo[race[el.mc[, 1]] == 1 & race[el.mc[, 2]] %in% 2:3] <- 2
-  race.combo[race[el.mc[, 1]] == 2 & race[el.mc[, 2]] %in% c(1, 3)] <- 3
-  race.combo[race[el.mc[, 1]] == 2 & race[el.mc[, 2]] == 2] <- 4
-  race.combo[race[el.mc[, 1]] == 3 & race[el.mc[, 2]] %in% 1:2] <- 5
-  race.combo[race[el.mc[, 1]] == 3 & race[el.mc[, 2]] == 3] <- 6
 
-  comb.age <- age[el.mc[, 1]] + age[el.mc[, 2]]
+  for (i in 1:length(race.combo)) {
+    race.combo[i] <- paste0(
+      sort(c(race[el.mc[i, 1]], race[el.mc[i, 2]])),
+      collapse = ""
+    )
+  }
+
+  # Get ego/partner age group combination
+  age.el1 <- rep(NA, nrow(el.mc))
+  age.el2 <- rep(NA, nrow(el.mc))
+  age.combo <- rep(NA, nrow(el.mc))
+  age.breaks <- dat$param$netstats$demog$age.breaks
+
+  age.el1 <- cut(
+    age[el.mc[, 1]],
+    age.breaks,
+    right = FALSE,
+    labels = FALSE
+  )
+
+  age.el2 <- cut(
+    age[el.mc[, 2]],
+    age.breaks,
+    right = FALSE,
+    labels = FALSE
+  )
+
+  if (!(all.equal(length(age.combo), length(age.el1), length(age.el2)))) {
+    stop("age.combo, age.el1, and age.el2 must all be the same length.")
+  }
+
+  for (i in 1:length(age.combo)) {
+    age.combo[i] <- paste0(
+      sort(c(age.el1[i], age.el2[i])),
+      collapse = ""
+    )
+  }
 
   # Current partnership durations
-  pid_plist <- plist[, 1]*1e7 + plist[, 2]
-  pid_el <- uid[el.mc[, 1]]*1e7 + uid[el.mc[, 2]]
+  pid_plist <- plist[, 1] * 1e7 + plist[, 2]
+  pid_el <- uid[el.mc[, 1]] * 1e7 + uid[el.mc[, 2]]
   matches <- match(pid_el, pid_plist)
   durations <- (at - plist[, "start"])[matches]
 
@@ -72,21 +104,37 @@ acts_msm <- function(dat, at) {
   hiv.concord.pos[cp] <- 1
 
   # Model predictions
-  x <- data.frame(ptype = el.mc[, "ptype"],
-                  duration = durations,
-                  race.combo = race.combo,
-                  comb.age = comb.age,
-                  hiv.concord.pos = hiv.concord.pos,
-                  city = 1)
-  rates <- unname(predict(acts.mod, newdata = x, type = "response"))/52
-  rates <- rates * acts.scale
-  ai <- rpois(length(rates), rates)
+  x <- data.frame(
+    ptype = el.mc[, "ptype"],
+    durat_wks = durations,
+    race.combo = race.combo,
+    age.combo = age.combo,
+    hiv.concord.pos = hiv.concord.pos,
+    city = 1
+  )
+
+  # Predict anal act rates
+  ai.rates <- unname(
+    predict(ai.acts.mod, newdata = x, type = "response")
+  ) / 52
+
+  ai.rates <- ai.rates * ai.acts.scale
+  ai <- rpois(length(ai.rates), ai.rates)
   el.mc <- cbind(el.mc, durations, ai)
+
+  # Predict oral act rates
+  oi.rates <- unname(
+    predict(oi.acts.mod, newdata = x, type = "response")
+  ) / 52
+
+  oi.rates <- oi.rates * oi.acts.scale
+  oi <- rpois(length(oi.rates), oi.rates)
+  el.mc <- cbind(el.mc, oi)
 
   # Add one-time partnerships
   el.oo <- el[el[, "ptype"] == 3, ]
-  ai <- durations <- rep(1, nrow(el.oo))
-  el.oo <- cbind(el.oo, durations, ai)
+  ai <- oi <- durations <- rep(1, nrow(el.oo))
+  el.oo <- cbind(el.oo, durations, ai, oi)
 
   # Bind el back together
   el <- rbind(el.mc, el.oo)
