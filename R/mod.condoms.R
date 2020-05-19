@@ -28,7 +28,7 @@ condoms_msm <- function(dat, at) {
   diag.status <- dat$attr$diag.status
   prepStat <- dat$attr$prepStat
 
-  # Condom Use Models
+  # Condom Use Models (anal sex acts only)
   cond.mc.mod <- dat$param$epistats$cond.mc.mod
   cond.oo.mod <- dat$param$epistats$cond.oo.mod
 
@@ -37,15 +37,47 @@ condoms_msm <- function(dat, at) {
   # Temp edgelist
   el <- dat$temp$el
 
-  race.combo <- rep(NA, nrow(el))
-  race.combo[race[el[, 1]] == 1 & race[el[, 2]] == 1] <- 1
-  race.combo[race[el[, 1]] == 1 & race[el[, 2]] %in% 2:3] <- 2
-  race.combo[race[el[, 1]] == 2 & race[el[, 2]] %in% c(1, 3)] <- 3
-  race.combo[race[el[, 1]] == 2 & race[el[, 2]] == 2] <- 4
-  race.combo[race[el[, 1]] == 3 & race[el[, 2]] %in% 1:2] <- 5
-  race.combo[race[el[, 1]] == 3 & race[el[, 2]] == 3] <- 6
+  # Get ego/partner race combination
+  race.combo <- rep(NA, nrow(el.mc))
 
-  comb.age <- age[el[, 1]] + age[el[, 2]]
+  for (i in 1:length(race.combo)) {
+    race.combo[i] <- paste0(
+      sort(c(race[el.mc[i, 1]], race[el.mc[i, 2]])),
+      collapse = ""
+    )
+  }
+
+
+  # Get ego/partner age group combination
+  age.el1 <- rep(NA, nrow(el.mc))
+  age.el2 <- rep(NA, nrow(el.mc))
+  age.combo <- rep(NA, nrow(el.mc))
+  age.breaks <- dat$param$netstats$demog$age.breaks
+
+  age.el1 <- cut(
+    age[el.mc[, 1]],
+    age.breaks,
+    right = FALSE,
+    labels = FALSE
+  )
+
+  age.el2 <- cut(
+    age[el.mc[, 2]],
+    age.breaks,
+    right = FALSE,
+    labels = FALSE
+  )
+
+  if (!(all.equal(length(age.combo), length(age.el1), length(age.el2)))) {
+    stop("age.combo, age.el1, and age.el2 must all be the same length.")
+  }
+
+  for (i in 1:length(age.combo)) {
+    age.combo[i] <- paste0(
+      sort(c(age.el1[i], age.el2[i])),
+      collapse = ""
+    )
+  }
 
   hiv.concord.pos <- rep(0, nrow(el))
   cp <- which(diag.status[el[, 1]] == 1 & diag.status[el[, 2]] == 1)
@@ -57,13 +89,15 @@ condoms_msm <- function(dat, at) {
   mc.parts <- which(el[, "ptype"] != 3)
   el.mc <- el[mc.parts, ]
 
-  x <- data.frame(ptype = el.mc[, "ptype"],
-                  duration = el.mc[, "durations"],
-                  race.combo = race.combo[mc.parts],
-                  comb.age = comb.age[mc.parts],
-                  hiv.concord.pos = hiv.concord.pos[mc.parts],
-                  prep = any.prep[mc.parts],
-                  city = 1)
+  x <- data.frame(
+    ptype = el.mc[, "ptype"],
+    duration = el.mc[, "durations"],
+    race.combo = race.combo[mc.parts],
+    comb.age = comb.age[mc.parts],
+    hiv.concord.pos = hiv.concord.pos[mc.parts],
+    prep = any.prep[mc.parts]
+  )
+
   cond.prob <- unname(predict(cond.mc.mod, newdata = x, type = "response"))
   el.mc <- cbind(el.mc, cond.prob)
 
@@ -71,11 +105,13 @@ condoms_msm <- function(dat, at) {
   oo.parts <- which(el[, "ptype"] == 3)
   el.oo <- el[oo.parts, ]
 
-  x <- data.frame(race.combo = race.combo[oo.parts],
-                  comb.age = comb.age[oo.parts],
-                  hiv.concord.pos = hiv.concord.pos[oo.parts],
-                  prep = any.prep[oo.parts],
-                  city = 1)
+  x <- data.frame(
+    race.combo = race.combo[oo.parts],
+    comb.age = comb.age[oo.parts],
+    hiv.concord.pos = hiv.concord.pos[oo.parts],
+    prep = any.prep[oo.parts]
+  )
+
   cond.prob <- unname(predict(cond.oo.mod, newdata = x, type = "response"))
   el.oo <- cbind(el.oo, cond.prob)
 
