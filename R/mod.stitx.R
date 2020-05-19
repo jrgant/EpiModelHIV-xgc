@@ -14,8 +14,6 @@ stitx_msm <- function(dat, at) {
   # Parameters
   gc.sympt.prob.tx <- dat$param$gc.sympt.prob.tx
   gc.asympt.prob.tx <- dat$param$gc.asympt.prob.tx
-  ## ct.sympt.prob.tx <- dat$param$ct.sympt.prob.tx
-  ## ct.asympt.prob.tx <- dat$param$ct.asympt.prob.tx
 
   prep.sti.screen.int <- dat$param$prep.sti.screen.int
   prep.sti.prob.tx <- dat$param$prep.sti.prob.tx
