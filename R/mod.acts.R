@@ -109,8 +109,7 @@ acts_msm <- function(dat, at) {
     durat_wks = durations,
     race.combo = race.combo,
     age.combo = age.combo,
-    hiv.concord.pos = hiv.concord.pos,
-    city = 1
+    hiv.concord.pos = hiv.concord.pos
   )
 
   # Predict anal act rates
