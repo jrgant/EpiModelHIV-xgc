@@ -62,73 +62,87 @@ acts_msm <- function(dat, at) {
   }
 
   # Get ego/partner age group combination
-  age.el1 <- rep(NA, nrow(el.mc))
-  age.el2 <- rep(NA, nrow(el.mc))
-  age.combo <- rep(NA, nrow(el.mc))
-  age.breaks <- dat$param$netstats$demog$age.breaks
+  age.i <- rep(NA, nrow(el.mc))
+  age.j <- rep(NA, nrow(el.mc))
 
-  age.el1 <- cut(
-    age[el.mc[, 1]],
-    age.breaks,
-    right = FALSE,
-    labels = FALSE
-  )
+  age.i <- age[el.mc[, 1]]
+  age.j <- age[el.mc[, 2]]
+  abs_sqrt_agediff <- abs(sqrt(age.i) - sqrt(age.j))
 
-  age.el2 <- cut(
-    age[el.mc[, 2]],
-    age.breaks,
-    right = FALSE,
-    labels = FALSE
-  )
-
-  if (!(all.equal(length(age.combo), length(age.el1), length(age.el2)))) {
-    stop("age.combo, age.el1, and age.el2 must all be the same length.")
-  }
-
-  for (i in 1:length(age.combo)) {
-    age.combo[i] <- paste0(
-      sort(c(age.el1[i], age.el2[i])),
-      collapse = ""
-    )
+  if (!length(age.i) == length(age.j)) {
+    stop("age.i, and age.j must all be the same length.")
   }
 
   # Current partnership durations
   pid_plist <- plist[, 1] * 1e7 + plist[, 2]
   pid_el <- uid[el.mc[, 1]] * 1e7 + uid[el.mc[, 2]]
   matches <- match(pid_el, pid_plist)
+
+  # initialize so that durat_wks starts with variable distribution
+  # currently ptype-agnostic
+  if (at == 2) {
+    md <- netstats$netmain$durat_wks
+    cd <- netstats$netcasl$durat_wks
+    me <- netstats$netmain$edges
+    ce <- netstats$netcasl$edges
+    mw <- me / sum(me, ce)
+    cw <- ce / sum(me, ce)
+
+    init_pstart <- weighted.mean(c(md, cd), w = c(mw, cw))
+    plist[, "start"] <- rnorm(length(plist[, "start"]), -init_pstart, 30)
+  }
+
   durations <- (at - plist[, "start"])[matches]
 
-  # HIV-positive concordant
-  hiv.concord.pos <- rep(0, nrow(el.mc))
-  cp <- which(diag.status[el.mc[, 1]] == 1 & diag.status[el.mc[, 2]] == 1)
-  hiv.concord.pos[cp] <- 1
+  # HIV concordance
+  hiv.concord <- rep(0, nrow(el.mc))
+
+  ## record indices for each edge HIV combo
+  both.hiv.neg <-
+    which(diag.status[el.mc[, 1]] == 0 & diag.status[el.mc[, 2]] == 0)
+
+  both.hiv.pos <-
+    which(diag.status[el.mc[, 1]] == 1 & diag.status[el.mc[, 2]] == 1)
+
+  serodisc.hiv <-
+    which(diag.status[el.mc[, 1]] != diag.status[el.mc[, 2]])
+
+  ## assign HIV combo to edge
+  hiv.concord[both.hiv.neg] <- 1
+  hiv.concord[both.hiv.pos] <- 2
+  hiv.concord[serodisc.hiv] <- 3
 
   # Model predictions
   x <- data.frame(
     ptype = el.mc[, "ptype"],
     durat_wks = durations,
     race.combo = race.combo,
-    age.combo = age.combo,
-    hiv.concord.pos = hiv.concord.pos
+    age.i = age.i,
+    age.j = age.j,
+    abs_sqrt_agediff = abs_sqrt_agediff,
+    hiv.concord = hiv.concord
   )
 
   # Predict anal act rates
-  ai.rates <- unname(
-    predict(ai.acts.mod, newdata = x, type = "response")
-  ) / 52
+  # NOTE: exp() used because ai.acts.mod outcome is log(act.rate * 52)
+  # ht for elegant simulation from model:
+  # https://www.barelysignificant.com/post/glm/
+
+  log.ai.acts <- predict(ai.acts.mod, newdata = x, type = "response")
+  log.ai.eps <- rnorm(length(log.ai.acts), 0, sigma(ai.acts.mod))
+  ai.rates <- exp(log.ai.acts + log.ai.eps) / 52
 
   ai.rates <- ai.rates * ai.acts.scale
   ai <- rpois(length(ai.rates), ai.rates)
-  el.mc <- cbind(el.mc, durations, ai)
 
   # Predict oral act rates
-  oi.rates <- unname(
-    predict(oi.acts.mod, newdata = x, type = "response")
-  ) / 52
+  log.oi.acts <- predict(oi.acts.mod, newdata = x, type = "response")
+  log.oi.eps <- rnorm(length(log.oi.acts), 0, sigma(oi.acts.mod))
+  oi.rates <- exp(log.oi.acts + log.oi.eps) / 52
 
   oi.rates <- oi.rates * oi.acts.scale
   oi <- rpois(length(oi.rates), oi.rates)
-  el.mc <- cbind(el.mc, oi)
+  el.mc <- cbind(el.mc, durations, ai, oi)
 
   # Add one-time partnerships
   el.oo <- el[el[, "ptype"] == 3, ]
@@ -138,13 +152,15 @@ acts_msm <- function(dat, at) {
   # Bind el back together
   el <- rbind(el.mc, el.oo)
 
-  # For AIDS cases with VL above acts.aids.vl, reduce their their acts to 0
+  # For AIDS cases with VL above acts.aids.vl, reduce their their anal acts to 0
   p1HIV <- which(el[, "st1"] == 1)
-  p1AIDS <- stage[el[p1HIV, "p1"]] == 4 & vl[el[p1HIV, "p1"]] >= acts.aids.vl
+  p1AIDS <-
+    stage[el[p1HIV, "p1"]] == 4 & vl[el[p1HIV, "p1"]] >= acts.aids.vl
   el[p1HIV[p1AIDS == TRUE], "ai"] <- 0
 
   p2HIV <- which(el[, "st2"] == 1)
-  p2AIDS <- stage[el[p2HIV, "p2"]] == 4 & vl[el[p2HIV, "p2"]] >= acts.aids.vl
+  p2AIDS <-
+    stage[el[p2HIV, "p2"]] == 4 & vl[el[p2HIV, "p2"]] >= acts.aids.vl
   el[p2HIV[p2AIDS == TRUE], "ai"] <- 0
 
   # Flip order of discordant edges
