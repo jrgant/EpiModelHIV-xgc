@@ -29,13 +29,14 @@ condoms_msm <- function(dat, at) {
   prepStat <- dat$attr$prepStat
 
   # Condom Use Models (anal sex acts only)
-  cond.mc.mod <- dat$param$epistats$cond.mc.mod
-  cond.oo.mod <- dat$param$epistats$cond.oo.mod
+  cond.mc.mod <- dat$param$epistats$cp.mod
+  cond.oo.mod <- dat$param$epistats$cp.mod
 
   cond.scale <- dat$param$cond.scale
 
   # Temp edgelist
   el <- dat$temp$el
+  el.mc <- el[el[, "ptype"] != 3, ]
 
   # Get ego/partner race combination
   race.combo <- rep(NA, nrow(el.mc))
@@ -79,9 +80,15 @@ condoms_msm <- function(dat, at) {
     )
   }
 
-  hiv.concord.pos <- rep(0, nrow(el))
-  cp <- which(diag.status[el[, 1]] == 1 & diag.status[el[, 2]] == 1)
-  hiv.concord.pos[cp] <- 1
+  ## HIV concordance within partnerships (all ptypes)
+  hiv.concord <- rep(0, nrow(el))
+  bothneg <- which(diag.status[el[, 1]] == 0 & diag.status[el[, 2]] == 0)
+  bothpos <- which(diag.status[el[, 1]] == 1 & diag.status[el[, 2]] == 1)
+  discord <- which(diag.status[el[, 1]] != diag.status[el[, 2]])
+
+  hiv.concord[bothneg] <- 1
+  hiv.concord[bothpos] <- 2
+  hiv.concord[discord] <- 3
 
   any.prep <- as.numeric((prepStat[el[, 1]] + prepStat[el[, 2]]) > 0)
 
@@ -93,8 +100,9 @@ condoms_msm <- function(dat, at) {
     ptype = el.mc[, "ptype"],
     duration = el.mc[, "durations"],
     race.combo = race.combo[mc.parts],
-    comb.age = comb.age[mc.parts],
-    hiv.concord.pos = hiv.concord.pos[mc.parts],
+    age.i = age[el.mc[, 1]],
+    age.j = age[el.mc[, 2]],
+    hiv.concord = hiv.concord[mc.parts],
     prep = any.prep[mc.parts]
   )
 
@@ -107,8 +115,9 @@ condoms_msm <- function(dat, at) {
 
   x <- data.frame(
     race.combo = race.combo[oo.parts],
-    comb.age = comb.age[oo.parts],
-    hiv.concord.pos = hiv.concord.pos[oo.parts],
+    age.i = el.oo[, 1],
+    age.j = el.oo[, 2],
+    hiv.concord = hiv.concord[oo.parts],
     prep = any.prep[oo.parts]
   )
 
@@ -118,7 +127,7 @@ condoms_msm <- function(dat, at) {
   ## Bind el together
   el <- rbind(el.mc, el.oo)
 
-  # Acts
+  # anal sex acts
   ai.vec <- el[, "ai"]
   pid <- rep(1:length(ai.vec), ai.vec)
   p1 <- rep(el[, "p1"], ai.vec)
