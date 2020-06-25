@@ -113,7 +113,7 @@ acts_msm <- function(dat, at) {
   hiv.concord[serodisc.hiv] <- 3
 
   # Model predictions
-  x <- data.frame(
+  pred_df <- data.table(
     ptype = el.mc[, "ptype"],
     durat_wks = durations,
     race.combo = race.combo,
@@ -123,12 +123,13 @@ acts_msm <- function(dat, at) {
     hiv.concord = hiv.concord
   )
 
+
   # Predict anal act rates
   # NOTE: exp() used because ai.acts.mod outcome is log(act.rate * 52)
   # ht for elegant simulation from model:
   # https://www.barelysignificant.com/post/glm/
 
-  log.ai.acts <- predict(ai.acts.mod, newdata = x, type = "response")
+  log.ai.acts <- predict(ai.acts.mod, newdata = pred_df, type = "response")
   log.ai.eps <- rnorm(length(log.ai.acts), 0, sigma(ai.acts.mod))
   ai.rates <- exp(log.ai.acts + log.ai.eps) / 52
 
@@ -136,7 +137,7 @@ acts_msm <- function(dat, at) {
   ai <- rpois(length(ai.rates), ai.rates)
 
   # Predict oral act rates
-  log.oi.acts <- predict(oi.acts.mod, newdata = x, type = "response")
+  log.oi.acts <- predict(oi.acts.mod, newdata = pred_df, type = "response")
   log.oi.eps <- rnorm(length(log.oi.acts), 0, sigma(oi.acts.mod))
   oi.rates <- exp(log.oi.acts + log.oi.eps) / 52
 
