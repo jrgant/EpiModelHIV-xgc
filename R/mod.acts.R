@@ -89,7 +89,7 @@ acts_msm <- function(dat, at) {
     cw <- ce / sum(me, ce)
 
     init_pstart <- weighted.mean(c(md, cd), w = c(mw, cw))
-    plist[, "start"] <- rnorm(length(plist[, "start"]), -init_pstart, 30)
+    plist[, "start"] <- rnorm(length(plist[, "start"]), -init_pstart, 100)
   }
 
   durations <- (at - plist[, "start"])[matches]
