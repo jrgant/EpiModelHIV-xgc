@@ -169,8 +169,8 @@ acts_msm <- function(dat, at) {
   disc.st2pos <- which(disc == TRUE & el[, "st2"] == 1)
   el[disc.st2pos, 1:4] <- el[disc.st2pos, c(2, 1, 4, 3)]
 
-  # Remove inactive edges from el
-  el <- el[-which(el[, "ai"] == 0), ]
+  # Remove inactive edges from el (no anal or oral acts)
+  el <- el[-which(el[, "ai"] == 0 & el[, "oi"] == 0), ]
 
   # Save out
   dat$temp$el <- el
