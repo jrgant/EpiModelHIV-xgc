@@ -137,12 +137,23 @@ condoms_msm <- function(dat, at) {
 
   cond.prob <- cond.prob * cond.scale
 
-  # UAI draw per act
+  ## Draw for whether anal sex act is unprotected.
   uai <- rbinom(length(cond.prob), 1, 1 - cond.prob)
 
-  # Act list construction
+  # Anal act list construction
   al <- cbind(p1, p2, ptype, uai, pid)
   dat$temp$al <- al
+
+  # Oral act list construction
+  pid <- p1 <- p2 <- ptype <- NULL
+  oi.vec <- el[, "oi"]
+  pid <- rep(seq_len(length(oi.vec)), oi.vec)
+  p1 <- rep(el[, "p1"], oi.vec)
+  p2 <- rep(el[, "p2"], oi.vec)
+  ptype <- rep(el[, "ptype"], oi.vec)
+
+  ol <- cbind(p1, p2, ptype, pid)
+  dat$temp$ol <- ol
 
   return(dat)
 }
