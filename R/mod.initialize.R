@@ -58,13 +58,18 @@ initialize_msm <- function(x, param, init, control, s) {
   rates <- param$circ.prob[dat$attr$race]
   dat$attr$circ <- rbinom(length(rates), 1, rates)
 
-  # Insertativity Quotient
+  # Insertativity Quotients
+
   ins.quot <- rep(NA, num)
   role.class <- dat$attr$role.class
   ins.quot[role.class == 0]  <- 1
   ins.quot[role.class == 1]  <- 0
   ins.quot[role.class == 2]  <- runif(sum(role.class == 2))
   dat$attr$ins.quot <- ins.quot
+
+  ins.quot.oral <- rep(NA, num)
+  ins.quot.oral <- runif(length(ins.quot.oral))
+  dat$attr$ins.quot.oral <- ins.quot.oral
 
   # HIV-related attributes
   dat <- init_status_msm(dat)

@@ -26,13 +26,14 @@
 position_msm <- function(dat, at) {
 
   al <- dat$temp$al
-  if (nrow(al) == 0) {
-    return(dat)
-  }
+  ol <- dat$temp$ol
+
+  if (nrow(al) == 0) return(dat)
 
   # Attributes
   role.class <- dat$attr$role.class
   ins.quot <- dat$attr$ins.quot
+  ins.quot.oral <- dat$attr$ins.quot.oral
 
   # Parameters
 
@@ -48,14 +49,29 @@ position_msm <- function(dat, at) {
 
   # Versatile MSM
   vv <- which(p1.role.class == 2 & p2.role.class == 2)
-  p1.ins.prob <- ins.quot[al[, 1][vv]] /
-                 (ins.quot[al[, 1][vv]] + ins.quot[al[, 2][vv]])
+
+  p1.ins.prob <-
+    ins.quot[al[, 1][vv]] /
+    (ins.quot[al[, 1][vv]] + ins.quot[al[, 2][vv]])
+
   p1.ins <- rbinom(length(vv), 1, p1.ins.prob)
+
   ins[vv[p1.ins == 1]] <- 1
   ins[vv[p1.ins == 0]] <- 0
 
-  ## Output
   dat$temp$al <- cbind(al, ins)
 
+  ## Oral sex position
+  if (nrow(ol) == 0) return(dat)
+
+  p1.ins.oral.prob <-
+    ins.quot.oral[ol[, 1]] /
+    (ins.quot.oral[ol[, 1]] + ins.quot.oral[ol[, 2]])
+
+  ins.oral <- rbinom(length(p1.ins.oral.prob), 1, p1.ins.oral.prob)
+
+  dat$temp$ol <- cbind(ol, ins.oral)
+
+  ## Output
   return(dat)
 }

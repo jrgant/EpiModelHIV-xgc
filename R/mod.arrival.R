@@ -20,7 +20,7 @@
 #' @keywords module msm
 #' @export
 #'
-arrival_msm <- function(dat, at){
+arrival_msm <- function(dat, at) {
 
   ## Variables
 
@@ -121,12 +121,18 @@ setNewAttr_msm <- function(dat, at, nNew) {
   }
   dat$attr$role.class[newIds] <- role.class
 
+  # Insertativity quotients
   ins.quot <- rep(NA, nNew)
   ins.quot[dat$attr$role.class[newIds] == 0]  <- 1
   ins.quot[dat$attr$role.class[newIds] == 1]  <- 0
-  ins.quot[dat$attr$role.class[newIds] == 2]  <-
-    runif(sum(dat$attr$role.class[newIds] == 2))
+  ins.quot[dat$attr$role.class[newIds] == 2] <- runif(
+    sum(dat$attr$role.class[newIds] == 2)
+  )
   dat$attr$ins.quot[newIds] <- ins.quot
+
+  ins.quot.oral <- rep(NA, nNew)
+  ins.quot.oral <- runif(length(ins.quot.oral))
+  dat$attr$ins.quot.oral[newIds] <- ins.quot.oral
 
   # Degree
   dat$attr$deg.main[newIds] <- 0
@@ -154,7 +160,6 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   ## Check attributes written as expected
   # cbind(sapply(dat$attr, function(x) is.na(tail(x, 1))))
-
   return(dat)
 }
 
