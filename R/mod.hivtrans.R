@@ -45,8 +45,6 @@ hivtrans_msm <- function(dat, at) {
   prepClass <- dat$attr$prepClass
   rGC <- dat$attr$rGC
   uGC <- dat$attr$uGC
-  rCT <- dat$attr$rCT
-  uCT <- dat$attr$uCT
   race <- dat$attr$race
 
   # Parameters
@@ -61,9 +59,7 @@ hivtrans_msm <- function(dat, at) {
   circ.rr <- dat$param$circ.rr
   prep.hr <- dat$param$prep.adhr.hr
   hiv.ugc.rr <- dat$param$hiv.ugc.rr
-  hiv.uct.rr <- dat$param$hiv.uct.rr
   hiv.rgc.rr <- dat$param$hiv.rgc.rr
-  hiv.rct.rr <- dat$param$hiv.rct.rr
   hiv.dual.rr <- dat$param$hiv.dual.rr
 
 
@@ -93,7 +89,6 @@ hivtrans_msm <- function(dat, at) {
   ip.prep <- prepStat[disc.ip[, 2]]
   ip.prepcl <- prepClass[disc.ip[, 2]]
   ip.rGC <- rGC[disc.ip[, 2]]
-  ip.rCT <- rCT[disc.ip[, 2]]
 
   # Base TP from VL
   ip.tprob <- pmin(0.99, URAI.prob * 2.45^(ip.vl - 4.5))
@@ -121,15 +116,7 @@ hivtrans_msm <- function(dat, at) {
 
   ## Multiplier for STI
   is.rGC <- which(ip.rGC == 1)
-  is.rCT <- which(ip.rCT == 1)
-  is.rect.dual <- intersect(is.rGC, is.rCT)
-  is.rGC.sing <- setdiff(is.rGC, is.rect.dual)
-  is.rCT.sing <- setdiff(is.rCT, is.rect.dual)
-  ip.tlo[is.rGC.sing] <- ip.tlo[is.rGC.sing] + log(hiv.rgc.rr)
-  ip.tlo[is.rCT.sing] <- ip.tlo[is.rCT.sing] + log(hiv.rct.rr)
-  ip.tlo[is.rect.dual] <- ip.tlo[is.rect.dual] +
-    max(log(hiv.rgc.rr), log(hiv.rct.rr)) +
-    min(log(hiv.rgc.rr), log(hiv.rct.rr)) * hiv.dual.rr
+  ip.tlo[is.rGC] <- ip.tlo[is.rGC] + log(hiv.rgc.rr)
 
   # Race-specific scalar for calibration
   races <- race[disc.ip[, 2]]
@@ -151,7 +138,6 @@ hivtrans_msm <- function(dat, at) {
   rp.prep <- prepStat[disc.rp[, 1]]
   rp.prepcl <- prepClass[disc.rp[, 1]]
   rp.uGC <- uGC[disc.rp[, 1]]
-  rp.uCT <- uCT[disc.rp[, 1]]
 
   # Base TP from VL
   rp.tprob <- pmin(0.99, UIAI.prob * 2.45^(rp.vl - 4.5))
@@ -182,15 +168,7 @@ hivtrans_msm <- function(dat, at) {
 
   ## Multiplier for STI
   is.uGC <- which(rp.uGC == 1)
-  is.uCT <- which(rp.uCT == 1)
-  is.ureth.dual <- intersect(is.uGC, is.uCT)
-  is.uGC.sing <- setdiff(is.uGC, is.ureth.dual)
-  is.uCT.sing <- setdiff(is.uCT, is.ureth.dual)
-  rp.tlo[is.uGC.sing] <- rp.tlo[is.uGC.sing] + log(hiv.ugc.rr)
-  rp.tlo[is.uCT.sing] <- rp.tlo[is.uCT.sing] + log(hiv.uct.rr)
-  rp.tlo[is.ureth.dual] <- rp.tlo[is.ureth.dual] +
-    max(log(hiv.ugc.rr), log(hiv.uct.rr)) +
-    min(log(hiv.ugc.rr), log(hiv.uct.rr)) * hiv.dual.rr
+  rp.tlo[is.uGC] <- rp.tlo[is.uGC] + log(hiv.ugc.rr)
 
   # Race-specific scalar for calibration
   races <- race[disc.rp[, 1]]
