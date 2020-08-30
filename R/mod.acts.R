@@ -11,15 +11,17 @@
 #' both members in a pair and the expected values within black-black, black-white,
 #' and white-white combinations. For one-off partnerships, this is deterministically
 #' set at 1, whereas for main and causal partnerships it is a stochastic draw
-#' from a Poisson distribution. The number of total acts may further be modified
+#' from a negative binomial distribution. The number of total acts may further be modified
 #' by the level of HIV viral suppression in an infected person.
 #'
+#' @importFrom rms rcs predictrms
+#' @import data.table
 #' @keywords module msm
 #' @export
 #'
 acts_msm <- function(dat, at) {
 
-  # Attributes
+  ## Attributes
   status <- dat$attr$status
   diag.status <- dat$attr$diag.status
   race <- dat$attr$race
@@ -27,59 +29,88 @@ acts_msm <- function(dat, at) {
   stage <- dat$attr$stage
   vl <- dat$attr$vl
   uid <- dat$attr$uid
+  prepStat <- dat$attr$prepStat
 
   plist <- dat$temp$plist
 
-  # Parameters
-  ai.acts.mod <- dat$param$epistats$ai.acts.mod
-  oi.acts.mod <- dat$param$epistats$oi.acts.mod
+  ## Parameters from Epistats object
+  ## NOTE:
+  ##   We assign the function's environment to the fit$terms environment so
+  ##   that predictions relying on spline terms will work.
+  mc_qts3 <- dat$param$epistats$mc_qts$q3
+  mc_qts5 <- dat$param$epistats$mc_qts$q5
+
+  ai.acts.mc <- dat$param$epistats$ai.acts.mc
+  attr(ai.acts.mc$terms, ".Environment") <- environment()
+  ai.acts.mc.theta <- dat$param$epistats$ai.acts.mc.theta
+
+  oi.acts.mc <- dat$param$epistats$oi.acts.mc
+  attr(oi.acts.mc$terms, ".Environment") <- environment()
+  oi.acts.mc.theta <- dat$param$epistats$oi.acts.mc.theta
+
+  otp_qts5 <- dat$param$epistats$otp_qts$q5
+  otp_qts3 <- dat$param$epistats$otp_qts$q3
+
+  ai.acts.oo <- dat$param$epistats$ai.acts.oo
+  attr(ai.acts.oo$terms, ".Environment") <- environment()
+
+  oi.acts.oo <- dat$param$epistats$oi.acts.oo
+  attr(oi.acts.oo$terms, ".Environment") <- environment()
+
+  ## Other parameters
   acts.aids.vl <- dat$param$acts.aids.vl
   ai.acts.scale <- dat$param$ai.acts.scale
   oi.acts.scale <- dat$param$oi.acts.scale
 
-  # Construct edgelist
+  ## Construct edgelist
   el <- rbind(dat$el[[1]], dat$el[[2]], dat$el[[3]])
   ptype  <- rep(1:3, times = c(nrow(dat$el[[1]]),
                                nrow(dat$el[[2]]),
                                nrow(dat$el[[3]])))
+ 
   st1 <- status[el[, 1]]
   st2 <- status[el[, 2]]
 
   el <- cbind(el, st1, st2, ptype)
   colnames(el) <- c("p1", "p2", "st1", "st2", "ptype")
 
-  # Subset to main/casual
+  ## Subset to main/casual
   el.mc <- el[el[, "ptype"] != 3, ]
 
-  # Get ego/partner race combination
-  race.combo <- rep(NA, nrow(el.mc))
-
-  for (i in 1:length(race.combo)) {
-    race.combo[i] <- paste0(
-      sort(c(race[el.mc[i, 1]], race[el.mc[i, 2]])),
-      collapse = ""
-    )
-  }
-
-  # Get ego/partner age group combination
-  age.i <- rep(NA, nrow(el.mc))
-  age.j <- rep(NA, nrow(el.mc))
-
+  ## Align partner characteristics
+  age.i <- age.j <- rep(NA, nrow(el.mc))
   age.i <- age[el.mc[, 1]]
   age.j <- age[el.mc[, 2]]
+
+  abs_sqrt_agediff <- rep(NA, nrow(el.mc))
   abs_sqrt_agediff <- abs(sqrt(age.i) - sqrt(age.j))
 
-  if (!length(age.i) == length(age.j)) {
-    stop("age.i, and age.j must all be the same length.")
-  }
+  race.combo <- data.table(
+    r1 = race[el.mc[, 1]],
+    r2 = race[el.mc[, 2]]
+  )
 
-  # Current partnership durations
+  race.combo <- race.combo[,
+    rc := paste(sort(c(r1, r2)), collapse = ""),
+    by = seq_len(NROW(race.combo))
+    ][, rc]
+
+  diag.status.i <- diag.status.j <- rep(NA, nrow(el.mc))
+  diag.status.i <- diag.status[el.mc[, 1]]
+  diag.status.j <- diag.status[el.mc[, 2]]
+
+  hiv.concord <- rep(NA, nrow(el.mc))
+  hiv.concord[which(diag.status.i == 0 & diag.status.j == 0)] <- 1
+  hiv.concord[which(diag.status.i != diag.status.j)] <- 2
+  hiv.concord[which(diag.status.i == 1 & diag.status.j == 1)] <- 3
+
+  ## Current partnership durations
   pid_plist <- plist[, 1] * 1e7 + plist[, 2]
   pid_el <- uid[el.mc[, 1]] * 1e7 + uid[el.mc[, 2]]
   matches <- match(pid_el, pid_plist)
 
-  # initialize so that durat_wks starts with variable distribution
-  # currently ptype-agnostic
+  # NOTE This section necessary only if statistical models used splines
+  #      to model the effect of partnership duration.
   if (at == 2) {
     md <- netstats$netmain$durat_wks
     cd <- netstats$netcasl$durat_wks
@@ -94,60 +125,122 @@ acts_msm <- function(dat, at) {
 
   durations <- (at - plist[, "start"])[matches]
 
-  # HIV concordance
-  hiv.concord <- rep(0, nrow(el.mc))
-
-  ## record indices for each edge HIV combo
-  both.hiv.neg <-
-    which(diag.status[el.mc[, 1]] == 0 & diag.status[el.mc[, 2]] == 0)
-
-  both.hiv.pos <-
-    which(diag.status[el.mc[, 1]] == 1 & diag.status[el.mc[, 2]] == 1)
-
-  serodisc.hiv <-
-    which(diag.status[el.mc[, 1]] != diag.status[el.mc[, 2]])
-
-  ## assign HIV combo to edge
-  hiv.concord[both.hiv.neg] <- 1
-  hiv.concord[both.hiv.pos] <- 2
-  hiv.concord[serodisc.hiv] <- 3
-
-  # Model predictions
-  pred_df <- data.table(
+  ## Simulate anal acts in main/casual partnerships.
+  pred_aimc <- data.table(
     ptype = el.mc[, "ptype"],
     durat_wks = durations,
     race.combo = race.combo,
     age.i = age.i,
     age.j = age.j,
-    abs_sqrt_agediff = abs_sqrt_agediff,
+    abs_sqrt_agediff, abs_sqrt_agediff,
     hiv.concord = hiv.concord
   )
 
+  ai.acts <- predict(
+    ai.acts.mc,
+    newdata = pred_aimc,
+    type = "response"
+  )
 
-  # Predict anal act rates
-  # NOTE: exp() used because ai.acts.mod outcome is log(act.rate * 52)
-  # ht for elegant simulation from model:
-  # https://www.barelysignificant.com/post/glm/
+  ai.acts.sim <- MASS::rnegbin(ai.acts, theta = ai.acts.mc.theta)
+  ai.rates <- ai.acts.sim / 52
+  ai <- round(ai.rates * ai.acts.scale)
 
-  log.ai.acts <- predict(ai.acts.mod, newdata = pred_df, type = "response")
-  log.ai.eps <- rnorm(length(log.ai.acts), 0, sigma(ai.acts.mod))
-  ai.rates <- exp(log.ai.acts + log.ai.eps) / 52
+  ## Simulate oral acts in main/casual partnerships.
 
-  ai.rates <- ai.rates * ai.acts.scale
-  ai <- rpois(length(ai.rates), ai.rates)
+  any.prep <- rep(0, nrow(el.mc))
+  any.prep[which(prepStat[el.mc[, 1]] == 1 | prepStat[el.mc[, 2]] == 1)] <- 1
 
-  # Predict oral act rates
-  log.oi.acts <- predict(oi.acts.mod, newdata = pred_df, type = "response")
-  log.oi.eps <- rnorm(length(log.oi.acts), 0, sigma(oi.acts.mod))
-  oi.rates <- exp(log.oi.acts + log.oi.eps) / 52
+  pred_oimc <- data.table(
+    any.prep = any.prep,
+    race.combo = race.combo,
+    ptype = el.mc[, "ptype"],
+    age.i = age.i,
+    age.j = age.j,
+    abs_sqrt_agediff = abs_sqrt_agediff,
+    durat_wks = durations
+  )
 
-  oi.rates <- oi.rates * oi.acts.scale
-  oi <- rpois(length(oi.rates), oi.rates)
+  oi.acts <- predict(
+    oi.acts.mc,
+    newdata = pred_oimc,
+    type = "response"
+  )
+
+  oi.acts.sim <- MASS::rnegbin(oi.acts, theta = oi.acts.mc.theta)
+  oi.rates <- oi.acts.sim / 52
+  oi <- round(oi.rates * oi.acts.scale)
+ 
   el.mc <- cbind(el.mc, durations, ai, oi)
 
-  # Add one-time partnerships
+  ## Clean up.
+  age.i <- age.j <- abs_sqrt_agediff <- NULL
+  race.i <- race.j <- NULL
+  diag.status.i <- diag.status.j <- NULL
+  race.combo <- hiv.concord <- any.prep <- NULL
+  pred_aimc <- pred_oimc <- NULL
+  ai.acts <- ai.acts.sim <- ai.rates <- ai <- NULL
+  oi.acts <- oi.acts.sim <- oi.rates <- oi <- NULL
+
+
+  # One-time sexual contacts
   el.oo <- el[el[, "ptype"] == 3, ]
-  ai <- oi <- durations <- rep(1, nrow(el.oo))
+
+  age.i <- age.j <- rep(NA, nrow(el.oo))
+  age.i <- age[el.oo[, 1]]
+  age.j <- age[el.oo[, 2]]
+
+  race.i <- race.j <- rep(NA, nrow(el.oo))
+  race.i <- race[el.oo[, 1]]
+  race.j <- race[el.oo[, 2]]
+
+  # Clear existing race.combo object first.
+  race.combo <- data.table(r1 = race.i, r2 = race.j)
+  race.combo[,
+    rc := paste(sort(c(r1, r2)), collapse = ""),
+    by = seq_len(NROW(race.combo))
+    ]
+  race.combo <- race.combo[, rc]
+
+  any.prep <- rep(0, nrow(el.oo))
+  any.prep[which(prepStat[el.oo[, 1]] == 1 | prepStat[el.oo[, 2]] == 1)] <- 1
+
+  diag.status.i <- diag.status.j <- rep(NA, nrow(el.oo))
+  diag.status.i <- diag.status[el.oo[, 1]]
+  diag.status.j <- diag.status[el.oo[, 2]]
+
+  hiv.concord <- rep(NA, nrow(el.oo))
+  hiv.concord[which(diag.status.i == 0 & diag.status.j == 0)] <- 1
+  hiv.concord[which(diag.status.i != diag.status.j)] <- 2
+  hiv.concord[which(diag.status.i == 1 & diag.status.j == 1)] <- 3
+
+  ## Simulate anal and oral acts.
+  pred_oo <- data.table(
+    any.prep = any.prep,
+    hiv.concord = hiv.concord,
+    race.combo = race.combo,
+    age.i = age.i,
+    age.j = age.j
+  )
+
+  ai.acts <- predict(
+    ai.acts.oo,
+    newdata = pred_oo,
+    type = "response"
+  )
+
+  ai.acts.sim <- rbinom(length(ai.acts), 1, prob = ai.acts)
+  ai <- ai.acts.sim
+
+  ## Add variable for the oral act model.
+  pred_oo_oi <- copy(pred_oo)
+  pred_oo_oi[, abs_sqrt_agediff := abs(sqrt(age.i) - sqrt(age.j))]
+
+  oi.acts <- predict(oi.acts.oo, newdata = pred_oo_oi, type = "response")
+  oi.acts.sim <- rbinom(length(oi.acts), 1, prob = oi.acts)
+  oi <- oi.acts.sim
+
+  durations <- rep(1, nrow(el.oo))
   el.oo <- cbind(el.oo, durations, ai, oi)
 
   # Bind el back together
@@ -155,13 +248,11 @@ acts_msm <- function(dat, at) {
 
   # For AIDS cases with VL above acts.aids.vl, reduce their their anal acts to 0
   p1HIV <- which(el[, "st1"] == 1)
-  p1AIDS <-
-    stage[el[p1HIV, "p1"]] == 4 & vl[el[p1HIV, "p1"]] >= acts.aids.vl
+  p1AIDS <- stage[el[p1HIV, "p1"]] == 4 & vl[el[p1HIV, "p1"]] >= acts.aids.vl
   el[p1HIV[p1AIDS == TRUE], "ai"] <- 0
 
   p2HIV <- which(el[, "st2"] == 1)
-  p2AIDS <-
-    stage[el[p2HIV, "p2"]] == 4 & vl[el[p2HIV, "p2"]] >= acts.aids.vl
+  p2AIDS <- stage[el[p2HIV, "p2"]] == 4 & vl[el[p2HIV, "p2"]] >= acts.aids.vl
   el[p2HIV[p2AIDS == TRUE], "ai"] <- 0
 
   # Flip order of discordant edges
@@ -177,3 +268,5 @@ acts_msm <- function(dat, at) {
 
   return(dat)
 }
+
+# LocalWords:  barelysignificant

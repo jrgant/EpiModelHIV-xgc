@@ -21,7 +21,7 @@ The number of acts at each time step is specified as a function of the race of
 both members in a pair and the expected values within black-black, black-white,
 and white-white combinations. For one-off partnerships, this is deterministically
 set at 1, whereas for main and causal partnerships it is a stochastic draw
-from a Poisson distribution. The number of total acts may further be modified
+from a negative binomial distribution. The number of total acts may further be modified
 by the level of HIV viral suppression in an infected person.
 }
 \keyword{module}
