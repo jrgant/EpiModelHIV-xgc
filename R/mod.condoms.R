@@ -29,107 +29,109 @@ condoms_msm <- function(dat, at) {
   prepStat <- dat$attr$prepStat
 
   # Condom Use Models (anal sex acts only)
-  cond.mc.mod <- dat$param$epistats$cp.mod
-  cond.oo.mod <- dat$param$epistats$cp.mod
+  mc_qts3 <- dat$param$epistats$mc_qts$q3
+  mc_qts5 <- dat$param$epistats$mc_qts$q5
+
+  cond.mc.mod <- dat$param$epistats$cond.mc
+  attr(cond.mc.mod$terms, ".Environment") <- environment()
+
+  cond.oo.mod <- dat$param$epistats$cond.oo
+  attr(cond.oo.mod$terms, ".Environment") <- environment()
 
   cond.scale <- dat$param$cond.scale
 
   # Temp edgelist
   el <- dat$temp$el
-  el.mc <- el[el[, "ptype"] != 3, ]
 
-  # Get ego/partner race combination
-  race.combo <- rep(NA, nrow(el.mc))
-
-  for (i in 1:length(race.combo)) {
-    race.combo[i] <- paste0(
-      sort(c(race[el.mc[i, 1]], race[el.mc[i, 2]])),
-      collapse = ""
-    )
-  }
-
-
-  # Get ego/partner age group combination
-  age.el1 <- rep(NA, nrow(el.mc))
-  age.el2 <- rep(NA, nrow(el.mc))
-  age.combo <- rep(NA, nrow(el.mc))
-  age.breaks <- dat$param$netstats$demog$age.breaks
-
-  age.el1 <- cut(
-    age[el.mc[, 1]],
-    age.breaks,
-    right = FALSE,
-    labels = FALSE
-  )
-
-  age.el2 <- cut(
-    age[el.mc[, 2]],
-    age.breaks,
-    right = FALSE,
-    labels = FALSE
-  )
-
-  if (!(all.equal(length(age.combo), length(age.el1), length(age.el2)))) {
-    stop("age.combo, age.el1, and age.el2 must all be the same length.")
-  }
-
-  for (i in 1:length(age.combo)) {
-    age.combo[i] <- paste0(
-      sort(c(age.el1[i], age.el2[i])),
-      collapse = ""
-    )
-  }
-
-  ## HIV concordance within partnerships (all ptypes)
-  hiv.concord <- rep(0, nrow(el))
-  bothneg <- which(diag.status[el[, 1]] == 0 & diag.status[el[, 2]] == 0)
-  bothpos <- which(diag.status[el[, 1]] == 1 & diag.status[el[, 2]] == 1)
-  discord <- which(diag.status[el[, 1]] != diag.status[el[, 2]])
-
-  hiv.concord[bothneg] <- 1
-  hiv.concord[bothpos] <- 2
-  hiv.concord[discord] <- 3
-
-  any.prep <- as.numeric((prepStat[el[, 1]] + prepStat[el[, 2]]) > 0)
 
   ## Main/casual partnerships ##
   mc.parts <- which(el[, "ptype"] != 3)
   el.mc <- el[mc.parts, ]
 
-  x <- data.frame(
-    ptype = el.mc[, "ptype"],
-    duration = el.mc[, "durations"],
-    race.combo = race.combo[mc.parts],
-    age.i = age[el.mc[, 1]],
-    age.j = age[el.mc[, 2]],
-    hiv.concord = hiv.concord[mc.parts],
-    prep = any.prep[mc.parts]
+
+  race.combo <- data.table(
+    r1 = race[el.mc[, 1]],
+    r2 = race[el.mc[, 2]]
   )
 
-  cond.prob <- unname(predict(cond.mc.mod, newdata = x, type = "response"))
+  race.combo <- race.combo[,
+    rc := paste(sort(c(r1, r2)), collapse = ""),
+    by = seq_len(NROW(race.combo))
+    ][, rc]
+
+  diag.status.i <- diag.status.j <- rep(NA, nrow(el.mc))
+  diag.status.i <- diag.status[el.mc[, 1]]
+  diag.status.j <- diag.status[el.mc[, 2]]
+
+  hiv.concord <- rep(NA, nrow(el.mc))
+  hiv.concord[which(diag.status.i == 0 & diag.status.j == 0)] <- 1
+  hiv.concord[which(diag.status.i != diag.status.j)] <- 2
+  hiv.concord[which(diag.status.i == 1 & diag.status.j == 1)] <- 3
+
+  # Prediction dataset for main/casual condom use
+  pred_df <- data.frame(
+    ptype = el.mc[, "ptype"],
+    durat_wks = el.mc[, "durations"],
+    hiv.concord = hiv.concord,
+    race.combo = race.combo,
+    age.i = age[el.mc[, 1]],
+    age.j = age[el.mc[, 2]],
+    any.prep = as.numeric((prepStat[el.mc[, 1]] + prepStat[el.mc[, 2]]) > 0)
+  )
+
+  cond.prob <- unname(
+    predict(cond.mc.mod, newdata = pred_df, type = "response")
+  )
+
   el.mc <- cbind(el.mc, cond.prob)
+
+  ## Clean up
+  race.combo <- hiv.concord <- pred_df <- diag.status.i <- diag.status.j <- NULL
 
   ## One-off partnerships ##
   oo.parts <- which(el[, "ptype"] == 3)
   el.oo <- el[oo.parts, ]
 
-  x <- data.frame(
-    race.combo = race.combo[oo.parts],
-    age.i = el.oo[, 1],
-    age.j = el.oo[, 2],
-    hiv.concord = hiv.concord[oo.parts],
-    prep = any.prep[oo.parts]
+  race.combo <- data.table(
+    r1 = race[el.oo[, 1]],
+    r2 = race[el.oo[, 2]]
   )
 
-  cond.prob <- unname(predict(cond.oo.mod, newdata = x, type = "response"))
-  el.oo <- cbind(el.oo, cond.prob)
+  race.combo <- race.combo[,
+    rc := paste(sort(c(r1, r2)), collapse = ""),
+    by = seq_len(NROW(race.combo))
+    ][, rc]
+
+  diag.status.i <- diag.status.j <- rep(NA, nrow(el.oo))
+  diag.status.i <- diag.status[el.oo[, 1]]
+  diag.status.j <- diag.status[el.oo[, 2]]
+
+  hiv.concord <- rep(NA, nrow(el.oo))
+  hiv.concord[which(diag.status.i == 0 & diag.status.j == 0)] <- 1
+  hiv.concord[which(diag.status.i != diag.status.j)] <- 2
+  hiv.concord[which(diag.status.i == 1 & diag.status.j == 1)] <- 3
+
+  # Prediction dataset for one-time contact condom use
+  pred_df <- data.table(
+    age.i = age[el.oo[, 1]],
+    age.j = age[el.oo[, 2]],
+    hiv.concord = hiv.concord,
+    abs_sqrt_agediff = abs(sqrt(age[el.oo[, 1]]) - sqrt(age[el.oo[, 2]])),
+    any.prep = as.numeric((prepStat[el.oo[, 1]] + prepStat[el.oo[, 2]]) > 0)
+  )[, abs_sqrt_agediff := abs(sqrt(age.i) - sqrt(age.j))]
+
+  cond.prob.oo <- unname(
+    predict(cond.oo.mod, newdata = pred_df, type = "response")
+  )
+
+  el.oo <- cbind(el.oo, cond.prob.oo)
 
   ## Bind el together
   el <- rbind(el.mc, el.oo)
 
   # anal sex acts
   ai.vec <- el[, "ai"]
-  pid <- rep(1:length(ai.vec), ai.vec)
+  pid <- rep(seq_len(length(ai.vec)), ai.vec)
   p1 <- rep(el[, "p1"], ai.vec)
   p2 <- rep(el[, "p2"], ai.vec)
   ptype <- rep(el[, "ptype"], ai.vec)
