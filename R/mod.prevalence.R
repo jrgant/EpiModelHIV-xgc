@@ -375,11 +375,30 @@ prevalence_msm <- function(dat, at) {
   dat$epi$prepCurr.hadr[at] <- sum(prepStat == 1 & prepClass == 3, na.rm = TRUE)
 
   # STIs
-  dat$epi$prev.gc[at] <- sum((rGC == 1 | uGC == 1 | pGC == 1), na.rm = TRUE) / dat$epi$num[at]
-  ir100.rgc <- (dat$epi$incid.rgc[at]/sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE)) * 5200
-  ir100.ugc <- (dat$epi$incid.ugc[at]/sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE)) * 5200
-  ir100.pgc <- (dat$epi$incid.pgc[at]/sum(pGC == 0, dat$epi$incid.pgc[at], na.rm = TRUE)) * 5200
-  dat$epi$ir100.gc[at] <- ir100.rgc + ir100.ugc + ir100.pgc
+  dat$epi$i.num.gc[at] <- sum((rGC == 1 | uGC == 1 | pGC == 1), na.rm = TRUE)
+  dat$epi$i.num.rgc[at] <- sum(rGC == 1, na.rm = TRUE)
+  dat$epi$i.num.ugc[at] <- sum(uGC == 1, na.rm = TRUE)
+  dat$epi$i.num.pgc[at] <- sum(pGC == 1, na.rm = TRUE)
+
+  dat$epi$prev.gc[at] <- dat$epi$i.num[at] / dat$epi$num[at]
+  dat$epi$prev.rgc[at] <- dat$epi$i.num.rgc[at] / dat$epi$num[at]
+  dat$epi$prev.ugc[at] <- dat$epi$i.num.ugc[at] / dat$epi$num[at]
+  dat$epi$prev.pgc[at] <- dat$epi$i.num.pgc[at] / dat$epi$num[at]
+ 
+  dat$epi$ir100.gc[at] <-
+    dat$epi$ir100.rgc[at] + dat$epi$ir100.ugc[at] + dat$epi$ir100.pgc[at]
+
+  dat$epi$ir100.rgc[at] <-
+    (dat$epi$incid.rgc[at] /
+     sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE)) * 5200
+
+  dat$epi$ir100.ugc[at] <-
+    (dat$epi$incid.ugc[at] /
+     sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE)) * 5200
+
+  dat$epi$ir100.pgc[at] <-
+    (dat$epi$incid.pgc[at] /
+     sum(pGC == 0, dat$epi$incid.pgc[at], na.rm = TRUE)) * 5200
 
   return(dat)
 }
