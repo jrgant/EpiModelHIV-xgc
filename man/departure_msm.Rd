@@ -2,12 +2,9 @@
 % Please edit documentation in R/mod.departure.R
 \name{departure_msm}
 \alias{departure_msm}
-\alias{deaths_het}
 \title{Depature Module}
 \usage{
 departure_msm(dat, at)
-
-deaths_het(dat, at)
 }
 \arguments{
 \item{dat}{Master data list object of class \code{dat} containing networks,

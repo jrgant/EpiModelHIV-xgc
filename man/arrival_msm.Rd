@@ -2,12 +2,9 @@
 % Please edit documentation in R/mod.arrival.R
 \name{arrival_msm}
 \alias{arrival_msm}
-\alias{births_het}
 \title{Arrivals Module}
 \usage{
 arrival_msm(dat, at)
-
-births_het(dat, at)
 }
 \arguments{
 \item{dat}{Master data list object of class \code{dat} containing networks,
