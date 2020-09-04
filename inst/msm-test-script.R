@@ -1,40 +1,45 @@
+pacman::p_load(
+  EpiModelHIV,
+  data.table,
+  magrittr,
+  rms,
+  car,
+  stringr
+)
 
-suppressMessages(library("EpiModelHIV"))
-
-# @ TODO:
-# eventually import netstats, epistats, and netest into this package
+# TODO: Import netstats, epistats, and netest objects into this package
 data.dir <- "C:/Users/jason/Documents/Github/egcmsm/egcmsm_artnet"
-
 netstats <- readRDS(file.path(data.dir, "netstats/netstats.Rds"))
 est <- readRDS(file.path(data.dir, "netest/netest.Rds"))
-epistats <- list()
+epistats <- readRDS(file.path(data.dir, "netstats/epistats.Rds"))
 
-## Parameters for simplified model without HIV
-
-## @NOTE: Where original parameters had unique values for each race/ethnic group,
-##        Other value takes the value assigned to White.
+# TODO: Where original parameters had unique values for each race/ethnic group,
+#       Other value currently takes the value assigned to White.
 
 param_xgc <- param_msm(
-
   # external objects
   netstats = netstats,
   epistats = epistats,
-
   # demography
-  a.rate = 0.00055,   # TODO: tweak this "birth rate" if needed
-
-  # gonorrhea parameters
-  rgc.tprob = 0.25,   # TODO: update all transmission probs
-  ugc.tprob = 0.25,   # TODO: update all transmission probs
-  pgc.tprob = 0.25,   # TODO: update all transmission probs
-  rgc.ntx.int = 16.8, # TODO: update all duration probs
-  ugc.ntx.int = 16.8, # TODO: update all duration probs
-  pgc.ntx.int = 16.8, # TODO: update all duration probs
-
+  a.rate = 0.00052,
+  arrival.age = 18,
+  # TODO: update all transmission probs (priors for all will be [0, 1])
+  u2rgc.tprob = 0.25, # urethral-to-rectal transmission probability
+  u2pgc.tprob = 0.25, # urethral-to-pharyngeal transmission probability
+  r2ugc.tprob = 0.25, # rectal-to-urethral transmission probability
+  p2ugc.tprob = 0.25, # pharyngeal-to-urethral transmission probability
+  ## NOTE: Following tprobs used only if the kissing/rimming flags are active
+  ## in control_msm.
+  r2pgc.tprob = 0.25, # rectal-to-pharyngeal transmission probability
+  p2rgc.tprob = 0.25, # pharyngeal-to-rectal transmission probability
+  p2pgc.tprob = 0.25, # kissing transmission probability
+  # TODO: Update all durations
+  rgc.ntx.int = 16.8,
+  ugc.ntx.int = 16.8,
+  pgc.ntx.int = 16.8,
   # STI testing
-  gc.sympt.prob.tx = rep(0.7, 4),   # TODO: update all transmission probs
-  gc.asympt.prob.tx = rep(0.2, 4),  # TODO: update all transmission probs
-
+  gc.sympt.prob.tx = rep(0.7, 4),   # TODO: update all treatment probs
+  gc.asympt.prob.tx = rep(0.2, 4),  # TODO: update all treatment probs
   # HIV testing
   hiv.test.rate = c(
     0.01325,
@@ -42,8 +47,8 @@ param_xgc <- param_msm(
     0.0124,
     0.0124
   ), # @ORIG, HIV test rate by race
-  hiv.test.late.prob = rep(0.25, 4), # @ORIG, proportion of MSM testing only at late-stage (AIDS)
-
+  # @ORIG, prop. of MSM testing only at late-stage (AIDS)
+  hiv.test.late.prob = rep(0.25, 4),
   # HIV treatment parameters
   tt.part.supp = rep(0.2, 4), # ORIGPARAM, partial VLS post ART start
   tt.full.supp = rep(0.4, 4), # ORIGPARAM, full VLS w/ post ART start
@@ -70,125 +75,86 @@ param_xgc <- param_msm(
   ), # @ORIG
   tx.reinit.full.rr = rep(1.0, 4), # ORIGPARAM
   tx.reinit.dur.rr = rep(1.0, 4),  # ORIGPARAM
-
   # scaling parameters
+  ai.acts.scale = 1,
+  oi.acts.scale = 1,
   trans.scale = rep(1.0, 4), # ORIGPARAM
   sti.cond.eff = 0.8,        # TODO: condom efficacy for anal sex
   cond.eff = 0.95,           # ORIGPARAM, condom eff anal HIV transmission
   cond.fail = rep(0.25, 4),
+  sti.cond.fail = rep(0.2, 4),
   circ.prob = c(
     0.874,
     0.874,
-    0.918,
+    0.918, # TODO: Other set to White probability (find alternate value)
     0.918
-  ) # TODO: Other set to White probability (find alternate value)
+  )
 )
 
 init_xgc <- init_msm(
-  prev.ugc = 0.05,  # TODO: update initialization prevelance
-  prev.rgc = 0.05,  # TODO: update initialization prevelance
-  prev.pgc = 0.05,  # TODO: update initialization prevelance
-  prev.uct = 0,
-  prev.rct = 0
+  prev.ugc = 0.1,  # TODO: update initialization prevalence
+  prev.rgc = 0.1,  # TODO: update initialization prevalence
+  prev.pgc = 0.1   # TODO: update initialization prevalence
 )
 
 control_xgc <- control_msm(
+  # Computing options
   simno = 1,
-  nsteps = 10,
+  nsteps = 5,
   nsims = 1,
   ncores = 1,
+  # Epidemic simulation options
+  transRoute_Kissing = FALSE, # FLAG: Toggle kissing transmission
+  transRoute_Rimming = FALSE, # FLAG: Toggle rimming transmission
+  tergmLite = FALSE,  # NOTE: Must be set to avoid error thrown by saveout.net()
+  # Epidemic simulation Modules
   initialize.FUN = initialize_msm,
-  aging.FUN = NULL,
-  departure.FUN = NULL,
-  arrival.FUN = NULL,
-  hivtest.FUN = NULL,
-  hivtx.FUN = NULL,
-  hivprogress.FUN = NULL,
-  hivvl.FUN = NULL,
-  resim_nets.FUN = NULL,
-  acts.FUN = NULL,
-  condoms.FUN = NULL,
-  position.FUN = NULL,
-  prep.FUN = NULL,
-  hivtrans.FUN = NULL,
-  # stitrans.FUN = stitrans_msm,
-  stirecov.FUN = NULL,
-  stitx.FUN = NULL,
-  #  prev.FUN = prevalence_msm
-  # aging.FUN = aging_msm,
-  # departure.FUN = departure_msm,
-  # arrival.FUN = arrival_msm,
-  # # hivtest.FUN = hivtest_msm,
-  # # hivtx.FUN = hivtx_msm,
-  # # hivprogress.FUN = hivprogress_msm,
-  # # hivvl.FUN = hivvl_msm,
-  # resim_nets.FUN = simnet_msm,
-  # acts.FUN = acts_msm,
-  # condoms.FUN = condoms_msm,
-  # position.FUN = position_msm,
-  # prep.FUN = prep_msm,
-  # # hivtrans.FUN = hivtrans_msm,
-  # stitrans.FUN = stitrans_msm,
-  # stirecov.FUN = stirecov_msm,
-  # stitx.FUN = stitx_msm,
-  # prev.FUN = prevalence_msm,
-  # verbose.FUN = verbose.net
-)
+  aging.FUN = aging_msm,
+  departure.FUN = departure_msm,
+  arrival.FUN = arrival_msm,
+  hivtest.FUN = hivtest_msm,
+  hivtx.FUN = hivtx_msm,
+  hivprogress.FUN = hivprogress_msm,
+  hivvl.FUN = hivvl_msm,
+  resim_nets.FUN = simnet_msm,
+  acts.FUN = acts_msm,          # TODO Add kissing and rimming
+  condoms.FUN = condoms_msm,
+  position.FUN = position_msm,  # TODO Add rimming positioning
+  prep.FUN = prep_msm,
+  hivtrans.FUN = hivtrans_msm,
+  stirecov.FUN = stirecov_msm,  # TODO Add alternate dists
+  stitx.FUN = stitx_msm,        # TODO Alternate screening/testing protocols
+  stitrans.FUN = stitrans_msm,
+  prev.FUN = prevalence_msm,
+  verbose.FUN = verbose.net,
+ )
 
 sim <- netsim(est, param_xgc, init_xgc, control_xgc)
-names(sim$attr[[1]])
 
-# Explore clinical history
-par(mar = c(3,3,1,1), mgp = c(2,1,0))
-m1 <- sim$temp[[1]]$clin.hist[[1]]
-m2 <- sim$temp[[1]]$clin.hist[[2]]
-m3 <- sim$temp[[1]]$clin.hist[[3]]
-a <- sim$attr[[1]]
-h <- which(a$status == 1)
+plot_vec <- function(vec) {
+  plot(sim, "epi", vec, sim.lines = TRUE, mean.line = FALSE)
+}
 
-
-m1[h[1:10], 95:104]
-aids <- which(a$stage == 4)
-id <- h[58]
-plot(m1[id, ], type = "o", ylim = c(1, 7))
-data.frame(vl = m1[id, ], stage = m2[id, ], tx = m3[id, ])
-a$tt.traj[id]
-matplot(t(m1[h[1:500], ]), type = "l", lty = 1, ylim = c(1, 7))
+plot_vec(paste0("incid.", c("gc", "rgc", "ugc", "pgc")))
+plot_vec(paste0("incid.gc.", c("B", "H", "O", "W")))
+plot_vec(paste0("incid.gc.a", 1:5))
 
 
-df <- as.data.frame(sim)
-names(df)
+library(ggthemes)
+dt <- as.data.table(as.data.frame(sim))
+theme_set(theme_clean())
 
-par(mar = c(3,3,1,1), mgp = c(2,1,0))
-plot(sim, y = "i.prev", mean.smooth = FALSE, ylim = c(0, 1))
-plot(sim, y = "num")
-plot(sim, y = "dep.gen", mean.smooth = TRUE)
-plot(sim, y = "dep.AIDS", mean.smooth = FALSE)
-plot(sim, y = "prepCurr")
-plot(sim, y = "cc.dx", mean.smooth = FALSE)
-plot(sim, y = "cc.linked", mean.smooth = FALSE, ylim = c(0.8, 1))
-plot(sim, y = "cc.linked1m", mean.smooth = FALSE)
-plot(sim, y = "cc.tx", mean.smooth = FALSE)
-plot(sim, y = "cc.tx.any1y", mean.smooth = FALSE)
-plot(sim, y = "cc.vsupp", mean.smooth = FALSE)
-plot(sim, y = "cc.vsupp.tt1", mean.smooth = FALSE)
-plot(sim, y = "cc.vsupp.tt2", mean.smooth = FALSE)
-plot(sim, y = "cc.vsupp.tt3", mean.smooth = FALSE)
-plot(sim, y = "cc.vsupp.dur1y", mean.smooth = FALSE)
-
-plot(sim, y = "hstage.acute", mean.smooth = TRUE)
-plot(sim, y = "hstage.chronic", mean.smooth = FALSE)
-plot(sim, y = "hstage.aids", mean.smooth = FALSE)
-
-plot(sim, y = "ir100.gc", mean.smooth = FALSE)
-plot(sim, y = "ir100.ct", mean.smooth = FALSE)
-plot(sim, y = "ir100.sti", mean.smooth = FALSE)
-plot(sim, y = "prev.gc", mean.smooth = FALSE)
-plot(sim, y = "prev.ct", mean.smooth = FALSE)
-
-plot(sim, type = "formation", network = 1, plots.joined = FALSE)
-plot(sim, type = "formation", network = 2, plots.joined = FALSE)
-plot(sim, type = "formation", network = 3, plots.joined = FALSE)
+dt[-1] %>%
+  ggplot(aes(x = time, group = sim)) +
+  geom_line(aes(y = incid.rgc, color = "rectal")) +
+  geom_line(aes(y = incid.pgc, color = "pharyngeal")) +
+  geom_line(aes(y = incid.ugc, color = "urethral")) +
+  geom_line(
+    aes(y = incid.gc, color = "overall"),
+    color = "black",
+    size = 1
+  ) +
+  scale_color_viridis_d(option = "magma", end = 0.9)
 
 
 # Testing/Timing ------------------------------------------------------
@@ -208,15 +174,15 @@ for (at in 2:200) {
   dat <- hivvl_msm(dat, at)
   dat <- simnet_msm(dat, at)
   dat <- acts_msm(dat, at)
-  dat <- condoms_msm(dat, at)
-  dat <- position_msm(dat, at)
-  dat <- prep_msm(dat, at)
-  dat <- hivtrans_msm(dat, at)
-  dat <- stitrans_msm(dat, at)
-  dat <- stirecov_msm(dat, at)
-  dat <- stitx_msm(dat, at)
-  dat <- prevalence_msm(dat, at)
-  verbose.net(dat, "progress", at = at)
+  ## dat <- condoms_msm(dat, at)
+  ## dat <- position_msm(dat, at)
+  ## dat <- prep_msm(dat, at)
+  ## dat <- hivtrans_msm(dat, at)
+  ## dat <- stitrans_msm(dat, at)
+  ## dat <- stirecov_msm(dat, at)
+  ## dat <- stitx_msm(dat, at)
+  ## dat <- prevalence_msm(dat, at)
+  ## verbose.net(dat, "progress", at = at)
 }
 
 nrow(dat$temp$plist)
@@ -228,3 +194,50 @@ plist <- as.data.frame(dat$temp$plist)
 pmain <- filter(plist, ptype == 2)
 table(pmain$start)
 hist(pmain$start)
+
+
+
+# %% OLD CODE FOR CHECKING MAIN/CASUAL DEGREE ==================================
+
+## monitor_degree <- function(dat, at) {
+##   deg.main <- get_degree(dat$el[[1]])
+##   deg.casl <- get_degree(dat$el[[2]])
+
+##   dlist <- list()
+##   dlist$main <- deg.main
+##   dlist$casl <- deg.casl
+
+##   atlab <- stringr::str_pad(at, 2, "left", "0")
+##   assign(paste0("dlist_at_", atlab), dlist, envir = .GlobalEnv)
+
+##   return(dat)
+## }
+
+
+## degcheck <- lapply(ls(pattern = "dlist"), function(x) {
+
+##   main <- table(get(x)$main)
+##   casl <- table(get(x)$casl)
+
+##   data.table(
+##     type = c(
+##       rep("main", length(main)),
+##       rep("casl", length(casl))
+##     ),
+##     deg = c(names(main), names(casl)),
+##     count = c(unlist(main), unlist(casl))
+##   )
+## }) %>% rbindlist(., idcol = "at")
+
+## degcheck %>%
+##   ggplot(aes(x = at, y = count)) +
+##   geom_line(aes(color = deg, group = deg), size = 1) +
+##   scale_color_viridis_d() +
+##   facet_wrap(~ type) +
+##   ggthemes::theme_base()
+
+## degcheck %>%
+##   ggplot(aes(x = deg, y = count)) +
+##   geom_boxplot() +
+##   facet_wrap(~ type) +
+##   ggthemes::theme_base()
