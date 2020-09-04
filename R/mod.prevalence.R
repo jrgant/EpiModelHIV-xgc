@@ -270,42 +270,76 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.HIV.mr[at] <- (dat$epi$dep.HIV[at]/dat$epi$i.num[at]) * 52
 
   # Care continuum stats (secondary)
-  dat$epi$cc.test.int[at] <- mean(at - last.neg.test[diag.status == 0], na.rm = TRUE)
-  dat$epi$cc.test.int.B[at] <- mean(at - last.neg.test[diag.status == 0 & race == 1], na.rm = TRUE)
-  dat$epi$cc.test.int.H[at] <- mean(at - last.neg.test[diag.status == 0 & race == 2], na.rm = TRUE)
-  dat$epi$cc.test.int.O[at] <- mean(at - last.neg.test[diag.status == 0 & race == 3], na.rm = TRUE)
-  dat$epi$cc.test.int.W[at] <- mean(at - last.neg.test[diag.status == 0 & race == 4], na.rm = TRUE)
+  dat$epi$cc.test.int[at] <-
+    mean(at - last.neg.test[diag.status == 0], na.rm = TRUE)
 
-  dat$epi$cc.dx.delay[at] <- mean(diag.time[diag.time >= 2] - inf.time[diag.time >= 2], na.rm = TRUE)
+  dat$epi$cc.test.int.B[at] <-
+    mean(at - last.neg.test[diag.status == 0 & race == 1], na.rm = TRUE)
 
-  dat$epi$cc.dx.delay.B[at] <-
-    mean(diag.time[diag.time >= 2 & race == 1] -
-           inf.time[diag.time >= 2 & race == 1], na.rm = TRUE)
+  dat$epi$cc.test.int.H[at] <-
+    mean(at - last.neg.test[diag.status == 0 & race == 2], na.rm = TRUE)
 
-  dat$epi$cc.dx.delay.H[at] <-
-    mean(diag.time[diag.time >= 2 & race == 2] -
-           inf.time[diag.time >= 2 & race == 2], na.rm = TRUE)
+  dat$epi$cc.test.int.O[at] <-
+    mean(at - last.neg.test[diag.status == 0 & race == 3], na.rm = TRUE)
 
-  dat$epi$cc.dx.delay.O[at] <-
-    mean(diag.time[diag.time >= 2 & race == 3] -
-           inf.time[diag.time >= 2 & race == 3], na.rm = TRUE)
+  dat$epi$cc.test.int.W[at] <-
+    mean(at - last.neg.test[diag.status == 0 & race == 4], na.rm = TRUE)
 
-  dat$epi$cc.dx.delay.W[at] <-
-    mean(diag.time[diag.time >= 2 & race == 4] -
-           inf.time[diag.time >= 2 & race == 4], na.rm = TRUE)
+  dat$epi$cc.dx.delay[at] <-
+    mean(diag.time[diag.time >= 2] - inf.time[diag.time >= 2], na.rm = TRUE)
 
-  dat$epi$cc.dx.delay.int[at] <- mean(diag.time[diag.time >= 3380] - inf.time[diag.time >= 3380], na.rm = TRUE)
-  dat$epi$cc.dx.delay.int.B[at] <- mean(diag.time[diag.time >= 3380 & race == 1] -
-                                          inf.time[diag.time >= 3380 & race == 1], na.rm = TRUE)
+  dat$epi$cc.dx.delay.B[at] <- mean(
+    diag.time[diag.time >= 2 & race == 1] -
+      inf.time[diag.time >= 2 & race == 1],
+    na.rm = TRUE
+  )
 
-  dat$epi$cc.dx.delay.int.H[at] <- mean(diag.time[diag.time >= 3380 & race == 2] -
-                                          inf.time[diag.time >= 3380 & race == 2], na.rm = TRUE)
+  dat$epi$cc.dx.delay.H[at] <- mean(
+    diag.time[diag.time >= 2 & race == 2] -
+      inf.time[diag.time >= 2 & race == 2],
+    na.rm = TRUE
+  )
 
-  dat$epi$cc.dx.delay.int.O[at] <- mean(diag.time[diag.time >= 3380 & race == 3] -
-                                          inf.time[diag.time >= 3380 & race == 3], na.rm = TRUE)
+  dat$epi$cc.dx.delay.O[at] <- mean(
+    diag.time[diag.time >= 2 & race == 3] -
+      inf.time[diag.time >= 2 & race == 3],
+    na.rm = TRUE
+  )
 
-  dat$epi$cc.dx.delay.int.W[at] <- mean(diag.time[diag.time >= 3380 & race == 4] -
-                                      inf.time[diag.time >= 3380 & race == 4], na.rm = TRUE)
+  dat$epi$cc.dx.delay.W[at] <- mean(
+    diag.time[diag.time >= 2 & race == 4] -
+      inf.time[diag.time >= 2 & race == 4],
+    na.rm = TRUE
+  )
+
+  dat$epi$cc.dx.delay.int[at] <- mean(
+    diag.time[diag.time >= 3380] - inf.time[diag.time >= 3380],
+    na.rm = TRUE
+  )
+
+  dat$epi$cc.dx.delay.int.B[at] <- mean(
+    diag.time[diag.time >= 3380 & race == 1] -
+      inf.time[diag.time >= 3380 & race == 1],
+    na.rm = TRUE
+  )
+
+  dat$epi$cc.dx.delay.int.H[at] <- mean(
+    diag.time[diag.time >= 3380 & race == 2] -
+      inf.time[diag.time >= 3380 & race == 2],
+    na.rm = TRUE
+  )
+
+  dat$epi$cc.dx.delay.int.O[at] <- mean(
+    diag.time[diag.time >= 3380 & race == 3] -
+      inf.time[diag.time >= 3380 & race == 3],
+    na.rm = TRUE
+  )
+
+  dat$epi$cc.dx.delay.int.W[at] <- mean(
+    diag.time[diag.time >= 3380 & race == 4] -
+    inf.time[diag.time >= 3380 & race == 4],
+    na.rm = TRUE
+  )
 
   # dat$epi$cc.tx.any1y[at] <- sum((at - dat$attr$tx.period.last <= 52), na.rm = TRUE) /
   #   sum(dat$attr$diag.status == 1, na.rm = TRUE)
@@ -336,29 +370,50 @@ prevalence_msm <- function(dat, at) {
 
 
   # HIV screening outcomes
-  dat$epi$mean.neg.tests[at] <- mean(dat$attr$num.neg.tests[diag.status == 0], na.rm = TRUE)
-  dat$epi$mean.neg.tests.B[at] <- mean(dat$attr$num.neg.tests[diag.status == 0 & race == 1], na.rm = TRUE)
-  dat$epi$mean.neg.tests.H[at] <- mean(dat$attr$num.neg.tests[diag.status == 0 & race == 2], na.rm = TRUE)
-  dat$epi$mean.neg.tests.W[at] <- mean(dat$attr$num.neg.tests[diag.status == 0 & race == 3], na.rm = TRUE)
+  dat$epi$mean.neg.tests[at] <-
+    mean(dat$attr$num.neg.tests[diag.status == 0], na.rm = TRUE)
 
-  dat$epi$test.past.year[at] <- sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0, na.rm = TRUE) /
-    sum(diag.status == 0, na.rm = TRUE)
-  dat$epi$test.past.year.B[at] <- sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 1, na.rm = TRUE) /
-    sum(diag.status == 0 & race == 1, na.rm = TRUE)
-  dat$epi$test.past.year.H[at] <- sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 2, na.rm = TRUE) /
-    sum(diag.status == 0 & race == 2, na.rm = TRUE)
-  dat$epi$test.past.year.O[at] <- sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 3, na.rm = TRUE) /
-    sum(diag.status == 0 & race == 3, na.rm = TRUE)
-  dat$epi$test.past.year.W[at] <- sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 4, na.rm = TRUE) /
-    sum(diag.status == 0 & race == 4, na.rm = TRUE)
+  dat$epi$mean.neg.tests.B[at] <-
+    mean(dat$attr$num.neg.tests[diag.status == 0 & race == 1], na.rm = TRUE)
+
+  dat$epi$mean.neg.tests.H[at] <-
+    mean(dat$attr$num.neg.tests[diag.status == 0 & race == 2], na.rm = TRUE)
+
+  dat$epi$mean.neg.tests.W[at] <-
+    mean(dat$attr$num.neg.tests[diag.status == 0 & race == 3], na.rm = TRUE)
+
+  dat$epi$test.past.year[at] <-
+    sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0, na.rm = TRUE) /
+      sum(diag.status == 0, na.rm = TRUE)
+
+  dat$epi$test.past.year.B[at] <-
+    sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 1,
+        na.rm = TRUE) / sum(diag.status == 0 & race == 1, na.rm = TRUE)
+
+  dat$epi$test.past.year.H[at] <-
+    sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 2,
+        na.rm = TRUE) / sum(diag.status == 0 & race == 2, na.rm = TRUE)
+
+  dat$epi$test.past.year.O[at] <-
+    sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 3,
+        na.rm = TRUE) / sum(diag.status == 0 & race == 3, na.rm = TRUE)
+
+  dat$epi$test.past.year.W[at] <-
+    sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 4,
+        na.rm = TRUE) / sum(diag.status == 0 & race == 4, na.rm = TRUE)
 
   # HIV stage
-  dat$epi$hstage.acute[at] <- sum(stage %in% 1:2 & diag.time >= 2, na.rm = TRUE) /
-                              sum(status == 1 & diag.time >= 2, na.rm = TRUE)
-  dat$epi$hstage.chronic[at] <- sum(stage == 3 & diag.time >= 2, na.rm = TRUE) /
-                                sum(status == 1 & diag.time >= 2, na.rm = TRUE)
-  dat$epi$hstage.aids[at] <- sum(stage == 4 & diag.time >= 2, na.rm = TRUE) /
-                             sum(status == 1 & diag.time >= 2, na.rm = TRUE)
+  dat$epi$hstage.acute[at] <-
+    sum(stage %in% 1:2 & diag.time >= 2, na.rm = TRUE) /
+    sum(status == 1 & diag.time >= 2, na.rm = TRUE)
+
+  dat$epi$hstage.chronic[at] <-
+    sum(stage == 3 & diag.time >= 2, na.rm = TRUE) /
+    sum(status == 1 & diag.time >= 2, na.rm = TRUE)
+
+  dat$epi$hstage.aids[at] <-
+    sum(stage == 4 & diag.time >= 2, na.rm = TRUE) /
+    sum(status == 1 & diag.time >= 2, na.rm = TRUE)
 
   dat$epi$prepElig[at] <- sum(prepElig == 1, na.rm = TRUE)
   dat$epi$prepElig.B[at] <- sum(prepElig == 1 & race == 1, na.rm = TRUE)
