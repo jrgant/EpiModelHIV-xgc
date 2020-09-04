@@ -17,43 +17,23 @@
 #'
 aging_msm <- function(dat, at) {
 
+  age.wk <- dat$attr$age.wk
   age <- dat$attr$age
-  active <- dat$attr$active
   age.grp <- dat$attr$age.grp
+  active <- dat$attr$active
 
-  age[active == 1] <- age[active == 1] + 7 / 365
-
-  age.breaks <- dat$param$netstats$demog$age.breaks
+  age.wk[active == 1] <- age.wk[active == 1] + 1
+  age[active == 1] <- age.wk[active == 1] / 52
 
   age.grp[active == 1] <- cut(
     age[active == 1],
-    age.breaks,
+    dat$param$netstats$demog$age.breaks,
     right = FALSE,
     labels = FALSE
   )
 
+  dat$attr$age.wk <- age.wk
   dat$attr$age.grp <- age.grp
-  dat$attr$age <- age
-
-  return(dat)
-}
-
-
-#' @export
-#' @rdname aging_msm
-aging_het <- function(dat, at) {
-
-  ## Parameters
-  time.unit <- dat$param$time.unit
-
-  ## Attributes
-  age <- dat$attr$age
-  active <- dat$attr$active
-
-  ## Updates
-  age[active == 1] <- age[active == 1] + time.unit/365
-
-  ## Save out
   dat$attr$age <- age
 
   return(dat)
