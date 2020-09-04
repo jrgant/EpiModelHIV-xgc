@@ -21,7 +21,9 @@ stitx_msm <- function(dat, at) {
   # Attributes
   race <- dat$attr$race
 
-  ## Symptomatic GC Treatment ##
+  ## Symptomatic GC Treatment
+
+  ### rectal
   idsRGC_tx_sympt <- which(
     dat$attr$rGC == 1 &
     dat$attr$rGC.infTime < at &
