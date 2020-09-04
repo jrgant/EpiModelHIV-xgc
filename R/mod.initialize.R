@@ -28,7 +28,6 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$init <- init
   dat$control <- control
 
-
   ## Network Setup ##
   # Initial network simulations
   dat$nw <- list()
@@ -104,12 +103,14 @@ initialize_msm <- function(x, param, init, control, s) {
 
   # Clinical history
   if (dat$control$save.clin.hist == TRUE) {
-    dat <- save_clin_hist(dat, at = 1) # assigned in mod.hivvl.R (not exported to namespace)
+    # assigned in mod.hivvl.R (not exported to namespace)
+    dat <- save_clin_hist(dat, at = 1)
   }
 
   # Network statistics
   if (dat$control$save.nwstats == TRUE) {
-    dat <- calc_nwstats(dat, at = 1) # assigned in mod.simnet.R (not exported to namespace)
+    # assigned in mod.simnet.R (not exported to namespace)
+    dat <- calc_nwstats(dat, at = 1)
   }
 
   # dat$param$netstats <- NULL
@@ -145,11 +146,18 @@ init_status_msm <- function(dat) {
   races <- sort(unique(dat$attr$race))
   for (i in races) {
     ids.race <- which(dat$attr$race == i)
-    tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
-                                 c(dat$param$tt.part.supp[i],
-                                   dat$param$tt.full.supp[i],
-                                   dat$param$tt.dur.supp[i]))
 
+    tt.traj[ids.race] <-
+      sample(
+        x = 1:3,
+        size = length(ids.race),
+        replace = TRUE,
+        prob = c(
+          dat$param$tt.part.supp[i],
+          dat$param$tt.full.supp[i],
+          dat$param$tt.dur.supp[i]
+        )
+      )
   }
   dat$attr$tt.traj <- tt.traj
 
@@ -159,13 +167,24 @@ init_status_msm <- function(dat) {
 
   age <- dat$attr$age
   min.ages <- min(dat$param$netstats$demog$ages)
-  time.sex.active <- pmax(1, round((365/7)*age[idsInf] - (365/7)*min.ages, 0))
-  min.hiv.time <- round(dat$param$vl.acute.rise.int + dat$param$vl.acute.fall.int)
+  time.sex.active <-
+    pmax(1, round(52 * age[idsInf] - 52 * min.ages, 0))
+
+  min.hiv.time <- round(
+    dat$param$vl.acute.rise.int + dat$param$vl.acute.fall.int
+  )
+
   max.hiv.time <- dat$param$vl.aids.onset.int
 
-  time.infected <- round(pmax(min.hiv.time,
-                            pmin(time.sex.active,
-                              sample(min.hiv.time:max.hiv.time, length(idsInf), TRUE))))
+  time.infected <- round(
+    pmax(
+      min.hiv.time,
+      pmin(
+        time.sex.active,
+        sample(min.hiv.time:max.hiv.time, length(idsInf), TRUE)
+      )
+    )
+  )
 
   dat$attr$inf.time <- rep(NA, num)
   dat$attr$inf.time[idsInf] <- -time.infected
@@ -185,7 +204,8 @@ init_status_msm <- function(dat) {
   dat$attr$vl.last.supp <- rep(NA, num)
 
   dat$attr$diag.time <- rep(NA, num)
-  dat$attr$diag.time[idsInf] <- dat$attr$inf.time[idsInf] + round(mean(1/dat$param$hiv.test.rate))
+  dat$attr$diag.time[idsInf] <-
+    dat$attr$inf.time[idsInf] + round(mean(1 / dat$param$hiv.test.rate))
   dat$attr$last.neg.test <- rep(NA, num)
 
   dat$attr$tx.status <- rep(NA, num)
@@ -263,13 +283,22 @@ init_sti_msm <- function(dat) {
 
   # Set GC gonorrhea symptom status
   dat$attr$rGC.sympt <- dat$attr$uGC.sympt <- dat$attr$pGC.sympt <- rep(NA, num)
-  dat$attr$rGC.sympt[rGC == 1] <- rbinom(sum(rGC == 1), 1, dat$param$rgc.sympt.prob)
-  dat$attr$uGC.sympt[uGC == 1] <- rbinom(sum(uGC == 1), 1, dat$param$ugc.sympt.prob)
-  dat$attr$pGC.sympt[pGC == 1] <- rbinom(sum(pGC == 1), 1, dat$param$pgc.sympt.prob)
+
+  dat$attr$rGC.sympt[rGC == 1] <-
+    rbinom(sum(rGC == 1), 1, dat$param$rgc.sympt.prob)
+
+  dat$attr$uGC.sympt[uGC == 1] <-
+    rbinom(sum(uGC == 1), 1, dat$param$ugc.sympt.prob)
+
+  dat$attr$pGC.sympt[pGC == 1] <-
+    rbinom(sum(pGC == 1), 1, dat$param$pgc.sympt.prob)
 
   # Set GC infection time
   # TODO: Expand to account for variable
-  dat$attr$rGC.infTime <- dat$attr$uGC.infTime <- dat$attr$pGC.infTime <- rep(NA, length(dat$attr$active))
+  dat$attr$rGC.infTime <-
+    dat$attr$uGC.infTime <-
+      dat$attr$pGC.infTime <-
+        rep(NA, length(dat$attr$active))
 
   dat$attr$rGC.infTime[rGC == 1] <- 1
   dat$attr$uGC.infTime[uGC == 1] <- 1
@@ -285,7 +314,11 @@ init_sti_msm <- function(dat) {
   dat$attr$pGC.timesInf[pGC == 1] <- 1
 
   dat$attr$rGC.tx <- dat$attr$uGC.tx <- dat$attr$pGC.tx <- rep(NA, num)
-  dat$attr$rGC.tx.prep <- dat$attr$uGC.tx.prep <- dat$attr$pGC.tx.prep <- rep(NA, num)
+
+  dat$attr$rGC.tx.prep <-
+    dat$attr$uGC.tx.prep <-
+      dat$attr$pGC.tx.prep <-
+        rep(NA, num)
 
   return(dat)
 
