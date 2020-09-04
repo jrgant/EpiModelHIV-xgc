@@ -15,9 +15,9 @@ stitrans_msm <- function(dat, at) {
   # Parameters ----------------------------------------------------------
 
   # Acquisition probabilities given contact with infected man
-  rgc.tprob <- dat$param$rgc.tprob
-  ugc.tprob <- dat$param$ugc.tprob
-  pgc.tprob <- dat$param$pgc.tprob
+  u2rgc.tprob <- dat$param$u2rgc.tprob
+  r2ugc.tprob <- dat$param$r2ugc.tprob
+  u2pgc.tprob <- dat$param$u2pgc.tprob
 
   # Probability of symptoms given infection
   rgc.sympt.prob <- dat$param$rgc.sympt.prob
@@ -31,7 +31,9 @@ stitrans_msm <- function(dat, at) {
 
   # Attributes ----------------------------------------------------------
 
+  # Demographics
   race <- dat$attr$race
+  age.grp <- dat$attr$age.grp
 
   # Current infection state
   rGC <- dat$attr$rGC
@@ -41,7 +43,7 @@ stitrans_msm <- function(dat, at) {
   # n Times infected
   rGC.timesInf <- dat$attr$rGC.timesInf
   uGC.timesInf <- dat$attr$uGC.timesInf
-  pGC.timesInf <- dat$attr$pGC.timeInf
+  pGC.timesInf <- dat$attr$pGC.timesInf
 
   # Infection time
   rGC.infTime <- dat$attr$rGC.infTime
@@ -54,116 +56,211 @@ stitrans_msm <- function(dat, at) {
   pGC.sympt <- dat$attr$pGC.sympt
 
 
-  # Pull act list
+  # Pull act lists
   al <- dat$temp$al
+  ol <- dat$temp$ol
 
   ## ins variable coding
   # ins = 0 : p2 is insertive
   # ins = 1 : p1 is insertive
-  # ins = 2 : both p1 and p2 are insertive
 
 
-  # Rectal GC -----------------------------------------------------------
+  # Urethral-to-Rectal GC ------------------------------------------------------
 
-  # Requires: uGC in insertive man, and no rGC in receptive man
-  p1Inf_rgc <- which(uGC[al[, "p1"]] == 1 & uGC.infTime[al[, "p1"]] < at &
-                     rGC[al[, "p2"]] == 0 & al[, "ins"] %in% c(1, 2))
-  p2Inf_rgc <- which(uGC[al[, "p2"]] == 1 & uGC.infTime[al[, "p2"]] < at &
-                     rGC[al[, "p1"]] == 0 & al[, "ins"] %in% c(0, 2))
-  allActs_rgc <- c(p1Inf_rgc, p2Inf_rgc)
+  # P1 infects P2
+  p1Inf_u2rgc <- which(
+    uGC[al[, "p1"]] == 1 & uGC.infTime[al[, "p1"]] < at &
+    rGC[al[, "p2"]] == 0 & al[, "ins"] == 1
+  )
+
+  # P2 infects P1
+  p2Inf_u2rgc <- which(
+    uGC[al[, "p2"]] == 1 & uGC.infTime[al[, "p2"]] < at &
+    rGC[al[, "p1"]] == 0 & al[, "ins"] == 0
+  )
+
+  allActs_u2rgc <- c(p1Inf_u2rgc, p2Inf_u2rgc)
 
   # UAI modifier
-  uai_rgc <- al[allActs_rgc, "uai"]
-  tprob_rgc <- rep(rgc.tprob, length(allActs_rgc))
+  uai_u2rgc <- al[allActs_u2rgc, "uai"]
+  tprob_u2rgc <- rep(u2rgc.tprob, length(allActs_u2rgc))
 
   # Transform to log odds
-  tlo_rgc <- log(tprob_rgc/(1 - tprob_rgc))
+  tlo_u2rgc <- log(tprob_u2rgc / (1 - tprob_u2rgc))
 
   # Modify log odds by race-specific condom effectiveness
-  races <- c(race[al[p1Inf_rgc, "p1"]], race[al[p2Inf_rgc, "p2"]])
+  races <- c(race[al[p1Inf_u2rgc, "p1"]], race[al[p2Inf_u2rgc, "p2"]])
   condom.rr <- rep(NA, length(races))
   for (i in sort(unique(races))) {
     ids.race <- which(races == i)
     condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
   }
 
-  tlo_rgc[uai_rgc == 0] <- tlo_rgc[uai_rgc == 0] + log(condom.rr[uai_rgc == 0])
+  tlo_u2rgc[uai_u2rgc == 0] <-
+    tlo_u2rgc[uai_u2rgc == 0] + log(condom.rr[uai_u2rgc == 0])
 
   # Back-transform to probability
-  tprob_rgc <- plogis(tlo_rgc)
+  tprob_u2rgc <- plogis(tlo_u2rgc)
 
   # Stochastic transmission
-  trans_rgc <- rbinom(length(allActs_rgc), 1, tprob_rgc)
+  trans_u2rgc <- rbinom(length(allActs_u2rgc), 1, tprob_u2rgc)
 
   # Determine the infected partner
-  idsInf_rgc <- NULL
-  if (sum(trans_rgc) > 0) {
-    transAL_rgc <- al[allActs_rgc[trans_rgc == 1], , drop = FALSE]
-    idsInf_rgc <- c(intersect(al[p1Inf_rgc, "p2"], transAL_rgc[, "p2"]),
-                    intersect(al[p2Inf_rgc, "p1"], transAL_rgc[, "p1"]))
-    stopifnot(all(rGC[idsInf_rgc] == 0))
+  idsInf_u2rgc <- NULL
+  if (sum(trans_u2rgc) > 0) {
+    transAL_u2rgc <- al[allActs_u2rgc[trans_u2rgc == 1], , drop = FALSE]
+    idsInf_u2rgc <- c(intersect(al[p1Inf_u2rgc, "p2"], transAL_u2rgc[, "p2"]),
+                    intersect(al[p2Inf_u2rgc, "p1"], transAL_u2rgc[, "p1"]))
+    stopifnot(all(rGC[idsInf_u2rgc] == 0))
   }
 
   # Update attributes
-  rGC[idsInf_rgc] <- 1
-  rGC.infTime[idsInf_rgc] <- at
-  rGC.sympt[idsInf_rgc] <- rbinom(length(idsInf_rgc), 1, rgc.sympt.prob)
-  rGC.timesInf[idsInf_rgc] <- rGC.timesInf[idsInf_rgc] + 1
+  rGC[idsInf_u2rgc] <- 1
+  rGC.infTime[idsInf_u2rgc] <- at
+  rGC.sympt[idsInf_u2rgc] <- rbinom(length(idsInf_u2rgc), 1, rgc.sympt.prob)
+  rGC.timesInf[idsInf_u2rgc] <- rGC.timesInf[idsInf_u2rgc] + 1
 
 
-  # Urethral GC ---------------------------------------------------------
+  # Rectal-to-Urethral GC ----------------------------------------------------
 
-  # Requires: rGC in receptive man, and no uGC in insertive man
-  p1Inf_ugc <- which(rGC[al[, "p1"]] == 1 & rGC.infTime[al[, "p1"]] < at &
-                     uGC[al[, "p2"]] == 0 & al[, "ins"] %in% c(0, 2))
-  p2Inf_ugc <- which(rGC[al[, "p2"]] == 1 & rGC.infTime[al[, "p2"]] < at &
-                     uGC[al[, "p1"]] == 0 & al[, "ins"] %in% c(1, 2))
-  allActs_ugc <- c(p1Inf_ugc, p2Inf_ugc)
+  # P1 infects P2
+  p1Inf_r2ugc <- which(
+    rGC[al[, "p1"]] == 1 & rGC.infTime[al[, "p1"]] < at &
+    uGC[al[, "p2"]] == 0 & al[, "ins"] == 0
+  )
+
+  # P2 infects P1
+  p2Inf_r2ugc <- which(
+    rGC[al[, "p2"]] == 1 & rGC.infTime[al[, "p2"]] < at &
+    uGC[al[, "p1"]] == 0 & al[, "ins"] == 1
+  )
+
+  allActs_r2ugc <- c(p1Inf_r2ugc, p2Inf_r2ugc)
 
   # UAI modifier
-  uai_ugc <- al[allActs_ugc, "uai"]
-  tprob_ugc <- rep(ugc.tprob, length(allActs_ugc))
+  uai_r2ugc <- al[allActs_r2ugc, "uai"]
+  tprob_r2ugc <- rep(r2ugc.tprob, length(allActs_r2ugc))
 
   # Transform to log odds
-  tlo_ugc <- log(tprob_ugc/(1 - tprob_ugc))
+  tlo_r2ugc <- log(tprob_r2ugc / (1 - tprob_r2ugc))
 
   # Modify log odds by race-specific condom effectiveness
-  races <- c(race[al[p1Inf_ugc, "p2"]], race[al[p2Inf_ugc, "p1"]])
+  races <- c(race[al[p1Inf_r2ugc, "p2"]], race[al[p2Inf_r2ugc, "p1"]])
   condom.rr <- rep(NA, length(races))
   for (i in sort(unique(races))) {
     ids.race <- which(races == i)
     condom.rr[ids.race] <- 1 - (sti.cond.eff - sti.cond.fail[i])
   }
 
-  tlo_ugc[uai_ugc == 0] <- tlo_ugc[uai_ugc == 0] + log(condom.rr[uai_ugc == 0])
+  tlo_r2ugc[uai_r2ugc == 0] <-
+    tlo_r2ugc[uai_r2ugc == 0] + log(condom.rr[uai_r2ugc == 0])
 
   # Back-transform to probability
-  tprob_ugc <- plogis(tlo_ugc)
+  tprob_r2ugc <- plogis(tlo_r2ugc)
 
   # Stochastic transmission
-  trans_ugc <- rbinom(length(allActs_ugc), 1, tprob_ugc)
+  trans_r2ugc <- rbinom(length(allActs_r2ugc), 1, tprob_r2ugc)
 
   # Determine the newly infected partner
-  idsInf_ugc <- NULL
-  if (sum(trans_ugc) > 0) {
-    transAL_ugc <- al[allActs_ugc[trans_ugc == 1],  , drop = FALSE]
-    idsInf_ugc <- c(intersect(al[p1Inf_ugc, "p2"], transAL_ugc[, "p2"]),
-                    intersect(al[p2Inf_ugc, "p1"], transAL_ugc[, "p1"]))
-    stopifnot(all(uGC[idsInf_ugc] == 0))
+  idsInf_r2ugc <- NULL
+  if (sum(trans_r2ugc) > 0) {
+    transAL_r2ugc <- al[allActs_r2ugc[trans_r2ugc == 1], , drop = FALSE]
+    idsInf_r2ugc <- c(intersect(al[p1Inf_r2ugc, "p2"], transAL_r2ugc[, "p2"]),
+                    intersect(al[p2Inf_r2ugc, "p1"], transAL_r2ugc[, "p1"]))
+    stopifnot(all(uGC[idsInf_r2ugc] == 0))
   }
 
   # Update attributes
-  uGC[idsInf_ugc] <- 1
-  uGC.infTime[idsInf_ugc] <- at
-  uGC.sympt[idsInf_ugc] <- rbinom(length(idsInf_ugc), 1, ugc.sympt.prob)
-  uGC.timesInf[idsInf_ugc] <- uGC.timesInf[idsInf_ugc] + 1
-
-  # Pharyngeal GC ----------------------------------------------------------
-
-  # TODO 2020-04-20: Fill out pharyngeal GC section
+  uGC[idsInf_r2ugc] <- 1
+  uGC.infTime[idsInf_r2ugc] <- at
+  uGC.sympt[idsInf_r2ugc] <- rbinom(length(idsInf_r2ugc), 1, ugc.sympt.prob)
+  uGC.timesInf[idsInf_r2ugc] <- uGC.timesInf[idsInf_r2ugc] + 1
 
 
-  # Output --------------------------------------------------------------
+  # Urethral-to-Pharyngeal GC --------------------------------------------------
+
+  # P1 infects P2
+  p1Inf_u2pgc <- which(
+    uGC[ol[, "p1"]] == 1 & uGC.infTime[ol[, "p1"]] < at &
+    pGC[ol[, "p2"]] == 0 & ol[, "ins.oral"] == 1
+  )
+
+  # P2 infects P1
+  p2Inf_u2pgc <- which(
+    uGC[ol[, "p2"]] == 1 & uGC.infTime[ol[, "p2"]] < at &
+    pGC[ol[, "p1"]] == 0 & ol[, "ins.oral"] == 0
+  )
+
+  allActs_u2pgc <- c(p1Inf_u2pgc, p2Inf_u2pgc)
+
+  # REVIEW: This step may not be necessary and may simply use up memory.
+  #         Check for each transmission pathway.
+  # Pathway-specific transmission probability
+  tprob_u2pgc <- rep(u2pgc.tprob, length(allActs_u2pgc))
+
+  # Stochastic transmission
+  trans_u2pgc <- rbinom(length(allActs_u2pgc), 1, tprob_u2pgc)
+
+  # Determine the newly infected partner
+  idsInf_u2pgc <- NULL
+  if (sum(trans_u2pgc) > 0) {
+    transOL_u2pgc <- ol[allActs_u2pgc[trans_u2pgc == 1], , drop = FALSE]
+    idsInf_u2pgc <- c(
+      intersect(ol[p1Inf_u2pgc, "p2"], transOL_u2pgc[, "p2"]),
+      intersect(ol[p2Inf_u2pgc, "p1"], transOL_u2pgc[, "p1"])
+    )
+    stopifnot(all(pGC[idsInf_u2pgc] == 0))
+  }
+
+  # Update attributes
+  pGC[idsInf_u2pgc] <- 1
+  pGC.infTime[idsInf_u2pgc] <- at
+  pGC.sympt[idsInf_u2pgc] <- rbinom(length(idsInf_u2pgc), 1, pgc.sympt.prob)
+  pGC.timesInf[idsInf_u2pgc] <- pGC.timesInf[idsInf_u2pgc] + 1
+
+
+  # Pharyngeal-to-Urethral GC --------------------------------------------------
+
+  # P1 infects P2
+  p1Inf_p2ugc <- which(
+    pGC[ol[, "p1"]] == 1 & pGC.infTime[ol[, "p1"]] < at &
+    uGC[ol[, "p2"]] == 0 & ol[, "ins.oral"] == 0
+  )
+
+  # P2 infects P1
+  p2Inf_p2ugc <- which(
+    pGC[ol[, "p2"]] == 1 & pGC.infTime[ol[, "p2"]] < at &
+    uGC[ol[, "p1"]] == 0 & ol[, "ins.oral"] == 1
+  )
+
+  allActs_p2ugc <- c(p1Inf_p2ugc, p2Inf_p2ugc)
+
+  # Stochastic transmission with pathway-specific probability
+  trans_p2ugc <- rbinom(length(allActs_p2ugc), 1, dat$param$p2ugc.tprob)
+
+  # Determine the newly infected partner
+  idsInf_p2ugc <- NULL
+  if (sum(trans_p2ugc) > 0) {
+    transOL_p2ugc <- ol[allActs_p2ugc[trans_p2ugc == 1], , drop = FALSE]
+    idsInf_p2ugc <- c(
+      intersect(ol[p1Inf_p2ugc, "p2"], transOL_p2ugc[, "p2"]),
+      intersect(ol[p2Inf_p2ugc, "p1"], transOL_p2ugc[, "p1"])
+    )
+  }
+
+  # Update attributes
+  uGC[idsInf_p2ugc] <- 1
+  uGC.infTime[idsInf_p2ugc] <- at
+  uGC.sympt[idsInf_p2ugc] <- rbinom(length(idsInf_p2ugc), 1, ugc.sympt.prob)
+  uGC.timesInf[idsInf_p2ugc] <- uGC.timesInf[idsInf_p2ugc] + 1
+
+  ## TODO Add rimming and kissing
+  ## Make sure each takes a conditional that checks for the corresponding
+  ## pathway flag (transRoute_Kissing, transRoute_Rimming)
+
+  # Output ---------------------------------------------------------------------
+
+  # TODO Rewrite to account for pathway-specific transmission
 
   # attributes
   dat$attr$rGC <- rGC
@@ -184,25 +281,102 @@ stitrans_msm <- function(dat, at) {
 
   # Summary stats
 
-  ## GC incidence by anatomic site
-  dat$epi$incid.gc[at] <- length(idsInf_rgc) + length(idsInf_ugc) + length(idsInf_pgc)
-  dat$epi$incid.rgc[at] <- length(idsInf_rgc)
-  dat$epi$incid.ugc[at] <- length(idsInf_ugc)
-  dat$epi$incid.pgc[at] <- length(idsInf_pgc)
+  ## GC incident infections, overall, by anatomic site, and by pathway
+  idsInf_allEvents <- list(
+    incid.u2rgc = idsInf_u2rgc,
+    incid.u2pgc = idsInf_u2pgc,
+    incid.r2ugc = idsInf_r2ugc,
+    incid.p2ugc = idsInf_p2ugc
+  )
 
-  ## by race/ethnicity
-  dat$epi$incid.gc.B[at] <- length(
-    intersect(union(idsInf_rgc, idsInf_ugc, idsInf_pgc), which(race == 1))
+  # kissing transmissions, if kissing objects found in environment
+  if (exists("idsInf_p2pgc")) {
+    idsInf_allEvents <- c(
+      idsInf_allEvents,
+      list(incid.p2pgc = idsInf_p2pgc)
+    )
+  }
+
+  # rimming transmission, if rimming ojbects found in environment
+  if (exists("idsInf_p2rgc") & exists("idsInf_r2pgc")) {
+    idsInf_allEvents <- c(
+      idsInf_allEvents,
+      list(
+        incid.p2rgc = idsInf_p2rgc,
+        incid.r2pgc = idsInf_r2pgc
+      )
+    )
+  }
+
+  ## Tally incident infections
+  demog <- data.table(
+    race = race,
+    age.grp = age.grp
   )
-  dat$epi$incid.gc.H[at] <- length(
-    intersect(union(idsInf_rgc, idsInf_ugc, idsInf_pgc), which(race == 2))
-  )
-  dat$epi$incid.gc.O[at] <- length(
-    intersect(union(idsInf_rgc, idsInf_ugc, idsInf_pgc), which(race == 3))
-  )
-  dat$epi$incid.gc.W[at] <- length(
-    intersect(union(idsInf_rgc, idsInf_ugc, idsInf_pgc), which(race == 4))
-  )
+
+  setkeyv(demog, c("race", "age.grp"))
+
+  match.InfDemog <- lapply(idsInf_allEvents, function(x) demog[x])
+
+  # joint pathway-specific incidence by race and age group
+  incid.byDemog <- lapply(match.InfDemog, function(x) {
+    x[, .(incid = .N), keyby = .(race, age.grp)]
+  }) %>% rbindlist(., idcol = "transpath")
+
+  # add anatomic site variable
+  incid.byDemog[, anatsite := str_extract(transpath, "(rgc|ugc|pgc)$")]
+  setkeyv(incid.byDemog, c("race", "age.grp"))
+
+  # label vectors for incidence assignments below
+  anatsites <- c("rgc", "ugc", "pgc")
+  races <- c("B", "H", "O", "W")
+
+  # store overall GC incidence
+  dat$epi$incid.gc[at] <- incid.byDemog[, sum(incid)]
+
+  # store incidence by anatomic site
+  lapply(anatsites, function(x) {
+    dat$epi[[paste0("incid", x)]][at] <<-
+      incid.byDemog[transpath %like% paste0(x, "$"), sum(incid)]
+  })
+
+  # incidence by anatomic site and race
+  incid.ar <- incid.byDemog[, .(incid = sum(incid)), .(anatsite, race)]
+  lapply(seq_len(nrow(incid.ar)), function(x, racelabs = races) {
+    rslug <- racelabs[incid.ar[x, race]]
+    aslug <- incid.ar[x, anatsite]
+    dat$epi[[paste0("incid.", rslug, ".", aslug)]][at] <<- incid.ar[x, incid]
+
+  })
+
+  # incidence by anatomic site and age group
+  incid.aa <- incid.byDemog[, .(incid = sum(incid)), .(anatsite, age.grp)]
+  lapply(seq_len(nrow(incid.aa)), function(x) {
+    gslug <- incid.aa[x, age.grp]
+    aslug <- incid.aa[x, anatsite]
+    dat$epi[[paste0("incid.age.", gslug, ".", aslug)]][at] <<-
+      incid.aa[x, incid]
+  })
+
+  # incidence by anatomic site, race, and age group
+  incid.ara <- incid.byDemog[, .(
+    incid = sum(incid)
+  ), .(anatsite, race, age.grp)]
+
+  lapply(seq_len(nrow(incid.ara)), function(x, racelabs = races) {
+    rslug <- racelabs[incid.ara[x, race]]
+    gslug <- incid.ara[x, age.grp]
+    aslug <- incid.ara[x, anatsite]
+    dat$epi[[paste0("incid.", rslug, ".age", gslug, ".", aslug)]][at] <<-
+      incid.ara[x, incid]
+  })
+
+  # incidence by transmission pathway
+  incid.tp <- incid.byDemog[, .(incid = sum(incid)), transpath]
+  lapply(seq_len(nrow(incid.tp)), function(x) {
+    dat$epi[[paste0("incid.", incid.tp[x, transpath])]][at] <<-
+      incid.tp[x, incid]
+  })
 
   # Check all infected have all STI attributes
   stopifnot(
