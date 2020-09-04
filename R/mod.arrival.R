@@ -46,7 +46,6 @@ arrival_msm <- function(dat, at) {
 
   ## Output
   dat$epi$nNew[at] <- nNew
-
   return(dat)
 }
 
@@ -58,6 +57,7 @@ setNewAttr_msm <- function(dat, at, nNew) {
     function(x)
       c(x, rep(NA, nNew))
   })
+
   newIds <- which(is.na(dat$attr$active))
 
   # Demographic
@@ -68,14 +68,12 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$arrival.time[newIds] <- rep(at, nNew)
 
   race.dist <- prop.table(table(dat$param$netstats$attr$race))
-
   race <- sample(sort(unique(dat$attr$race)), nNew, TRUE, race.dist)
   dat$attr$race[newIds] <- race
 
+  dat$attr$age.wk[newIds] <- rep(dat$param$arrival.age * 52, nNew)
   dat$attr$age[newIds] <- rep(dat$param$arrival.age, nNew)
-  age.breaks <- dat$param$netstats$demog$age.breaks
-  attr_age.grp <- cut(dat$attr$age[newIds], age.breaks, labels = FALSE)
-  dat$attr$age.grp[newIds] <- attr_age.grp
+  dat$attr$age.grp[newIds] <- rep(1, nNew)
 
   # Assign HIV status and related
   dat$attr$status[newIds] <- rep(0, nNew)
@@ -95,12 +93,20 @@ setNewAttr_msm <- function(dat, at, nNew) {
   tt.traj <- rep(NA, nNew)
   for (i in races) {
     ids.race <- which(dat$attr$race[newIds] == i)
-    tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
-                                c(dat$param$tt.part.supp[i],
-                                  dat$param$tt.full.supp[i],
-                                  dat$param$tt.dur.supp[i]))
 
+    tt.traj[ids.race] <-
+      sample(
+        x = 1:3,
+        size = length(ids.race),
+        replace = TRUE,
+        prob = c(
+          dat$param$tt.part.supp[i],
+          dat$param$tt.full.supp[i],
+          dat$param$tt.dur.supp[i]
+        )
+      )
   }
+
   dat$attr$tt.traj[newIds] <- tt.traj
 
   # Circumcision
