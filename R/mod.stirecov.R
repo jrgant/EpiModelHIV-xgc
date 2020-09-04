@@ -18,9 +18,6 @@ stirecov_msm <- function(dat, at) {
   pgc.ntx.int <- dat$param$pgc.ntx.int
   gc.tx.int <- dat$param$gc.tx.int
 
-  ## rct.ntx.int <- dat$param$rct.ntx.int
-  ## uct.ntx.int <- dat$param$uct.ntx.int
-  ## ct.tx.int <- dat$param$ct.tx.int
 
   # GC Recovery ---------------------------------------------------------
 
@@ -113,62 +110,11 @@ stirecov_msm <- function(dat, at) {
   dat$attr$pGC.tx[recovPGC] <- NA
   dat$attr$pGC.tx.prep[recovPGC] <- NA
 
-  # CT Recovery ---------------------------------------------------------
-
-  ## # Untreated (asymptomatic and symptomatic)
-  ## idsRCT_ntx <- which(dat$attr$rCT == 1 &
-  ##                       dat$attr$rCT.infTime < at &
-  ##                       (is.na(dat$attr$rCT.tx) | dat$attr$rCT.tx == 0) &
-  ##                       (is.na(dat$attr$rCT.tx.prep) | dat$attr$rCT.tx.prep == 0))
-  ## idsUCT_ntx <- which(dat$attr$uCT == 1 &
-  ##                       dat$attr$uCT.infTime < at &
-  ##                       (is.na(dat$attr$uCT.tx) | dat$attr$uCT.tx == 0) &
-  ##                       (is.na(dat$attr$uCT.tx.prep) | dat$attr$uCT.tx.prep == 0))
-
-  ## # recovRCT_ntx <- idsRCT_ntx[which(rbinom(length(idsRCT_ntx),
-  ## #                                         1, 1/rct.ntx.int) == 1)]
-  ## # recovUCT_ntx <- idsUCT_ntx[which(rbinom(length(idsUCT_ntx),
-  ## #                                         1, 1/uct.ntx.int) == 1)]
-  ## recovRCT_ntx <- idsRCT_ntx[at - dat$attr$rCT.infTime[idsRCT_ntx] >= rct.ntx.int]
-  ## recovUCT_ntx <- idsUCT_ntx[at - dat$attr$uCT.infTime[idsUCT_ntx] >= uct.ntx.int]
-
-  ## # Treated (asymptomatic and symptomatic)
-  ## idsRCT_tx <- which(dat$attr$rCT == 1 &
-  ##                      dat$attr$rCT.infTime < at &
-  ##                      (dat$attr$rCT.tx == 1 | dat$attr$rCT.tx.prep == 1))
-  ## idsUCT_tx <- which(dat$attr$uCT == 1 &
-  ##                      dat$attr$uCT.infTime < at &
-  ##                      (dat$attr$uCT.tx == 1 | dat$attr$uCT.tx.prep == 1))
-
-  ## # recovRCT_tx <- idsRCT_tx[which(rbinom(length(idsRCT_tx),
-  ## #                                       1, 1/ct.tx.int) == 1)]
-  ## # recovUCT_tx <- idsUCT_tx[which(rbinom(length(idsUCT_tx),
-  ## #                                       1, 1/ct.tx.int) == 1)]
-  ## recovRCT_tx <- idsRCT_tx[at - dat$attr$rCT.infTime[idsRCT_tx] >= ct.tx.int]
-  ## recovUCT_tx <- idsUCT_tx[at - dat$attr$uCT.infTime[idsUCT_tx] >= ct.tx.int]
-
-  ## recovRCT <- c(recovRCT_ntx, recovRCT_tx)
-  ## recovUCT <- c(recovUCT_ntx, recovUCT_tx)
-
-
   # Output ------------------------------------------------------------------
 
-  ## dat$attr$rCT[recovRCT] <- 0
-  ## dat$attr$rCT.sympt[recovRCT] <- NA
-  ## dat$attr$rCT.infTime[recovRCT] <- NA
-  ## dat$attr$rCT.tx[recovRCT] <- NA
-  ## dat$attr$rCT.tx.prep[recovRCT] <- NA
-
-  ## dat$attr$uCT[recovUCT] <- 0
-  ## dat$attr$uCT.sympt[recovUCT] <- NA
-  ## dat$attr$uCT.infTime[recovUCT] <- NA
-  ## dat$attr$uCT.tx[recovUCT] <- NA
-  ## dat$attr$uCT.tx.prep[recovUCT] <- NA
-
-  # dat$epi$recov.rgc[at] <- length(recovRGC)
-  # dat$epi$recov.ugc[at] <- length(recovUGC)
-  # dat$epi$recov.rct[at] <- length(recovRCT)
-  # dat$epi$recov.uct[at] <- length(recovUCT)
+  dat$epi$recov.rgc[at] <- length(recovRGC)
+  dat$epi$recov.pgc[at] <- length(recovPGC)
+  dat$epi$recov.ugc[at] <- length(recovUGC)
 
   return(dat)
 }
