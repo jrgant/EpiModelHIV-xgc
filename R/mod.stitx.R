@@ -31,6 +31,7 @@ stitx_msm <- function(dat, at) {
     is.na(dat$attr$rGC.tx)
   )
 
+  ### urethral
   idsUGC_tx_sympt <- which(
     dat$attr$uGC == 1 &
     dat$attr$uGC.infTime < at &
@@ -38,21 +39,28 @@ stitx_msm <- function(dat, at) {
     is.na(dat$attr$uGC.tx)
   )
 
+  ### pharyngeal
   idsPGC_tx_sympt <- which(
     dat$attr$pGC == 1 &
     dat$attr$pGC.infTime < at &
     dat$attr$pGC.sympt == 1 &
-    is.na(dat$attr$uGC.tx)
+    is.na(dat$attr$pGC.tx)
+  )
+
+  idsGC_tx_sympt <- union(
+    c(idsRGC_tx_sympt, idsUGC_tx_sympt),
+    idsPGC_tx_sympt
   )
 
   # Subset by race
-  idsGC_tx_sympt <- union(idsRGC_tx_sympt, idsUGC_tx_sympt, idsPGC_tx_sympt)
   races <- sort(unique(race[idsGC_tx_sympt]))
   txGC_sympt <- rep(NA, length(idsGC_tx_sympt))
+
   for (i in races) {
     ids.race <- which(race[idsGC_tx_sympt] == i)
     txGC_sympt[ids.race] <- rbinom(length(ids.race), 1, gc.sympt.prob.tx[i])
   }
+
   ids_txGC_sympt <- idsGC_tx_sympt[which(txGC_sympt == 1)]
 
   # Subset by anatomic site
@@ -86,7 +94,11 @@ stitx_msm <- function(dat, at) {
   )
 
   # Subset by race
-  idsGC_tx_asympt <- union(idsRGC_tx_asympt, idsUGC_tx_asympt, idsPGC_tx_asympt)
+  idsGC_tx_asympt <- union(
+    c(idsRGC_tx_asympt, idsUGC_tx_asympt),
+    idsPGC_tx_asympt
+  )
+
   races <- sort(unique(race[idsGC_tx_asympt]))
   txGC_asympt <- rep(NA, length(idsGC_tx_asympt))
   for (i in races) {
@@ -99,6 +111,7 @@ stitx_msm <- function(dat, at) {
   txRGC_asympt <- intersect(idsRGC_tx_asympt, ids_txGC_asympt)
   txUGC_asympt <- intersect(idsUGC_tx_asympt, ids_txGC_asympt)
   txPGC_asympt <- intersect(idsPGC_tx_asympt, ids_txGC_asympt)
+
 
   ## All Treated GC ##
 
@@ -123,35 +136,53 @@ stitx_msm <- function(dat, at) {
                               which(dat$attr$rGC == 1 &
                                     dat$attr$rGC.infTime < at &
                                     is.na(dat$attr$rGC.tx.prep)))
+  
   idsUGC_prep_tx <- intersect(idsSTI_screen,
                               which(dat$attr$uGC == 1 &
                                     dat$attr$uGC.infTime < at &
                                     is.na(dat$attr$uGC.tx.prep)))
 
+  idsPGC_prep_tx <- intersect(idsSTI_screen,
+                              which(dat$attr$pGC == 1 &
+                                    dat$attr$pGC.infTime < at &
+                                    is.na(dat$attr$pGC.tx.prep)))
+
   txRGC_prep <- idsRGC_prep_tx[which(rbinom(length(idsRGC_prep_tx), 1,
                                             prep.sti.prob.tx) == 1)]
+
   txUGC_prep <- idsUGC_prep_tx[which(rbinom(length(idsUGC_prep_tx), 1,
+                                            prep.sti.prob.tx) == 1)]
+
+  txPGC_prep <- idsPGC_prep_tx[which(rbinom(length(idsPGC_prep_tx), 1,
                                             prep.sti.prob.tx) == 1)]
 
   ## Update Attributes ##
   dat$attr$rGC.tx[idsRGC_tx] <- 0
-  dat$attr$rGC.tx[txRGC] <- 1
-
   dat$attr$uGC.tx[idsUGC_tx] <- 0
+  dat$attr$pGC.tx[idsPGC_tx] <- 0
+
+  dat$attr$rGC.tx[txRGC] <- 1
   dat$attr$uGC.tx[txUGC] <- 1
+  dat$attr$pGC.tx[txPGC] <- 1
+
+  dat$attr$rGC.tx.prep[txRGC_prep] <- 1
+  dat$attr$uGC.tx.prep[txUGC_prep] <- 1
+  dat$attr$pGC.tx.prep[txPGC_prep] <- 1
 
   dat$attr$rGC.tx.prep[idsRGC_prep_tx] <- 0
-  dat$attr$rGC.tx.prep[txRGC_prep] <- 1
-
   dat$attr$uGC.tx.prep[idsUGC_prep_tx] <- 0
-  dat$attr$uGC.tx.prep[txUGC_prep] <- 1
+  dat$attr$pGC.tx.prep[idsPGC_prep_tx] <- 0
 
 
   ## Add tx at other anatomical site ##
   dat$attr$rGC.tx[which((dat$attr$uGC.tx == 1 | dat$attr$uGC.tx.prep == 1) &
-                          dat$attr$rGC == 1)] <- 1
+                        dat$attr$rGC == 1)] <- 1
+
   dat$attr$uGC.tx[which((dat$attr$rGC.tx == 1 | dat$attr$rGC.tx.prep == 1) &
-                          dat$attr$uGC == 1)] <- 1
+                        dat$attr$uGC == 1)] <- 1
+
+  dat$attr$pGC.tx[which((dat$attr$pGC.tx == 1 | dat$attr$pGC.tx.prep == 1) &
+                        dat$attr$pGC == 1)] <- 1
 
   return(dat)
 }
