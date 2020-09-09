@@ -336,7 +336,7 @@ stitrans_msm <- function(dat, at) {
 
   # store incidence by anatomic site
   lapply(anatsites, function(x) {
-    dat$epi[[paste0("incid", x)]][at] <<-
+    dat$epi[[paste0("incid.", x)]][at] <<-
       incid.byDemog[transpath %like% paste0(x, "$"), sum(incid)]
   })
 
