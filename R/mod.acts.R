@@ -33,6 +33,8 @@ acts_msm <- function(dat, at) {
 
   plist <- dat$temp$plist
 
+  # Parameter setup ------------------------------------------------------------
+ 
   ## Parameters from Epistats object
   ## NOTE:
   ##   We assign the function's environment to the fit$terms environment so
@@ -67,12 +69,15 @@ acts_msm <- function(dat, at) {
   ptype  <- rep(1:3, times = c(nrow(dat$el[[1]]),
                                nrow(dat$el[[2]]),
                                nrow(dat$el[[3]])))
- 
+
   st1 <- status[el[, 1]]
   st2 <- status[el[, 2]]
 
   el <- cbind(el, st1, st2, ptype)
   colnames(el) <- c("p1", "p2", "st1", "st2", "ptype")
+
+
+  # Main/casual partnerships ---------------------------------------------------
 
   ## Subset to main/casual
   el.mc <- el[el[, "ptype"] != 3, ]
@@ -170,7 +175,7 @@ acts_msm <- function(dat, at) {
   oi.acts.sim <- MASS::rnegbin(oi.acts, theta = oi.acts.mc.theta)
   oi.rates <- oi.acts.sim / 52
   oi <- round(oi.rates * oi.acts.scale)
- 
+
   el.mc <- cbind(el.mc, durations, ai, oi)
 
   ## Clean up.
@@ -183,7 +188,38 @@ acts_msm <- function(dat, at) {
   oi.acts <- oi.acts.sim <- oi.rates <- oi <- NULL
 
 
-  # One-time sexual contacts
+  ## Simulate rimming acts (governed by flag)
+  if (dat$control$transRoute_Rimming) {
+    rrmain <- dat$param$rim.rate.main
+    rrcasl <- dat$param$rim.rate.casl
+
+    rim.acts <-
+      I(el.mc[, "ptype"] == 1) * rrmain +
+      I(el.mc[, "ptype"] == 2) * rrcasl
+
+    ri <- rpois(nrow(el.mc), rim.acts)
+
+    el.mc <- cbind(el.mc, ri)
+  }
+
+  ## Simualte kissing acts (governed by flag)
+  if (dat$control$transRoute_Kissing) {
+
+    kiss.rates <- ifelse(
+      el.mc[, "ptype"] == 1,
+      dat$param$kiss.rate.main,
+      dat$param$kiss.rate.casl
+    )
+
+    kiss <- rep(NA, nrow(el.mc))
+    kiss  <- rpois(nrow(el.mc), kiss.rates)
+
+    el.mc <- cbind(el.mc, kiss)
+  }
+
+ 
+  # One-time sexual contacts ---------------------------------------------------
+
   el.oo <- el[el[, "ptype"] == 3, ]
 
   age.i <- age.j <- rep(NA, nrow(el.oo))
@@ -214,7 +250,7 @@ acts_msm <- function(dat, at) {
   hiv.concord[which(diag.status.i != diag.status.j)] <- 2
   hiv.concord[which(diag.status.i == 1 & diag.status.j == 1)] <- 3
 
-  ## Simulate anal and oral acts.
+  ## Simulate anal acts.
   pred_oo <- data.table(
     any.prep = any.prep,
     hiv.concord = hiv.concord,
@@ -232,6 +268,7 @@ acts_msm <- function(dat, at) {
   ai.acts.sim <- rbinom(length(ai.acts), 1, prob = ai.acts)
   ai <- ai.acts.sim
 
+  ## Simulate oral acts.
   ## Add variable for the oral act model.
   pred_oo_oi <- copy(pred_oo)
   pred_oo_oi[, abs_sqrt_agediff := abs(sqrt(age.i) - sqrt(age.j))]
@@ -243,8 +280,32 @@ acts_msm <- function(dat, at) {
   durations <- rep(1, nrow(el.oo))
   el.oo <- cbind(el.oo, durations, ai, oi)
 
-  # Bind el back together
+
+  ## Simulate rimming acts.
+
+  if (dat$control$transRoute_Rimming) {
+    ri <- NULL
+    ri <- rep(NA, nrow(el.oo))
+    ri <- rbinom(nrow(el.oo), 1, dat$param$rim.prob.oo)
+    el.oo <- cbind(el.oo, ri)
+  }
+
+  ## Simulate kissing during one-time contacts.
+
+  if (dat$control$transRoute_Kissing) {
+    kiss <- NULL
+    kiss <- rep(NA, nrow(el.oo))
+    kiss  <- rbinom(nrow(el.oo), 1, dat$param$kiss.prob.oo)
+    el.oo <- cbind(el.oo, kiss)
+  }
+
+
+  # Bind el back together-------------------------------------------------------
+
   el <- rbind(el.mc, el.oo)
+
+
+  # Post-processing for AIDS ---------------------------------------------------
 
   # For AIDS cases with VL above acts.aids.vl, reduce their their anal acts to 0
   p1HIV <- which(el[, "st1"] == 1)
@@ -261,7 +322,33 @@ acts_msm <- function(dat, at) {
   el[disc.st2pos, 1:4] <- el[disc.st2pos, c(2, 1, 4, 3)]
 
   # Remove inactive edges from el (no anal or oral acts)
-  el <- el[-which(el[, "ai"] == 0 & el[, "oi"] == 0), ]
+  if (dat$control$transRoute_Rimming & !dat$control$transRoute_Kissing) {
+
+    el <- el[-which(
+                el[, "ai"] == 0 &
+                el[, "oi"] == 0 &
+                el[, "ri"] == 0
+              ), ]
+
+  } else if (dat$control$transRoute_Kissing & !dat$control$transRoute_Rimming) {
+
+    el <- el[-which(
+                el[, "ai"] == 0 &
+                el[, "oi"] == 0 &
+                el[, "kiss"] == 0
+              ), ]
+
+  } else if (dat$control$transRoute_Rimming & dat$control$transRoute_Kissing) {
+
+    el <- el[-which(
+                el[, "ai"] == 0 &
+                el[, "oi"] == 0 &
+                el[, "ri"] == 0 &
+                el[, "kiss"] == 0
+              ), ]
+  } else {
+    el <- el[-which(el[, "ai"] == 0 & el[, "oi"] == 0), ]
+  }
 
   # Save out
   dat$temp$el <- el

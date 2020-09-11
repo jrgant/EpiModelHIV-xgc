@@ -128,6 +128,8 @@ setNewAttr_msm <- function(dat, at, nNew) {
   dat$attr$role.class[newIds] <- role.class
 
   # Insertativity quotients
+
+  ## Anal insertativity
   ins.quot <- rep(NA, nNew)
   ins.quot[dat$attr$role.class[newIds] == 0]  <- 1
   ins.quot[dat$attr$role.class[newIds] == 1]  <- 0
@@ -136,9 +138,15 @@ setNewAttr_msm <- function(dat, at, nNew) {
   )
   dat$attr$ins.quot[newIds] <- ins.quot
 
+  ## Oral insertativity
   ins.quot.oral <- rep(NA, nNew)
   ins.quot.oral <- runif(length(ins.quot.oral))
   dat$attr$ins.quot.oral[newIds] <- ins.quot.oral
+
+  ## Rimming insertativity
+  ins.quot.rim <- rep(NA, nNew)
+  ins.quot.rim <- runif(length(ins.quot.rim))
+  dat$attr$ins.quot.rim[newIds] <- ins.quot.rim
 
   # Degree
   dat$attr$deg.main[newIds] <- 0

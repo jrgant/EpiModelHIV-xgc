@@ -35,6 +35,7 @@ position_msm <- function(dat, at) {
   ins.quot <- dat$attr$ins.quot
   ins.quot.oral <- dat$attr$ins.quot.oral
 
+
   # Parameters
 
   ## Process
@@ -71,6 +72,20 @@ position_msm <- function(dat, at) {
   ins.oral <- rbinom(length(p1.ins.oral.prob), 1, p1.ins.oral.prob)
 
   dat$temp$ol <- cbind(ol, ins.oral)
+
+  ## Rimming position
+  if (dat$control$transRoute_Rimming) {
+
+    ri <- dat$temp$ri
+    ins.quot.rim <- dat$attr$ins.quot.rim
+
+    p1.ins.rim.prob <- ins.quot.rim[ri[, 1]] /
+      (ins.quot.rim[ri[, 1]] + ins.quot.rim[ri[, 2]])
+
+    ins.rim <- rbinom(length(p1.ins.rim.prob), 1, p1.ins.rim.prob)
+
+    dat$temp$ri <- cbind(ri, ins.rim)
+  }
 
   ## Output
   return(dat)

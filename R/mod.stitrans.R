@@ -59,11 +59,14 @@ stitrans_msm <- function(dat, at) {
   # Pull act lists
   al <- dat$temp$al
   ol <- dat$temp$ol
-
+ 
   ## ins variable coding
   # ins = 0 : p2 is insertive
   # ins = 1 : p1 is insertive
 
+  ##############################################################################
+  ## ANAL SEX ##
+  ##############################################################################
 
   # Urethral-to-Rectal GC ------------------------------------------------------
 
@@ -177,6 +180,10 @@ stitrans_msm <- function(dat, at) {
   uGC.timesInf[idsInf_r2ugc] <- uGC.timesInf[idsInf_r2ugc] + 1
 
 
+  ##############################################################################
+  ## ORAL SEX ##
+  ##############################################################################
+
   # Urethral-to-Pharyngeal GC --------------------------------------------------
 
   # P1 infects P2
@@ -246,6 +253,8 @@ stitrans_msm <- function(dat, at) {
       intersect(ol[p1Inf_p2ugc, "p2"], transOL_p2ugc[, "p2"]),
       intersect(ol[p2Inf_p2ugc, "p1"], transOL_p2ugc[, "p1"])
     )
+
+    stopifnot(all(uGC[idsInf_p2ugc] == 0))
   }
 
   # Update attributes
@@ -254,9 +263,145 @@ stitrans_msm <- function(dat, at) {
   uGC.sympt[idsInf_p2ugc] <- rbinom(length(idsInf_p2ugc), 1, ugc.sympt.prob)
   uGC.timesInf[idsInf_p2ugc] <- uGC.timesInf[idsInf_p2ugc] + 1
 
-  ## TODO Add rimming and kissing
+  ##############################################################################
+  ## RIMMING ##
+  ##############################################################################
+
+  ## TODO Add rimming
   ## Make sure each takes a conditional that checks for the corresponding
-  ## pathway flag (transRoute_Kissing, transRoute_Rimming)
+  ## pathway flag (i.e., transRoute_Kissing, transRoute_Rimming)
+
+  if (dat$control$transRoute_Rimming) {
+    ri <- dat$temp$ri
+
+    # Pharyngeal-to-Rectal GC --------------------------------------------------
+
+    # P1 infects P2
+    p1Inf_p2rgc <- which(
+      pGC[ri[, "p1"]] == 1 & pGC.infTime[ri[, "p1"]] < at &
+      rGC[ri[, "p2"]] == 0 & ri[, "ins.rim"] == 1
+    )
+
+    # P2 infects P1
+    p2Inf_p2rgc <- which(
+      pGC[ri[, "p2"]] == 1 & pGC.infTime[ri[, "p2"]] < at &
+      rGC[ri[, "p1"]] == 0 & ri[, "ins.rim"] == 0
+    )
+
+    allActs_p2rgc <- c(p1Inf_p2rgc, p2Inf_p2rgc)
+
+    # REVIEW: This step may not be necessary and may simply use up memory.
+    #         Check for each transmission pathway.
+    # Pathway-specific transmission probability
+    tprob_p2rgc <- rep(dat$param$p2rgc.tprob, length(allActs_p2rgc))
+
+    # Stochastic transmission
+    trans_p2rgc <- rbinom(length(allActs_p2rgc), 1, tprob_p2rgc)
+
+    # Determine the newly infected partner
+    idsInf_p2rgc <- NULL
+    if (sum(trans_p2rgc) > 0) {
+      transRI_p2rgc <- ri[allActs_p2rgc[trans_p2rgc == 1], , drop = FALSE]
+      idsInf_p2rgc <- c(
+        intersect(ri[p1Inf_p2rgc, "p2"], transRI_p2rgc[, "p2"]),
+        intersect(ri[p2Inf_p2rgc, "p1"], transRI_p2rgc[, "p1"])
+      )
+      stopifnot(all(rGC[idsInf_p2rgc] == 0))
+    }
+
+    # Update attributes
+    rGC[idsInf_p2rgc] <- 1
+    rGC.infTime[idsInf_p2rgc] <- at
+    rGC.sympt[idsInf_p2rgc] <- rbinom(length(idsInf_p2rgc), 1, rgc.sympt.prob)
+    rGC.timesInf[idsInf_p2rgc] <- pGC.timesInf[idsInf_p2rgc] + 1
+
+
+    # Rectal-to-Pharyngeal GC --------------------------------------------------
+
+    # P1 infects P2
+    p1Inf_r2pgc <- which(
+      rGC[ri[, "p1"]] == 1 & rGC.infTime[ri[, "p1"]] < at &
+      pGC[ri[, "p2"]] == 0 & ri[, "ins.rim"] == 0
+    )
+
+    # P2 infects P1
+    p2Inf_r2pgc <- which(
+      rGC[ri[, "p2"]] == 1 & rGC.infTime[ri[, "p2"]] < at &
+      pGC[ri[, "p1"]] == 0 & ri[, "ins.rim"] == 1
+    )
+
+    allActs_r2pgc <- c(p1Inf_r2pgc, p2Inf_r2pgc)
+
+    # Pathway-specific transmission probability
+    tprob_p2rgc <- rep(dat$param$p2rgc.tprob, length(allActs_p2rgc))
+
+    # Stochastic transmission with pathway-specific probability
+    trans_r2pgc <- rbinom(length(allActs_r2pgc), 1, tprob_p2rgc)
+
+    # Determine the newly infected partner
+    idsInf_r2pgc <- NULL
+    if (sum(trans_r2pgc) > 0) {
+      transRI_r2pgc <- ri[allActs_r2pgc[trans_r2pgc == 1], , drop = FALSE]
+      idsInf_r2pgc <- c(
+        intersect(ri[p1Inf_r2pgc, "p2"], transRI_r2pgc[, "p2"]),
+        intersect(ri[p2Inf_r2pgc, "p1"], transRI_r2pgc[, "p1"])
+      )
+
+      stopifnot(all(pGC[idsInf_r2pgc] == 0))
+    }
+
+    # Update attributes
+    pGC[idsInf_r2pgc] <- 1
+    pGC.infTime[idsInf_r2pgc] <- at
+    pGC.sympt[idsInf_r2pgc] <- rbinom(length(idsInf_r2pgc), 1, pgc.sympt.prob)
+    pGC.timesInf[idsInf_r2pgc] <- uGC.timesInf[idsInf_r2pgc] + 1
+
+  }
+
+  ##############################################################################
+  ## KISSING ##
+  ##############################################################################
+
+  # Pharyngeal-to-Pharyngeal GC ------------------------------------------------
+
+  if (dat$control$transRoute_Kissing) {
+    kiss <- dat$temp$kiss
+
+    # P1 infects P2
+    p1Inf_p2pgc <- which(
+      pGC[kiss[, "p1"]] == 1 &
+      pGC.infTime[kiss[, "p1"]] < at &
+      pGC[kiss[, "p2"]] == 0
+    )
+
+    # P2 infects P1
+    p2Inf_p2pgc <- which(
+      pGC[kiss[, "p2"]] == 1 &
+      pGC.infTime[kiss[, "p2"]] < at &
+      pGC[kiss[, "p1"]] == 0
+    )
+
+    allActs_p2pgc <- c(p1Inf_p2pgc, p2Inf_p2pgc)
+
+    trans_p2pgc <- rbinom(length(allActs_p2pgc), 1, dat$param$p2pgc.tprob)
+
+    # Determine the newly infected partner
+    idsInf_p2pgc <- NULL
+    if (sum(trans_p2pgc) > 0) {
+      transKL_p2pgc <- kiss[allActs_p2pgc[trans_p2pgc == 1], , drop = FALSE]
+      idsInf_p2pgc <- c(
+        intersect(kiss[p1Inf_p2pgc, "p2"], transKL_p2pgc[, "p2"]),
+        intersect(kiss[p2Inf_p2pgc, "p1"], transKL_p2pgc[, "p1"])
+      )
+    }
+
+    # Update attributes
+    pGC[idsInf_p2pgc] <- 1
+    pGC.infTime[idsInf_p2pgc] <- at
+    pGC.sympt[idsInf_p2pgc] <- rbinom(length(idsInf_p2pgc), 1, pgc.sympt.prob)
+    pGC.timesInf[idsInf_p2pgc] <- pGC.timesInf[idsInf_p2pgc] + 1
+
+  }
 
   # Output ---------------------------------------------------------------------
 
@@ -374,7 +519,7 @@ stitrans_msm <- function(dat, at) {
   # incidence by transmission pathway
   incid.tp <- incid.byDemog[, .(incid = sum(incid)), transpath]
   lapply(seq_len(nrow(incid.tp)), function(x) {
-    dat$epi[[paste0("incid.", incid.tp[x, transpath])]][at] <<-
+    dat$epi[[paste0(incid.tp[x, transpath])]][at] <<-
       incid.tp[x, incid]
   })
 

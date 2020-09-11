@@ -7,15 +7,12 @@ pacman::p_load(
   stringr
 )
 
-# TODO: Import netstats, epistats, and netest objects into this package
-data.dir <- "C:/Users/jason/Documents/Github/egcmsm/egcmsm_artnet"
-netstats <- readRDS(file.path(data.dir, "netstats/netstats.Rds"))
-est <- readRDS(file.path(data.dir, "netest/netest.Rds"))
-epistats <- readRDS(file.path(data.dir, "netstats/epistats.Rds"))
+netstats <- readRDS("est/netstats.Rds")
+est <- readRDS("est/netest.Rds")
+epistats <- readRDS("est/epistats.Rds")
 
-# TODO: Where original parameters had unique values for each race/ethnic group,
-#       Other value currently takes the value assigned to White.
-
+# TODO Where original parameters had unique values for each race/ethnic group,
+#      Other value currently takes the value assigned to White.
 param_xgc <- param_msm(
   # external objects
   netstats = netstats,
@@ -78,6 +75,12 @@ param_xgc <- param_msm(
   # scaling parameters
   ai.acts.scale = 1,
   oi.acts.scale = 1,
+  kiss.rate.main = 3, # NEWPARAM: Kissing prob. during anal/oral sex, main
+  kiss.rate.casl = 3, # NEWPARAM: Kissing prob. during anal/oral sex, casual
+  kiss.prob.oo = 0.5, # NEWPARAM: Kissing prob. during anal/oral sex, one-time
+  rim.rate.main = 2, # NEWPARAM: Weekly rate of analingus in main partnerships
+  rim.rate.casl = 2, # NEWPARAM: Weekly rate of analingus in casual partnerships
+  rim.prob.oo = 0.2, # NEWPARAM: Prob. of rimming during one-time sexual contact
   trans.scale = rep(1.0, 4), # ORIGPARAM
   sti.cond.eff = 0.8,        # TODO: condom efficacy for anal sex
   cond.eff = 0.95,           # ORIGPARAM, condom eff anal HIV transmission
@@ -100,13 +103,13 @@ init_xgc <- init_msm(
 control_xgc <- control_msm(
   # Computing options
   simno = 1,
-  nsteps = 5,
-  nsims = 1,
-  ncores = 1,
+  nsteps = 20,
+  nsims = 20,
+  ncores = 4,
   # Epidemic simulation options
-  transRoute_Kissing = FALSE, # FLAG: Toggle kissing transmission
-  transRoute_Rimming = FALSE, # FLAG: Toggle rimming transmission
-  tergmLite = FALSE,  # NOTE: Must be set to avoid error thrown by saveout.net()
+  transRoute_Kissing = TRUE,  # FLAG: Toggle kissing transmission
+  transRoute_Rimming = TRUE,  # FLAG: Toggle rimming transmission
+  tergmLite = FALSE,  # NOTE Must be set to avoid error thrown by saveout.net()
   # Epidemic simulation Modules
   initialize.FUN = initialize_msm,
   aging.FUN = aging_msm,
@@ -117,9 +120,9 @@ control_xgc <- control_msm(
   hivprogress.FUN = hivprogress_msm,
   hivvl.FUN = hivvl_msm,
   resim_nets.FUN = simnet_msm,
-  acts.FUN = acts_msm,          # TODO Add kissing and rimming
-  condoms.FUN = condoms_msm,
-  position.FUN = position_msm,  # TODO Add rimming positioning
+  acts.FUN = acts_msm,
+  condoms.FUN = condoms_msm,    # NOTE All act lists are finalized here
+  position.FUN = position_msm,
   prep.FUN = prep_msm,
   hivtrans.FUN = hivtrans_msm,
   stirecov.FUN = stirecov_msm,  # TODO Add alternate dists
@@ -131,31 +134,38 @@ control_xgc <- control_msm(
 
 sim <- netsim(est, param_xgc, init_xgc, control_xgc)
 
-plot_vec <- function(vec) {
-  plot(sim, "epi", vec, sim.lines = TRUE, mean.line = FALSE)
+plot_vec <- function(vec, maint = "") {
+  plot(
+    sim,
+    "epi",
+    vec,
+    sim.lines = TRUE,
+    mean.line = TRUE,
+    mean.lwd = 2,
+    qnts = FALSE,
+    legend = TRUE,
+    main = maint
+  )
 }
 
+races <- c("B", "H", "O", "W")
+
+# GC
 plot_vec(paste0("incid.", c("gc", "rgc", "ugc", "pgc")))
-plot_vec(paste0("incid.gc.", c("B", "H", "O", "W")))
-plot_vec(paste0("incid.gc.a", 1:5))
+plot_vec(paste0("incid.", races, ".rgc"), "Rectal GC")
+plot_vec(paste0("incid.", races, ".ugc"), "Urethral GC")
+plot_vec(paste0("incid.", races, ".pgc"), "Pharyngeal GC")
 
+plot_vec(
+  names(sim$epi) %>% .[. %like% "incid\\.[rup]{1}2(p|r|u)gc"],
+  "Transmission pathways (incident infections)"
+)
 
-library(ggthemes)
-dt <- as.data.table(as.data.frame(sim))
-theme_set(theme_clean())
-
-dt[-1] %>%
-  ggplot(aes(x = time, group = sim)) +
-  geom_line(aes(y = incid.rgc, color = "rectal")) +
-  geom_line(aes(y = incid.pgc, color = "pharyngeal")) +
-  geom_line(aes(y = incid.ugc, color = "urethral")) +
-  geom_line(
-    aes(y = incid.gc, color = "overall"),
-    color = "black",
-    size = 1
-  ) +
-  scale_color_viridis_d(option = "magma", end = 0.9)
-
+# HIV
+plot_vec(paste0("i.num.", races))
+plot_vec("i.num")
+plot_vec("incid")
+plot_vec()
 
 # Testing/Timing ------------------------------------------------------
 
@@ -194,50 +204,3 @@ plist <- as.data.frame(dat$temp$plist)
 pmain <- filter(plist, ptype == 2)
 table(pmain$start)
 hist(pmain$start)
-
-
-
-# %% OLD CODE FOR CHECKING MAIN/CASUAL DEGREE ==================================
-
-## monitor_degree <- function(dat, at) {
-##   deg.main <- get_degree(dat$el[[1]])
-##   deg.casl <- get_degree(dat$el[[2]])
-
-##   dlist <- list()
-##   dlist$main <- deg.main
-##   dlist$casl <- deg.casl
-
-##   atlab <- stringr::str_pad(at, 2, "left", "0")
-##   assign(paste0("dlist_at_", atlab), dlist, envir = .GlobalEnv)
-
-##   return(dat)
-## }
-
-
-## degcheck <- lapply(ls(pattern = "dlist"), function(x) {
-
-##   main <- table(get(x)$main)
-##   casl <- table(get(x)$casl)
-
-##   data.table(
-##     type = c(
-##       rep("main", length(main)),
-##       rep("casl", length(casl))
-##     ),
-##     deg = c(names(main), names(casl)),
-##     count = c(unlist(main), unlist(casl))
-##   )
-## }) %>% rbindlist(., idcol = "at")
-
-## degcheck %>%
-##   ggplot(aes(x = at, y = count)) +
-##   geom_line(aes(color = deg, group = deg), size = 1) +
-##   scale_color_viridis_d() +
-##   facet_wrap(~ type) +
-##   ggthemes::theme_base()
-
-## degcheck %>%
-##   ggplot(aes(x = deg, y = count)) +
-##   geom_boxplot() +
-##   facet_wrap(~ type) +
-##   ggthemes::theme_base()
