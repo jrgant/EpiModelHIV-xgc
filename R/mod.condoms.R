@@ -17,6 +17,7 @@
 #' Updates the discordant edgelist with a \code{uai} variable indicating whether
 #' condoms were used in that act.
 #'
+#' @import data.table
 #' @keywords module msm
 #' @export
 #'

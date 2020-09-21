@@ -8,6 +8,7 @@
 #'
 #' @keywords module msm
 #'
+#' @import data.table
 #' @export
 #'
 stitrans_msm <- function(dat, at) {
@@ -267,10 +268,6 @@ stitrans_msm <- function(dat, at) {
   ## RIMMING ##
   ##############################################################################
 
-  ## TODO Add rimming
-  ## Make sure each takes a conditional that checks for the corresponding
-  ## pathway flag (i.e., transRoute_Kissing, transRoute_Rimming)
-
   if (dat$control$transRoute_Rimming) {
     ri <- dat$temp$ri
 
@@ -466,10 +463,11 @@ stitrans_msm <- function(dat, at) {
   # joint pathway-specific incidence by race and age group
   incid.byDemog <- lapply(match.InfDemog, function(x) {
     x[, .(incid = .N), keyby = .(race, age.grp)]
-  }) %>% rbindlist(., idcol = "transpath")
+  })
+  incid.byDemog <- rbindlist(incid.byDemog, idcol = "transpath")
 
   # add anatomic site variable
-  incid.byDemog[, anatsite := str_extract(transpath, "(rgc|ugc|pgc)$")]
+  incid.byDemog[, anatsite := stringr::str_extract(transpath, "(rgc|ugc|pgc)$")]
   setkeyv(incid.byDemog, c("race", "age.grp"))
 
   # label vectors for incidence assignments below
