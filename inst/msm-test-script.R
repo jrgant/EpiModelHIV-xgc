@@ -3,16 +3,16 @@ pacman::p_load(
   data.table,
   magrittr,
   rms,
-  car,
   stringr
 )
 
-netstats <- readRDS("est/netstats.Rds")
-est <- readRDS("est/netest.Rds")
-epistats <- readRDS("est/epistats.Rds")
+pd_path <- "../egcmsm_artnet"
+netstats <- readRDS(paste0(pd_path, "/netstats/netstats.Rds"))
+est <- readRDS(paste0(pd_path, "/netest/netest.Rds"))
+epistats <- readRDS(paste0(pd_path, "/netstats/epistats.Rds"))
 
-# TODO Where original parameters had unique values for each race/ethnic group,
-#      Other value currently takes the value assigned to White.
+# TODO: Where original parameters had unique values for each race/ethnic group,
+#       Other value currently takes the value assigned to White.
 param_xgc <- param_msm(
   # external objects
   netstats = netstats,
@@ -109,7 +109,7 @@ control_xgc <- control_msm(
   # Epidemic simulation options
   transRoute_Kissing = TRUE,  # FLAG: Toggle kissing transmission
   transRoute_Rimming = TRUE,  # FLAG: Toggle rimming transmission
-  tergmLite = FALSE,  # NOTE Must be set to avoid error thrown by saveout.net()
+  tergmLite = TRUE,  # NOTE Must be set to avoid error thrown by saveout.net()
   # Epidemic simulation Modules
   initialize.FUN = initialize_msm,
   aging.FUN = aging_msm,
@@ -126,13 +126,15 @@ control_xgc <- control_msm(
   prep.FUN = prep_msm,
   hivtrans.FUN = hivtrans_msm,
   stirecov.FUN = stirecov_msm,  # TODO Add alternate dists
-  stitx.FUN = stitx_msm,        # TODO Alternate screening/testing protocols
+  stitx.FUN = stitx_msm,        # TODO Add alternate screening/testing protocols
   stitrans.FUN = stitrans_msm,
   prev.FUN = prevalence_msm,
-  verbose.FUN = verbose.net,
+  verbose.FUN = verbose.net
  )
 
 sim <- netsim(est, param_xgc, init_xgc, control_xgc)
+
+saveRDS(sim, "output/dummy_run.Rds")
 
 plot_vec <- function(vec, maint = "") {
   plot(
@@ -140,7 +142,7 @@ plot_vec <- function(vec, maint = "") {
     "epi",
     vec,
     sim.lines = TRUE,
-    mean.line = TRUE,
+    mean.line = FALSE,
     mean.lwd = 2,
     qnts = FALSE,
     legend = TRUE,
