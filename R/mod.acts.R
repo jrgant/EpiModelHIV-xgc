@@ -117,10 +117,10 @@ acts_msm <- function(dat, at) {
   # NOTE This section necessary only if statistical models used splines
   #      to model the effect of partnership duration.
   if (at == 2) {
-    md <- netstats$netmain$durat_wks
-    cd <- netstats$netcasl$durat_wks
-    me <- netstats$netmain$edges
-    ce <- netstats$netcasl$edges
+    md <- dat$param$netstats$netmain$durat_wks
+    cd <- dat$param$netstats$netcasl$durat_wks
+    me <- dat$param$netstats$netmain$edges
+    ce <- dat$param$netstats$netcasl$edges
     mw <- me / sum(me, ce)
     cw <- ce / sum(me, ce)
 
