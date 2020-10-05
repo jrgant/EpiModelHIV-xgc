@@ -206,13 +206,93 @@ stitx_msm <- function(dat, at) {
 
   }
 
-  }
-  ids_txGC_asympt <- idsGC_tx_asympt[which(txGC_asympt == 1)]
+  ## ===========================================================================
+  ## TODO CDC Guidelines
+  ## ===========================================================================
 
-  # Subset by site
-  txRGC_asympt <- intersect(idsRGC_tx_asympt, ids_txGC_asympt)
-  txUGC_asympt <- intersect(idsUGC_tx_asympt, ids_txGC_asympt)
-  txPGC_asympt <- intersect(idsPGC_tx_asympt, ids_txGC_asympt)
+  if (dat$control$stiScreeningProtocol == "cdc") {
+
+    ## General annual screening for all MSM
+
+    cdc.sti.int <- dat$param$cdc.sti.int
+
+    idsRGC_getTest_int <- which(
+      (at - dat$attr$last.rGC.test >= cdc.sti.int &
+       at - dat$attr$last.rectal.exp <= cdc.sti.int) |
+      is.na(dat$attr$last.rGC.test)
+    )
+
+    idsUGC_getTest_int <- which(
+      (at - dat$attr$last.uGC.test >= cdc.sti.int &
+       at - dat$attr$last.ureth.exp <= cdc.sti.int) |
+      is.na(dat$attr$last.uGC.test)
+    )
+
+    idsPGC_getTest_int <- which(
+      (at - dat$attr$last.pGC.test >= cdc.sti.int &
+       at - dat$attr$last.phar.exp <= cdc.sti.int) |
+      is.na(dat$attr$last.pGC.test)
+    )
+
+    ## More frequent screening for high-risk MSM
+    ## - Defined as those with multiple partners, OR
+    ## - Those with partners who have multiple partners
+    cdc.sti.hr.int <- dat$param$cdc.sti.hr.int
+
+    ids_multiPart <- which(
+      dat$attr$deg.main + dat$attr$deg.casl > 1
+    )
+
+    # those with at least one main/casual partners
+    ids_mcPart <- which(dat$attr$deg.main + dat$attr$deg.casl > 0)
+    el.mc <- rbind(dat$el[[1]], dat$el[[1]])
+
+    part_multiBool <- sapply(ids_mcPart, function(x) {
+
+      pids <- union(el.mc[, 2][el.mc[, 1] == x], el.mc[, 1][el.mc[, 2] == x])
+
+      part_pnums <- sapply(pids, function(x) {
+        pnums <- dat$attr$deg.main[x] + dat$attr$deg.casl[x]
+        pnums
+      })
+
+      # check if any of the agent's partners has multiple partners
+      part_multiBool <- any(part_pnums > 1)
+      part_multiBool
+    })
+
+    ids_highRiskElig <- ids_mcPart[part_multiBool]
+
+    idsRGC_getTest_hr <- intersect(
+      ids_highRiskElig,
+      which(
+        at - dat$attr$last.rGC.test >= cdc.sti.hr.int |
+        is.na(dat$attr$last.rGC.test)
+      )
+    )
+
+    idsUGC_getTest_hr <- intersect(
+      ids_highRiskElig,
+      which(
+        at - dat$attr$last.uGC.test >= cdc.sti.hr.int |
+        is.na(dat$attr$last.uGC.test)
+      )
+    )
+
+    idsPGC_getTest_hr <- intersect(
+      ids_highRiskElig,
+      which(
+        at - dat$attr$last.pGC.test >= cdc.sti.hr.int |
+        is.na(dat$attr$last.pGC.test)
+      )
+    )
+
+    idsRGC_getTest <- union(idsRGC_getTest_int, idsRGC_getTest_hr)
+    idsUGC_getTest <- union(idsUGC_getTest_int, idsUGC_getTest_hr)
+    idsPGC_getTest <- union(idsPGC_getTest_int, idsPGC_getTest_hr)
+
+  }
+
 
   ## ===========================================================================
   ## Record STI testing

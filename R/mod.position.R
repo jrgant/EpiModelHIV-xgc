@@ -87,6 +87,63 @@ position_msm <- function(dat, at) {
     dat$temp$ri <- cbind(ri, ins.rim)
   }
 
+  # Record time of anatomic site exposure.
+  # Exposure simply defined as sexual event involving anatomic site.
+  ids_exposedRectum <- union(
+    dat$temp$al[, "p1"][which(dat$temp$al[, "ins"] == 0)],
+    dat$temp$al[, "p2"][which(dat$temp$al[, "ins"] == 1)]
+  )
+
+  ids_exposedUrethra <- union(
+    c(
+      dat$temp$al[, "p1"][which(dat$temp$al[, "ins"] == 1)],
+      dat$temp$al[, "p2"][which(dat$temp$al[, "ins"] == 0)]
+    ),
+    c(
+      dat$temp$ol[, "p1"][which(dat$temp$ol[, "ins.oral"] == 1)],
+      dat$temp$ol[, "p2"][which(dat$temp$ol[, "ins.oral"] == 0)]
+    )
+  )
+
+  ids_exposedPharynx <- union(
+    dat$temp$ol[, "p1"][which(dat$temp$ol[, "ins.oral"] == 0)],
+    dat$temp$ol[, "p2"][which(dat$temp$ol[, "ins.oral"] == 1)]
+  )
+
+  ## Add exposures due to kissing a rimming if applicable
+  if (dat$control$transRoute_Rimming) {
+
+    ids_exposedRectum <- union(
+      ids_exposedRectum,
+      c(
+        dat$temp$ri[, "p1"][which(dat$temp$ri[, "ins.rim"] == 0)],
+        dat$temp$ri[, "p2"][which(dat$temp$ri[, "ins.rim"] == 1)]
+      )
+    )
+
+    ids_exposedPharynx <- union(
+      ids_exposedPharynx,
+      c(
+        dat$temp$ri[, "p1"][which(dat$temp$ri[, "ins.rim"] == 1)],
+        dat$temp$ri[, "p2"][which(dat$temp$ri[, "ins.rim"] == 0)]
+      )
+    )
+  }
+
+  if (dat$control$transRoute_Kissing & dat$control$cdcExposureSite_Kissing) {
+    ids_exposedPharynx <- union(
+      ids_exposedPharynx,
+      c(
+        dat$temp$kiss[, "p1"],
+        dat$temp$kiss[, "p2"]
+      )
+    )
+  }
+
+  dat$attr$last.rectal.exp[ids_exposedRectum] <- at
+  dat$attr$last.ureth.exp[ids_exposedUrethra] <- at
+  dat$attr$last.phar.exp[ids_exposedPharynx] <- at
+
   ## Output
   return(dat)
 }

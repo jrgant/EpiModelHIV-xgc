@@ -3,7 +3,8 @@ pacman::p_load(
   data.table,
   magrittr,
   rms,
-  stringr
+  stringr,
+  pscl
 )
 
 pd_path <- "../egcmsm_artnet"
@@ -20,7 +21,7 @@ param_xgc <- param_msm(
   # demography
   a.rate = 0.00052,
   arrival.age = 18,
-  # TODO: update all transmission probs (priors for all will be [0, 1])
+  # TODO: update all transmission probs (priors based on Spicknall)
   u2rgc.tprob = 0.25, # urethral-to-rectal transmission probability
   u2pgc.tprob = 0.25, # urethral-to-pharyngeal transmission probability
   r2ugc.tprob = 0.25, # rectal-to-urethral transmission probability
@@ -35,8 +36,14 @@ param_xgc <- param_msm(
   ugc.ntx.int = 16.8,
   pgc.ntx.int = 16.8,
   # STI testing
-  gc.sympt.prob.tx = rep(0.7, 4),   # TODO: update all treatment probs
-  gc.asympt.prob.tx = rep(0.2, 4),  # TODO: update all treatment probs
+  gc.sympt.seek.test.scale = 20,
+  ## NOTE: Changed the treatment probs to be conditional on someone's seeking
+  ##       STI treatment. Repeat 3 times, one for each anatomic site.
+  ##       Tune asymptomatic treatment probability to achieve the overall
+  ##       probability of receiving an STI test.
+  gc.sympt.prob.test = rep(1, 3),
+  ## NOTE: Order of probs: rectal, urethral, pharyngeal
+  gc.asympt.prob.test = rep(0.2, 3),  # TODO: calibrate treatment probs
   # HIV testing
   hiv.test.rate = c(
     0.01325,
@@ -82,9 +89,12 @@ param_xgc <- param_msm(
   rim.rate.casl = 2, # NEWPARAM: Weekly rate of analingus in casual partnerships
   rim.prob.oo = 0.2, # NEWPARAM: Prob. of rimming during one-time sexual contact
   trans.scale = rep(1.0, 4), # ORIGPARAM
-  sti.cond.eff = 0.8,        # TODO: condom efficacy for anal sex
+  cdc.sti.int = 12,    # NEWPARAM: Regular CDC GC screening interval
+  cdc.sti.hr.int = 6, # NEWPARAM: High-risk CDC GC screening interval
+  sti.cond.eff = 0.8,        # TODO: condom efficacy for anal sex (handle with prior)
   cond.eff = 0.95,           # ORIGPARAM, condom eff anal HIV transmission
   cond.fail = rep(0.25, 4),
+  # NOTE: Change to 0 to turn off (reflect uncertainty in cond. effect)
   sti.cond.fail = rep(0.2, 4),
   circ.prob = c(
     0.874,
@@ -95,21 +105,17 @@ param_xgc <- param_msm(
 )
 
 init_xgc <- init_msm(
-  prev.ugc = 0.1,  # TODO: update initialization prevalence
-  prev.rgc = 0.1,  # TODO: update initialization prevalence
-  prev.pgc = 0.1   # TODO: update initialization prevalence
+  prev.ugc = 0.05,
+  prev.rgc = 0.05,
+  prev.pgc = 0.05
 )
 
 control_xgc <- control_msm(
   # Computing options
   simno = 1,
-  nsteps = 20,
-  nsims = 20,
-  ncores = 4,
-  # Epidemic simulation options
-  transRoute_Kissing = TRUE,  # FLAG: Toggle kissing transmission
-  transRoute_Rimming = TRUE,  # FLAG: Toggle rimming transmission
-  tergmLite = TRUE,  # NOTE Must be set to avoid error thrown by saveout.net()
+  nsteps = 5,
+  nsims = 2,
+  ncores = 1,
   # Epidemic simulation Modules
   initialize.FUN = initialize_msm,
   aging.FUN = aging_msm,
@@ -126,15 +132,23 @@ control_xgc <- control_msm(
   prep.FUN = prep_msm,
   hivtrans.FUN = hivtrans_msm,
   stirecov.FUN = stirecov_msm,  # TODO Add alternate dists
-  stitx.FUN = stitx_msm,        # TODO Add alternate screening/testing protocols
-  stitrans.FUN = stitrans_msm,
+  stitx.FUN = stitx_msm,
+  stitrans.FUN = stitrans_msm,  # TODO Randomize act list across all acts
   prev.FUN = prevalence_msm,
-  verbose.FUN = verbose.net
+  verbose.FUN = verbose.net,
+  # Epidemic simulation options
+  transRoute_Kissing = FALSE,  # FLAG: Toggle kissing transmission
+  cdcExposureSite_Kissing = FALSE, # FLAG: Determines whether kissing is considered an exposure for the purposes of the CDC testing guidelines
+  transRoute_Rimming = FALSE,  # FLAG: Toggle rimming transmission
+  stiScreeningProtocol = "cdc",
+  tergmLite = TRUE,  # NOTE Must be set to avoid error thrown by saveout.net()
+  debug_stitx = FALSE
  )
 
+sim <- NULL
 sim <- netsim(est, param_xgc, init_xgc, control_xgc)
 
-saveRDS(sim, "output/dummy_run.Rds")
+# saveRDS(sim, "output/dummy_run.Rds")
 
 plot_vec <- function(vec, maint = "") {
   plot(
@@ -153,6 +167,7 @@ plot_vec <- function(vec, maint = "") {
 races <- c("B", "H", "O", "W")
 
 # GC
+plot_vec(paste0("i.num.", c("gc", "rgc", "ugc", "pgc")))
 plot_vec(paste0("incid.", c("gc", "rgc", "ugc", "pgc")))
 plot_vec(paste0("incid.", races, ".rgc"), "Rectal GC")
 plot_vec(paste0("incid.", races, ".ugc"), "Urethral GC")

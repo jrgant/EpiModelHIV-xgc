@@ -67,14 +67,19 @@ prevalence_msm <- function(dat, at) {
   dat$epi$i.num.W[at] <- sum(status == 1 & race == 4, na.rm = TRUE)
   dat$epi$i.num.dx[at] <- sum(diag.status == 1, na.rm = TRUE)
 
-  # Prev / Incid
+  # Calculate prevalence and incidence
+
   dat$epi$i.prev[at] <- dat$epi$i.num[at] / dat$epi$num[at]
+
   dat$epi$i.prev.B[at] <-
     sum(race == 1 & status == 1, na.rm = TRUE) / sum(race == 1, na.rm = TRUE)
+
   dat$epi$i.prev.H[at] <-
     sum(race == 2 & status == 1, na.rm = TRUE) / sum(race == 2, na.rm = TRUE)
+
   dat$epi$i.prev.O[at] <-
     sum(race == 3 & status == 1, na.rm = TRUE) / sum(race == 3, na.rm = TRUE)
+
   dat$epi$i.prev.W[at] <-
     sum(race == 3 & status == 1, na.rm = TRUE) / sum(race == 4, na.rm = TRUE)
 
@@ -439,21 +444,33 @@ prevalence_msm <- function(dat, at) {
   dat$epi$prev.rgc[at] <- dat$epi$i.num.rgc[at] / dat$epi$num[at]
   dat$epi$prev.ugc[at] <- dat$epi$i.num.ugc[at] / dat$epi$num[at]
   dat$epi$prev.pgc[at] <- dat$epi$i.num.pgc[at] / dat$epi$num[at]
- 
-  dat$epi$ir100.gc[at] <-
-    dat$epi$ir100.rgc[at] + dat$epi$ir100.ugc[at] + dat$epi$ir100.pgc[at]
+
+  rgc.anatsite.wks.atrisk <- sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE)
+  ugc.anatsite.wks.atrisk <- sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE)
+  pgc.anatsite.wks.atrisk <- sum(pGC == 0, dat$epi$incid.pgc[at], na.rm = TRUE)
 
   dat$epi$ir100.rgc[at] <-
-    (dat$epi$incid.rgc[at] /
-     sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE)) * 5200
+    dat$epi$incid.rgc[at] / rgc.anatsite.wks.atrisk * 5200
 
   dat$epi$ir100.ugc[at] <-
-    (dat$epi$incid.ugc[at] /
-     sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE)) * 5200
+    dat$epi$incid.ugc[at] / ugc.anatsite.wks.atrisk * 5200
 
   dat$epi$ir100.pgc[at] <-
-    (dat$epi$incid.pgc[at] /
-     sum(pGC == 0, dat$epi$incid.pgc[at], na.rm = TRUE)) * 5200
+    dat$epi$incid.pgc[at] / pgc.anatsite.wks.atrisk * 5200
+
+  dat$epi$ir100.gc[at] <- sum(
+    dat$epi$ir100.rgc[at],
+    dat$epi$ir100.ugc[at],
+    dat$epi$ir100.pgc[at]
+  )
+
+  dat$epi$ir100.anatsite.yrs.gc[at] <-
+    dat$epi$incid.gc[at] /
+    sum(
+      rgc.anatsite.wks.atrisk,
+      ugc.anatsite.wks.atrisk,
+      pgc.anatsite.wks.atrisk
+    ) * 5200
 
   return(dat)
 }
