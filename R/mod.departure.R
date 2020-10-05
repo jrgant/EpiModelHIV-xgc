@@ -43,7 +43,7 @@ departure_msm <- function(dat, at) {
     ages <- age[ids.race]
     rates[ids.race] <- asmr[match(ages, asmr$age), i + 1, with = FALSE][[1]]
   }
- 
+
   idsDep <- idsElig[rbinom(length(rates), 1, rates) == 1]
 
   ## HIV-related deaths
@@ -59,6 +59,8 @@ departure_msm <- function(dat, at) {
     for (i in 1:3) {
       dat$el[[i]] <- tergmLite::delete_vertices(dat$el[[i]], idsDepAll)
     }
+
+
     dat$attr <- deleteAttr(dat$attr, idsDepAll)
 
     if (unique(sapply(dat$attr, length)) != attributes(dat$el[[1]])$n) {
