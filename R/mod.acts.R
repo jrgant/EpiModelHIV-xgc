@@ -217,7 +217,7 @@ acts_msm <- function(dat, at) {
     el.mc <- cbind(el.mc, kiss)
   }
 
- 
+
   # One-time sexual contacts ---------------------------------------------------
 
   el.oo <- el[el[, "ptype"] == 3, ]
@@ -350,10 +350,8 @@ acts_msm <- function(dat, at) {
     el <- el[-which(el[, "ai"] == 0 & el[, "oi"] == 0), ]
   }
 
-  # Save out
+  # Save edgelist
   dat$temp$el <- el
 
   return(dat)
 }
-
-# LocalWords:  barelysignificant
