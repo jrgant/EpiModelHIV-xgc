@@ -19,7 +19,8 @@ Depends:
     tergm (>= 3.5.2),
     tergmLite (>= 1.2.0),
     data.table (>= 1.13.0),
-    magrittr (>= 1.5)
+    magrittr (>= 1.5),
+    pscl (>= 1.5.5)
 Imports:
     bindata,
     network,
