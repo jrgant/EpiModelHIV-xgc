@@ -301,7 +301,6 @@ init_sti_msm <- function(dat) {
     rbinom(sum(pGC == 1), 1, dat$param$pgc.sympt.prob)
 
   # Set GC infection time
-  # TODO: Expand to account for variable
   dat$attr$rGC.infTime <-
     dat$attr$uGC.infTime <-
       dat$attr$pGC.infTime <-
@@ -320,11 +319,25 @@ init_sti_msm <- function(dat) {
   dat$attr$pGC.timesInf <- rep(0, num)
   dat$attr$pGC.timesInf[pGC == 1] <- 1
 
-  dat$attr$rGC.tx <- dat$attr$uGC.tx <- dat$attr$pGC.tx <- rep(NA, num)
+  ## keep track of most recent STI test
+  dat$attr$rGC.tx <-
+    dat$attr$uGC.tx <-
+      dat$attr$pGC.tx <-
+        dat$attr$anyGC.tx <- rep(NA, num)
 
   dat$attr$rGC.tx.prep <-
     dat$attr$uGC.tx.prep <-
-      dat$attr$pGC.tx.prep <-
+      dat$attr$pGC.tx.prep <- rep(NA, num)
+
+  dat$attr$last.rGC.test <-
+    dat$attr$last.uGC.test <-
+      dat$attr$last.pGC.test <-
+        rep(NA, num)
+
+  ## keep track of most recent anatomic site exposure
+  dat$attr$last.rectal.exp <-
+    dat$attr$last.ureth.exp <-
+      dat$attr$last.phar.exp <-
         rep(NA, num)
 
   return(dat)
