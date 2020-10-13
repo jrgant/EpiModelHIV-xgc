@@ -113,8 +113,10 @@ stitrans_msm <- function(dat, at) {
   idsInf_u2rgc <- NULL
   if (sum(trans_u2rgc) > 0) {
     transAL_u2rgc <- al[allActs_u2rgc[trans_u2rgc == 1], , drop = FALSE]
-    idsInf_u2rgc <- c(intersect(al[p1Inf_u2rgc, "p2"], transAL_u2rgc[, "p2"]),
-                    intersect(al[p2Inf_u2rgc, "p1"], transAL_u2rgc[, "p1"]))
+    idsInf_u2rgc <- c(
+      intersect(al[p1Inf_u2rgc, "p2"], transAL_u2rgc[, "p2"]),
+      intersect(al[p2Inf_u2rgc, "p1"], transAL_u2rgc[, "p1"])
+    )
     stopifnot(all(rGC[idsInf_u2rgc] == 0))
   }
 
@@ -264,6 +266,7 @@ stitrans_msm <- function(dat, at) {
   uGC.sympt[idsInf_p2ugc] <- rbinom(length(idsInf_p2ugc), 1, ugc.sympt.prob)
   uGC.timesInf[idsInf_p2ugc] <- uGC.timesInf[idsInf_p2ugc] + 1
 
+
   ##############################################################################
   ## RIMMING ##
   ##############################################################################
@@ -354,6 +357,7 @@ stitrans_msm <- function(dat, at) {
     pGC.timesInf[idsInf_r2pgc] <- uGC.timesInf[idsInf_r2pgc] + 1
 
   }
+
 
   ##############################################################################
   ## KISSING ##
