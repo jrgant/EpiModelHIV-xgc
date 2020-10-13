@@ -19,7 +19,7 @@ stirecov_msm <- function(dat, at) {
   gc.tx.int <- dat$param$gc.tx.int
 
 
-  # GC Recovery ---------------------------------------------------------
+  # GC Recovery ----------------------------------------------------------------
 
   # Untreated (asymptomatic and symptomatic)
   idsRGC_ntx <- which(
@@ -43,18 +43,54 @@ stirecov_msm <- function(dat, at) {
     (is.na(dat$attr$pGC.tx.prep) | dat$attr$pGC.tx.prep == 0)
   )
 
-  # recovRGC_ntx <- idsRGC_ntx[which(rbinom(length(idsRGC_ntx), 1,
-  #                                         1/rgc.ntx.int) == 1)]
-  # recovUGC_ntx <- idsUGC_ntx[which(rbinom(length(idsUGC_ntx), 1,
-  #                                         1/ugc.ntx.int) == 1)]
-  recovRGC_ntx <-
-    idsRGC_ntx[at - dat$attr$rGC.infTime[idsRGC_ntx] >= rgc.ntx.int]
+  if (dat$control$gcUntreatedRecovDist == "geom") {
 
-  recovUGC_ntx <-
-    idsUGC_ntx[at - dat$attr$uGC.infTime[idsUGC_ntx] >= ugc.ntx.int]
+    # translate median duration into a weekly probability of
+    # GC resolution
+    geom_pr <- function(durat) 1 - 2 ^ (-1 / durat)
 
-  recovPGC_ntx <-
-    idsPGC_ntx[at - dat$attr$pGC.infTime[idsPGC_ntx] >= pgc.ntx.int]
+    recovRGC_ntx <- idsRGC_ntx[
+      which(rbinom(length(idsRGC_ntx), 1, geom_pr(rgc.ntx.int)) == 1)]
+
+    recovUGC_ntx <- idsUGC_ntx[
+      which(rbinom(length(idsUGC_ntx), 1, geom_pr(ugc.ntx.int)) == 1)]
+
+    recovPGC_ntx <- idsPGC_ntx[
+      which(rbinom(length(idsPGC_ntx), 1, geom_pr(pgc.ntx.int)) == 1)]
+
+  } else if (dat$control$gcUntreatedRecovDist == "pois") {
+
+    # rectal recovery
+    pr.rgc.recov <- ppois(
+      q = at - dat$attr$rGC.infTime[idsRGC_ntx],
+      lambda = rgc.ntx.int,
+      lower.tail = TRUE
+    )
+
+    recovRGC_ntx <- idsRGC_ntx[
+      which(rbinom(length(idsRGC_ntx), 1, pr.rgc.recov) == 1)]
+
+    # urethral recovery
+    pr.ugc.recov <- ppois(
+      q = at - dat$attr$uGC.infTime[idsUGC_ntx],
+      lambda = ugc.ntx.int,
+      lower.tail = TRUE
+    )
+
+    recovUGC_ntx <- idsUGC_ntx[
+      which(rbinom(length(idsUGC_ntx), 1, pr.ugc.recov) == 1)]
+
+    # pharyngeal recovery
+    pr.pgc.recov <- ppois(
+      q = at - dat$attr$pGC.infTime[idsPGC_ntx],
+      lambda = pgc.ntx.int,
+      lower.tail = TRUE
+    )
+
+    recovPGC_ntx <- idsPGC_ntx[
+      which(rbinom(length(idsPGC_ntx), 1, pr.pgc.recov) == 1)]
+
+  }
 
   # Treated (asymptomatic and symptomatic)
   idsRGC_tx <- which(

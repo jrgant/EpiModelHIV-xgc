@@ -31,10 +31,10 @@ param_xgc <- param_msm(
   r2pgc.tprob = 0.25, # rectal-to-pharyngeal transmission probability
   p2rgc.tprob = 0.25, # pharyngeal-to-rectal transmission probability
   p2pgc.tprob = 0.25, # kissing transmission probability
-  # TODO: Update all durations
-  rgc.ntx.int = 16.8,
-  ugc.ntx.int = 16.8,
-  pgc.ntx.int = 16.8,
+  ## Unreated GC durations
+  rgc.ntx.int = 15,
+  ugc.ntx.int = 2,
+  pgc.ntx.int = 12,
   # STI testing
   gc.sympt.seek.test.scale = 20,
   ## NOTE: Changed the treatment probs to be conditional on someone's seeking
@@ -89,15 +89,15 @@ param_xgc <- param_msm(
   rim.rate.casl = 2, # NEWPARAM: Weekly rate of analingus in casual partnerships
   rim.prob.oo = 0.2, # NEWPARAM: Prob. of rimming during one-time sexual contact
   trans.scale = rep(1.0, 4), # ORIGPARAM
-  cdc.sti.int = 12,    # NEWPARAM: Regular CDC GC screening interval
+  cdc.sti.int = 12, # NEWPARAM: Regular CDC GC screening interval
   cdc.sti.hr.int = 6, # NEWPARAM: High-risk CDC GC screening interval
-  sti.cond.eff = 0.8,        # TODO: condom efficacy for anal sex (handle with prior)
-  cond.eff = 0.95,           # ORIGPARAM, condom eff anal HIV transmission
+  sti.cond.eff = 0.8, # TODO: condom efficacy for anal sex (handle with prior)
+  cond.eff = 0.95, # ORIGPARAM, condom eff anal HIV transmission
   cond.fail = rep(0.25, 4),
   # NOTE: Change to 0 to turn off (reflect uncertainty in cond. effect)
   sti.cond.fail = rep(0.2, 4),
   circ.prob = c(
-    0.874,
+    0.874, # TODO: Update circ probs. Originals are from Atlanta.
     0.874,
     0.918, # TODO: Other set to White probability (find alternate value)
     0.918
@@ -113,9 +113,9 @@ init_xgc <- init_msm(
 control_xgc <- control_msm(
   # Computing options
   simno = 1,
-  nsteps = 5,
-  nsims = 2,
-  ncores = 1,
+  nsteps = 100,
+  nsims = 20,
+  ncores = 6,
   # Epidemic simulation Modules
   initialize.FUN = initialize_msm,
   aging.FUN = aging_msm,
@@ -127,32 +127,37 @@ control_xgc <- control_msm(
   hivvl.FUN = hivvl_msm,
   resim_nets.FUN = simnet_msm,
   acts.FUN = acts_msm,
-  condoms.FUN = condoms_msm,    # NOTE All act lists are finalized here
+  condoms.FUN = condoms_msm, # NOTE All act lists are finalized here
   position.FUN = position_msm,
   prep.FUN = prep_msm,
   hivtrans.FUN = hivtrans_msm,
-  stirecov.FUN = stirecov_msm,  # TODO Add alternate dists
+  stirecov.FUN = stirecov_msm,
   stitx.FUN = stitx_msm,
-  stitrans.FUN = stitrans_msm,  # TODO Randomize act list across all acts
+  stitrans.FUN = stitrans_msm_rand,
   prev.FUN = prevalence_msm,
   verbose.FUN = verbose.net,
   # Epidemic simulation options
   transRoute_Kissing = FALSE,  # FLAG: Toggle kissing transmission
-  cdcExposureSite_Kissing = FALSE, # FLAG: Determines whether kissing is considered an exposure for the purposes of the CDC testing guidelines
+  # NOTE Determines if kissing is considered an exposure for the CDC
+  # testing guidelines
+  cdcExposureSite_Kissing = FALSE,
   transRoute_Rimming = FALSE,  # FLAG: Toggle rimming transmission
-  stiScreeningProtocol = "cdc",
+  stiScreeningProtocol = "base",
+  gcUntreatedRecovDist = "geom",
   tergmLite = TRUE,  # NOTE Must be set to avoid error thrown by saveout.net()
   debug_stitx = FALSE
  )
 
-sim <- NULL
 sim <- netsim(est, param_xgc, init_xgc, control_xgc)
+saveRDS(sim, "output/dummy_run.Rds")
 
-# saveRDS(sim, "output/dummy_run.Rds")
+
+
+simd <- readRDS("output/dummy_run.Rds")
 
 plot_vec <- function(vec, maint = "") {
   plot(
-    sim,
+    simd,
     "epi",
     vec,
     sim.lines = TRUE,
