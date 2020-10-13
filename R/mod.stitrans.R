@@ -385,7 +385,7 @@ stitrans_msm <- function(dat, at) {
     )
 
     allActs_p2pgc <- c(p1Inf_p2pgc, p2Inf_p2pgc)
-
+    tprob_p2pgc <- rep(dat$param$p2pgc.tprob, length(allActs_p2pgc))
     trans_p2pgc <- rbinom(length(allActs_p2pgc), 1, dat$param$p2pgc.tprob)
 
     # Determine the newly infected partner
