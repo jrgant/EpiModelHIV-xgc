@@ -171,8 +171,10 @@ stitrans_msm <- function(dat, at) {
   idsInf_r2ugc <- NULL
   if (sum(trans_r2ugc) > 0) {
     transAL_r2ugc <- al[allActs_r2ugc[trans_r2ugc == 1], , drop = FALSE]
-    idsInf_r2ugc <- c(intersect(al[p1Inf_r2ugc, "p2"], transAL_r2ugc[, "p2"]),
-                    intersect(al[p2Inf_r2ugc, "p1"], transAL_r2ugc[, "p1"]))
+    idsInf_r2ugc <- c(
+      intersect(al[p1Inf_r2ugc, "p2"], transAL_r2ugc[, "p2"]),
+      intersect(al[p2Inf_r2ugc, "p1"], transAL_r2ugc[, "p1"])
+    )
     stopifnot(all(uGC[idsInf_r2ugc] == 0))
   }
 
