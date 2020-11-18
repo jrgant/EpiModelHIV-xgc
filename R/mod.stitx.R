@@ -1,4 +1,3 @@
-
 #' @title STI Treatment Module
 #'
 #' @description Stochastically simulates GC/CT diagnosis and treatment.
@@ -35,7 +34,7 @@ stitx_msm <- function(dat, at) {
     is.na(dat$attr$rGC.tx)
   )
 
-  ### Urethral: infeted, symptomatic, not on treatment
+  ### Urethral: infected, symptomatic, not on treatment
   idsUGC_sympt <- which(
     dat$attr$uGC == 1 &
     dat$attr$uGC.infTime < at &
