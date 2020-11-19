@@ -159,32 +159,30 @@ condoms_msm <- function(dat, at) {
   dat$temp$ol <- ol
 
   # Kissing list construction
-  if (dat$control$transRoute_Kissing) {
-    pid <- p1 <- p2 <- ptype <- NULL
-    kiss.vec <- el[, "kiss"]
-    pid <- rep(seq_len(length(kiss.vec)), kiss.vec)
-    p1 <- rep(el[, "p1"], kiss.vec)
-    p2 <- rep(el[, "p2"], kiss.vec)
-    ptype <- rep(el[, "ptype"], kiss.vec)
 
-    kiss <- cbind(p1, p2, ptype, pid)
-    dat$temp$kiss <- kiss
-  }
+  pid <- p1 <- p2 <- ptype <- NULL
+  kiss.vec <- el[, "kiss"]
+  pid <- rep(seq_len(length(kiss.vec)), kiss.vec)
+  p1 <- rep(el[, "p1"], kiss.vec)
+  p2 <- rep(el[, "p2"], kiss.vec)
+  ptype <- rep(el[, "ptype"], kiss.vec)
+
+  kiss <- cbind(p1, p2, ptype, pid)
+  dat$temp$kiss <- kiss
+
 
   # Rimming list construction
-  if (dat$control$transRoute_Rimming) {
-    pid <- p1 <- p2 <- ptype <- NULL
+  pid <- p1 <- p2 <- ptype <- NULL
 
-    rim.vec <- el[, "ri"]
+  rim.vec <- el[, "ri"]
 
-    pid <- rep(seq_len(length(rim.vec)), rim.vec)
-    p1 <- rep(el[, "p1"], rim.vec)
-    p2 <- rep(el[, "p2"], rim.vec)
-    ptype <- rep(el[, "ptype"], rim.vec)
+  pid <- rep(seq_len(length(rim.vec)), rim.vec)
+  p1 <- rep(el[, "p1"], rim.vec)
+  p2 <- rep(el[, "p2"], rim.vec)
+  ptype <- rep(el[, "ptype"], rim.vec)
 
-    ri <- cbind(p1, p2, ptype, pid)
-    dat$temp$ri <- ri
-  }
+  ri <- cbind(p1, p2, ptype, pid)
+  dat$temp$ri <- ri
 
   return(dat)
 }

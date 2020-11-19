@@ -189,33 +189,30 @@ acts_msm <- function(dat, at) {
 
 
   ## Simulate rimming acts (governed by flag)
-  if (dat$control$transRoute_Rimming) {
-    rrmain <- dat$param$rim.rate.main
-    rrcasl <- dat$param$rim.rate.casl
+  rrmain <- dat$param$rim.rate.main
+  rrcasl <- dat$param$rim.rate.casl
 
-    rim.acts <-
-      I(el.mc[, "ptype"] == 1) * rrmain +
-      I(el.mc[, "ptype"] == 2) * rrcasl
+  rim.acts <-
+    I(el.mc[, "ptype"] == 1) * rrmain +
+    I(el.mc[, "ptype"] == 2) * rrcasl
 
-    ri <- rpois(nrow(el.mc), rim.acts)
+  ri <- rpois(nrow(el.mc), rim.acts)
 
-    el.mc <- cbind(el.mc, ri)
-  }
+  el.mc <- cbind(el.mc, ri)
 
-  ## Simualte kissing acts (governed by flag)
-  if (dat$control$transRoute_Kissing) {
 
-    kiss.rates <- ifelse(
-      el.mc[, "ptype"] == 1,
-      dat$param$kiss.rate.main,
-      dat$param$kiss.rate.casl
-    )
+  ## Simulate kissing acts (governed by flag)
 
-    kiss <- rep(NA, nrow(el.mc))
-    kiss  <- rpois(nrow(el.mc), kiss.rates)
+  kiss.rates <- ifelse(
+    el.mc[, "ptype"] == 1,
+    dat$param$kiss.rate.main,
+    dat$param$kiss.rate.casl
+  )
 
-    el.mc <- cbind(el.mc, kiss)
-  }
+  kiss <- rep(NA, nrow(el.mc))
+  kiss  <- rpois(nrow(el.mc), kiss.rates)
+
+  el.mc <- cbind(el.mc, kiss)
 
 
   # One-time sexual contacts ---------------------------------------------------
@@ -282,22 +279,17 @@ acts_msm <- function(dat, at) {
 
 
   ## Simulate rimming acts.
+  ri <- NULL
+  ri <- rep(NA, nrow(el.oo))
+  ri <- rbinom(nrow(el.oo), 1, dat$param$rim.prob.oo)
+  el.oo <- cbind(el.oo, ri)
 
-  if (dat$control$transRoute_Rimming) {
-    ri <- NULL
-    ri <- rep(NA, nrow(el.oo))
-    ri <- rbinom(nrow(el.oo), 1, dat$param$rim.prob.oo)
-    el.oo <- cbind(el.oo, ri)
-  }
 
   ## Simulate kissing during one-time contacts.
-
-  if (dat$control$transRoute_Kissing) {
-    kiss <- NULL
-    kiss <- rep(NA, nrow(el.oo))
-    kiss  <- rbinom(nrow(el.oo), 1, dat$param$kiss.prob.oo)
-    el.oo <- cbind(el.oo, kiss)
-  }
+  kiss <- NULL
+  kiss <- rep(NA, nrow(el.oo))
+  kiss  <- rbinom(nrow(el.oo), 1, dat$param$kiss.prob.oo)
+  el.oo <- cbind(el.oo, kiss)
 
 
   # Bind el back together-------------------------------------------------------
@@ -321,34 +313,13 @@ acts_msm <- function(dat, at) {
   disc.st2pos <- which(disc == TRUE & el[, "st2"] == 1)
   el[disc.st2pos, 1:4] <- el[disc.st2pos, c(2, 1, 4, 3)]
 
-  # Remove inactive edges from el (no anal or oral acts)
-  if (dat$control$transRoute_Rimming & !dat$control$transRoute_Kissing) {
-
-    el <- el[-which(
-                el[, "ai"] == 0 &
-                el[, "oi"] == 0 &
-                el[, "ri"] == 0
-              ), ]
-
-  } else if (dat$control$transRoute_Kissing & !dat$control$transRoute_Rimming) {
-
-    el <- el[-which(
-                el[, "ai"] == 0 &
-                el[, "oi"] == 0 &
-                el[, "kiss"] == 0
-              ), ]
-
-  } else if (dat$control$transRoute_Rimming & dat$control$transRoute_Kissing) {
-
-    el <- el[-which(
-                el[, "ai"] == 0 &
-                el[, "oi"] == 0 &
-                el[, "ri"] == 0 &
-                el[, "kiss"] == 0
-              ), ]
-  } else {
-    el <- el[-which(el[, "ai"] == 0 & el[, "oi"] == 0), ]
-  }
+  # Remove inactive edges from el
+  el <- el[-which(
+              el[, "ai"] == 0 &
+              el[, "oi"] == 0 &
+              el[, "ri"] == 0 &
+              el[, "kiss"] == 0
+            ), ]
 
   # Save edgelist
   dat$temp$el <- el
