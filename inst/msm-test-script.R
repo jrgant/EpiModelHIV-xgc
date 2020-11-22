@@ -28,13 +28,17 @@ param_xgc <- param_msm(
   p2ugc.tprob = 0.25, # pharyngeal-to-urethral transmission probability
   ## NOTE: Following tprobs used only if the kissing/rimming flags are active
   ## in control_msm.
-  r2pgc.tprob = 0.25, # rectal-to-pharyngeal transmission probability
-  p2rgc.tprob = 0.25, # pharyngeal-to-rectal transmission probability
-  p2pgc.tprob = 0.25, # kissing transmission probability
-  ## Unreated GC durations
+  r2pgc.tprob = 0, # rectal-to-pharyngeal transmission probability
+  p2rgc.tprob = 0, # pharyngeal-to-rectal transmission probability
+  p2pgc.tprob = 0, # kissing transmission probability
+  ## Untreated GC durations
   rgc.ntx.int = 15,
   ugc.ntx.int = 2,
   pgc.ntx.int = 12,
+  ## Treated GC resolution probabilities c(after 1 week, after 2 weeks, after 3 weeks)
+  rgc.tx.recov.pr = c(1 - 0.06, 0.5, 1),
+  ugc.tx.recov.pr = c(1 - 0.05, 0.5, 1),
+  pgc.tx.recov.pr = c(1 - 0.13, 0.5, 1),
   # STI testing
   gc.sympt.seek.test.scale = 20,
   ## NOTE: Changed the treatment probs to be conditional on someone's seeking
@@ -83,11 +87,11 @@ param_xgc <- param_msm(
   ai.acts.scale = 1,
   oi.acts.scale = 1,
   kiss.rate.main = 3, # NEWPARAM: Kissing prob. during anal/oral sex, main
-  kiss.rate.casl = 3, # NEWPARAM: Kissing prob. during anal/oral sex, casual
-  kiss.prob.oo = 0.5, # NEWPARAM: Kissing prob. during anal/oral sex, one-time
-  rim.rate.main = 2, # NEWPARAM: Weekly rate of analingus in main partnerships
-  rim.rate.casl = 2, # NEWPARAM: Weekly rate of analingus in casual partnerships
-  rim.prob.oo = 0.2, # NEWPARAM: Prob. of rimming during one-time sexual contact
+  kiss.rate.casl = 0, # NEWPARAM: Kissing prob. during anal/oral sex, casual
+  kiss.prob.oo = 0, # NEWPARAM: Kissing prob. during anal/oral sex, one-time
+  rim.rate.main = 0, # NEWPARAM: Weekly rate of analingus in main partnerships
+  rim.rate.casl = 0, # NEWPARAM: Weekly rate of analingus in casual partnerships
+  rim.prob.oo = 0, # NEWPARAM: Prob. of rimming during one-time sexual contact
   trans.scale = rep(1.0, 4), # ORIGPARAM
   cdc.sti.int = 12, # NEWPARAM: Regular CDC GC screening interval
   cdc.sti.hr.int = 6, # NEWPARAM: High-risk CDC GC screening interval
@@ -105,17 +109,17 @@ param_xgc <- param_msm(
 )
 
 init_xgc <- init_msm(
-  prev.ugc = 0.05,
-  prev.rgc = 0.05,
-  prev.pgc = 0.05
+  prev.ugc = 0.02,
+  prev.rgc = 0.02,
+  prev.pgc = 0.02
 )
 
 control_xgc <- control_msm(
   # Computing options
   simno = 1,
-  nsteps = 100,
-  nsims = 20,
-  ncores = 6,
+  nsteps = 20,
+  nsims = 1,
+  ncores = 1,
   # Epidemic simulation Modules
   initialize.FUN = initialize_msm,
   aging.FUN = aging_msm,
@@ -137,11 +141,8 @@ control_xgc <- control_msm(
   prev.FUN = prevalence_msm,
   verbose.FUN = verbose.net,
   # Epidemic simulation options
-  transRoute_Kissing = FALSE,  # FLAG: Toggle kissing transmission
-  # NOTE Determines if kissing is considered an exposure for the CDC
-  # testing guidelines
+  # NOTE Determines if kissing considered exposure for CDC testing guidelines
   cdcExposureSite_Kissing = FALSE,
-  transRoute_Rimming = FALSE,  # FLAG: Toggle rimming transmission
   stiScreeningProtocol = "base",
   gcUntreatedRecovDist = "geom",
   tergmLite = TRUE,  # NOTE Must be set to avoid error thrown by saveout.net()
@@ -149,45 +150,8 @@ control_xgc <- control_msm(
  )
 
 sim <- netsim(est, param_xgc, init_xgc, control_xgc)
-saveRDS(sim, "output/dummy_run.Rds")
+#saveRDS(sim, "output/dummy_run.Rds")
 
-
-
-simd <- readRDS("output/dummy_run.Rds")
-
-plot_vec <- function(vec, maint = "") {
-  plot(
-    simd,
-    "epi",
-    vec,
-    sim.lines = TRUE,
-    mean.line = FALSE,
-    mean.lwd = 2,
-    qnts = FALSE,
-    legend = TRUE,
-    main = maint
-  )
-}
-
-races <- c("B", "H", "O", "W")
-
-# GC
-plot_vec(paste0("i.num.", c("gc", "rgc", "ugc", "pgc")))
-plot_vec(paste0("incid.", c("gc", "rgc", "ugc", "pgc")))
-plot_vec(paste0("incid.", races, ".rgc"), "Rectal GC")
-plot_vec(paste0("incid.", races, ".ugc"), "Urethral GC")
-plot_vec(paste0("incid.", races, ".pgc"), "Pharyngeal GC")
-
-plot_vec(
-  names(sim$epi) %>% .[. %like% "incid\\.[rup]{1}2(p|r|u)gc"],
-  "Transmission pathways (incident infections)"
-)
-
-# HIV
-plot_vec(paste0("i.num.", races))
-plot_vec("i.num")
-plot_vec("incid")
-plot_vec()
 
 # Testing/Timing ------------------------------------------------------
 

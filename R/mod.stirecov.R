@@ -115,14 +115,43 @@ stirecov_msm <- function(dat, at) {
   #                                       1/gc.tx.int) == 1)]
   # recovUGC_tx <- idsUGC_tx[which(rbinom(length(idsUGC_tx), 1,
   #                                       1/gc.tx.int) == 1)]
-  recovRGC_tx <-
-    idsRGC_tx[at - dat$attr$rGC.infTime[idsRGC_tx] >= gc.tx.int]
 
-  recovUGC_tx <-
-    idsUGC_tx[at - dat$attr$uGC.infTime[idsUGC_tx] >= gc.tx.int]
+  recovRGC_tx_draw <- which(
+    rbinom(
+      length(idsRGC_tx), 1,
+      dat$param$rgc.tx.recov.pr[at - dat$attr$rGC.infTime[idsRGC_tx]]
+    ) == 1
+  )
 
-  recovPGC_tx <-
-    idsPGC_tx[at - dat$attr$pGC.infTime[idsPGC_tx] >= gc.tx.int]
+  recovRGC_tx <- idsRGC_tx[recovRGC_tx_draw]
+
+  recovUGC_tx_draw <- which(
+    rbinom(
+      length(idsUGC_tx), 1,
+      dat$param$ugc.tx.recov.pr[at - dat$attr$uGC.infTime[idsUGC_tx]]
+    ) == 1
+  )
+
+  recovUGC_tx <- idsUGC_tx[recovUGC_tx_draw]
+
+
+  recovPGC_tx_draw <- which(
+    rbinom(
+      length(idsPGC_tx), 1,
+      dat$param$pgc.tx.recov.pr[at - dat$attr$pGC.infTime[idsPGC_tx]]
+    ) == 1
+  )
+
+  recovPGC_tx <- idsPGC_tx[recovPGC_tx_draw]
+
+  ## recovRGC_tx <-
+  ##   idsRGC_tx[at - dat$attr$rGC.infTime[idsRGC_tx] >= gc.tx.int]
+
+  ## recovUGC_tx <-
+  ##   idsUGC_tx[at - dat$attr$uGC.infTime[idsUGC_tx] >= gc.tx.int]
+
+  ## recovPGC_tx <-
+  ##   idsPGC_tx[at - dat$attr$pGC.infTime[idsPGC_tx] >= gc.tx.int]
 
   recovRGC <- c(recovRGC_ntx, recovRGC_tx)
   recovUGC <- c(recovUGC_ntx, recovUGC_tx)
@@ -145,6 +174,8 @@ stirecov_msm <- function(dat, at) {
   dat$attr$pGC.infTime[recovPGC] <- NA
   dat$attr$pGC.tx[recovPGC] <- NA
   dat$attr$pGC.tx.prep[recovPGC] <- NA
+
+  dat$attr$anyGC.tx[c(recovRGC, recovUGC, recovPGC)] <- NA
 
   # Output ------------------------------------------------------------------
 
