@@ -206,7 +206,7 @@ stitx_msm <- function(dat, at) {
   }
 
   ## ===========================================================================
-  ## TODO CDC Guidelines
+  ## CDC Guidelines
   ## ===========================================================================
 
   if (dat$control$stiScreeningProtocol == "cdc") {
@@ -352,7 +352,7 @@ stitx_msm <- function(dat, at) {
   ## ===========================================================================
   ## All Treated GC ##
 
-  # IDs of men put on  treatment
+  # IDs of men put on treatment
   txRGC <- intersect(idsRGC_getTest, which(dat$attr$rGC == 1))
   txUGC <- intersect(idsUGC_getTest, which(dat$attr$uGC == 1))
   txPGC <- intersect(idsPGC_getTest, which(dat$attr$pGC == 1))
@@ -443,8 +443,16 @@ stitx_msm <- function(dat, at) {
                         dat$attr$pGC == 1)] <- 1
 
   ## Summary treatment indicator
-  idsGC_tx <-
-    which(dat$attr$rGC.tx == 1 | dat$attr$uGC.tx == 1 | dat$attr$rGC.tx == 1)
+  idsGC_tx <- which(
+    dat$attr$rGC.tx == 1 |
+    dat$attr$uGC.tx == 1 |
+    dat$attr$pGC.tx == 1 |
+    dat$attr$rGC.tx.prep == 1 |
+    dat$attr$uGC.tx.prep == 1 |
+    dat$attr$pGC.tx.prep == 1
+  )
+
+  dat$attr$anyGC.tx[idsGC_tx] <- 1
 
   return(dat)
 }
