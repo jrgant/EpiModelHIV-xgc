@@ -41,7 +41,7 @@
 #'        suppressor before onset of AIDS, including time before diagnosis.
 #' @param max.time.on.tx.part.int Number of weeks on treatment for a
 #'        partial suppressor beofre onset of AIDS.
-#' @param max.time.off.tx.part.int Nnumber of weeks off treatment for a
+#' @param max.time.off.tx.part.int Number of weeks off treatment for a
 #'        partial suppressor before onset of AIDS, including time before
 #'        diagnosis.
 #' @param vl.acute.rise.int Number of weeks to peak viremia during acute
@@ -88,7 +88,7 @@
 #'        used properly (biological efficacy).
 #' @param cond.fail Condom failure rates for HIV for black/hispanic/other/white MSM, as a reduction
 #'        in the cond.eff parameter (vector of length 4).
-#' @param circ.prob Probablity that a black/hispanic/other/white new arrival in the population
+#' @param circ.prob Probability that a black/hispanic/other/white new arrival in the population
 #'        will be circumcised (vector of length 4).
 #'
 #' @param epistats GLMs for epidemiological parameter from the standard ARTnet workflow.
@@ -162,7 +162,7 @@ param_msm <- function(netstats,
                       # Clinical
                       hiv.test.rate = c(0.01325, 0.0125, 0.0124),
                       hiv.test.late.prob = c(0.25, 0.25, 0.25),
-                      test.window.int = 21/7,
+                      test.window.int = 21 / 7,
                       tt.part.supp = c(0.20, 0.20, 0.20),
                       tt.full.supp = c(0.40, 0.40, 0.40),
                       tt.dur.supp = c(0.40, 0.40, 0.40),
