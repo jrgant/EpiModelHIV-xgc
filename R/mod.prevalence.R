@@ -33,6 +33,7 @@ prevalence_msm <- function(dat, at) {
   inf.time <- dat$attr$inf.time
   race <- dat$attr$race
   age <- dat$attr$age
+  age.grp <- dat$attr$age.grp
   tx.init.time <- dat$attr$tx.init.time
   vl <- dat$attr$vl
   vl.last.usupp <- dat$attr$vl.last.usupp
@@ -47,62 +48,119 @@ prevalence_msm <- function(dat, at) {
   uGC <- dat$attr$uGC
   pGC <- dat$attr$pGC
 
+  # Helper functions/objects for bookkeeping
+  sum2 <- function(logic_crit) sum(logic_crit, na.rm = TRUE)
+  raceage_grid <- expand.grid(race = 1:4, age.grp = 1:5)
+  race_alpha <- c("B", "H", "O", "W")
+
   # Pop Size / Demog
 
-  ## Total N
-  dat$epi$num[at] <- sum(active == 1, na.rm = TRUE)
-  ##  Race/ethnicity (n)
-  dat$epi$num.B[at] <- sum(race == 1, na.rm = TRUE)
-  dat$epi$num.H[at] <- sum(race == 2, na.rm = TRUE)
-  dat$epi$num.O[at] <- sum(race == 3, na.rm = TRUE)
-  dat$epi$num.W[at] <- sum(race == 4, na.rm = TRUE)
+  ## Total N, total susceptible, average age
+  dat$epi$num[at] <- sum2(active == 1)
+  dat$epi$s.num[at] <- sum2(status == 0)
   dat$epi$age.mean[at] <- mean(age, na.rm = TRUE)
-  dat$epi$s.num[at] <- sum(status == 0, na.rm = TRUE)
 
-  # HIV infection (N)
-  dat$epi$i.num[at] <- sum(status == 1, na.rm = TRUE)
-  dat$epi$i.num.B[at] <- sum(status == 1 & race == 1, na.rm = TRUE)
-  dat$epi$i.num.H[at] <- sum(status == 1 & race == 2, na.rm = TRUE)
-  dat$epi$i.num.O[at] <- sum(status == 1 & race == 3, na.rm = TRUE)
-  dat$epi$i.num.W[at] <- sum(status == 1 & race == 4, na.rm = TRUE)
-  dat$epi$i.num.dx[at] <- sum(diag.status == 1, na.rm = TRUE)
+  ###  Race/ethnicity and age distribution (n)
+  lapply(sort(unique(raceage_grid$race)), function(x) {
+    dat$epi[[paste0("num.", race_alpha[x])]][at] <<- sum2(race == x)
+  })
 
-  # Calculate prevalence and incidence
+  ### Age group distribution (n)
+  lapply(sort(unique(raceage_grid$age.grp)), function(x) {
+    dat$epi[[paste0("num.age.", x)]][at] <<- sum2(age.grp == x)
+  })
 
+  ### HIV prevalent infections (N)
+  dat$epi$i.num[at] <- sum2(status == 1)
+
+  lapply(unique(raceage_grid$race), function(x) {
+    dat$epi[[paste0("i.num.", race_alpha[x])]][at] <<-
+      sum2(status == 1 & race == x)
+  })
+
+  lapply(unique(raceage_grid$age.grp), function(x) {
+    dat$epi[[paste0("i.num.age", x)]][at] <<-
+      sum2(status == 1 & age.grp == x)
+  })
+
+  ### HIV prevalent diagnoses (n)
+  dat$epi$i.num.dx[at] <- sum2(diag.status == 1)
+
+  lapply(unique(raceage_grid$race), function(x) {
+    dat$epi[[paste0("i.num.dx.", race_alpha[x])]][at] <<-
+      sum2(diag.status == 1 & race == x)
+  })
+
+  lapply(unique(raceage_grid$age.grp), function(x) {
+    dat$epi[[paste0("i.num.dx.age.", x)]][at] <<-
+      sum2(diag.status == 1 & age.grp == x)
+  })
+
+  lapply(seq_len(nrow(raceage_grid)), function(x) {
+    r <- raceage_grid[x, 1]
+    a <- raceage_grid[x, 2]
+    dat$epi[[paste0("i.num.dx.", race_alpha[r], ".age", a)]] <<-
+      sum2(diag.status == 1 & race == r & age.grp == a)
+  })
+  ### HIV prevalence
   dat$epi$i.prev[at] <- dat$epi$i.num[at] / dat$epi$num[at]
 
-  dat$epi$i.prev.B[at] <-
-    sum(race == 1 & status == 1, na.rm = TRUE) / sum(race == 1, na.rm = TRUE)
+  lapply(unique(raceage_grid$race), function(x) {
+    dat$epi[[paste0("i.prev.", race_alpha[x])]][at] <<-
+      sum2(status == 1 & race == x) / sum2(race == x)
+  })
 
-  dat$epi$i.prev.H[at] <-
-    sum(race == 2 & status == 1, na.rm = TRUE) / sum(race == 2, na.rm = TRUE)
+  lapply(unique(raceage_grid$age.grp), function(x) {
+    dat$epi[[paste0("i.prev.age.", x)]][at] <<-
+      sum2(status == 1 & age.grp == x) / sum2(age.grp == x)
+  })
 
-  dat$epi$i.prev.O[at] <-
-    sum(race == 3 & status == 1, na.rm = TRUE) / sum(race == 3, na.rm = TRUE)
+  lapply(seq_len(nrow(raceage_grid)), function(x) {
+    r <- raceage_grid[x, 1]
+    a <- raceage_grid[x, 2]
+    dat$epi[[paste0("i.prev.", race_alpha[r], ".age", a)]] <<-
+      sum2(status == 1 & race == r & age.grp == a) /
+      sum2(race == r & age.grp  == a)
+  })
 
-  dat$epi$i.prev.W[at] <-
-    sum(race == 3 & status == 1, na.rm = TRUE) / sum(race == 4, na.rm = TRUE)
+  ### HIV diagnosis prevalence, overall
+  dat$epi$i.prev.dx[at] <- sum2(diag.status == 1) / dat$epi$num[at]
 
-  dat$epi$i.prev.dx[at] <- sum(diag.status == 1, na.rm = TRUE) / dat$epi$num[at]
-  dat$epi$i.prev.dx.B[at] <-
-    sum(race == 1 & diag.status == 1, na.rm = TRUE) / sum(race == 1, na.rm = TRUE)
-  dat$epi$i.prev.dx.H[at] <-
-    sum(race == 2 & diag.status == 1, na.rm = TRUE) / sum(race == 2, na.rm = TRUE)
-  dat$epi$i.prev.dx.O[at] <-
-    sum(race == 3 & diag.status == 1, na.rm = TRUE) / sum(race == 3, na.rm = TRUE)
-  dat$epi$i.prev.dx.W[at] <-
-    sum(race == 4 & diag.status == 1, na.rm = TRUE) / sum(race == 4, na.rm = TRUE)
+  lapply(unique(raceage_grid$race), function(x) {
+    dat$epi[[paste0("i.prev.dx.", race_alpha[x])]][at] <<-
+      sum2(diag.status == 1 & race == x) / sum2(race == x)
+  })
 
-  dat$epi$ir100[at] <- (dat$epi$incid[at] / sum(status == 0, dat$epi$incid[at], na.rm = TRUE)) * 5200
+  lapply(unique(raceage_grid$age.grp), function(x) {
+    dat$epi[[paste0("i.prev.dx.age.", x)]][at] <<-
+      sum2(diag.status == 1 & age.grp == x) / sum2(age.grp == x)
+  })
+
+  lapply(seq_len(nrow(raceage_grid)), function(x) {
+    r <- raceage_grid[x, 1]
+    a <- raceage_grid[x, 2]
+    dat$epi[[paste0("i.prev.dx.", race_alpha[r], ".age", a)]] <<-
+      sum2(diag.status == 1 & race == r & age.grp == a) /
+      sum2(race == r & age.grp  == a)
+  })
+
+  ### HIV Incidence rate by 100 person-years at risk
+  dat$epi$ir100[at] <-
+    (dat$epi$incid[at] /
+     sum(status == 0, dat$epi$incid[at], na.rm = TRUE)) * 5200
+
   dat$epi$ir100.B[at] <-
     (dat$epi$incid.B[at] /
        sum(status == 0 & race == 1, dat$epi$incid.B[at], na.rm = TRUE)) * 5200
+
   dat$epi$ir100.H[at] <-
     (dat$epi$incid.H[at] /
        sum(status == 0 & race == 2, dat$epi$incid.H[at], na.rm = TRUE)) * 5200
+
   dat$epi$ir100.O[at] <-
     (dat$epi$incid.O[at] /
        sum(status == 0 & race == 3, dat$epi$incid.O[at], na.rm = TRUE)) * 5200
+
   dat$epi$ir100.W[at] <-
     (dat$epi$incid.W[at] /
        sum(status == 0 & race == 4, dat$epi$incid.W[at], na.rm = TRUE)) * 5200
@@ -157,7 +215,7 @@ prevalence_msm <- function(dat, at) {
           aids.time - diag.time <= 52 & race == 3, na.rm = TRUE) /
     sum(diag.status == 1 & inf.time >= 2 & race == 3, na.rm = TRUE)
 
-  ## Linked to care
+  ### Linked to HIV care
   dat$epi$cc.linked1m[at] <-
     sum(tx.init.time - diag.time <= 4 & diag.time >= 2, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1 & diag.time >= 2, na.rm = TRUE)
@@ -178,6 +236,7 @@ prevalence_msm <- function(dat, at) {
     sum(tx.init.time - diag.time <= 4 & diag.time >= 2 & race == 4, na.rm = TRUE) /
     sum(diag.status == 1 & diag.time >= 2 & race == 4, na.rm = TRUE)
 
+  ### On HIV treatment
   dat$epi$cc.linked1m.int[at] <-
     sum(tx.init.time - diag.time <= 4 & diag.time >= 3380, na.rm = TRUE) /
     sum(dat$attr$diag.status == 1 & diag.time >= 3380, na.rm = TRUE)
@@ -202,8 +261,7 @@ prevalence_msm <- function(dat, at) {
     sum(tx.init.time - diag.time <= 4 & diag.time >= 3380 & race == 4, na.rm = TRUE) /
     sum(diag.status == 1 & diag.time >= 3380 & race == 4, na.rm = TRUE)
 
-  ## Viral Suppression
-
+  ### Viral Suppression
   dat$epi$cc.vsupp[at] <-
     sum(vl <= log10(200) & diag.status == 1 & diag.time >= 2, na.rm = TRUE) /
     sum(diag.status == 1 & diag.time >= 2, na.rm = TRUE)
@@ -252,11 +310,13 @@ prevalence_msm <- function(dat, at) {
   dat$epi$cc.vsupp.dur1y[at] <-
     1 - (sum((at - vl.last.usupp) <= 52 & diag.time >= 2 &
                diag.status == 1, na.rm = TRUE) /
-           sum(diag.status == 1 & diag.time >= 2, na.rm = TRUE))
+         sum(diag.status == 1 & diag.time >= 2, na.rm = TRUE))
+
   dat$epi$cc.vsupp.dur1y.B[at] <-
     1 - (sum((at - vl.last.usupp) <= 52 & diag.time >= 2 &
                diag.status == 1 & race == 1, na.rm = TRUE) /
            sum(diag.status == 1 & diag.time >= 2 & race == 1, na.rm = TRUE))
+
   dat$epi$cc.vsupp.dur1y.H[at] <-
     1 - (sum((at - vl.last.usupp) <= 52 & diag.time >= 2 &
                diag.status == 1 & race == 2, na.rm = TRUE) /
@@ -272,9 +332,10 @@ prevalence_msm <- function(dat, at) {
                diag.status == 1 & race == 4, na.rm = TRUE) /
            sum(diag.status == 1 & diag.time >= 2 & race == 4, na.rm = TRUE))
 
-  dat$epi$cc.HIV.mr[at] <- (dat$epi$dep.HIV[at]/dat$epi$i.num[at]) * 52
+  dat$epi$cc.HIV.mr[at] <- (dat$epi$dep.HIV[at] / dat$epi$i.num[at]) * 52
 
-  # Care continuum stats (secondary)
+
+  ### Care continuum stats (secondary)
   dat$epi$cc.test.int[at] <-
     mean(at - last.neg.test[diag.status == 0], na.rm = TRUE)
 
@@ -374,7 +435,7 @@ prevalence_msm <- function(dat, at) {
   #   sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 3, na.rm = TRUE)
 
 
-  # HIV screening outcomes
+  ### HIV screening outcomes
   dat$epi$mean.neg.tests[at] <-
     mean(dat$attr$num.neg.tests[diag.status == 0], na.rm = TRUE)
 
