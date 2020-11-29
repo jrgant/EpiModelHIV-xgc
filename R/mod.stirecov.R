@@ -16,7 +16,6 @@ stirecov_msm <- function(dat, at) {
   rgc.ntx.int <- dat$param$rgc.ntx.int
   ugc.ntx.int <- dat$param$ugc.ntx.int
   pgc.ntx.int <- dat$param$pgc.ntx.int
-  gc.tx.int <- dat$param$gc.tx.int
 
 
   # GC Recovery ----------------------------------------------------------------
