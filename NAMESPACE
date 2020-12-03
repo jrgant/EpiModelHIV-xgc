@@ -3,7 +3,6 @@
 export(acts_msm)
 export(aging_msm)
 export(arrival_msm)
-export(cd4_het)
 export(condoms_msm)
 export(control_msm)
 export(departure_msm)
