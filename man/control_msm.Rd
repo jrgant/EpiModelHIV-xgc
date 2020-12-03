@@ -24,15 +24,17 @@ control_msm(
   position.FUN = position_msm,
   prep.FUN = prep_msm,
   hivtrans.FUN = hivtrans_msm,
-  stitrans.FUN = stitrans_msm,
-  stirecov.FUN = stirecov_msm,
   stitx.FUN = stitx_msm,
+  stirecov.FUN = stirecov_msm,
+  stitrans.FUN = stitrans_msm_rand,
   prev.FUN = prevalence_msm,
   verbose.FUN = verbose.net,
   save.nwstats = FALSE,
   save.clin.hist = FALSE,
   truncate.plist = TRUE,
   verbose = TRUE,
+  tergmLite = TRUE,
+  debug_stitx = FALSE,
   ...
 )
 }
@@ -84,13 +86,13 @@ partnerships.}
 \item{hivtrans.FUN}{Module function to stochastically simulate HIV transmission
 over acts given individual and dyadic attributes.}
 
-\item{stitrans.FUN}{Module function to simulate GC transmission over current
-edgelist.}
+\item{stitx.FUN}{Module function to simulate treatment of GC.}
 
 \item{stirecov.FUN}{Module function to simulate recovery from GC, heterogeneous
 by disease, site, symptoms, and treatment status.}
 
-\item{stitx.FUN}{Module function to simulate treatment of GC.}
+\item{stitrans.FUN}{Module function to simulate GC transmission over current
+edgelist.}
 
 \item{prev.FUN}{Module function to calculate prevalence summary statistics.}
 
@@ -108,7 +110,17 @@ active partnerships.}
 \item{verbose}{If \code{TRUE}, print out simulation progress to the console
 if in interactive mode or text files if in batch mode.}
 
+\item{tergmLite}{Boolean (default = TRUE). Set to avoid error thrown by saveout.net().}
+
+\item{debug_stitx}{Boolean (default = FALSE). Print interim output from `stitrans_msm_rand()` for debugging purposes.}
+
 \item{...}{Additional arguments passed to the function.}
+
+\item{stiScreeningProtocol}{STI screening/testing protocol. One of "base", "cdc", "symptomatic", "universal".}
+
+\item{cdcExposureSite_Kissing}{Boolean. Determines whether kissing is considered an eligible sexual exposure when `stiScreeningProtocol = "cdc"`}
+
+\item{gcUntreatedRecovDist}{One of "geom" or "pois". Determines whether the distribution of untreated GC recovery times is geometric (memoryless) or Poisson (based on current age of infection). Applies to all anatomic sites.}
 }
 \value{
 A list object of class \code{control_msm}, which can be passed to the

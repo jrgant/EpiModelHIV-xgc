@@ -43,27 +43,33 @@ param_msm(
   acute.rr = 6,
   circ.rr = 0.4,
   cond.eff = 0.95,
-  cond.fail = c(0.25, 0.25, 0.25, 0.25),
-  circ.prob = c(0.874, 0.874, 0.918, 0.918),
+  cond.fail = rep(0, 4),
+  circ.prob = c(0.798, 0.435, 0.6, 0.927),
   epistats,
   acts.aids.vl = 5.75,
   ai.acts.scale = 1,
   oi.acts.scale = 1,
+  kiss.rate.main = 0,
+  kiss.rate.casl = 0,
+  kiss.prob.oo = 0,
+  rim.rate.main = 0,
+  rim.rate.casl = 0,
+  rim.prob.oo = 0,
   cond.scale = 1,
   rgc.tprob = 0.35,
   ugc.tprob = 0.25,
   pgc.tprob = 0.25,
   rgc.sympt.prob = 0.16,
   ugc.sympt.prob = 0.8,
-  pgc.sympt.prob = 0,
+  pgc.sympt.prob = 0.05,
   rgc.ntx.int = 16.8,
   ugc.ntx.int = 16.8,
   pgc.ntx.int = 16.8,
   gc.tx.int = 1.4,
-  gc.sympt.prob.tx = c(0.95, 0.95, 0.95),
+  gc.sympt.prob.tx = rep(1, 4),
   gc.asympt.prob.tx = c(0.15, 0.15, 0.15),
   sti.cond.eff = 0.9,
-  sti.cond.fail = c(0.2, 0.2, 0.2),
+  sti.cond.fail = rep(0, 4),
   hiv.rgc.rr = 2.78,
   hiv.ugc.rr = 1.73,
   hiv.dual.rr = 0.2,
@@ -132,7 +138,7 @@ suppressor before onset of AIDS, including time before diagnosis.}
 \item{max.time.on.tx.part.int}{Number of weeks on treatment for a
 partial suppressor beofre onset of AIDS.}
 
-\item{max.time.off.tx.part.int}{Nnumber of weeks off treatment for a
+\item{max.time.off.tx.part.int}{Number of weeks off treatment for a
 partial suppressor before onset of AIDS, including time before
 diagnosis.}
 
@@ -199,7 +205,7 @@ used properly (biological efficacy).}
 \item{cond.fail}{Condom failure rates for HIV for black/hispanic/other/white MSM, as a reduction
 in the cond.eff parameter (vector of length 4).}
 
-\item{circ.prob}{Probablity that a black/hispanic/other/white new arrival in the population
+\item{circ.prob}{Probability that a black/hispanic/other/white new arrival in the population
 will be circumcised (vector of length 4).}
 
 \item{epistats}{GLMs for epidemiological parameter from the standard ARTnet workflow.}
@@ -209,6 +215,18 @@ will be circumcised (vector of length 4).}
 \item{ai.acts.scale}{Scalar for main/casual anal sex act rate for model calibration.}
 
 \item{oi.acts.scale}{Scalar for main/casual oral sex act rate for model calibration.}
+
+\item{kiss.rate.main}{Weekly rate of tongue kissing in main partnerships}
+
+\item{kiss.rate.casl}{Weekly rate of tongue kissing in casual partnerships}
+
+\item{kiss.prob.oo}{Probability of tongue kissing during a one-time sexual contact}
+
+\item{rim.rate.main}{Weekly rate of rimming in main partnerships}
+
+\item{rim.rate.casl}{Weekly rate of rimming in casual partnerships}
+
+\item{rim.prob.oo}{Probability of rimming during a one-time sexual contact}
 
 \item{cond.scale}{Scalar for condom use probability for model calibration.}
 
@@ -227,17 +245,11 @@ gonorrhea.}
 \item{pgc.sympt.prob}{Probability of symptoms given infection with pharyngeal
 gonorrhea.}
 
-\item{rgc.ntx.int}{Average duration in weeks of untreated rectal gonorrhea.}
+\item{rgc.ntx.int}{Median duration in weeks of untreated rectal gonorrhea.}
 
-\item{ugc.ntx.int}{Average duration in weeks of untreated urethral gonorrhea.}
+\item{ugc.ntx.int}{Median duration in weeks of untreated urethral gonorrhea.}
 
-\item{gc.tx.int}{Average duration in weeks of treated gonorrhea (both sites).}
-
-\item{gc.sympt.prob.tx}{Probability of treatment for symptomatic gonorrhea
-for black/hispanic/other/white men (vector of length 4).}
-
-\item{gc.asympt.prob.tx}{Probability of treatment for asymptomatic gonorrhea
-for black/hispanic/other/white men (vector of length 4).}
+\item{pgc.ntx.int}{Median duration in weeks of untreated pharyngeal gonorrhea.}
 
 \item{sti.cond.eff}{Relative risk of STI infection from anal sex when a condom is
 used properly (biological efficacy).}
@@ -285,6 +297,20 @@ of active PrEP users, either \code{"none"} for no reassessment,
 equal to the last negative test.}
 
 \item{...}{Additional arguments passed to the function.}
+
+\item{rgc.tx.recov.pr}{Rectal GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
+
+\item{ugc.tx.recov.pr}{Urethral GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
+
+\item{pgc.tx.recov.pr}{Pharyngeal GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
+
+\item{gc.sympt.prob.test}{Probability of being tested at symptomatic rectum, urethra, and pharynx.}
+
+\item{gc.asympt.prob.test}{Probability of being tested at asymptomatic rectum, urethra, and pharynx.}
+
+\item{cdc.sti.int}{Regular CDC screening interval (active when stiScreeningProtocol = "cdc" in `control_msm`)}
+
+\item{cdc.sti.hr.int}{CDC screening interval for "high-risk" MSM (active when stiScreeningProtocol = "cdc" in `control_msm`)}
 }
 \value{
 A list object of class \code{param_msm}, which can be passed to

@@ -95,6 +95,13 @@
 #' @param acts.aids.vl Viral load level after which sexual act rate goes to zero.
 #' @param ai.acts.scale Scalar for main/casual anal sex act rate for model calibration.
 #' @param oi.acts.scale Scalar for main/casual oral sex act rate for model calibration.
+#' @param kiss.rate.main Weekly rate of tongue kissing in main partnerships
+#' @param kiss.rate.casl Weekly rate of tongue kissing in casual partnerships
+#' @param kiss.prob.oo Probability of tongue kissing during a one-time sexual contact
+#' @param rim.rate.main Weekly rate of rimming in main partnerships
+#' @param rim.rate.casl Weekly rate of rimming in casual partnerships
+#' @param rim.prob.oo Probability of rimming during a one-time sexual contact
+#'
 #' @param cond.scale Scalar for condom use probability for model calibration.
 #'
 #' @param riskh.start Time step at which behavioral risk history assessment occurs.
@@ -120,21 +127,27 @@
 #' @param rgc.tprob Probability of rectal gonorrhea infection per act.
 #' @param ugc.tprob Probability of urethral gonorrhea infection per act.
 #' @param pgc.tprob Probability of pharyngeal gonorrhea infection per act.
+
 #' @param rgc.sympt.prob Probability of symptoms given infection with rectal
 #'        gonorrhea.
 #' @param ugc.sympt.prob Probability of symptoms given infection with urethral
 #'        gonorrhea.
 #' @param pgc.sympt.prob Probability of symptoms given infection with pharyngeal
 #'        gonorrhea.
-#' @param rgc.ntx.int Average duration in weeks of untreated rectal gonorrhea.
-#' @param ugc.ntx.int Average duration in weeks of untreated urethral gonorrhea.
-#' @param gc.tx.int Average duration in weeks of treated gonorrhea (both sites).
 #'
-#' @param gc.sympt.prob.tx Probability of treatment for symptomatic gonorrhea
-#'        for black/hispanic/other/white men (vector of length 4).
-#' @param gc.asympt.prob.tx Probability of treatment for asymptomatic gonorrhea
-#'        for black/hispanic/other/white men (vector of length 4).
+#' @param rgc.ntx.int Median duration in weeks of untreated rectal gonorrhea.
+#' @param ugc.ntx.int Median duration in weeks of untreated urethral gonorrhea.
+#' @param pgc.ntx.int Median duration in weeks of untreated pharyngeal gonorrhea.
 #'
+#' @param rgc.tx.recov.pr Rectal GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).
+#' @param ugc.tx.recov.pr Urethral GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).
+#' @param pgc.tx.recov.pr Pharyngeal GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).
+#'
+#' @param gc.sympt.prob.test Probability of being tested at symptomatic rectum, urethra, and pharynx.
+#' @param gc.asympt.prob.test Probability of being tested at asymptomatic rectum, urethra, and pharynx.
+#'
+#' @param cdc.sti.int Regular CDC screening interval (active when stiScreeningProtocol = "cdc" in `control_msm`)
+#' @param cdc.sti.hr.int CDC screening interval for "high-risk" MSM (active when stiScreeningProtocol = "cdc" in `control_msm`)
 #' @param prep.sti.screen.int Interval in weeks between STI screening at PrEP visits.
 #' @param prep.sti.prob.tx Probability of treatment given positive screening during
 #'        PrEP visit.
@@ -203,14 +216,20 @@ param_msm <- function(netstats,
                       acute.rr = 6,
                       circ.rr = 0.4,
                       cond.eff = 0.95,
-                      cond.fail = c(0.25, 0.25, 0.25, 0.25),
-                      circ.prob = c(0.874, 0.874, 0.918, 0.918), # @TODO: Other set to White probability
+                      cond.fail = rep(0, 4),
+                      circ.prob = c(0.798, 0.435, 0.600, 0.927),
 
                       # Behavioral
                       epistats,
                       acts.aids.vl = 5.75,
                       ai.acts.scale = 1,
                       oi.acts.scale = 1,
+                      kiss.rate.main = 0,
+                      kiss.rate.casl = 0,
+                      kiss.prob.oo = 0,
+                      rim.rate.main = 0,
+                      rim.rate.casl = 0,
+                      rim.prob.oo = 0,
                       cond.scale = 1,
 
                       # STI epi
@@ -220,16 +239,16 @@ param_msm <- function(netstats,
 
                       rgc.sympt.prob = 0.16,
                       ugc.sympt.prob = 0.80,
-                      pgc.sympt.prob = 0,
+                      pgc.sympt.prob = 0.05,
 
                       rgc.ntx.int = 16.8,
                       ugc.ntx.int = 16.8,
                       pgc.ntx.int = 16.8,
                       gc.tx.int = 1.4,
-                      gc.sympt.prob.tx = c(0.95, 0.95, 0.95),
+                      gc.sympt.prob.tx = rep(1, 4),
                       gc.asympt.prob.tx = c(0.15, 0.15, 0.15),
                       sti.cond.eff = 0.9,
-                      sti.cond.fail = c(0.20, 0.20, 0.20),
+                      sti.cond.fail = rep(0, 4),
                       hiv.rgc.rr = 2.78,
                       hiv.ugc.rr = 1.73,
                       hiv.dual.rr = 0.2,
@@ -328,6 +347,9 @@ init_msm <- function(prev.ugc = 0.005,
 #' @param prev.FUN Module function to calculate prevalence summary statistics.
 #' @param verbose.FUN Module function to print model progress to the console or
 #'        external text files.
+#' @param stiScreeningProtocol STI screening/testing protocol. One of "base", "cdc", "symptomatic", "universal".
+#' @param cdcExposureSite_Kissing Boolean. Determines whether kissing is considered an eligible sexual exposure when `stiScreeningProtocol = "cdc"`
+#' @param gcUntreatedRecovDist One of "geom" or "pois". Determines whether the distribution of untreated GC recovery times is geometric (memoryless) or Poisson (based on current age of infection). Applies to all anatomic sites.
 #' @param save.nwstats Calculate and save network statistics as defined in the
 #'        \code{simnet} modules.
 #' @param save.clin.hist Save individual-level clinical history matrices.
@@ -335,6 +357,8 @@ init_msm <- function(prev.ugc = 0.005,
 #'        active partnerships.
 #' @param verbose If \code{TRUE}, print out simulation progress to the console
 #'        if in interactive mode or text files if in batch mode.
+#' @param tergmLite Boolean (default = TRUE). Set to avoid error thrown by saveout.net().
+#' @param debug_stitx Boolean (default = FALSE). Print interim output from `stitrans_msm_rand()` for debugging purposes.
 #' @param ... Additional arguments passed to the function.
 #'
 #' @return
@@ -363,15 +387,17 @@ control_msm <- function(simno = 1,
                         position.FUN = position_msm,
                         prep.FUN = prep_msm,
                         hivtrans.FUN = hivtrans_msm,
-                        stitrans.FUN = stitrans_msm,
-                        stirecov.FUN = stirecov_msm,
                         stitx.FUN = stitx_msm,
+                        stirecov.FUN = stirecov_msm,
+                        stitrans.FUN = stitrans_msm_rand,
                         prev.FUN = prevalence_msm,
                         verbose.FUN = verbose.net,
                         save.nwstats = FALSE,
                         save.clin.hist = FALSE,
                         truncate.plist = TRUE,
                         verbose = TRUE,
+                        tergmLite = TRUE,
+                        debug_stitx = FALSE,
                         ...) {
 
   formal.args <- formals(sys.function())
