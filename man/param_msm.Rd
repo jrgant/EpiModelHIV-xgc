@@ -44,7 +44,7 @@ param_msm(
   circ.rr = 0.4,
   cond.eff = 0.95,
   cond.fail = rep(0, 4),
-  circ.prob = c(0.798, 0.435, 0.6, 0.927),
+  circ.prob = c(0.798, 0.428, 0.6, 0.928),
   epistats,
   acts.aids.vl = 5.75,
   ai.acts.scale = 1,

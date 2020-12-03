@@ -217,7 +217,7 @@ param_msm <- function(netstats,
                       circ.rr = 0.4,
                       cond.eff = 0.95,
                       cond.fail = rep(0, 4),
-                      circ.prob = c(0.798, 0.435, 0.600, 0.927),
+                      circ.prob = c(0.798, 0.428, 0.600, 0.928),
 
                       # Behavioral
                       epistats,
