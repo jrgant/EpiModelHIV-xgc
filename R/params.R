@@ -160,11 +160,7 @@
 #' @param hiv.dual.rr Additive proportional risk, from 0 to 1, for HIV infection
 #'        given dual infection with both gonorrhea and chlamydia.
 #'
-#' @param ... Additional arguments passed to the function.
-#'
-#' @return
-#' A list object of class \code{param_msm}, which can be passed to
-#' EpiModel function \code{netsim}.
+#' @param ... Additional arguments passed to the function. #' @return A list object of class \code{param_msm}, which can be passed to EpiModel function \code{netsim}.
 #'
 #' @keywords msm
 #'
@@ -206,12 +202,12 @@ param_msm <- function(netstats,
                       aids.mr = 1/104,
 
                       # Demographic
-                      a.rate = 0.00052,
+                      a.rate = 0.00009, # set to the marginal mortality rate to balance pop. N
                       arrival.age = 15,
 
                       # HIV transmission prob
-                      URAI.prob = 0.008938,
-                      UIAI.prob = 0.003379,
+                      URAI.prob = 0.0138,
+                      UIAI.prob = 0.0011,
                       trans.scale = c(1, 1, 1),
                       acute.rr = 6,
                       circ.rr = 0.4,
@@ -260,9 +256,9 @@ param_msm <- function(netstats,
                       prep.adhr.dist = c(0.089, 0.127, 0.784),
                       prep.adhr.hr = c(0.69, 0.19, 0.01),
                       prep.discont.rate = 1 - (2^(-1/(224.4237/7))),
-                      prep.tst.int = 90/7,
-                      prep.risk.int = 182/7,
-                      prep.sti.screen.int = 182/7,
+                      prep.tst.int = 90 / 7,
+                      prep.risk.int = 182 / 7,
+                      prep.sti.screen.int = 182 / 7,
                       prep.sti.prob.tx = 1,
                       prep.risk.reassess.method = "year",
                       prep.require.lnt = TRUE,
