@@ -497,6 +497,19 @@ prevalence_msm <- function(dat, at) {
     sum(at - dat$attr$last.neg.test <= 52 & diag.status == 0 & race == 4,
         na.rm = TRUE) / sum(diag.status == 0 & race == 4, na.rm = TRUE)
 
+  ## probability of HIV test within past year by age
+  lapply(c("18.24", "25.29", "30.39", "40.49", "50.65"), function(x) {
+    low <- as.numeric(substring(x, 1, 2))
+    hi <- as.numeric(substring(x, 4, 5))
+
+    dat$epi[[paste0("hiv.test.prob.pastyr.age", x)]][at] <<- sum2(
+      at - dat$attr$last.neg.test <= 52 &
+      diag.status == 0 &
+      age %in% low:hi
+    ) / sum2(diag.status == 0 & age %in% low:hi)
+  })
+
+
   # HIV stage
   dat$epi$hstage.acute[at] <-
     sum(stage %in% 1:2 & diag.time >= 2, na.rm = TRUE) /

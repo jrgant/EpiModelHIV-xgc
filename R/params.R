@@ -169,8 +169,8 @@
 param_msm <- function(netstats,
 
                       # Clinical
-                      hiv.test.rate = c(0.01325, 0.0125, 0.0124),
-                      hiv.test.late.prob = c(0.25, 0.25, 0.25),
+                      hiv.test.rate = c(0.0294, 0.0328, 0.0291, 0.0246, 0.0194),
+                      hiv.test.late.prob = c(0.160, 0.202, 0.207, 0.222),
                       test.window.int = 21 / 7,
                       tt.part.supp = c(0.20, 0.20, 0.20),
                       tt.full.supp = c(0.40, 0.40, 0.40),
