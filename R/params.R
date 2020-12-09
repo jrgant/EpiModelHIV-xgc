@@ -203,7 +203,7 @@ param_msm <- function(netstats,
 
                       # Demographic
                       a.rate = 0.00009, # set to the marginal mortality rate to balance pop. N
-                      arrival.age = 15,
+                      arrival.age = 18,
 
                       # HIV transmission prob
                       URAI.prob = 0.0138,
