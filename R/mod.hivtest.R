@@ -45,7 +45,7 @@ hivtest_msm <- function(dat, at) {
   elig <- which((diag.status == 0 | is.na(diag.status)) &
                 prepStat == 0 & late.tester == 0)
 
-  # Interval testing rates by race
+  # Interval testing rates by age
   hiv.test.age.grps <- as.numeric(
     cut(
       dat$attr$age,
