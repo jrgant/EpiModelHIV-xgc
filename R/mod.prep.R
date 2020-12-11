@@ -194,7 +194,9 @@ riskhist_msm <- function(dat, at) {
   al <- as.data.frame(dat$temp$al)
   by_pid <- group_by(al, pid)
   uai <- summarise(by_pid, uai = sum(uai))[, 2]
-  el <- as.data.frame(cbind(dat$temp$el, uai))
+  ## subset to partnerships with any AI
+  el.ai <- dat$temp$el[dat$temp$el[, 7] > 0, ]
+  el <- as.data.frame(cbind(el.ai, uai))
 
   if (max(el[, 1:2]) > n) stop("riskhist max(el) > n")
 
@@ -236,7 +238,7 @@ riskhist_msm <- function(dat, at) {
   ##               partner not tested in past 6 months
   uai.mono1.neg <- intersect(uai.mono1, all.neg)
   part.id1 <- c(el2[el2$p1 %in% uai.mono1.neg, 2], el2[el2$p2 %in% uai.mono1.neg, 1])
-  not.tested.6mo <- since.test[part.id1] > (180/7)
+  not.tested.6mo <- since.test[part.id1] > (180 / 7)
   part.not.tested.6mo <- uai.mono1.neg[which(not.tested.6mo == TRUE)]
   dat$attr$prep.ind.uai.mono[part.not.tested.6mo] <- at
 
