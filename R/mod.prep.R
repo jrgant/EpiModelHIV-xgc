@@ -186,8 +186,6 @@ riskhist_msm <- function(dat, at) {
   since.test <- at - dat$attr$last.neg.test
   rGC.tx <- dat$attr$rGC.tx
   uGC.tx <- dat$attr$uGC.tx
-  rCT.tx <- dat$attr$rCT.tx
-  uCT.tx <- dat$attr$uCT.tx
 
   ## Parameters
 
@@ -254,7 +252,7 @@ riskhist_msm <- function(dat, at) {
   dat$attr$prep.ind.uai.nmain[uai.nmain] <- at
 
   ## Condition 4, any STI diagnosis
-  idsDx <- which(rGC.tx == 1 | uGC.tx == 1 | rCT.tx == 1 | uCT.tx == 1)
+  idsDx <- which(rGC.tx == 1 | uGC.tx == 1)
   dat$attr$prep.ind.sti[idsDx] <- at
 
   return(dat)
