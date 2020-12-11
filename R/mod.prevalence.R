@@ -334,7 +334,6 @@ prevalence_msm <- function(dat, at) {
     sum(status == 1 & inf.time >= 2 & race == 4, na.rm = TRUE)
 
 
-
   ## Viral suppression duration
   dat$epi$cc.vsupp.dur1y[at] <-
     1 - (sum((at - vl.last.usupp) <= 52 & diag.time >= 2 &
