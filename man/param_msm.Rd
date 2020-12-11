@@ -35,11 +35,11 @@ param_msm(
   vl.tx.aids.down.slope = 0.25,
   vl.tx.up.slope = 0.25,
   aids.mr = 1/104,
-  a.rate = 0.00052,
-  arrival.age = 15,
-  URAI.prob = 0.008938,
-  UIAI.prob = 0.003379,
-  trans.scale = c(1, 1, 1),
+  a.rate = 9e-05,
+  arrival.age = 18,
+  URAI.prob = 0.0138,
+  UIAI.prob = 0.0011,
+  trans.scale = c(1, 1, 1, 1),
   acute.rr = 6,
   circ.rr = 0.4,
   cond.eff = 0.95,
@@ -73,8 +73,8 @@ param_msm(
   hiv.rgc.rr = 2.78,
   hiv.ugc.rr = 1.73,
   hiv.dual.rr = 0.2,
-  riskh.start = Inf,
-  prep.start = Inf,
+  riskh.start = 2,
+  prep.start = 52,
   prep.start.prob = 0.2,
   prep.adhr.dist = c(0.089, 0.127, 0.784),
   prep.adhr.hr = c(0.69, 0.19, 0.01),
@@ -296,7 +296,7 @@ of active PrEP users, either \code{"none"} for no reassessment,
 \item{prep.require.lnt}{If \code{TRUE}, only start on PrEP if current time step is
 equal to the last negative test.}
 
-\item{...}{Additional arguments passed to the function.}
+\item{...}{Additional arguments passed to the function. #' @return A list object of class \code{param_msm}, which can be passed to EpiModel function \code{netsim}.}
 
 \item{rgc.tx.recov.pr}{Rectal GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
 
@@ -311,10 +311,6 @@ equal to the last negative test.}
 \item{cdc.sti.int}{Regular CDC screening interval (active when stiScreeningProtocol = "cdc" in `control_msm`)}
 
 \item{cdc.sti.hr.int}{CDC screening interval for "high-risk" MSM (active when stiScreeningProtocol = "cdc" in `control_msm`)}
-}
-\value{
-A list object of class \code{param_msm}, which can be passed to
-EpiModel function \code{netsim}.
 }
 \description{
 Sets the epidemic parameters for stochastic network models

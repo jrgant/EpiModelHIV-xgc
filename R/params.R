@@ -250,19 +250,18 @@ param_msm <- function(netstats,
                       hiv.dual.rr = 0.2,
 
                       # PrEP
-                      riskh.start = Inf,
-                      prep.start = Inf,
+                      riskh.start = 2,
+                      prep.start = 52,
                       prep.start.prob = 0.2,
                       prep.adhr.dist = c(0.089, 0.127, 0.784),
                       prep.adhr.hr = c(0.69, 0.19, 0.01),
-                      prep.discont.rate = 1 - (2^(-1/(224.4237/7))),
+                      prep.discont.rate = 1 - (2^(-1 / (224.4237 / 7))),
                       prep.tst.int = 90 / 7,
                       prep.risk.int = 182 / 7,
                       prep.sti.screen.int = 182 / 7,
                       prep.sti.prob.tx = 1,
                       prep.risk.reassess.method = "year",
-                      prep.require.lnt = TRUE,
-                      ...) {
+                      prep.require.lnt = TRUE, ...) {
 
   p <- get_args(formal.args = formals(sys.function()),
                 dot.args = list(...))
