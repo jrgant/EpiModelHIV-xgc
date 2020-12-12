@@ -372,11 +372,13 @@ stitrans_msm_rand <- function(dat, at) {
   ##############################################################################
 
   idsInf_objects <- ls(pattern = "idsInf")
+
   idsInf_list <- lapply(
     setNames(idsInf_objects, idsInf_objects), function(x) {
       data.table(ids = get(x))
-    }) %>%
-    rbindlist(idcol = "pathway")
+    })
+
+  idsInf_list <- rbindlist(idsInf_list, idcol = "pathway")
 
   ## Find IDs for those with multiple transmission events to an anatomic site.
   if (nrow(idsInf_list) > 0) {
@@ -391,12 +393,10 @@ stitrans_msm_rand <- function(dat, at) {
     if (any(inf_dest_multiEvents[, N] > 1)) {
       idsInf_list <- inf_dest_multiEvents[idsInf_list, on = "ids"]
 
-      multiEvents_select <- split(
-        idsInf_list[N > 1],
-        by = c("ids", "dest")
-      ) %>%
-        lapply(., function(x) x[sample(1:.N)][1]) %>%
-        rbindlist()
+      ms <- split(idsInf_list[N > 1], by = c("ids", "dest"))
+
+      multiEvents_select <-
+        rbindlist(lapply(ms, function(x) x[sample(1:.N)][1]))
 
       ## Drop rows with multi-event IDs and then re-add only the selected
       ## transmission event.
@@ -405,10 +405,9 @@ stitrans_msm_rand <- function(dat, at) {
       idsInf_list <- idsInf_list[, .(ids, pathway)]
     }
 
-
-  ##############################################################################
-  ## UPDATE ATTRIBUTES ##
-  ##############################################################################
+    ############################################################################
+    ## UPDATE ATTRIBUTES ##
+    ############################################################################
 
     idsInf_destR <- idsInf_list[pathway %like% "rgc", ids]
     rGC[idsInf_destR] <- 1
@@ -427,138 +426,163 @@ stitrans_msm_rand <- function(dat, at) {
     pGC.infTime[idsInf_destP] <- at
     pGC.sympt[idsInf_destP] <- rbinom(length(idsInf_destP), 1, pgc.sympt.prob)
     pGC.timesInf[idsInf_destP] <- pGC.timesInf[idsInf_destP] + 1
-
+  }
 
   ##############################################################################
   ## OUTPUT ##
   ##############################################################################
 
-    # Attributes
-    dat$attr$rGC <- rGC
-    dat$attr$uGC <- uGC
-    dat$attr$pGC <- pGC
+  # Attributes
+  dat$attr$rGC <- rGC
+  dat$attr$uGC <- uGC
+  dat$attr$pGC <- pGC
 
-    dat$attr$rGC.infTime <- rGC.infTime
-    dat$attr$uGC.infTime <- uGC.infTime
-    dat$attr$pGC.infTime <- pGC.infTime
+  dat$attr$rGC.infTime <- rGC.infTime
+  dat$attr$uGC.infTime <- uGC.infTime
+  dat$attr$pGC.infTime <- pGC.infTime
 
-    dat$attr$rGC.sympt <- rGC.sympt
-    dat$attr$uGC.sympt <- uGC.sympt
-    dat$attr$pGC.sympt <- pGC.sympt
+  dat$attr$rGC.sympt <- rGC.sympt
+  dat$attr$uGC.sympt <- uGC.sympt
+  dat$attr$pGC.sympt <- pGC.sympt
 
-    dat$attr$rGC.timesInf <- rGC.timesInf
-    dat$attr$uGC.timesInf <- uGC.timesInf
-    dat$attr$pGC.timesInf <- pGC.timesInf
+  dat$attr$rGC.timesInf <- rGC.timesInf
+  dat$attr$uGC.timesInf <- uGC.timesInf
+  dat$attr$pGC.timesInf <- pGC.timesInf
 
-    # Tally incidence
-    incData <- idsInf_list[, ":="(
+  # Tally incidence
+  if (nrow(idsInf_list) == 0) {
+
+    # Used when incidence is 0.
+    incid.byDemog <- data.table(
+      pathway = NA_character_,
+      race = NA,
+      age.grp = NA,
+      anatsite = NA_character_,
+      incid = 0
+    )
+
+  } else {
+
+    incData <- idsInf_list[, ":=" (
       pathway = substring(pathway, 8),
       race = race[ids],
       age.grp = age.grp[ids]
     )]
 
-    ## Incidence by transmission pathway, race/ethniciy, and age group.
+    ## Incidence by transmission pathway, race/ethnicity, and age group.
     incid.byDemog <- incData[, .(incid = .N), keyby = .(race, age.grp, pathway)]
     incid.byDemog <- incid.byDemog[, anatsite := substring(pathway, 3)]
-    setkeyv(incid.byDemog, c("race", "age.grp"))
-
-    # label vectors for incidence assignments below
-    anatsites <- c("rgc", "ugc", "pgc")
-    races <- c("B", "H", "O", "W")
-
-    # store overall GC incidence
-    dat$epi$incid.gc[at] <- incid.byDemog[, sum(incid)]
-
-    # store incidence by anatomic site
-    lapply(anatsites, function(x) {
-      dat$epi[[paste0("incid.", x)]][at] <<-
-        incid.byDemog[pathway %like% paste0(x, "$"), sum(incid)]
-    })
-
-    # NOTE
-    # In the section below, the joins and and ifelse() statements ensure
-    # the vector lengths for incidence by sub-stratum are the same across
-    # simulations. Prevents errors due to timesteps in which no one in a
-    # given small stratum was infected.
-
-    # Incidence by anatomic site and race
-    lu <- as.data.table(expand.grid(
-      anatsite = anatsites,
-      race = match(races, races)
-    ))
-
-    incid.ar <- incid.byDemog[, .(incid = sum(incid)), .(anatsite, race)]
-    incid.ar <- incid.ar[lu, on = c("anatsite", "race")]
-
-    lapply(seq_len(nrow(incid.ar)), function(x, racelabs = races) {
-      rslug <- racelabs[incid.ar[x, race]]
-      aslug <- incid.ar[x, anatsite]
-
-      incid.curr <- incid.ar[x, incid]
-      dat$epi[[paste0("incid.", rslug, ".", aslug)]][at] <<-
-        ifelse(!is.na(incid.curr), incid.curr, 0)
-    })
-
-    # Incidence by anatomic site and age group
-    lu <- as.data.table(expand.grid(
-      anatsite = anatsites,
-      age.grp = 1:5
-    ))
-
-    incid.aa <- incid.byDemog[, .(incid = sum(incid)), .(anatsite, age.grp)]
-    incid.aa <- incid.aa[lu, on = c("anatsite", "age.grp")]
-
-    lapply(seq_len(nrow(incid.aa)), function(x) {
-      gslug <- incid.aa[x, age.grp]
-      aslug <- incid.aa[x, anatsite]
-
-      incid.curr <- incid.aa[x, incid]
-      dat$epi[[paste0("incid.age.", gslug, ".", aslug)]][at] <<-
-        ifelse(!is.na(incid.curr), incid.curr, 0)
-    })
-
-    # Incidence by anatomic site, race, and age group
-    lu <- as.data.table(expand.grid(
-      anatsite = anatsites,
-      race = match(races, races),
-      age.grp = 1:5
-    ))
-
-    incid.ara <- incid.byDemog[, .(
-      incid = sum(incid)
-    ), .(anatsite, race, age.grp)]
-
-    incid.ara <- incid.ara[lu, on = c("anatsite", "race", "age.grp")]
-
-    lapply(seq_len(nrow(incid.ara)), function(x, racelabs = races) {
-      rslug <- racelabs[incid.ara[x, race]]
-      gslug <- incid.ara[x, age.grp]
-      aslug <- incid.ara[x, anatsite]
-
-      incid.curr <- incid.ara[x, incid]
-      dat$epi[[paste0("incid.", rslug, ".age", gslug, ".", aslug)]][at] <<-
-        ifelse(!is.na(incid.curr), incid.curr, 0)
-    })
-
-    # incidence by transmission pathway
-    incid.tp <- incid.byDemog[, .(incid = sum(incid)), pathway]
-    lapply(seq_len(nrow(incid.tp)), function(x) {
-      incid.curr <- incid.tp[x, incid]
-      dat$epi[[paste0("incid.", incid.tp[x, pathway])]][at] <<-
-        ifelse(!is.na(incid.curr), incid.curr, 0)
-    })
-
-    # Check all infected have all STI attributes
-    stopifnot(
-      all(!is.na(rGC.infTime[rGC == 1])),
-      all(!is.na(rGC.sympt[rGC == 1])),
-      all(!is.na(uGC.infTime[uGC == 1])),
-      all(!is.na(uGC.sympt[uGC == 1])),
-      all(!is.na(pGC.infTime[pGC == 1])),
-      all(!is.na(pGC.sympt[pGC == 1]))
-    )
   }
 
-  return(dat)
+  # Set keys for incid.byDemog assigned in preceding if/else statements.
+  setkeyv(incid.byDemog, c("race", "age.grp"))
 
+  # label vectors for incidence assignments below
+  anatsites <- c("rgc", "ugc", "pgc")
+  races <- c("B", "H", "O", "W")
+
+  # store overall GC incidence
+  dat$epi$incid.gc[at] <- incid.byDemog[, sum(incid, na.rm = TRUE)]
+
+  # store incidence by anatomic site
+  lapply(anatsites, function(x) {
+    dat$epi[[paste0("incid.", x)]][at] <<-
+      incid.byDemog[pathway %like% paste0(x, "$"), sum(incid, na.rm = TRUE)]
+  })
+
+  # NOTE
+  # In the section below, the joins and and ifelse() statements ensure
+  # the vector lengths for incidence by sub-stratum are the same across
+  # simulations. Prevents errors due to timesteps in which no one in a
+  # given small stratum was infected.
+
+  # Incidence by anatomic site and race
+  lu <- as.data.table(expand.grid(
+    anatsite = anatsites,
+    race = match(races, races)
+  ))
+
+  incid.ar <-
+    incid.byDemog[, .(incid = sum(incid, na.rm = TRUE)), .(anatsite, race)]
+
+  incid.ar <- incid.ar[lu, on = c("anatsite", "race")]
+  incid.ar[, incid := ifelse(is.na(incid), 0, incid)]
+
+  lapply(seq_len(nrow(incid.ar)), function(x, racelabs = races) {
+    rslug <- racelabs[incid.ar[x, race]]
+    aslug <- incid.ar[x, anatsite]
+
+    incid.curr <- incid.ar[x, incid]
+    dat$epi[[paste0("incid.", rslug, ".", aslug)]][at] <<- incid.curr
+  })
+
+  # Incidence by anatomic site and age group
+  lu <- as.data.table(expand.grid(
+    anatsite = anatsites,
+    age.grp = 1:5
+  ))
+
+  incid.aa <-
+    incid.byDemog[, .(incid = sum(incid, na.rm = TRUE)), .(anatsite, age.grp)]
+
+  incid.aa <- incid.aa[lu, on = c("anatsite", "age.grp")]
+  incid.aa[, incid := ifelse(is.na(incid), 0, incid)]
+
+  lapply(seq_len(nrow(incid.aa)), function(x) {
+    gslug <- incid.aa[x, age.grp]
+    aslug <- incid.aa[x, anatsite]
+
+    incid.curr <- incid.aa[x, incid]
+    dat$epi[[paste0("incid.age.", gslug, ".", aslug)]][at] <<- incid.curr
+  })
+
+  # Incidence by anatomic site, race, and age group
+  lu <- as.data.table(expand.grid(
+    anatsite = anatsites,
+    race = match(races, races),
+    age.grp = 1:5
+  ))
+
+  incid.ara <- incid.byDemog[, .(
+    incid = sum(incid, na.rm = TRUE)
+  ), .(anatsite, race, age.grp)]
+
+  incid.ara <- incid.ara[lu, on = c("anatsite", "race", "age.grp")]
+  incid.ara[, incid := ifelse(is.na(incid), 0, incid)]
+
+  lapply(seq_len(nrow(incid.ara)), function(x, racelabs = races) {
+    rslug <- racelabs[incid.ara[x, race]]
+    gslug <- incid.ara[x, age.grp]
+    aslug <- incid.ara[x, anatsite]
+
+    incid.curr <- incid.ara[x, incid]
+
+    dat$epi[[paste0("incid.", rslug, ".age", gslug, ".", aslug)]][at] <<-
+      incid.curr
+  })
+
+  # incidence by transmission pathway
+  lu <- data.table(
+    pathway = c("r2ugc", "u2rgc", "p2ugc", "u2pgc", "p2pgc", "p2rgc", "p2pgc")
+  )
+
+  incid.tp <- incid.byDemog[, .(incid = sum(incid, na.rm = TRUE)), pathway]
+  incid.tp <- incid.byDemog[lu, on = "pathway"]
+  incid.tp[, incid := ifelse(is.na(incid), 0, incid)]
+  lapply(seq_len(nrow(incid.tp)), function(x) {
+    incid.curr <- incid.tp[x, incid]
+    dat$epi[[paste0("incid.", incid.tp[x, pathway])]][at] <<- incid.curr
+  })
+
+  # Check all infected have all STI attribute%s
+  stopifnot(
+    all(!is.na(rGC.infTime[rGC == 1])),
+    all(!is.na(rGC.sympt[rGC == 1])),
+    all(!is.na(uGC.infTime[uGC == 1])),
+    all(!is.na(uGC.sympt[uGC == 1])),
+    all(!is.na(pGC.infTime[pGC == 1])),
+    all(!is.na(pGC.sympt[pGC == 1]))
+  )
+
+  return(dat)
 }
