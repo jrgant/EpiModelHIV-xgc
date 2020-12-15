@@ -1,27 +1,26 @@
-pacman::p_load(
-  EpiModelHIV,
-  data.table,
-  magrittr,
-  rms,
-  stringr,
-  pscl
-)
+## pacman::p_load(
+##   EpiModelHIV,
+##   data.table,
+##   magrittr,
+##   rms,
+##   stringr,
+##   pscl
+## )
 
-pd_path <- "../egcmsm_artnet"
-netstats <- readRDS(paste0(pd_path, "/netstats/netstats.Rds"))
-est <- readRDS(paste0(pd_path, "/netest/netest.Rds"))
-epistats <- readRDS(paste0(pd_path, "/netstats/epistats.Rds"))
+suppressMessages(library(EpiModelHIV))
 
-# TODO: Where original parameters had unique values for each race/ethnic group,
-#       Other value currently takes the value assigned to White.
+pd_path   <- "../egcmsm_artnet"
+netstats  <- readRDS(paste0(pd_path, "/netstats/netstats.Rds"))
+est       <- readRDS(paste0(pd_path, "/netest/netest.Rds"))
+epistats  <- readRDS(paste0(pd_path, "/netstats/epistats.Rds"))
+
 param_xgc <- param_msm(
   # external objects
   netstats = netstats,
   epistats = epistats,
   # demography
-  a.rate = 0.00052,
+  a.rate = netstats$demog$mortrate.marginal,
   arrival.age = 18,
-  # TODO: update all transmission probs (priors based on Spicknall)
   u2rgc.tprob = 0.25, # urethral-to-rectal transmission probability
   u2pgc.tprob = 0.25, # urethral-to-pharyngeal transmission probability
   r2ugc.tprob = 0.25, # rectal-to-urethral transmission probability
@@ -35,52 +34,29 @@ param_xgc <- param_msm(
   rgc.ntx.int = 15,
   ugc.ntx.int = 2,
   pgc.ntx.int = 12,
-  ## Treated GC resolution probabilities c(after 1 week, after 2 weeks, after 3 weeks)
+  ## Treated GC recovery probabilities c(after 1 week, after 2 weeks, after 3 weeks)
   rgc.tx.recov.pr = c(1 - 0.06, 0.5, 1),
   ugc.tx.recov.pr = c(1 - 0.05, 0.5, 1),
   pgc.tx.recov.pr = c(1 - 0.13, 0.5, 1),
   # STI testing
   gc.sympt.seek.test.scale = 20,
-  ## NOTE: Changed the treatment probs to be conditional on someone's seeking
-  ##       STI treatment. Repeat 3 times, one for each anatomic site.
-  ##       Tune asymptomatic treatment probability to achieve the overall
-  ##       probability of receiving an STI test.
+  ## NOTE:
+  ## Changed the treatment probs to be receiving test conditional on someone's
+  ## seeking STI testing. Repeat 3 times, one for each anatomic site.
+  ## Tune asymptomatic testing probability to achieve the overall
+  ## probability of receiving an STI test at a given anatomic site.
   gc.sympt.prob.test = rep(1, 3),
   ## NOTE: Order of probs: rectal, urethral, pharyngeal
   gc.asympt.prob.test = rep(0.2, 3),  # TODO: calibrate treatment probs
-  # HIV testing
-  hiv.test.rate = c(
-    0.01325,
-    0.0125,
-    0.0124,
-    0.0124
-  ), # @ORIG, HIV test rate by race
-  # @ORIG, prop. of MSM testing only at late-stage (AIDS)
-  hiv.test.late.prob = rep(0.25, 4),
   # HIV treatment parameters
   tt.part.supp = rep(0.2, 4), # ORIGPARAM, partial VLS post ART start
   tt.full.supp = rep(0.4, 4), # ORIGPARAM, full VLS w/ post ART start
   tt.dur.supp = rep(0.4, 4),  # ORIGPARAM, durable VLS post ART start
-  tx.init.prob = c(
-    0.092,
-    0.092,
-    0.127,
-    0.127
-  ), # @ORIG
-  tx.halt.part.prob = c(
-    0.0102,
-    0.0102,
-    0.0071,
-    0.0071
-  ), # @ORIG
+  tx.init.prob = c(0.092, 0.092, 0.127, 0.127), # @ORIG
+  tx.halt.part.prob = c(0.0102, 0.0102, 0.0071, 0.0071), # @ORIG
   tx.halt.full.rr = rep(0.9, 4), # ORIGPARAM
   tx.halt.dur.rr = rep(0.5, 4),  # ORIGPARAM
-  tx.reinit.part.prob = c(
-    0.00066,
-    0.00066,
-    0.00291,
-    0.00291
-  ), # @ORIG
+  tx.reinit.part.prob = c(0.00066, 0.00066, 0.00291, 0.00291), # @ORIG
   tx.reinit.full.rr = rep(1.0, 4), # ORIGPARAM
   tx.reinit.dur.rr = rep(1.0, 4),  # ORIGPARAM
   # scaling parameters
@@ -99,25 +75,19 @@ param_xgc <- param_msm(
   cond.eff = 0.95, # ORIGPARAM, condom eff anal HIV transmission
   cond.fail = rep(0.25, 4),
   # NOTE: Change to 0 to turn off (reflect uncertainty in cond. effect)
-  sti.cond.fail = rep(0.2, 4),
-  circ.prob = c(
-    0.874, # TODO: Update circ probs. Originals are from Atlanta.
-    0.874,
-    0.918, # TODO: Other set to White probability (find alternate value)
-    0.918
-  )
+  sti.cond.fail = rep(0.2, 4)
 )
 
 init_xgc <- init_msm(
-  prev.ugc = 0.02,
-  prev.rgc = 0.02,
-  prev.pgc = 0.02
+  prev.ugc = 0,
+  prev.rgc = 0,
+  prev.pgc = 0
 )
 
 control_xgc <- control_msm(
   # Computing options
   simno = 1,
-  nsteps = 20,
+  nsteps = 30,
   nsims = 1,
   ncores = 1,
   # Epidemic simulation Modules
@@ -135,9 +105,9 @@ control_xgc <- control_msm(
   position.FUN = position_msm,
   prep.FUN = prep_msm,
   hivtrans.FUN = hivtrans_msm,
+  stitrans.FUN = stitrans_msm_rand,
   stirecov.FUN = stirecov_msm,
   stitx.FUN = stitx_msm,
-  stitrans.FUN = stitrans_msm_rand,
   prev.FUN = prevalence_msm,
   verbose.FUN = verbose.net,
   # Epidemic simulation options
@@ -148,6 +118,9 @@ control_xgc <- control_msm(
   tergmLite = TRUE,  # NOTE Must be set to avoid error thrown by saveout.net()
   debug_stitx = FALSE
  )
+
+# Limit number of lines browser prints
+# options(deparse.max.lines = 5)
 
 sim <- netsim(est, param_xgc, init_xgc, control_xgc)
 #saveRDS(sim, "output/dummy_run.Rds")
@@ -170,15 +143,15 @@ for (at in 2:200) {
   dat <- hivvl_msm(dat, at)
   dat <- simnet_msm(dat, at)
   dat <- acts_msm(dat, at)
-  ## dat <- condoms_msm(dat, at)
-  ## dat <- position_msm(dat, at)
-  ## dat <- prep_msm(dat, at)
-  ## dat <- hivtrans_msm(dat, at)
-  ## dat <- stitrans_msm(dat, at)
-  ## dat <- stirecov_msm(dat, at)
-  ## dat <- stitx_msm(dat, at)
-  ## dat <- prevalence_msm(dat, at)
-  ## verbose.net(dat, "progress", at = at)
+  dat <- condoms_msm(dat, at)
+  dat <- position_msm(dat, at)
+  dat <- prep_msm(dat, at)
+  dat <- hivtrans_msm(dat, at)
+  dat <- stitrans_msm_rand(dat, at)
+  dat <- stirecov_msm(dat, at)
+  dat <- stitx_msm(dat, at)
+  dat <- prevalence_msm(dat, at)
+  verbose.net(dat, "progress", at = at)
 }
 
 nrow(dat$temp$plist)
