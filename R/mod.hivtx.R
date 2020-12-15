@@ -27,25 +27,25 @@
 hivtx_msm <- function(dat, at) {
 
   # Attributes
-  race <- dat$attr$race
-  status <- dat$attr$status
-  tx.status <- dat$attr$tx.status
-  diag.status <- dat$attr$diag.status
-  cuml.time.on.tx <- dat$attr$cuml.time.on.tx
-  cuml.time.off.tx <- dat$attr$cuml.time.off.tx
-  tx.period.first <- dat$attr$tx.period.first
-  tx.period.last <- dat$attr$tx.period.last
-  tx.init.time <- dat$attr$tx.init.time
-  tt.traj <- dat$attr$tt.traj
+  race              <- dat$attr$race
+  status            <- dat$attr$status
+  tx.status         <- dat$attr$tx.status
+  diag.status       <- dat$attr$diag.status
+  cuml.time.on.tx   <- dat$attr$cuml.time.on.tx
+  cuml.time.off.tx  <- dat$attr$cuml.time.off.tx
+  tx.period.first   <- dat$attr$tx.period.first
+  tx.period.last    <- dat$attr$tx.period.last
+  tx.init.time      <- dat$attr$tx.init.time
+  tt.traj           <- dat$attr$tt.traj
 
   # Parameters
-  tx.init.prob <- dat$param$tx.init.prob
-  tx.halt.part.prob <- dat$param$tx.halt.part.prob
-  tx.reinit.part.prob <- dat$param$tx.reinit.part.prob
-  tx.halt.full.rr <- dat$param$tx.halt.full.rr
-  tx.halt.dur.rr <- dat$param$tx.halt.dur.rr
-  tx.reinit.full.rr <- dat$param$tx.reinit.full.rr
-  tx.reinit.dur.rr <- dat$param$tx.reinit.full.rr
+  tx.init.prob          <- dat$param$tx.init.prob
+  tx.halt.part.prob     <- dat$param$tx.halt.part.prob
+  tx.reinit.part.prob   <- dat$param$tx.reinit.part.prob
+  tx.halt.full.rr       <- dat$param$tx.halt.full.rr
+  tx.halt.dur.rr        <- dat$param$tx.halt.dur.rr
+  tx.reinit.full.rr     <- dat$param$tx.reinit.full.rr
+  tx.reinit.dur.rr      <- dat$param$tx.reinit.full.rr
 
   if (at == 3381) {
     races <- sort(unique(race))
