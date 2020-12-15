@@ -303,15 +303,63 @@ prevalence_msm <- function(dat, at) {
           diag.time >= 2 & race == 4, na.rm = TRUE) /
     sum(diag.status == 1 & diag.time >= 2 & race == 4, na.rm = TRUE)
 
-  ### by race/ethnicity and age
+  ### VLS by race/ethnicity and age, among diagnosed
   lapply(seq_len(nrow(raceage_grid)), function(x) {
     r <- raceage_grid[x, 1]
     a <- raceage_grid[x, 2]
-    dat$epi[[paste0("cc.vsupp.", race_alpha[r], ".age", a)]][at] <<-
-      sum2(vl <= log10(200) & diag.status == 1 &
+
+    vsupp.curr <- sum2(vl <= log10(200) & diag.status == 1 &
            diag.time >= 2 & race == r & age.grp == a) /
       sum2(diag.status == 1 & diag.time >= 2 & race == r & age.grp == a)
+
+    dat$epi[[paste0("cc.vsupp.", race_alpha[r], ".age", a)]][at] <<-
+      ifelse(is.nan(vsupp.curr), 0, vsupp.curr)
   })
+
+  ### VLS by race/ethnicity and collapsed age groups, among diagnosed
+  ### (see calibration targets)
+  vsupp.targ.groups <- list(
+    list("B", 1:2, 3:5),
+    list("H", 1:3, 4:5),
+    list("O", 1:2, 3:5),
+    list("W", 1, 2:5)
+  )
+
+  lapply(vsupp.targ.groups, function(x) {
+    n_ages <- length(x) - 1
+    rslug <- x[[1]]
+
+    aslugs <- sapply(seq_len(n_ages), function(y) {
+      paste0("ages", min(x[[y + 1]]), ".", max(x[[y + 1]]))
+    })
+
+    vsupp.calcs <- sapply(setNames(seq_len(n_ages), aslugs), function(z) {
+      num <- sum2(
+        vl <= log10(200) &
+        diag.status == 1 &
+        diag.time >= 2 &
+        race == match(rslug, race_alpha) &
+        age.grp %in% x[[z + 1]]
+      )
+
+      den <- sum2(
+        diag.status == 1 &
+        diag.time >= 2 &
+        race == match(rslug, race_alpha) &
+        age.grp %in% x[[z + 1]]
+      )
+
+      num / den
+    })
+
+    for (i in seq_along(vsupp.calcs)) {
+      curr <- vsupp.calcs[i]
+      dat$epi[[paste0("cct.vsupp.", rslug, ".", names(vsupp.calcs[i]))]][at] <<-
+        ifelse(is.nan(curr), 0, curr)
+    }
+
+  })
+
 
   dat$epi$cc.vsupp.all[at] <-
     sum(vl <= log10(200) & status == 1 & inf.time >= 2, na.rm = TRUE) /
@@ -434,33 +482,6 @@ prevalence_msm <- function(dat, at) {
     inf.time[diag.time >= 3380 & race == 4],
     na.rm = TRUE
   )
-
-  # dat$epi$cc.tx.any1y[at] <- sum((at - dat$attr$tx.period.last <= 52), na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  # dat$epi$cc.tx.any1y.B[at] <- sum((at - dat$attr$tx.period.last <= 52) & race == 1, na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1 & race == 1, na.rm = TRUE)
-  # dat$epi$cc.tx.any1y.H[at] <- sum((at - dat$attr$tx.period.last <= 52) & race == 2, na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1 & race == 2, na.rm = TRUE)
-  # dat$epi$cc.tx.any1y.W[at] <- sum((at - dat$attr$tx.period.last <= 52) & race == 3, na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1 & race == 3, na.rm = TRUE)
-
-  # dat$epi$cc.dx.delay[at] <- mean(dat$attr$diag.time - dat$attr$inf.time, na.rm = TRUE)
-  # dat$epi$cc.testpy[at] <- 1-sum((at - dat$attr$last.neg.test) > 52 & status == 0,
-  #     is.na(dat$attr$last.neg.test) & status == 0, na.rm = TRUE) /
-  #   sum(status == 0)
-  # dat$epi$cc.linked[at] <- sum(dat$attr$cuml.time.on.tx > 0, na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  # dat$epi$cc.tx[at] <- sum(dat$attr$tx.status == 1, na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  # dat$epi$cc.tx.ret3m[at] <- sum((at - dat$attr$tx.period.last) <= 52 &
-  #       (dat$attr$tx.period.last - dat$attr$tx.period.first) > 13, na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1, na.rm = TRUE)
-  # dat$epi$cc.vsupp.tt1[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 1, na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 1, na.rm = TRUE)
-  # dat$epi$cc.vsupp.tt2[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 2, na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 2, na.rm = TRUE)
-  # dat$epi$cc.vsupp.tt3[at] <- sum(dat$attr$vl <= log10(200) & dat$attr$tt.traj == 3, na.rm = TRUE) /
-  #   sum(dat$attr$diag.status == 1 & dat$attr$tt.traj == 3, na.rm = TRUE)
 
 
   ### HIV screening outcomes
