@@ -1,4 +1,3 @@
-
 #' @title Treatment Module
 #'
 #' @description Module function for anti-retroviral treatment initiation and
