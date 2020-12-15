@@ -136,7 +136,7 @@ black/hispanic/other/white MSM in the durable VL suppression category (vector of
 suppressor before onset of AIDS, including time before diagnosis.}
 
 \item{max.time.on.tx.part.int}{Number of weeks on treatment for a
-partial suppressor beofre onset of AIDS.}
+partial suppressor before onset of AIDS.}
 
 \item{max.time.off.tx.part.int}{Number of weeks off treatment for a
 partial suppressor before onset of AIDS, including time before

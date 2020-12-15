@@ -40,7 +40,7 @@
 #' @param max.time.off.tx.full.int Number of weeks off treatment for a full
 #'        suppressor before onset of AIDS, including time before diagnosis.
 #' @param max.time.on.tx.part.int Number of weeks on treatment for a
-#'        partial suppressor beofre onset of AIDS.
+#'        partial suppressor before onset of AIDS.
 #' @param max.time.off.tx.part.int Number of weeks off treatment for a
 #'        partial suppressor before onset of AIDS, including time before
 #'        diagnosis.
