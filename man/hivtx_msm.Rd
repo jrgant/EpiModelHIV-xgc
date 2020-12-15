@@ -2,12 +2,9 @@
 % Please edit documentation in R/mod.hivtx.R
 \name{hivtx_msm}
 \alias{hivtx_msm}
-\alias{tx_het}
 \title{Treatment Module}
 \usage{
 hivtx_msm(dat, at)
-
-tx_het(dat, at)
 }
 \arguments{
 \item{dat}{Master data list object of class \code{dat} containing networks,
