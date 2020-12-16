@@ -179,7 +179,7 @@ stitx_msm <- function(dat, at) {
       )
     }
 
-    ## Anyone seeking a test receives a test at all symptomatic sites.
+    ## Scenario: Anyone seeking a test receives a test at all symptomatic sites.
     ## - No asymptomatic testing
     if (dat$control$stiScreeningProtocol == "symptomatic") {
 
@@ -189,7 +189,7 @@ stitx_msm <- function(dat, at) {
 
     }
 
-    ## Anyone seeking a test receives a test at all anatomic sites.
+    ## Scenario: Anyone seeking a test receives a test at all anatomic sites.
     if (dat$control$stiScreeningProtocol == "universal") {
 
       idsRGC_getTest <-
@@ -206,7 +206,7 @@ stitx_msm <- function(dat, at) {
   }
 
   ## ===========================================================================
-  ## CDC Guidelines
+  ## Scenario: CDC Guidelines
   ## ===========================================================================
 
   if (dat$control$stiScreeningProtocol == "cdc") {
@@ -453,6 +453,37 @@ stitx_msm <- function(dat, at) {
   )
 
   dat$attr$anyGC.tx[idsGC_tx] <- 1
+
+  ## ===========================================================================
+  ## Calculate Test Positivity among Clinic Goers
+  ## ===========================================================================
+
+  ## Proportion of rectal sites tested
+  dat$epi$prop.rect.tested[at] <-
+    length(c(idsRGC_getTest)) / length(ids_seekTest)
+
+  ## Proportion of urethral sites tested
+  dat$epi$prop.ureth.tested[at] <-
+    length(c(idsUGC_getTest)) / length(ids_seekTest)
+
+  ## Proportion of pharyngeal sites tested
+  dat$epi$prop.phar.tested[at] <-
+    length(c(idsPGC_getTest)) / length(ids_seekTest)
+
+  ## Proportion of tested rectal sites GC+
+  dat$epi$prob.rGC.tested[at] <-
+    sum(dat$attr$rGC[idsRGC_getTest] == 1) /
+    length(idsRGC_getTest)
+
+  ## Proportion of tested urethral sites GC+
+  dat$epi$prob.uGC.tested[at] <-
+    sum(dat$attr$uGC[idsUGC_getTest] == 1) /
+    length(idsUGC_getTest)
+
+  ## Proportion of tested pharyngeal sites GC+
+  dat$epi$prob.pGC.tested[at] <-
+    sum(dat$attr$pGC[idsPGC_getTest] == 1) /
+    length(idsPGC_getTest)
 
   return(dat)
 }
