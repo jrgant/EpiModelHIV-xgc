@@ -390,8 +390,19 @@ stitrans_msm_rand <- function(dat, at) {
 
     ## If any IDs were stochastically assigned more than one transmission event
     ## to a single anatomic site, randomly select one of the events.
+    ## NOTE: allow.cartesian=TRUE maintains cases in which more than one
+    ## infection event was simulated to occur via the same pathway. For
+    ## instance, if two oral sex acts between the same pharynx and the same
+    ## urethra were designated as transmission events, we retain both.
+    ## Therefore, for a newly infected person, we might have c(p2ugc, p2ugc
+    ## r2ugc), which would weight assignment to oral-to-urethral more
+    ## heavily.
     if (any(inf_dest_multiEvents[, N] > 1)) {
-      idsInf_list <- inf_dest_multiEvents[idsInf_list, on = "ids"]
+      idsInf_list <- inf_dest_multiEvents[
+        idsInf_list,
+        on = "ids",
+        allow.cartesian = TRUE
+      ]
 
       ms <- split(idsInf_list[N > 1], by = c("ids", "dest"))
 
