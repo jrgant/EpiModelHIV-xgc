@@ -115,29 +115,3 @@ hivtest_msm <- function(dat, at) {
 
   return(dat)
 }
-
-
-#' @export
-#' @rdname hivtest_msm
-dx_het <- function(dat, at) {
-
-  # Variables
-  status <- dat$attr$status
-  txCD4min <- dat$attr$txCD4min
-  cd4Count <- dat$attr$cd4Count
-  dxStat <- dat$attr$dxStat
-
-  # Process
-  tested <- which(status == 1 & dxStat == 0 & cd4Count <= txCD4min)
-
-
-  # Results
-  if (length(tested) > 0) {
-    dat$attr$dxStat[tested] <- 1
-    dat$attr$txStat[tested] <- 0
-    dat$attr$dxTime[tested] <- at
-  }
-
-  return(dat)
-}
-
