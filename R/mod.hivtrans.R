@@ -214,9 +214,10 @@ hivtrans_msm <- function(dat, at) {
 
   # Summary Output
   dat$epi$incid[at] <- length(infected)
-  dat$epi$incid.B[at] <- sum(dat$attr$race[infected] == 1)
-  dat$epi$incid.H[at] <- sum(dat$attr$race[infected] == 2)
-  dat$epi$incid.W[at] <- sum(dat$attr$race[infected] == 3)
+  dat$epi$incid.B[at] <- sum(dat$attr$race[infected] == 1, na.rm = TRUE)
+  dat$epi$incid.H[at] <- sum(dat$attr$race[infected] == 2, na.rm = TRUE)
+  dat$epi$incid.O[at] <- sum(dat$attr$race[infected] == 3, na.rm = TRUE)
+  dat$epi$incid.W[at] <- sum(dat$attr$race[infected] == 4, na.rm = TRUE)
 
   return(dat)
 }
