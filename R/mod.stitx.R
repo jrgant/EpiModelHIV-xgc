@@ -421,26 +421,23 @@ stitx_msm <- function(dat, at) {
   dat$attr$pGC.tx[txPGC] <- 1
 
   ## On PrEP
-  dat$attr$rGC.tx.prep[txRGC_prep] <- 1
-  dat$attr$uGC.tx.prep[txUGC_prep] <- 1
-  dat$attr$pGC.tx.prep[txPGC_prep] <- 1
-
   dat$attr$rGC.tx.prep[idsRGC_prep_tx] <- 0
   dat$attr$uGC.tx.prep[idsUGC_prep_tx] <- 0
   dat$attr$pGC.tx.prep[idsPGC_prep_tx] <- 0
 
+  dat$attr$rGC.tx.prep[txRGC_prep] <- 1
+  dat$attr$uGC.tx.prep[txUGC_prep] <- 1
+  dat$attr$pGC.tx.prep[txPGC_prep] <- 1
 
-  # REVIEW I'm not sure why we need treatment variables for every anatomic site.
-  #        If the person is treated, we assume treatment affects all sites.
-  ## Add tx at other anatomical site ##
-  dat$attr$rGC.tx[which((dat$attr$uGC.tx == 1 | dat$attr$uGC.tx.prep == 1) &
-                        dat$attr$rGC == 1)] <- 1
+  ## Record treatment start times
+  idsTotTxRGC <- c(txRGC, txRGC_prep)
+  dat$attr$rGC.txTime[idsTotTxRGC] <- at
 
-  dat$attr$uGC.tx[which((dat$attr$rGC.tx == 1 | dat$attr$rGC.tx.prep == 1) &
-                        dat$attr$uGC == 1)] <- 1
+  idsTotTxUGC <- c(txUGC, txUGC_prep)
+  dat$attr$uGC.txTime[idsTotTxUGC] <- at
 
-  dat$attr$pGC.tx[which((dat$attr$pGC.tx == 1 | dat$attr$pGC.tx.prep == 1) &
-                        dat$attr$pGC == 1)] <- 1
+  idsTotTxPGC <- c(txPGC, txPGC_prep)
+  dat$attr$pGC.txTime[idsTotTxPGC] <- at
 
   ## Summary treatment indicator
   idsGC_tx <- which(
@@ -453,6 +450,7 @@ stitx_msm <- function(dat, at) {
   )
 
   dat$attr$anyGC.tx[idsGC_tx] <- 1
+
 
   ## ===========================================================================
   ## Calculate Test Positivity among Clinic Goers

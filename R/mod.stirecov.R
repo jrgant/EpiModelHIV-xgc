@@ -95,30 +95,28 @@ stirecov_msm <- function(dat, at) {
   idsRGC_tx <- which(
     dat$attr$rGC == 1 &
     dat$attr$rGC.infTime < at &
+    dat$attr$rGC.txTime < at &
     (dat$attr$rGC.tx == 1 | dat$attr$rGC.tx.prep == 1)
   )
 
   idsUGC_tx <- which(
     dat$attr$uGC == 1 &
     dat$attr$uGC.infTime < at &
+    dat$attr$uGC.txTime < at &
     (dat$attr$uGC.tx == 1 | dat$attr$uGC.tx.prep == 1)
   )
 
   idsPGC_tx <- which(
     dat$attr$pGC == 1 &
     dat$attr$pGC.infTime < at &
+    dat$attr$pGC.txTime < at &
     (dat$attr$pGC.tx == 1 | dat$attr$pGC.tx.prep == 1)
   )
-
-  # recovRGC_tx <- idsRGC_tx[which(rbinom(length(idsRGC_tx), 1,
-  #                                       1/gc.tx.int) == 1)]
-  # recovUGC_tx <- idsUGC_tx[which(rbinom(length(idsUGC_tx), 1,
-  #                                       1/gc.tx.int) == 1)]
 
   recovRGC_tx_draw <- which(
     rbinom(
       length(idsRGC_tx), 1,
-      dat$param$rgc.tx.recov.pr[at - dat$attr$rGC.infTime[idsRGC_tx]]
+      dat$param$rgc.tx.recov.pr[(at - dat$attr$rGC.txTime[idsRGC_tx])]
     ) == 1
   )
 
@@ -127,30 +125,20 @@ stirecov_msm <- function(dat, at) {
   recovUGC_tx_draw <- which(
     rbinom(
       length(idsUGC_tx), 1,
-      dat$param$ugc.tx.recov.pr[at - dat$attr$uGC.infTime[idsUGC_tx]]
+      dat$param$ugc.tx.recov.pr[(at - dat$attr$uGC.txTime[idsUGC_tx])]
     ) == 1
   )
 
   recovUGC_tx <- idsUGC_tx[recovUGC_tx_draw]
 
-
   recovPGC_tx_draw <- which(
     rbinom(
       length(idsPGC_tx), 1,
-      dat$param$pgc.tx.recov.pr[at - dat$attr$pGC.infTime[idsPGC_tx]]
+      dat$param$pgc.tx.recov.pr[(at - dat$attr$pGC.txTime[idsPGC_tx])]
     ) == 1
   )
 
   recovPGC_tx <- idsPGC_tx[recovPGC_tx_draw]
-
-  ## recovRGC_tx <-
-  ##   idsRGC_tx[at - dat$attr$rGC.infTime[idsRGC_tx] >= gc.tx.int]
-
-  ## recovUGC_tx <-
-  ##   idsUGC_tx[at - dat$attr$uGC.infTime[idsUGC_tx] >= gc.tx.int]
-
-  ## recovPGC_tx <-
-  ##   idsPGC_tx[at - dat$attr$pGC.infTime[idsPGC_tx] >= gc.tx.int]
 
   recovRGC <- c(recovRGC_ntx, recovRGC_tx)
   recovUGC <- c(recovUGC_ntx, recovUGC_tx)
@@ -161,18 +149,21 @@ stirecov_msm <- function(dat, at) {
   dat$attr$rGC.infTime[recovRGC] <- NA
   dat$attr$rGC.tx[recovRGC] <- NA
   dat$attr$rGC.tx.prep[recovRGC] <- NA
+  dat$attr$rGC.txTime[recovRGC] <- NA
 
   dat$attr$uGC[recovUGC] <- 0
   dat$attr$uGC.sympt[recovUGC] <- NA
   dat$attr$uGC.infTime[recovUGC] <- NA
   dat$attr$uGC.tx[recovUGC] <- NA
   dat$attr$uGC.tx.prep[recovUGC] <- NA
+  dat$attr$uGC.txTime[recovUGC] <- NA
 
   dat$attr$pGC[recovPGC] <- 0
   dat$attr$pGC.sympt[recovPGC] <- NA
   dat$attr$pGC.infTime[recovPGC] <- NA
   dat$attr$pGC.tx[recovPGC] <- NA
   dat$attr$pGC.tx.prep[recovPGC] <- NA
+  dat$attr$pGC.txTime[recovPGC] <- NA
 
   dat$attr$anyGC.tx[c(recovRGC, recovUGC, recovPGC)] <- NA
 

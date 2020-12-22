@@ -319,7 +319,7 @@ init_sti_msm <- function(dat) {
   dat$attr$pGC.timesInf <- rep(0, num)
   dat$attr$pGC.timesInf[pGC == 1] <- 1
 
-  ## keep track of most recent STI test
+  ## keep track of STI treatment
   dat$attr$rGC.tx <-
     dat$attr$uGC.tx <-
       dat$attr$pGC.tx <-
@@ -329,6 +329,13 @@ init_sti_msm <- function(dat) {
     dat$attr$uGC.tx.prep <-
       dat$attr$pGC.tx.prep <- rep(NA, num)
 
+  ## initialize STI treatment time attr
+  dat$attr$rGC.txTime <-
+    dat$attr$uGC.txTime <-
+      dat$attr$pGC.txTime <- rep(NA, num)
+
+
+  ## keep track of most recent STI test
   dat$attr$last.rGC.test <-
     dat$attr$last.uGC.test <-
       dat$attr$last.pGC.test <-
