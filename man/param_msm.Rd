@@ -35,7 +35,7 @@ param_msm(
   vl.tx.aids.down.slope = 0.25,
   vl.tx.up.slope = 0.25,
   aids.mr = 1/104,
-  a.rate = 9e-05,
+  a.rate = 0.00388,
   arrival.age = 18,
   URAI.prob = 0.0138,
   UIAI.prob = 0.0011,
@@ -56,18 +56,26 @@ param_msm(
   rim.rate.casl = 0,
   rim.prob.oo = 0,
   cond.scale = 1,
-  rgc.tprob = 0.35,
-  ugc.tprob = 0.25,
-  pgc.tprob = 0.25,
+  u2rgc.tprob = 0.25,
+  u2pgc.tprob = 0.25,
+  r2ugc.tprob = 0.25,
+  p2ugc.tprob = 0.25,
+  r2pgc.tprob = 0,
+  p2rgc.tprob = 0,
+  p2pgc.tprob = 0,
   rgc.sympt.prob = 0.16,
   ugc.sympt.prob = 0.8,
   pgc.sympt.prob = 0.05,
+  rgc.tx.recov.pr = c(1 - 0.06, 0.5, 1),
+  ugc.tx.recov.pr = c(1 - 0.05, 0.5, 1),
+  pgc.tx.recov.pr = c(1 - 0.13, 0.5, 1),
   rgc.ntx.int = 16.8,
   ugc.ntx.int = 16.8,
   pgc.ntx.int = 16.8,
   gc.tx.int = 1.4,
-  gc.sympt.prob.tx = rep(1, 4),
-  gc.asympt.prob.tx = c(0.15, 0.15, 0.15),
+  gc.sympt.prob.test = rep(1, 3),
+  gc.asympt.prob.test = c(0.15, 0.15, 0.15),
+  gc.sympt.seek.test.scale = 5,
   sti.cond.eff = 0.9,
   sti.cond.fail = rep(0, 4),
   hiv.rgc.rr = 2.78,
@@ -230,11 +238,19 @@ will be circumcised (vector of length 4).}
 
 \item{cond.scale}{Scalar for condom use probability for model calibration.}
 
-\item{rgc.tprob}{Probability of rectal gonorrhea infection per act.}
+\item{u2rgc.tprob}{Probability of gonorrhea transmission per sex act from an infected urethra to an uninfected rectum.}
 
-\item{ugc.tprob}{Probability of urethral gonorrhea infection per act.}
+\item{u2pgc.tprob}{Probability of gonorrhea transmission per sex act from an infected urethra to an uninfected oropharynx.}
 
-\item{pgc.tprob}{Probability of pharyngeal gonorrhea infection per act.}
+\item{r2ugc.tprob}{Probability of gonorrhea transmission per sex act from an infected rectum to an uninfected urethra.}
+
+\item{p2ugc.tprob}{Probability of gonorrhea transmission per sex act from an infected oropharynx to an uninfected urethra.}
+
+\item{r2pgc.tprob}{Probability of gonorrhea transmission per sex act from an infected rectum to an uninfected oropharynx.}
+
+\item{p2rgc.tprob}{Probability of gonorrhea transmission per sex act from an infected oropharynx to an uninfected rectum.}
+
+\item{p2pgc.tprob}{Probability of gonorrhea transmission per sex act from an infected oropharynx to an uninfected oropharynx.}
 
 \item{rgc.sympt.prob}{Probability of symptoms given infection with rectal
 gonorrhea.}
@@ -245,11 +261,23 @@ gonorrhea.}
 \item{pgc.sympt.prob}{Probability of symptoms given infection with pharyngeal
 gonorrhea.}
 
+\item{rgc.tx.recov.pr}{Rectal GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
+
+\item{ugc.tx.recov.pr}{Urethral GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
+
+\item{pgc.tx.recov.pr}{Pharyngeal GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
+
 \item{rgc.ntx.int}{Median duration in weeks of untreated rectal gonorrhea.}
 
 \item{ugc.ntx.int}{Median duration in weeks of untreated urethral gonorrhea.}
 
 \item{pgc.ntx.int}{Median duration in weeks of untreated pharyngeal gonorrhea.}
+
+\item{gc.sympt.prob.test}{Probability of being tested at symptomatic rectum, urethra, and pharynx.}
+
+\item{gc.asympt.prob.test}{Probability of being tested at asymptomatic rectum, urethra, and pharynx.}
+
+\item{gc.sympt.seek.test.scale}{Scalar that modifies the baseline probability of seeking an STI test due to having STI symptoms.}
 
 \item{sti.cond.eff}{Relative risk of STI infection from anal sex when a condom is
 used properly (biological efficacy).}
@@ -298,15 +326,11 @@ equal to the last negative test.}
 
 \item{...}{Additional arguments passed to the function. #' @return A list object of class \code{param_msm}, which can be passed to EpiModel function \code{netsim}.}
 
-\item{rgc.tx.recov.pr}{Rectal GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
+\item{rgc.tprob}{Probability of rectal gonorrhea infection per act.}
 
-\item{ugc.tx.recov.pr}{Urethral GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
+\item{ugc.tprob}{Probability of urethral gonorrhea infection per act.}
 
-\item{pgc.tx.recov.pr}{Pharyngeal GC recovery probability for those on antibiotic treatment in week 1, 2, or 3 of treatment (vector of length 3).}
-
-\item{gc.sympt.prob.test}{Probability of being tested at symptomatic rectum, urethra, and pharynx.}
-
-\item{gc.asympt.prob.test}{Probability of being tested at asymptomatic rectum, urethra, and pharynx.}
+\item{pgc.tprob}{Probability of pharyngeal gonorrhea infection per act.}
 
 \item{cdc.sti.int}{Regular CDC screening interval (active when stiScreeningProtocol = "cdc" in `control_msm`)}
 

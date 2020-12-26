@@ -124,6 +124,13 @@
 #' @param prep.risk.int Time window for assessment of risk eligibility for PrEP
 #'        in weeks.
 #'
+#' @param u2rgc.tprob Probability of gonorrhea transmission per sex act from an infected urethra to an uninfected rectum.
+#' @param u2pgc.tprob Probability of gonorrhea transmission per sex act from an infected urethra to an uninfected oropharynx.
+#' @param r2ugc.tprob Probability of gonorrhea transmission per sex act from an infected rectum to an uninfected urethra.
+#' @param p2ugc.tprob Probability of gonorrhea transmission per sex act from an infected oropharynx to an uninfected urethra.
+#' @param r2pgc.tprob Probability of gonorrhea transmission per sex act from an infected rectum to an uninfected oropharynx.
+#' @param p2rgc.tprob Probability of gonorrhea transmission per sex act from an infected oropharynx to an uninfected rectum.
+#' @param p2pgc.tprob Probability of gonorrhea transmission per sex act from an infected oropharynx to an uninfected oropharynx.
 #' @param rgc.tprob Probability of rectal gonorrhea infection per act.
 #' @param ugc.tprob Probability of urethral gonorrhea infection per act.
 #' @param pgc.tprob Probability of pharyngeal gonorrhea infection per act.
@@ -145,7 +152,7 @@
 #'
 #' @param gc.sympt.prob.test Probability of being tested at symptomatic rectum, urethra, and pharynx.
 #' @param gc.asympt.prob.test Probability of being tested at asymptomatic rectum, urethra, and pharynx.
-#'
+#' @param gc.sympt.seek.test.scale Scalar that modifies the baseline probability of seeking an STI test due to having STI symptoms.
 #' @param cdc.sti.int Regular CDC screening interval (active when stiScreeningProtocol = "cdc" in `control_msm`)
 #' @param cdc.sti.hr.int CDC screening interval for "high-risk" MSM (active when stiScreeningProtocol = "cdc" in `control_msm`)
 #' @param prep.sti.screen.int Interval in weeks between STI screening at PrEP visits.
@@ -202,7 +209,7 @@ param_msm <- function(netstats,
                       aids.mr = 1/104,
 
                       # Demographic
-                      a.rate = 0.00009, # set to the marginal mortality rate to balance pop. N
+                      a.rate = 0.00388, # set to the marginal mortality rate to balance pop. N
                       arrival.age = 18,
 
                       # HIV transmission prob
@@ -215,7 +222,7 @@ param_msm <- function(netstats,
                       cond.fail = rep(0, 4),
                       circ.prob = c(0.798, 0.428, 0.600, 0.928),
 
-                      # Behavioral
+                      # Behavioral (sex acts, condoms)
                       epistats,
                       acts.aids.vl = 5.75,
                       ai.acts.scale = 1,
@@ -228,21 +235,33 @@ param_msm <- function(netstats,
                       rim.prob.oo = 0,
                       cond.scale = 1,
 
-                      # STI epi
-                      rgc.tprob = 0.35,
-                      ugc.tprob = 0.25,
-                      pgc.tprob = 0.25,
+                      # Per-act GC transmission probabilities
+                      u2rgc.tprob = 0.25,
+                      u2pgc.tprob = 0.25,
+                      r2ugc.tprob = 0.25,
+                      p2ugc.tprob = 0.25,
+                      r2pgc.tprob = 0,
+                      p2rgc.tprob = 0,
+                      p2pgc.tprob = 0,
 
+                      # GC intrahost
                       rgc.sympt.prob = 0.16,
                       ugc.sympt.prob = 0.80,
                       pgc.sympt.prob = 0.05,
+                      rgc.tx.recov.pr = c(1 - 0.06, 0.5, 1),
+                      ugc.tx.recov.pr = c(1 - 0.05, 0.5, 1),
+                      pgc.tx.recov.pr = c(1 - 0.13, 0.5, 1),
 
+                      # GC clinic
                       rgc.ntx.int = 16.8,
                       ugc.ntx.int = 16.8,
                       pgc.ntx.int = 16.8,
                       gc.tx.int = 1.4,
-                      gc.sympt.prob.tx = rep(1, 4),
-                      gc.asympt.prob.tx = c(0.15, 0.15, 0.15),
+                      gc.sympt.prob.test = rep(1, 3),
+                      gc.asympt.prob.test = c(0.15, 0.15, 0.15),
+                      gc.sympt.seek.test.scale = 5,
+
+                      # Condoms and effect on HIV transmission
                       sti.cond.eff = 0.9,
                       sti.cond.fail = rep(0, 4),
                       hiv.rgc.rr = 2.78,
