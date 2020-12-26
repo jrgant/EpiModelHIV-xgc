@@ -589,8 +589,10 @@ stitrans_msm_rand <- function(dat, at) {
   stopifnot(
     all(!is.na(rGC.infTime[rGC == 1])),
     all(!is.na(rGC.sympt[rGC == 1])),
+
     all(!is.na(uGC.infTime[uGC == 1])),
     all(!is.na(uGC.sympt[uGC == 1])),
+
     all(!is.na(pGC.infTime[pGC == 1])),
     all(!is.na(pGC.sympt[pGC == 1]))
   )
