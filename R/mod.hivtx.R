@@ -46,16 +46,22 @@ hivtx_msm <- function(dat, at) {
   tx.reinit.full.rr     <- dat$param$tx.reinit.full.rr
   tx.reinit.dur.rr      <- dat$param$tx.reinit.full.rr
 
-  if (at == 3381) {
-    races <- sort(unique(race))
-    for (i in races) {
-      ids.race <- which(dat$attr$race == i)
-      tt.traj[ids.race] <- sample(1:3, length(ids.race), TRUE,
-                                  c(dat$param$tt.part.supp[i],
-                                    dat$param$tt.full.supp[i],
-                                    dat$param$tt.dur.supp[i]))
-    }
+if (at == 3381) {
+  races <- sort(unique(race))
+  for (i in races) {
+    ids.race <- which(dat$attr$race == i)
+    tt.traj[ids.race] <- sample(
+      1:4,
+      length(ids.race),
+      TRUE,
+      c(
+        dat$param$tt.part.supp[i],
+        dat$param$tt.full.supp[i],
+        dat$param$tt.dur.supp[i]
+      )
+    )
   }
+}
 
   ## Initiation
   tx.init.elig <- which(status == 1 &
