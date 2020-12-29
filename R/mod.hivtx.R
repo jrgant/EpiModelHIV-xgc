@@ -51,7 +51,7 @@ if (at == 3381) {
   for (i in races) {
     ids.race <- which(dat$attr$race == i)
     tt.traj[ids.race] <- sample(
-      1:4,
+      1:3,
       length(ids.race),
       TRUE,
       c(
