@@ -2,12 +2,9 @@
 % Please edit documentation in R/mod.hivvl.R
 \name{hivvl_msm}
 \alias{hivvl_msm}
-\alias{vl_het}
 \title{Viral Load Module}
 \usage{
 hivvl_msm(dat, at)
-
-vl_het(dat, at)
 }
 \arguments{
 \item{dat}{Master data list object of class \code{dat} containing networks,
