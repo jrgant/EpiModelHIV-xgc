@@ -360,10 +360,6 @@ stitx_msm <- function(dat, at) {
   txUGC <- intersect(idsUGC_getTest, which(dat$attr$uGC == 1))
   txPGC <- intersect(idsPGC_getTest, which(dat$attr$pGC == 1))
 
-  ## IDs of men eligible for treatment
-  idsRGC_txElig <- union(idsRGC_sympt, idsRGC_asympt)
-  idsUGC_txElig <- union(idsUGC_sympt, idsUGC_asympt)
-  idsPGC_txElig <- union(idsPGC_sympt, idsPGC_asympt)
 
   ## Interval-based treatment for MSM on PrEP ##
   idsSTI_screen <- which(
@@ -413,6 +409,11 @@ stitx_msm <- function(dat, at) {
   ]
 
   ## Update Attributes ##
+
+  ## IDs of men eligible for treatment
+  idsRGC_txElig <- union(idsRGC_sympt, idsRGC_asympt)
+  idsUGC_txElig <- union(idsUGC_sympt, idsUGC_asympt)
+  idsPGC_txElig <- union(idsPGC_sympt, idsPGC_asympt)
 
   ## Not on PrEP
   dat$attr$rGC.tx[idsRGC_txElig] <- 0
