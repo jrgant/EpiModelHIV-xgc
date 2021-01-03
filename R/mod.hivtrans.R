@@ -1,7 +1,7 @@
 
 # MSM -----------------------------------------------------------------
 
-#' @title Transmission Module
+#' @title HIV transmission Module
 #'
 #' @description Stochastically simulates disease transmission given the current
 #'              state of the discordand edgelist.
@@ -9,15 +9,17 @@
 #' @inheritParams aging_msm
 #'
 #' @details
-#' This is the final substantive function that occurs within the time loop at
-#' each time step. This function takes the discordant edgelist and calculates a
-#' transmission probability for each row (one sexual act) between dyads on the
-#' network. After transmission events, individual-level attributes for the infected
-#' persons are updated and summary statistics for incidence calculated.
+#' This is the final substantive HIV-related function that occurs within
+#' the time loop at each time step. This function takes the discordant
+#' edgelist and calculates a transmission probability for each row
+#' (one sexual act) between dyads on the network. After transmission
+#' events, individual-level attributes for the infected persons are
+#' updated and summary statistics for incidence calculated.
 #'
 #' The per-act transmission probability depends on the following elements:
 #' insertive versus receptive role, viral load of the infected partner, an
 #' acute stage infection excess risk, and condom use.
+#'
 #' Given these transmission probabilities, transmission is stochastically
 #' simulating by drawing from a binomial distribution for each act conditional
 #' on the per-act probability.
