@@ -2,7 +2,7 @@
 % Please edit documentation in R/mod.stitx.R
 \name{stitx_msm}
 \alias{stitx_msm}
-\title{STI Treatment Module}
+\title{STI Testing and Treatment Module}
 \usage{
 stitx_msm(dat, at)
 }
