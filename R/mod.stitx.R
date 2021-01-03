@@ -1,4 +1,4 @@
-#' @title STI Treatment Module
+#' @title STI Testing and Treatment Module
 #'
 #' @description Stochastically simulates GC/CT diagnosis and treatment.
 #'
