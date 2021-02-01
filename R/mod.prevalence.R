@@ -161,6 +161,7 @@ prevalence_msm <- function(dat, at) {
       sum2(race == r & age.grp  == a)
   })
 
+  # TODO See if this is calculated in the HIV transmission module. Incidence here is not calculated among "at-risk" person-years.
   ### HIV Incidence rate by 100 person-years at risk
   dat$epi$ir100[at] <-
     (dat$epi$incid[at] /
@@ -302,6 +303,17 @@ prevalence_msm <- function(dat, at) {
     sum(vl <= log10(200) & diag.status == 1 &
           diag.time >= 2 & race == 4, na.rm = TRUE) /
     sum(diag.status == 1 & diag.time >= 2 & race == 4, na.rm = TRUE)
+
+  ### VLS by age group, among diagnosed
+  lapply(seq_along(unique(raceage_grid$age.grp)), function(x) {
+    vsupp.curr <-
+      sum2(vl <= log10(200) &
+           diag.status == 1 & diag.time >= 2 & age.grp == x) /
+      sum2(diag.status == 1 & diag.time >= 2 & age.grp == x)
+
+    dat$epi[[paste0("cc.vsupp.age", x)]][at] <<-
+      ifelse(is.nan(vsupp.curr), 0, vsupp.curr)
+  })
 
   ### VLS by race/ethnicity and age, among diagnosed
   lapply(seq_len(nrow(raceage_grid)), function(x) {
@@ -568,6 +580,7 @@ prevalence_msm <- function(dat, at) {
   dat$epi$prev.ugc[at] <- dat$epi$i.num.ugc[at] / dat$epi$num[at]
   dat$epi$prev.pgc[at] <- dat$epi$i.num.pgc[at] / dat$epi$num[at]
 
+  # TODO Check these incidence rates. Might want to handle within the modules themselves.
   rgc.anatsite.wks.atrisk <- sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE)
   ugc.anatsite.wks.atrisk <- sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE)
   pgc.anatsite.wks.atrisk <- sum(pGC == 0, dat$epi$incid.pgc[at], na.rm = TRUE)
