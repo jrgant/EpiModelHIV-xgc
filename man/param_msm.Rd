@@ -100,8 +100,7 @@ param_msm(
 \item{netstats}{Target statistics and related network initialization data from
 the standard ARTnet workflow.}
 
-\item{hiv.test.rate}{Mean probability of HIV testing per week for
-black/hispanic/other/white MSM (vector of length 4).}
+\item{hiv.test.rate}{HIV testing rates for age groups: [18, 25), [25, 30), [30, 40), [40, 50), [50, 65]}
 
 \item{hiv.test.late.prob}{Proportion of black/hispanic/other/white MSM who test only
 during AIDS stage infection (vector of length 4).}
