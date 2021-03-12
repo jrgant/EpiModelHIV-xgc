@@ -151,7 +151,7 @@
 #'
 #' @param gc.sympt.prob.test Probability of being tested at symptomatic rectum, urethra, and pharynx.
 #' @param gc.asympt.prob.test Probability of being tested at asymptomatic rectum, urethra, and pharynx.
-#' @param gc.sympt.seek.test.scale Scalar that modifies the baseline probability of seeking an STI test due to having STI symptoms.
+#' @param gc.sympt.seek.test.prob Probability per week of seeking an STI test due to having STI symptoms.
 #' @param cdc.sti.int Regular CDC screening interval (active when stiScreeningProtocol = "cdc" in `control_msm`)
 #' @param cdc.sti.hr.int CDC screening interval for "high-risk" MSM (active when stiScreeningProtocol = "cdc" in `control_msm`)
 #' @param prep.sti.screen.int Interval in weeks between STI screening at PrEP visits.
@@ -258,7 +258,7 @@ param_msm <- function(netstats,
                       gc.tx.int = 1.4,
                       gc.sympt.prob.test = rep(1, 3),
                       gc.asympt.prob.test = c(0.15, 0.15, 0.15),
-                      gc.sympt.seek.test.scale = 5,
+                      gc.sympt.seek.test.prob = 0.72,
 
                       # Condoms and effect on HIV transmission
                       sti.cond.eff = 0.9,

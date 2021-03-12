@@ -109,9 +109,9 @@ stitx_msm <- function(dat, at) {
     # Scale probability of testing in week among those with GC symptoms
     # at any anatomic site.
     if (length(idsGC_sympt) > 0) {
-      prob_sti_test[idsGC_sympt] <-
-        1 / (1 + exp(-log(prob_sti_test[idsGC_sympt])) *
-             dat$param$gc.sympt.seek.test.scale)
+      prob_sti_test[idsGC_sympt] <- dat$param$gc.sympt.seek.test.prob
+      ## 1 / (1 + exp(-log(prob_sti_test[idsGC_sympt])) *
+      ##      dat$param$gc.sympt.seek.test.scale)
     }
 
     # use weekly rate as the probability of testing within that week

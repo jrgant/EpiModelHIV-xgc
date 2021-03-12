@@ -75,7 +75,7 @@ param_msm(
   gc.tx.int = 1.4,
   gc.sympt.prob.test = rep(1, 3),
   gc.asympt.prob.test = c(0.15, 0.15, 0.15),
-  gc.sympt.seek.test.scale = 5,
+  gc.sympt.seek.test.prob = 0.72,
   sti.cond.eff = 0.9,
   sti.cond.fail = rep(0, 4),
   hiv.rgc.rr = 2.78,
@@ -276,7 +276,7 @@ gonorrhea.}
 
 \item{gc.asympt.prob.test}{Probability of being tested at asymptomatic rectum, urethra, and pharynx.}
 
-\item{gc.sympt.seek.test.scale}{Scalar that modifies the baseline probability of seeking an STI test due to having STI symptoms.}
+\item{gc.sympt.seek.test.prob}{Probability per week of seeking an STI test due to having STI symptoms.}
 
 \item{sti.cond.eff}{Relative risk of STI infection from anal sex when a condom is
 used properly (biological efficacy).}
