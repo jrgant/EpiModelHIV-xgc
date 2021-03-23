@@ -1,18 +1,18 @@
-## pacman::p_load(
-##   EpiModelHIV,
-##   data.table,
-##   magrittr,
-##   rms,
-##   stringr,
-##   pscl
-## )
+pacman::p_load(
+  EpiModelHIV,
+  data.table,
+  magrittr,
+  rms,
+  stringr,
+  pscl
+)
 
 suppressMessages(library(EpiModelHIV))
 
-pd_path   <- "../egcmsm_artnet"
-netstats  <- readRDS(paste0(pd_path, "/netstats/netstats.Rds"))
-est       <- readRDS(paste0(pd_path, "/netest/netest.Rds"))
-epistats  <- readRDS(paste0(pd_path, "/netstats/epistats.Rds"))
+an_path   <- "../egcmsm_artnet"
+netstats  <- readRDS(paste0(an_path, "/netstats/netstats.Rds"))
+est       <- readRDS(paste0(an_path, "/netest/netest.Rds"))
+epistats  <- readRDS(paste0(an_path, "/netstats/epistats.Rds"))
 
 param_xgc <- param_msm(
   # external objects
@@ -39,7 +39,7 @@ param_xgc <- param_msm(
   ugc.tx.recov.pr = c(1 - 0.05, 0.5, 1),
   pgc.tx.recov.pr = c(1 - 0.13, 0.5, 1),
   # STI testing
-  gc.sympt.seek.test.scale = 20,
+  gc.sympt.seek.test.prob = 0.71,
   ## NOTE:
   ## Changed the treatment probs to be receiving test conditional on someone's
   ## seeking STI testing. Repeat 3 times, one for each anatomic site.
@@ -68,7 +68,7 @@ param_xgc <- param_msm(
   rim.rate.main = 0, # NEWPARAM: Weekly rate of analingus in main partnerships
   rim.rate.casl = 0, # NEWPARAM: Weekly rate of analingus in casual partnerships
   rim.prob.oo = 0, # NEWPARAM: Prob. of rimming during one-time sexual contact
-  trans.scale = rep(1.0, 4), # ORIGPARAM
+  trans.scale = rep(1.0, 4), # ORIGPARAM (HIV transmission)
   cdc.sti.int = 12, # NEWPARAM: Regular CDC GC screening interval
   cdc.sti.hr.int = 6, # NEWPARAM: High-risk CDC GC screening interval
   sti.cond.eff = 0.8, # TODO: condom efficacy for anal sex (handle with prior)
@@ -79,17 +79,17 @@ param_xgc <- param_msm(
 )
 
 init_xgc <- init_msm(
-  prev.ugc = 0,
-  prev.rgc = 0,
-  prev.pgc = 0
+  prev.rgc = 0.1,
+  prev.ugc = 0.1,
+  prev.pgc = 0.1
 )
 
 control_xgc <- control_msm(
   # Computing options
   simno = 1,
-  nsteps = 30,
-  nsims = 1,
-  ncores = 1,
+  nsteps = 50,
+  nsims = 10,
+  ncores = 4,
   # Epidemic simulation Modules
   initialize.FUN = initialize_msm,
   aging.FUN = aging_msm,
@@ -120,10 +120,10 @@ control_xgc <- control_msm(
  )
 
 # Limit number of lines browser prints
-# options(deparse.max.lines = 5)
+options(deparse.max.lines = 5)
 
 sim <- netsim(est, param_xgc, init_xgc, control_xgc)
-#saveRDS(sim, "output/dummy_run.Rds")
+# saveRDS(sim, "output/dummy_run.Rds")
 
 
 # Testing/Timing ------------------------------------------------------
@@ -154,12 +154,12 @@ for (at in 2:200) {
   verbose.net(dat, "progress", at = at)
 }
 
-nrow(dat$temp$plist)
-table(dat$temp$plist[, "start"])
-table(dat$temp$plist[, "stop"])
-head(dat$temp$plist)
+## nrow(dat$temp$plist)
+## table(dat$temp$plist[, "start"])
+## table(dat$temp$plist[, "stop"])
+## head(dat$temp$plist)
 
-plist <- as.data.frame(dat$temp$plist)
-pmain <- filter(plist, ptype == 2)
-table(pmain$start)
-hist(pmain$start)
+## plist <- as.data.frame(dat$temp$plist)
+## pmain <- filter(plist, ptype == 2)
+## table(pmain$start)
+## hist(pmain$start)
