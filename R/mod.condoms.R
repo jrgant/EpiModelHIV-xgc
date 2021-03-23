@@ -10,8 +10,7 @@
 #' For each act on the discordant edgelist, condom use is stochastically simulated
 #' based on the partnership type and racial combination of the dyad. Other
 #' modifiers for the probability of condom use in that pair are diagnosis of
-#' disease, and full or partial HIV viral suppression
-#' given HIV anti-retroviral therapy.
+#' disease, and full or partial HIV viral suppression given HIV anti-retroviral therapy.
 #'
 #' @return
 #' Updates the discordant edgelist with a \code{uai} variable indicating whether
@@ -44,11 +43,9 @@ condoms_msm <- function(dat, at) {
   # Temp edgelist
   el <- dat$temp$el
 
-
   ## Main/casual partnerships ##
   mc.parts <- which(el[, "ptype"] != 3)
   el.mc <- el[mc.parts, ]
-
 
   race.combo <- data.table(
     r1 = race[el.mc[, 1]],
@@ -130,7 +127,12 @@ condoms_msm <- function(dat, at) {
   ## Bind el together
   el <- rbind(el.mc, el.oo)
 
-  # anal sex acts
+  # Anal sex acts
+  ## NOTE:
+  ##   The repeated sequences below unfurl the act list such that
+  ##   edges with more than one anal act are granted the corresponding
+  ##   number of rows in the anal act list. In additions, rows where no
+  ##   anal act was indicated are dropped.
   ai.vec <- el[, "ai"]
   pid <- rep(seq_len(length(ai.vec)), ai.vec)
   p1 <- rep(el[, "p1"], ai.vec)
@@ -159,7 +161,6 @@ condoms_msm <- function(dat, at) {
   dat$temp$ol <- ol
 
   # Kissing list construction
-
   pid <- p1 <- p2 <- ptype <- NULL
   kiss.vec <- el[, "kiss"]
   pid <- rep(seq_len(length(kiss.vec)), kiss.vec)
@@ -170,12 +171,9 @@ condoms_msm <- function(dat, at) {
   kiss <- cbind(p1, p2, ptype, pid)
   dat$temp$kiss <- kiss
 
-
   # Rimming list construction
   pid <- p1 <- p2 <- ptype <- NULL
-
   rim.vec <- el[, "ri"]
-
   pid <- rep(seq_len(length(rim.vec)), rim.vec)
   p1 <- rep(el[, "p1"], rim.vec)
   p2 <- rep(el[, "p2"], rim.vec)

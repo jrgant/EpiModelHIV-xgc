@@ -31,8 +31,11 @@ control_msm(
   verbose.FUN = verbose.net,
   save.nwstats = FALSE,
   save.clin.hist = FALSE,
+  save.transmat = FALSE,
+  skip.check = FALSE,
   truncate.plist = TRUE,
   verbose = TRUE,
+  verbose.int = 1,
   tergmLite = TRUE,
   debug_stitx = FALSE,
   ...
@@ -104,11 +107,15 @@ external text files.}
 
 \item{save.clin.hist}{Save individual-level clinical history matrices.}
 
+\item{save.transmat}{Save complete transmission matrix. See help for \code{EpiModel::control.net}.}
+
 \item{truncate.plist}{Truncate the cumulative partnership list to only include
 active partnerships.}
 
 \item{verbose}{If \code{TRUE}, print out simulation progress to the console
 if in interactive mode or text files if in batch mode.}
+
+\item{verbose.int}{Time step interval for printing model progress. See help for \code{EpiModel::control.net}. Defaults to 1.}
 
 \item{tergmLite}{Boolean (default = TRUE). Set to avoid error thrown by saveout.net().}
 
