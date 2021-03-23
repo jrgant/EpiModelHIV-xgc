@@ -366,10 +366,12 @@ init_msm <- function(prev.ugc = 0.005,
 #' @param save.nwstats Calculate and save network statistics as defined in the
 #'        \code{simnet} modules.
 #' @param save.clin.hist Save individual-level clinical history matrices.
+#' @param save.transmat Save complete transmission matrix. See help for \code{EpiModel::control.net}.
 #' @param truncate.plist Truncate the cumulative partnership list to only include
 #'        active partnerships.
 #' @param verbose If \code{TRUE}, print out simulation progress to the console
 #'        if in interactive mode or text files if in batch mode.
+#' @param verbose.int Time step interval for printing model progress. See help for \code{EpiModel::control.net}. Defaults to 1.
 #' @param tergmLite Boolean (default = TRUE). Set to avoid error thrown by saveout.net().
 #' @param debug_stitx Boolean (default = FALSE). Print interim output from `stitrans_msm_rand()` for debugging purposes.
 #' @param ... Additional arguments passed to the function.
@@ -407,8 +409,11 @@ control_msm <- function(simno = 1,
                         verbose.FUN = verbose.net,
                         save.nwstats = FALSE,
                         save.clin.hist = FALSE,
+                        save.transmat = FALSE,
+                        skip.check = FALSE,
                         truncate.plist = TRUE,
                         verbose = TRUE,
+                        verbose.int = 1,
                         tergmLite = TRUE,
                         debug_stitx = FALSE,
                         ...) {
@@ -417,9 +422,6 @@ control_msm <- function(simno = 1,
   dot.args <- list(...)
   p <- get_args(formal.args, dot.args)
 
-  p$skip.check <- TRUE
-  p$save.transmat <- FALSE
-
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
   bi.mods <- bi.mods[which(sapply(bi.mods, function(x) !is.null(eval(parse(text = x))),
                                   USE.NAMES = FALSE) == TRUE)]
@@ -427,9 +429,6 @@ control_msm <- function(simno = 1,
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
   p$save.other <- c("attr", "temp", "el", "p")
-
-  p$save.network <- FALSE
-  p$verbose.int <- 1
 
   class(p) <- "control.net"
   return(p)
