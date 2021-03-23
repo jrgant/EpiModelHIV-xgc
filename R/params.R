@@ -92,8 +92,8 @@
 #'
 #' @param epistats GLMs for epidemiological parameter from the standard ARTnet workflow.
 #' @param acts.aids.vl Viral load level after which sexual act rate goes to zero.
-#' @param ai.acts.scale Scalar for main/casual anal sex act rate for model calibration.
-#' @param oi.acts.scale Scalar for main/casual oral sex act rate for model calibration.
+#' @param ai.acts.scale.mc Scalar for main/casual anal sex act rates, for model calibration.
+#' @param oi.acts.scale.mc Scalar for main/casual oral sex act rates, for model calibration.
 #' @param kiss.rate.main Weekly rate of tongue kissing in main partnerships
 #' @param kiss.rate.casl Weekly rate of tongue kissing in casual partnerships
 #' @param kiss.prob.oo Probability of tongue kissing during a one-time sexual contact
@@ -224,8 +224,8 @@ param_msm <- function(netstats,
                       # Behavioral (sex acts, condoms)
                       epistats,
                       acts.aids.vl = 5.75,
-                      ai.acts.scale = 1,
-                      oi.acts.scale = 1,
+                      ai.acts.scale.mc = 1,
+                      oi.acts.scale.mc = 1,
                       kiss.rate.main = 0,
                       kiss.rate.casl = 0,
                       kiss.prob.oo = 0,

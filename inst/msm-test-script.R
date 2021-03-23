@@ -60,9 +60,9 @@ param_xgc <- param_msm(
   tx.reinit.full.rr = rep(1.0, 4), # ORIGPARAM
   tx.reinit.dur.rr = rep(1.0, 4),  # ORIGPARAM
   # scaling parameters
-  ai.acts.scale = 1,
-  oi.acts.scale = 1,
-  kiss.rate.main = 3, # NEWPARAM: Kissing prob. during anal/oral sex, main
+  ai.acts.scale.mc = 0.1,
+  oi.acts.scale.mc = 0,
+  kiss.rate.main = 0, # NEWPARAM: Kissing prob. during anal/oral sex, main
   kiss.rate.casl = 0, # NEWPARAM: Kissing prob. during anal/oral sex, casual
   kiss.prob.oo = 0, # NEWPARAM: Kissing prob. during anal/oral sex, one-time
   rim.rate.main = 0, # NEWPARAM: Weekly rate of analingus in main partnerships

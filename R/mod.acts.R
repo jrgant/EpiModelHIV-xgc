@@ -61,8 +61,8 @@ acts_msm <- function(dat, at) {
 
   ## Other parameters
   acts.aids.vl <- dat$param$acts.aids.vl
-  ai.acts.scale <- dat$param$ai.acts.scale
-  oi.acts.scale <- dat$param$oi.acts.scale
+  ai.acts.scale.mc <- dat$param$ai.acts.scale.mc
+  oi.acts.scale.mc <- dat$param$oi.acts.scale.mc
 
   ## Construct edgelist
   el <- rbind(dat$el[[1]], dat$el[[2]], dat$el[[3]])
@@ -154,7 +154,7 @@ acts_msm <- function(dat, at) {
 
   ai.acts.sim <- MASS::rnegbin(ai.acts, theta = ai.acts.mc.theta)
   ai.rates <- ai.acts.sim / 52
-  ai <- round(ai.rates * ai.acts.scale)
+  ai <- round(ai.rates * ai.acts.scale.mc)
 
   ## Simulate oral acts in main/casual partnerships.
   pred_oimc <- data.table(
@@ -175,7 +175,7 @@ acts_msm <- function(dat, at) {
 
   oi.acts.sim <- MASS::rnegbin(oi.acts, theta = oi.acts.mc.theta)
   oi.rates <- oi.acts.sim / 52
-  oi <- round(oi.rates * oi.acts.scale)
+  oi <- round(oi.rates * oi.acts.scale.mc)
 
   el.mc <- cbind(el.mc, durations, ai, oi)
 

@@ -47,8 +47,8 @@ param_msm(
   circ.prob = c(0.798, 0.428, 0.6, 0.928),
   epistats,
   acts.aids.vl = 5.75,
-  ai.acts.scale = 1,
-  oi.acts.scale = 1,
+  ai.acts.scale.mc = 1,
+  oi.acts.scale.mc = 1,
   kiss.rate.main = 0,
   kiss.rate.casl = 0,
   kiss.prob.oo = 0,
@@ -219,9 +219,9 @@ will be circumcised (vector of length 4).}
 
 \item{acts.aids.vl}{Viral load level after which sexual act rate goes to zero.}
 
-\item{ai.acts.scale}{Scalar for main/casual anal sex act rate for model calibration.}
+\item{ai.acts.scale.mc}{Scalar for main/casual anal sex act rates, for model calibration.}
 
-\item{oi.acts.scale}{Scalar for main/casual oral sex act rate for model calibration.}
+\item{oi.acts.scale.mc}{Scalar for main/casual oral sex act rates, for model calibration.}
 
 \item{kiss.rate.main}{Weekly rate of tongue kissing in main partnerships}
 
