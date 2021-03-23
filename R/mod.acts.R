@@ -130,8 +130,8 @@ acts_msm <- function(dat, at) {
 
   durations <- (at - plist[, "start"])[matches]
 
-  ## any.prep <- rep(0, nrow(el.mc))
-  ## any.prep[which(prepStat[el.mc[, 1]] == 1 | prepStat[el.mc[, 2]] == 1)] <- 1
+  any.prep <- rep(0, nrow(el.mc))
+  any.prep[which(prepStat[el.mc[, 1]] == 1 | prepStat[el.mc[, 2]] == 1)] <- 1
 
 
   ## Simulate anal acts in main/casual partnerships.
