@@ -34,7 +34,7 @@ stitrans_msm_rand <- function(dat, at) {
   ugc.sympt.prob <- dat$param$ugc.sympt.prob
   pgc.sympt.prob <- dat$param$pgc.sympt.prob
 
-  # Relative risk of infection given condom use during act
+  # Condom effectiveness given condom use during act (1 - RR)
   sti.cond.eff <- dat$param$sti.cond.eff
   sti.cond.fail <- dat$param$sti.cond.fail
 
