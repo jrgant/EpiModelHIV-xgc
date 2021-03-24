@@ -77,11 +77,22 @@ condoms_msm <- function(dat, at) {
     any.prep = as.numeric((prepStat[el.mc[, 1]] + prepStat[el.mc[, 2]]) > 0)
   )
 
-  cond.prob <- unname(
-    predict(cond.mc.mod, newdata = pred_df, type = "response")
-  )
+  if (dim(el.mc)[1] > 0) {
 
-  el.mc <- cbind(el.mc, cond.prob)
+    cond.prob <- unname(
+      predict(
+        cond.mc.mod,
+        newdata = pred_df,
+        type = "response"
+      )
+    )
+
+    el.mc <- cbind(el.mc, cond.prob)
+  } else {
+    mc.names <- colnames(el.mc)
+    el.mc <- array(dim = c(0, ncol(el.mc) + 1))
+    colnames(el.mc) <- c(mc.names, "cond.prob")
+  }
 
   ## Clean up
   race.combo <- hiv.concord <- pred_df <- diag.status.i <- diag.status.j <- NULL
@@ -118,11 +129,12 @@ condoms_msm <- function(dat, at) {
     any.prep = as.numeric((prepStat[el.oo[, 1]] + prepStat[el.oo[, 2]]) > 0)
   )[, abs_sqrt_agediff := abs(sqrt(age.i) - sqrt(age.j))]
 
-  cond.prob.oo <- unname(
-    predict(cond.oo.mod, newdata = pred_df, type = "response")
-  )
-
-  el.oo <- cbind(el.oo, cond.prob.oo)
+  if (dim(el.oo)[1] > 0) {
+    cond.prob.oo <- unname(
+      predict(cond.oo.mod, newdata = pred_df, type = "response")
+    )
+    el.oo <- cbind(el.oo, cond.prob.oo)
+  }
 
   ## Bind el together
   el <- rbind(el.mc, el.oo)
