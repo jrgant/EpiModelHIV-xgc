@@ -582,10 +582,9 @@ prevalence_msm <- function(dat, at) {
   dat$epi$prev.ugc[at] <- dat$epi$i.num.ugc[at] / dat$epi$num[at]
   dat$epi$prev.pgc[at] <- dat$epi$i.num.pgc[at] / dat$epi$num[at]
 
-  # TODO Check these incidence rates. Might want to handle within the modules themselves.
-  rgc.anatsite.wks.atrisk <- sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE)
-  ugc.anatsite.wks.atrisk <- sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE)
-  pgc.anatsite.wks.atrisk <- sum(pGC == 0, dat$epi$incid.pgc[at], na.rm = TRUE)
+  rgc.anatsite.wks.atrisk <- sum(rGC == 0, dat$epi$incid.rgc[at], na.rm = TRUE) - dat$epi$recov.rgc[at]
+  ugc.anatsite.wks.atrisk <- sum(uGC == 0, dat$epi$incid.ugc[at], na.rm = TRUE) - dat$epi$recov.ugc[at]
+  pgc.anatsite.wks.atrisk <- sum(pGC == 0, dat$epi$incid.pgc[at], na.rm = TRUE) - dat$epi$recov.pgc[at]
 
   dat$epi$ir100.rgc[at] <-
     dat$epi$incid.rgc[at] / rgc.anatsite.wks.atrisk * 5200
