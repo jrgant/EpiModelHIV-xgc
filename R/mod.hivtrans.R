@@ -64,20 +64,44 @@ hivtrans_msm <- function(dat, at) {
   hiv.rgc.rr <- dat$param$hiv.rgc.rr
   hiv.dual.rr <- dat$param$hiv.dual.rr
 
-
   # Data
   al <- dat$temp$al
-  dal <- al[which(status[al[, 1]] == 1 & status[al[, 2]] == 0), ]
-  dal <- dal[sample(1:nrow(dal)), ]
-  ncols <- dim(dal)[2]
+
+
+  ## NOTE: In the following section, always force dal into a matrix to avoid
+  ##       breaking function when HIV transmission is very low (0 or 1 at-
+  ##       risk acts). Possibly the original source of some errors during
+  ##       calibration, where extreme parameter sets may have resulted in
+  ##       low/no HIV.
+  dal <- matrix(
+    al[which(status[al[, 1]] == 1 & status[al[, 2]] == 0), ],
+    ncol = ncol(al),
+    dimnames = list(NULL, colnames(al))
+  )
 
   if (nrow(dal) == 0) {
     return(dat)
   }
 
+  if (nrow(dal) == 1) {
+    dal <- matrix(dal, nrow = 1, dimnames = list(NULL, colnames(dal)))
+  } else {
+    dal <- dal[sample(1:nrow(dal)), ]
+  }
+
+  ncols <- dim(dal)[2]
+
   ## Reorder by role: ins on the left, rec on the right
   disc.ip <- dal[dal[, "ins"] == 1, ]
+  if (is.vector(disc.ip)) {
+    disc.ip <- matrix(disc.ip, nrow = 1, dimnames = list(NULL, names(disc.ip)))
+  }
+
   disc.rp <- dal[dal[, "ins"] == 0, c(2:1, 3:ncols)]
+  if (is.vector(disc.rp)) {
+    disc.rp <- matrix(disc.rp, nrow = 1, dimnames = list(NULL, names(disc.rp)))
+  }
+
   colnames(disc.ip)[1:2] <- colnames(disc.rp)[1:2] <- c("ins", "rec")
 
 
