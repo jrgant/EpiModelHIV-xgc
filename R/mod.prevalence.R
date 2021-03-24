@@ -161,7 +161,6 @@ prevalence_msm <- function(dat, at) {
       sum2(race == r & age.grp  == a)
   })
 
-  # TODO See if this is calculated in the HIV transmission module. Incidence here is not calculated among "at-risk" person-years.
   ### HIV Incidence rate by 100 person-years at risk
   dat$epi$ir100[at] <-
     (dat$epi$incid[at] /
