@@ -12,13 +12,13 @@ Description: EpiModelHIV provides extensions to our general EpiModel package to 
 License: GPL-3
 Depends:
     R (>= 3.5.0),
+    magrittr (>= 1.5),
     EpiModel (>= 1.8.0),
     EpiModelHPC (>= 2.0.0),
     ergm (>= 3.9.4),
     tergm (>= 3.5.2),
     tergmLite (>= 1.2.0),
     data.table (>= 1.13.0),
-    magrittr (>= 1.5),
     pscl (>= 1.5.5)
 Imports:
     bindata,

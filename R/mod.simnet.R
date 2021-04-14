@@ -92,7 +92,10 @@ update_plist <- function(dat, at, ptype) {
 
   # look up new formations, row bind them
   news_uid_start <- news_uid[news_uid[, 3] == 1, , drop = FALSE]
-  plist1 <- rbind(plist1, cbind(news_uid_start[, 1:2, drop = FALSE], ptype, at, NA))
+  plist1 <- rbind(
+    plist1,
+    cbind(news_uid_start[, 1:2, drop = FALSE], ptype, at, NA)
+  )
 
   return(plist1)
 }
