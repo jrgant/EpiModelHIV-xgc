@@ -577,7 +577,7 @@ prevalence_msm <- function(dat, at) {
   dat$epi$i.num.ugc[at] <- sum(uGC == 1, na.rm = TRUE)
   dat$epi$i.num.pgc[at] <- sum(pGC == 1, na.rm = TRUE)
 
-  dat$epi$prev.gc[at] <- dat$epi$i.num[at] / dat$epi$num[at]
+  dat$epi$prev.gc[at] <- dat$epi$i.num.gc[at] / dat$epi$num[at]
   dat$epi$prev.rgc[at] <- dat$epi$i.num.rgc[at] / dat$epi$num[at]
   dat$epi$prev.ugc[at] <- dat$epi$i.num.ugc[at] / dat$epi$num[at]
   dat$epi$prev.pgc[at] <- dat$epi$i.num.pgc[at] / dat$epi$num[at]
