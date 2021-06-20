@@ -83,10 +83,10 @@ param_msm(
   hiv.dual.rr = 0.2,
   riskh.start = 2,
   prep.start = 52,
-  prep.start.prob = 0.2,
-  prep.adhr.dist = c(0.089, 0.127, 0.784),
+  prep.start.prob = rep(0.00577, 4),
+  prep.adhr.dist = c(0.029, 0.346, 0.625),
   prep.adhr.hr = c(0.69, 0.19, 0.01),
-  prep.discont.rate = 1 - (2^(-1/(224.4237/7))),
+  prep.discont.rate = c(0.00576, 0.00503, 0.00379, 0.00356),
   prep.tst.int = 90/7,
   prep.risk.int = 182/7,
   prep.sti.screen.int = 182/7,
@@ -295,7 +295,7 @@ given dual infection with both gonorrhea and chlamydia.}
 
 \item{prep.start}{Time step at which the PrEP intervention should start.}
 
-\item{prep.start.prob}{Probability of starting PrEP given current indications.}
+\item{prep.start.prob}{Probability of starting PrEP given current indications. Vector of 4 representing Black, Hispanic, Other, White.}
 
 \item{prep.adhr.dist}{Proportion of men who are low, medium, and high
 adherent to PrEP.}
@@ -303,7 +303,7 @@ adherent to PrEP.}
 \item{prep.adhr.hr}{The hazard ratio for infection per act associated with each
 level of adherence (from Grant).}
 
-\item{prep.discont.rate}{Rate of random discontinuation from PrEP.}
+\item{prep.discont.rate}{Rate of random discontinuation from PrEP. Vector of 4 representing discontinuation rates for Black, Hispanic, Other, and White MSM.}
 
 \item{prep.tst.int}{Testing interval for those who are actively on PrEP. This
 overrides the mean testing interval parameters.}

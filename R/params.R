@@ -105,7 +105,7 @@
 #'
 #' @param riskh.start Time step at which behavioral risk history assessment occurs.
 #' @param prep.start Time step at which the PrEP intervention should start.
-#' @param prep.start.prob Probability of starting PrEP given current indications.
+#' @param prep.start.prob Probability of starting PrEP given current indications. Vector of 4 representing Black, Hispanic, Other, White.
 #' @param prep.adhr.dist Proportion of men who are low, medium, and high
 #'        adherent to PrEP.
 #' @param prep.adhr.hr The hazard ratio for infection per act associated with each
@@ -116,7 +116,7 @@
 #' @param prep.require.lnt If \code{TRUE}, only start on PrEP if current time step is
 #'        equal to the last negative test.
 #'
-#' @param prep.discont.rate Rate of random discontinuation from PrEP.
+#' @param prep.discont.rate Rate of random discontinuation from PrEP. Vector of 4 representing discontinuation rates for Black, Hispanic, Other, and White MSM.
 #'
 #' @param prep.tst.int Testing interval for those who are actively on PrEP. This
 #'        overrides the mean testing interval parameters.
@@ -270,10 +270,10 @@ param_msm <- function(netstats,
                       # PrEP
                       riskh.start = 2,
                       prep.start = 52,
-                      prep.start.prob = 0.2,
-                      prep.adhr.dist = c(0.089, 0.127, 0.784),
+                      prep.start.prob = rep(1 - (1 - 0.26)^0.5, 4),
+                      prep.adhr.dist = c(0.029, 0.346, 0.625),
                       prep.adhr.hr = c(0.69, 0.19, 0.01),
-                      prep.discont.rate = 1 - (2^(-1 / (224.4237 / 7))),
+                      prep.discont.rate = c(0.13870, 0.12113, 0.09131, 0.08571),
                       prep.tst.int = 90 / 7,
                       prep.risk.int = 182 / 7,
                       prep.sti.screen.int = 182 / 7,

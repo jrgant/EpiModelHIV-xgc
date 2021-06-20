@@ -32,6 +32,7 @@ prep_msm <- function(dat, at) {
   status <- dat$attr$status
   diag.status <- dat$attr$diag.status
   lnt <- dat$attr$last.neg.test
+  race <- dat$attr$race
 
   # PrEP Attributes
   prepElig <- dat$attr$prepElig
@@ -90,17 +91,18 @@ prep_msm <- function(dat, at) {
     prepLastRisk[idsRiskAssess] <- at
     idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
   } else if (prep.risk.reassess.method == "year") {
-    idsRiskAssess <- which(active == 1 &
-                           prepStat == 1 &
-                           lnt == at &
-                           (at - prepLastRisk) >= 52)
+    idsRiskAssess <- which(
+      active == 1 & prepStat == 1 & lnt == at & (at - prepLastRisk) >= 52
+    )
     prepLastRisk[idsRiskAssess] <- at
     idsStpInd <- intersect(idsNoIndic, idsRiskAssess)
   }
 
   # Random discontinuation
   idsEligStpRand <- which(active == 1 & prepStat == 1)
-  vecStpRand <- rbinom(length(idsEligStpRand), 1, prep.discont.rate)
+  vecStpRand <- rbinom(
+    length(idsEligStpRand), 1, prep.discont.rate[race[idsEligStpRand]]
+  )
   idsStpRand <- idsEligStpRand[which(vecStpRand == 1)]
 
   # Diagnosis
@@ -133,7 +135,9 @@ prep_msm <- function(dat, at) {
   idsEligStart <- intersect(idsIndic, idsEligStart)
   prepElig[idsEligStart] <- 1
 
-  vecStart <- rbinom(length(idsEligStart), 1, prep.start.prob)
+  vecStart <- rbinom(
+    length(idsEligStart), 1, prep.start.prob[race[idsEligStart]]
+  )
   idsStart <- idsEligStart[which(vecStart == 1)]
 
   # Set attributes for starters
