@@ -60,7 +60,6 @@ departure_msm <- function(dat, at) {
       dat$el[[i]] <- tergmLite::delete_vertices(dat$el[[i]], idsDepAll)
     }
 
-
     dat$attr <- deleteAttr(dat$attr, idsDepAll)
 
     if (unique(sapply(dat$attr, length)) != attributes(dat$el[[1]])$n) {
@@ -78,8 +77,10 @@ departure_msm <- function(dat, at) {
   }
 
   ## Summary Output
-  ## FIXME should this be using idsDep where not in idsDepAIDS? Check and update
-  ##       techdocs if needed.
+  ## NOTE dep.gen may include agents with AIDS who also drew for an
+  ##      AIDS-related death. Conservatively (that is, assuming AIDS
+  ##      prevalence is the HIV prevalence), this would be expected to
+  ##      happen once per 2 million time steps.
   dat$epi$dep.gen[at] <- length(idsDep)
   dat$epi$dep.AIDS[at] <- length(idsDepAIDS)
   dat$epi$dep.HIV[at] <- length(depHIV)
