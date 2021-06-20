@@ -70,13 +70,13 @@ hivtx_msm <- function(dat, at) {
   tx.halt <- c(tx.halt.part, tx.halt.full, tx.halt.dur)
 
   ## Restarting
-  tx.reinit.part.elig <- which(tx.status == 0 & tt.traj == 1 &
-                               cuml.time.on.tx > 0)
+  tx.reinit.part.elig <-
+    which(tx.status == 0 & tt.traj == 1 & cuml.time.on.tx > 0)
   rates.part <- tx.reinit.part.prob[race[tx.reinit.part.elig]]
   tx.reinit.part <- tx.reinit.part.elig[rbinom(length(tx.reinit.part.elig), 1, rates.part) == 1]
 
-  tx.reinit.full.elig <- which(tx.status == 0 & tt.traj == 2 &
-                               cuml.time.on.tx > 0)
+  tx.reinit.full.elig <-
+    which(tx.status == 0 & tt.traj == 2 & cuml.time.on.tx > 0)
   rates.full <- tx.reinit.part.prob[race[tx.reinit.full.elig]] * tx.reinit.full.rr[race[tx.reinit.full.elig]]
   tx.reinit.full <- tx.reinit.full.elig[rbinom(length(tx.reinit.full.elig), 1, rates.full) == 1]
 
