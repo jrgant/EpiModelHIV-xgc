@@ -155,8 +155,15 @@ prep_msm <- function(dat, at) {
 
   ## Output --------------------------------------------------------------------
 
+  # Number eligible to start in timestep
+  dat$epi$prep.elig.start[at] <- length(idsEligStart)
+
   # Random discontinuation
+  dat$epi$prep.elig.stop.rand[at] <- length(idsEligStpRand)
   dat$epi$prep.rand.stop[at] <- length(idsStpRand)
+
+  # Discontinuation due to lapsed indication
+  dat$epi$prep.elig.stop.ind[at] <- length(idsStpInd)
 
   # Attributes
   dat$attr$prepElig <- prepElig
