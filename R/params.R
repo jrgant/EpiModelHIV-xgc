@@ -166,7 +166,9 @@
 #' @param hiv.dual.rr Additive proportional risk, from 0 to 1, for HIV infection
 #'        given dual infection with both gonorrhea and chlamydia.
 #'
-#' @param ... Additional arguments passed to the function. #' @return A list object of class \code{param_msm}, which can be passed to EpiModel function \code{netsim}.
+#' @param ... Additional arguments passed to the function.
+
+#' @return A list object of class \code{param_msm}, which can be passed to EpiModel function \code{netsim}.
 #'
 #' @keywords msm
 #'

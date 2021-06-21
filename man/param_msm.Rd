@@ -323,7 +323,7 @@ of active PrEP users, either \code{"none"} for no reassessment,
 \item{prep.require.lnt}{If \code{TRUE}, only start on PrEP if current time step is
 equal to the last negative test.}
 
-\item{...}{Additional arguments passed to the function. #' @return A list object of class \code{param_msm}, which can be passed to EpiModel function \code{netsim}.}
+\item{...}{Additional arguments passed to the function.}
 
 \item{rgc.tprob}{Probability of rectal gonorrhea infection per act.}
 
@@ -334,6 +334,9 @@ equal to the last negative test.}
 \item{cdc.sti.int}{Regular CDC screening interval (active when stiScreeningProtocol = "cdc" in `control_msm`)}
 
 \item{cdc.sti.hr.int}{CDC screening interval for "high-risk" MSM (active when stiScreeningProtocol = "cdc" in `control_msm`)}
+}
+\value{
+A list object of class \code{param_msm}, which can be passed to EpiModel function \code{netsim}.
 }
 \description{
 Sets the epidemic parameters for stochastic network models
