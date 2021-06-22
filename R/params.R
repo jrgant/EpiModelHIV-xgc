@@ -281,7 +281,8 @@ param_msm <- function(netstats,
                       prep.sti.screen.int = 182 / 7,
                       prep.sti.prob.tx = 1,
                       prep.risk.reassess.method = "year",
-                      prep.require.lnt = TRUE, ...) {
+                      prep.require.lnt = TRUE,
+                      ...) {
 
   p <- get_args(formal.args = formals(sys.function()),
                 dot.args = list(...))
