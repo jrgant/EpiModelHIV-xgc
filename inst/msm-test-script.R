@@ -1,7 +1,6 @@
 pacman::p_load(
-  EpiModelHIV,
-  data.table,
   magrittr,
+  data.table,
   rms,
   stringr,
   pscl
@@ -12,6 +11,7 @@ suppressMessages(library(EpiModelHIV))
 an_path   <- "../egcmsm_artnet"
 netstats  <- readRDS(paste0(an_path, "/netstats/netstats.Rds"))
 est       <- readRDS(paste0(an_path, "/netest/netest.Rds"))
+class(est) <- "netest"
 epistats  <- readRDS(paste0(an_path, "/netstats/epistats.Rds"))
 
 param_xgc <- param_msm(
@@ -47,20 +47,20 @@ param_xgc <- param_msm(
   ## probability of receiving an STI test at a given anatomic site.
   gc.sympt.prob.test = rep(1, 3),
   ## NOTE: Order of probs: rectal, urethral, pharyngeal
-  gc.asympt.prob.test = rep(0.2, 3),  # TODO: calibrate treatment probs
+  gc.asympt.prob.test = rep(0.2, 3),
   # HIV treatment parameters
-  tt.part.supp = rep(0.2, 4), # ORIGPARAM, partial VLS post ART start
-  tt.full.supp = rep(0.4, 4), # ORIGPARAM, full VLS w/ post ART start
-  tt.dur.supp = rep(0.4, 4),  # ORIGPARAM, durable VLS post ART start
+  tt.part.supp = rep(0, 4), # ORIGPARAM, partial VLS post ART start
+  tt.full.supp = rep(1, 4), # ORIGPARAM, full VLS w/ post ART start
+  tt.dur.supp = rep(0, 4),  # ORIGPARAM, durable VLS post ART start
   tx.init.prob = c(0.092, 0.092, 0.127, 0.127), # @ORIG
   tx.halt.part.prob = c(0.0102, 0.0102, 0.0071, 0.0071), # @ORIG
-  tx.halt.full.rr = rep(0.9, 4), # ORIGPARAM
-  tx.halt.dur.rr = rep(0.5, 4),  # ORIGPARAM
+  tx.halt.full.rr = rep(1, 4), # ORIGPARAM
+  tx.halt.dur.rr = rep(1, 4),  # ORIGPARAM
   tx.reinit.part.prob = c(0.00066, 0.00066, 0.00291, 0.00291), # @ORIG
   tx.reinit.full.rr = rep(1.0, 4), # ORIGPARAM
   tx.reinit.dur.rr = rep(1.0, 4),  # ORIGPARAM
   # scaling parameters
-  ai.acts.scale.mc = 0.1,
+  ai.acts.scale.mc = 0,
   oi.acts.scale.mc = 0,
   kiss.rate.main = 0, # NEWPARAM: Kissing prob. during anal/oral sex, main
   kiss.rate.casl = 0, # NEWPARAM: Kissing prob. during anal/oral sex, casual
@@ -68,28 +68,31 @@ param_xgc <- param_msm(
   rim.rate.main = 0, # NEWPARAM: Weekly rate of analingus in main partnerships
   rim.rate.casl = 0, # NEWPARAM: Weekly rate of analingus in casual partnerships
   rim.prob.oo = 0, # NEWPARAM: Prob. of rimming during one-time sexual contact
-  trans.scale = rep(1.0, 4), # ORIGPARAM (HIV transmission)
+  trans.scale = rep(0, 4), # ORIGPARAM (HIV transmission)
   cdc.sti.int = 12, # NEWPARAM: Regular CDC GC screening interval
   cdc.sti.hr.int = 6, # NEWPARAM: High-risk CDC GC screening interval
-  sti.cond.eff = 0.8, # TODO: condom efficacy for anal sex (handle with prior)
+  sti.cond.eff = 0.8,
   cond.eff = 0.95, # ORIGPARAM, condom eff anal HIV transmission
-  cond.fail = rep(0.25, 4),
+  cond.fail = rep(0, 4),
   # NOTE: Change to 0 to turn off (reflect uncertainty in cond. effect)
-  sti.cond.fail = rep(0.2, 4)
+  sti.cond.fail = rep(0, 4),
+  prep.require.lnt = TRUE,
+  prep.start.prob = rep(0.6, 4),
+  prep.discont.rate = 0.55 / 0.26 * 0.0096 * 0.26 / c(0.262, 0.300, 0.398, 0.424)
 )
 
 init_xgc <- init_msm(
-  prev.rgc = 0.1,
-  prev.ugc = 0.1,
-  prev.pgc = 0.1
+  prev.rgc = 0.05,
+  prev.ugc = 0.05,
+  prev.pgc = 0.05
 )
 
 control_xgc <- control_msm(
   # Computing options
   simno = 1,
-  nsteps = 50,
-  nsims = 10,
-  ncores = 4,
+  nsteps = 52 * 5,
+  nsims = 1,
+  ncores = 1,
   # Epidemic simulation Modules
   initialize.FUN = initialize_msm,
   aging.FUN = aging_msm,
@@ -108,8 +111,13 @@ control_xgc <- control_msm(
   stitrans.FUN = stitrans_msm_rand,
   stirecov.FUN = stirecov_msm,
   stitx.FUN = stitx_msm,
+  save.transmat = FALSE,
+  resimulate.network = TRUE,
   prev.FUN = prevalence_msm,
   verbose.FUN = verbose.net,
+  verbose.int = 1,
+  skip.check = TRUE,
+  save.network = FALSE,
   # Epidemic simulation options
   # NOTE Determines if kissing considered exposure for CDC testing guidelines
   cdcExposureSite_Kissing = FALSE,
@@ -122,18 +130,18 @@ control_xgc <- control_msm(
 # Limit number of lines browser prints
 options(deparse.max.lines = 5)
 
+set.seed(44)
 sim <- netsim(est, param_xgc, init_xgc, control_xgc)
 # saveRDS(sim, "output/dummy_run.Rds")
 
 
 # Testing/Timing ------------------------------------------------------
-
 m <- microbenchmark::microbenchmark(hivvl_msm(dat, at))
 print(m, unit = "ms")
 
 dat <- initialize_msm(est, param_xgc, init_xgc, control_xgc, s = 1)
 
-for (at in 2:200) {
+for (at in 2:2) {
   dat <- aging_msm(dat, at)
   dat <- departure_msm(dat, at)
   dat <- arrival_msm(dat, at)
