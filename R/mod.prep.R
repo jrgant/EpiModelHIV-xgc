@@ -160,10 +160,10 @@ prep_msm <- function(dat, at) {
 
   # Random discontinuation
   dat$epi$prep.elig.stop.rand[at] <- length(idsEligStpRand)
-  dat$epi$prep.rand.stop[at] <- length(idsStpRand)
+  dat$epi$prep.stop.rand[at] <- length(idsStpRand)
 
   # Discontinuation due to lapsed indication
-  dat$epi$prep.elig.stop.ind[at] <- length(idsStpInd)
+  dat$epi$prep.stop.ind[at] <- length(idsStpInd)
 
   # Attributes
   dat$attr$prepElig <- prepElig
