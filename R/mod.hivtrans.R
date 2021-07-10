@@ -48,6 +48,7 @@ hivtrans_msm <- function(dat, at) {
   rGC <- dat$attr$rGC
   uGC <- dat$attr$uGC
   race <- dat$attr$race
+  age.grp <- dat$attr$age.grp
 
   # Parameters
   URAI.prob <- dat$param$URAI.prob
@@ -240,10 +241,19 @@ hivtrans_msm <- function(dat, at) {
 
   # Summary Output
   dat$epi$incid[at] <- length(infected)
+
+  ## race/ethnicity-specific
   dat$epi$incid.B[at] <- sum(dat$attr$race[infected] == 1, na.rm = TRUE)
   dat$epi$incid.H[at] <- sum(dat$attr$race[infected] == 2, na.rm = TRUE)
   dat$epi$incid.O[at] <- sum(dat$attr$race[infected] == 3, na.rm = TRUE)
   dat$epi$incid.W[at] <- sum(dat$attr$race[infected] == 4, na.rm = TRUE)
+
+  ## age group-specific
+  dat$epi$incid.age1[at] <- sum(dat$attr$age.grp[infected] == 1, na.rm = TRUE)
+  dat$epi$incid.age2[at] <- sum(dat$attr$age.grp[infected] == 2, na.rm = TRUE)
+  dat$epi$incid.age3[at] <- sum(dat$attr$age.grp[infected] == 3, na.rm = TRUE)
+  dat$epi$incid.age4[at] <- sum(dat$attr$age.grp[infected] == 4, na.rm = TRUE)
+  dat$epi$incid.age5[at] <- sum(dat$attr$age.grp[infected] == 5, na.rm = TRUE)
 
   return(dat)
 }
