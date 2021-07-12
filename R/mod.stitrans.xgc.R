@@ -574,7 +574,7 @@ stitrans_msm_rand <- function(dat, at) {
 
   # incidence by transmission pathway
   lu <- data.table(
-    pathway = c("r2ugc", "u2rgc", "p2ugc", "u2pgc", "p2pgc", "p2rgc", "p2pgc")
+    pathway = c("r2ugc", "u2rgc", "p2ugc", "u2pgc", "p2pgc", "p2rgc", "r2pgc")
   )
 
   incid.tp <- incid.byDemog[, .(incid = sum(incid, na.rm = TRUE)), pathway]
