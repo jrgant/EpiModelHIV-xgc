@@ -578,7 +578,7 @@ stitrans_msm_rand <- function(dat, at) {
   )
 
   incid.tp <- incid.byDemog[, .(incid = sum(incid, na.rm = TRUE)), pathway]
-  incid.tp <- incid.byDemog[lu, on = "pathway"]
+  incid.tp <- incid.tp[lu, on = "pathway"]
   incid.tp[, incid := ifelse(is.na(incid), 0, incid)]
   lapply(seq_len(nrow(incid.tp)), function(x) {
     incid.curr <- incid.tp[x, incid]
