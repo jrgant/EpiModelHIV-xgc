@@ -65,7 +65,6 @@ stitrans_msm_rand <- function(dat, at) {
   uGC.sympt <- dat$attr$uGC.sympt
   pGC.sympt <- dat$attr$pGC.sympt
 
-
   # Pull act lists
   al <- dat$temp$al
   ol <- dat$temp$ol
@@ -437,6 +436,7 @@ stitrans_msm_rand <- function(dat, at) {
     pGC.infTime[idsInf_destP] <- at
     pGC.sympt[idsInf_destP] <- rbinom(length(idsInf_destP), 1, pgc.sympt.prob)
     pGC.timesInf[idsInf_destP] <- pGC.timesInf[idsInf_destP] + 1
+
   }
 
   ##############################################################################
@@ -455,6 +455,14 @@ stitrans_msm_rand <- function(dat, at) {
   dat$attr$rGC.sympt <- rGC.sympt
   dat$attr$uGC.sympt <- uGC.sympt
   dat$attr$pGC.sympt <- pGC.sympt
+
+  idsGC_sympt <- which(
+    dat$attr$rGC.sympt == 1 |
+    dat$attr$uGC.sympt == 1 |
+    dat$attr$pGC.sympt == 1
+  )
+
+  dat$attr$anyGC.sympt[idsGC_sympt] <- 1
 
   dat$attr$rGC.timesInf <- rGC.timesInf
   dat$attr$uGC.timesInf <- uGC.timesInf

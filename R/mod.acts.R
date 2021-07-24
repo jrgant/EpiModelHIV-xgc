@@ -30,8 +30,11 @@ acts_msm <- function(dat, at) {
   vl <- dat$attr$vl
   uid <- dat$attr$uid
   prepStat <- dat$attr$prepStat
-
+  act.stopper <- dat$attr$act.stopper
+  anyGC.sympt <- dat$attr$anyGC.sympt
+  anyGC.tx <- dat$attr$anyGC.tx
   plist <- dat$temp$plist
+
 
   # Parameter setup ------------------------------------------------------------
  
@@ -70,11 +73,36 @@ acts_msm <- function(dat, at) {
                                nrow(dat$el[[2]]),
                                nrow(dat$el[[3]])))
 
+  ### Include some partner characteristics
   st1 <- status[el[, 1]]
   st2 <- status[el[, 2]]
 
-  el <- cbind(el, st1, st2, ptype)
-  colnames(el) <- c("p1", "p2", "st1", "st2", "ptype")
+  actstop1 <- act.stopper[el[, 1]]
+  actstop2 <- act.stopper[el[, 2]]
+
+  gc.tx1 <- anyGC.tx[el[, 1]]
+  gc.tx2 <- anyGC.tx[el[, 2]]
+
+  gc.sympt1 <- anyGC.sympt[el[, 1]]
+  gc.sympt2 <- anyGC.sympt[el[, 2]]
+
+  el <- cbind(
+    el, st1, st2,
+    actstop1, actstop2,
+    gc.tx1, gc.tx2,
+    gc.sympt1, gc.sympt2,
+    ptype
+  )
+
+  colnames(el) <- c(
+    "p1", "p2",
+    "st1", "st2",
+    "actstop1",
+    "actstop2",
+    "gc.tx1", "gc.tx2",
+    "gc.sympt1", "gc.sympt2",
+    "ptype"
+  )
 
 
   # Main/casual partnerships ---------------------------------------------------
@@ -309,6 +337,18 @@ acts_msm <- function(dat, at) {
   p2AIDS <- stage[el[p2HIV, "p2"]] == 4 & vl[el[p2HIV, "p2"]] >= acts.aids.vl
   el[p2HIV[p2AIDS == TRUE], "ai"] <- 0
 
+
+  # Post-processing for GC symptoms --------------------------------------------
+  p1Stopper <- which(
+    (el[, "gc.tx1"] == 1 | el[, "gc.sympt1"] == 1) & el[, "actstop1"] == 1
+  )
+  el[p1Stopper, c("ai", "oi", "ri", "kiss")] <- 0
+
+  p2Stopper <- which(
+    (el[, "gc.tx2"] == 1 | el[, "gc.sympt2"] == 1) & el[, "actstop2"] == 1
+  )
+  el[p2Stopper, c("ai", "oi", "ri", "kiss")] <- 0
+
   # Flip order of discordant edges
   disc <- abs(el[, "st1"] - el[, "st2"]) == 1
   disc.st2pos <- which(disc == TRUE & el[, "st2"] == 1)
@@ -323,7 +363,9 @@ acts_msm <- function(dat, at) {
             ), ]
 
   # Save edgelist
-  dat$temp$el <- el
+  # NOTE We also drop temp columns, as keeping them breaks
+  #      risk history assessment in riskhist_msm()
+  dat$temp$el <- el[, -c(5:10)]
 
   return(dat)
 }

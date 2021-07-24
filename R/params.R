@@ -89,7 +89,7 @@
 #'        in the cond.eff parameter (vector of length 4).
 #' @param circ.prob Probability that a black/hispanic/other/white new arrival in the population
 #'        will be circumcised (vector of length 4).
-#'
+#' @param act.stopper.prob Probability that an agent with GC symptoms or on Ab treatment for GC stops all sexual activity while either of those conditions are true.
 #' @param epistats GLMs for epidemiological parameter from the standard ARTnet workflow.
 #' @param acts.aids.vl Viral load level after which sexual act rate goes to zero.
 #' @param ai.acts.scale.mc Scalar for main/casual anal sex act rates, for model calibration.
@@ -235,6 +235,7 @@ param_msm <- function(netstats,
                       rim.rate.casl = 0,
                       rim.prob.oo = 0,
                       cond.scale = 1,
+                      act.stopper.prob = 0.8,
 
                       # Per-act GC transmission probabilities
                       u2rgc.tprob = 0.25,

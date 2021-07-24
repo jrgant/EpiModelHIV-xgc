@@ -165,7 +165,25 @@ stirecov_msm <- function(dat, at) {
   dat$attr$pGC.tx.prep[recovPGC] <- NA
   dat$attr$pGC.txTime[recovPGC] <- NA
 
-  dat$attr$anyGC.tx[c(recovRGC, recovUGC, recovPGC)] <- NA
+  # reassess summary treatment indicator after site-specific updates
+  # set to NA only if agent is no longer treated for an infection
+  # at any anatomic site
+  dat$attr$anyGC.tx[
+             !which(
+                dat$attr$rGC.tx == 1 |
+                dat$attr$uGC.tx == 1 |
+                dat$attr$pGC.tx == 1
+              )] <- NA
+
+  # reasses summary symptom indicator after site-specific updates
+  # set to NA only if agent is no longer symptomatic for an infection
+  # at any site
+  dat$attr$anyGC.sympt[
+             !which(
+                dat$attr$rGC.sympt == 1 |
+                dat$attr$uGC.sympt == 1 |
+                dat$attr$pGC.sympt == 1
+              )] <- NA
 
   # Output ------------------------------------------------------------------
 

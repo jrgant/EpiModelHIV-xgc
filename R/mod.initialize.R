@@ -290,6 +290,7 @@ init_sti_msm <- function(dat) {
 
   # Set GC gonorrhea symptom status
   dat$attr$rGC.sympt <- dat$attr$uGC.sympt <- dat$attr$pGC.sympt <- rep(NA, num)
+  dat$attr$anyGC.sympt <- rep(NA, num)
 
   dat$attr$rGC.sympt[rGC == 1] <-
     rbinom(sum(rGC == 1), 1, dat$param$rgc.sympt.prob)
@@ -299,6 +300,19 @@ init_sti_msm <- function(dat) {
 
   dat$attr$pGC.sympt[pGC == 1] <-
     rbinom(sum(pGC == 1), 1, dat$param$pgc.sympt.prob)
+
+  idsGC_sympt <- which(
+    dat$attr$rGC.sympt == 1 |
+    dat$attr$uGC.sympt == 1 |
+    dat$attr$pGC.sympt == 1
+  )
+
+  dat$attr$anyGC.sympt[idsGC_sympt] <- 1
+
+  # Determine if each agent is in the act stopper class (cease all sexual
+  # activity if either GC symptomatic anywhere or on GC treatment)
+  dat$attr$act.stopper <- rep(NA, num)
+  dat$attr$act.stopper <- rbinom(num, 1, dat$param$act.stopper.prob)
 
   # Set GC infection time
   dat$attr$rGC.infTime <-

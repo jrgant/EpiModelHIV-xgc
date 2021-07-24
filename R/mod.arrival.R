@@ -86,6 +86,13 @@ setNewAttr_msm <- function(dat, at, nNew) {
 
   dat$attr$count.trans[newIds] <- 0
 
+  # Assign act stoppage class (persistent) for those who
+  # will cease all sexual activity while symptomatic for GC at
+  # any anatomic site for GC, or while on GC treatment.
+  dat$attr$act.stopper[newIds] <-
+    rbinom(length(newIds), 1, dat$param$act.stopper.prob)
+
+  # Late HIV testers
   rates <- dat$param$hiv.test.late.prob[race]
   dat$attr$late.tester[newIds] <- rbinom(length(rates), 1, rates)
 
