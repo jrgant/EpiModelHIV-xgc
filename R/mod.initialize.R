@@ -148,7 +148,7 @@ init_status_msm <- function(dat) {
   prob.hiv <- mean(dat$attr$diag.status) / 0.8
   prob.hiv.nodx <- prob.hiv - mean(dat$attr$diag.status)
   status[status == 0] <-
-    as.numeric(rbinom(length(status == 0), 1, prob.hiv.nodx) == 1)
+    as.numeric(rbinom(sum(status == 0), 1, prob.hiv.nodx) == 1)
 
   # Late (AIDS-stage) tester type
   rates <- dat$param$hiv.test.late.prob[dat$attr$race]
