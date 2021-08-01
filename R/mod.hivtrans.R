@@ -81,6 +81,22 @@ hivtrans_msm <- function(dat, at) {
   )
 
   if (nrow(dal) == 0) {
+    # Summary Output
+    dat$epi$incid[at] <- 0
+
+    ## race/ethnicity-specific
+    dat$epi$incid.B[at] <- 0
+    dat$epi$incid.H[at] <- 0
+    dat$epi$incid.O[at] <- 0
+    dat$epi$incid.W[at] <- 0
+
+    ## age group-specific
+    dat$epi$incid.age1[at] <- 0
+    dat$epi$incid.age2[at] <- 0
+    dat$epi$incid.age3[at] <- 0
+    dat$epi$incid.age4[at] <- 0
+    dat$epi$incid.age5[at] <- 0
+
     return(dat)
   }
 
