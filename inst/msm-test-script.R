@@ -34,12 +34,14 @@ param_xgc <- param_msm(
   rgc.ntx.int = 15,
   ugc.ntx.int = 2,
   pgc.ntx.int = 12,
-  ## Treated GC recovery probabilities c(after 1 week, after 2 weeks, after 3 weeks)
+  ## Treated GC recovery probabilities c(after 1 wk, after 2 wks, after 3 wks)
   rgc.tx.recov.pr = c(1 - 0.06, 0.5, 1),
   ugc.tx.recov.pr = c(1 - 0.05, 0.5, 1),
   pgc.tx.recov.pr = c(1 - 0.13, 0.5, 1),
   # STI testing
-  gc.sympt.seek.test.prob = 0.71,
+  ugc.sympt.seek.test.prob = 0.71,
+  rgc.sympt.seek.test.rr = 0.5,
+  pgc.sympt.seek.test.rr = 0.5,
   ## NOTE:
   ## Changed the treatment probs to be receiving test conditional on someone's
   ## seeking STI testing. Repeat 3 times, one for each anatomic site.
@@ -60,8 +62,8 @@ param_xgc <- param_msm(
   tx.reinit.full.rr = rep(1.0, 4), # ORIGPARAM
   tx.reinit.dur.rr = rep(1.0, 4),  # ORIGPARAM
   # scaling parameters
-  ai.acts.scale.mc = 0,
-  oi.acts.scale.mc = 0,
+  ai.acts.scale.mc = 1,
+  oi.acts.scale.mc = 1,
   kiss.rate.main = 0, # NEWPARAM: Kissing prob. during anal/oral sex, main
   kiss.rate.casl = 0, # NEWPARAM: Kissing prob. during anal/oral sex, casual
   kiss.prob.oo = 0, # NEWPARAM: Kissing prob. during anal/oral sex, one-time
@@ -76,9 +78,11 @@ param_xgc <- param_msm(
   cond.fail = rep(0, 4),
   # NOTE: Change to 0 to turn off (reflect uncertainty in cond. effect)
   sti.cond.fail = rep(0, 4),
+  act.stopper.prob = 0.8,
+  riskh.start = 2,
   prep.require.lnt = TRUE,
   prep.start.prob = rep(0.6, 4),
-  prep.discont.rate = 0.55 / 0.26 * 0.0096 * 0.26 / c(0.262, 0.300, 0.398, 0.424)
+  prep.discont.rate = c(0.02469, 0.021563, 0.016253, 0.015257)
 )
 
 init_xgc <- init_msm(
@@ -90,7 +94,7 @@ init_xgc <- init_msm(
 control_xgc <- control_msm(
   # Computing options
   simno = 1,
-  nsteps = 52 * 5,
+  nsteps = 100,
   nsims = 1,
   ncores = 1,
   # Epidemic simulation Modules
@@ -115,7 +119,7 @@ control_xgc <- control_msm(
   resimulate.network = TRUE,
   prev.FUN = prevalence_msm,
   verbose.FUN = verbose.net,
-  verbose.int = 1,
+  verbose.int = 10,
   skip.check = TRUE,
   save.network = FALSE,
   # Epidemic simulation options

@@ -56,6 +56,7 @@ param_msm(
   rim.rate.casl = 0,
   rim.prob.oo = 0,
   cond.scale = 1,
+  act.stopper.prob = 0.8,
   u2rgc.tprob = 0.25,
   u2pgc.tprob = 0.25,
   r2ugc.tprob = 0.25,
@@ -75,7 +76,9 @@ param_msm(
   gc.tx.int = 1.4,
   gc.sympt.prob.test = rep(1, 3),
   gc.asympt.prob.test = c(0.15, 0.15, 0.15),
-  gc.sympt.seek.test.prob = 0.72,
+  ugc.sympt.seek.test.prob = 0.72,
+  rgc.sympt.seek.test.rr = 0.5,
+  pgc.sympt.seek.test.rr = 0.5,
   sti.cond.eff = 0.9,
   sti.cond.fail = rep(0, 4),
   hiv.rgc.rr = 2.78,
@@ -237,6 +240,8 @@ will be circumcised (vector of length 4).}
 
 \item{cond.scale}{Scalar for condom use probability for model calibration.}
 
+\item{act.stopper.prob}{Probability that an agent with GC symptoms or on Ab treatment for GC stops all sexual activity while either of those conditions are true.}
+
 \item{u2rgc.tprob}{Probability of gonorrhea transmission per sex act from an infected urethra to an uninfected rectum.}
 
 \item{u2pgc.tprob}{Probability of gonorrhea transmission per sex act from an infected urethra to an uninfected oropharynx.}
@@ -276,7 +281,11 @@ gonorrhea.}
 
 \item{gc.asympt.prob.test}{Probability of being tested at asymptomatic rectum, urethra, and pharynx.}
 
-\item{gc.sympt.seek.test.prob}{Probability per week of seeking an STI test due to having STI symptoms.}
+\item{ugc.sympt.seek.test.prob}{Probability per week of seeking an STI test due to having STI symptoms.}
+
+\item{rgc.sympt.seek.test.rr}{Scalar on ugc.sympt.seek.test.prob for those with symptomatic rectal GC.}
+
+\item{pgc.sympt.seek.test.rr}{Scalar on rgc.sympt.seek.test.prob for those with symptomatic pharyngeal GC.}
 
 \item{sti.cond.eff}{Relative risk of STI infection from anal sex when a condom is
 used properly (biological efficacy).}
