@@ -28,8 +28,6 @@ position_msm <- function(dat, at) {
   al <- dat$temp$al
   ol <- dat$temp$ol
 
-  if (nrow(al) == 0) return(dat)
-
   # Attributes
   role.class <- dat$attr$role.class
   ins.quot <- dat$attr$ins.quot
@@ -63,7 +61,6 @@ position_msm <- function(dat, at) {
   dat$temp$al <- cbind(al, ins)
 
   ## Oral sex position
-  if (nrow(ol) == 0) return(dat)
 
   p1.ins.oral.prob <-
     ins.quot.oral[ol[, 1]] /
