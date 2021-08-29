@@ -209,7 +209,9 @@ riskhist_msm <- function(dat, at) {
   el.ai <- dat$temp$el[dat$temp$el[, 7] > 0, ]
   el <- as.data.frame(cbind(el.ai, uai))
 
-  if (max(el[, 1:2]) > n) stop("riskhist max(el) > n")
+  if (nrow(el) > 0) {
+    if (max(el[, 1:2]) > n) stop("riskhist max(el) > n")
+  }
 
   # Remove concordant positive edges
   el2 <- el[el$st2 == 0, ]
