@@ -73,6 +73,7 @@ stitrans_msm_rand <- function(dat, at) {
   # ins = 0 : p2 is insertive
   # ins = 1 : p1 is insertive
 
+
   ##############################################################################
   ## ANAL SEX ##
   ##############################################################################
@@ -363,7 +364,7 @@ stitrans_msm_rand <- function(dat, at) {
       intersect(kiss[p1Inf_p2pgc, "p2"], transKL_p2pgc[, "p2"]),
       intersect(kiss[p2Inf_p2pgc, "p1"], transKL_p2pgc[, "p1"])
     )
-    }
+  }
 
 
   ##############################################################################
