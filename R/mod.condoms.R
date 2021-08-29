@@ -134,6 +134,10 @@ condoms_msm <- function(dat, at) {
       predict(cond.oo.mod, newdata = pred_df, type = "response")
     )
     el.oo <- cbind(el.oo, cond.prob.oo)
+  } else {
+    oo.names <- colnames(el.oo)
+    el.oo <- array(dim = c(0, ncol(el.oo) + 1))
+    colnames(el.oo) <- c(oo.names, "cond.prob")
   }
 
   ## Bind el together
