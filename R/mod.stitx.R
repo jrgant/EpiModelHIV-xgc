@@ -468,32 +468,35 @@ stitx_msm <- function(dat, at) {
   ## Calculate Test Positivity among Clinic Goers
   ## ===========================================================================
 
-  ## Proportion of rectal sites tested
-  dat$epi$prop.rect.tested[at] <-
-    length(c(idsRGC_getTest)) / length(ids_seekTest)
+  if (dat$control$stiScreeningProtocol != "cdc") {
 
-  ## Proportion of urethral sites tested
-  dat$epi$prop.ureth.tested[at] <-
-    length(c(idsUGC_getTest)) / length(ids_seekTest)
+    ## Proportion of rectal sites tested
+    dat$epi$prop.rect.tested[at] <-
+      length(c(idsRGC_getTest)) / length(ids_seekTest)
 
-  ## Proportion of pharyngeal sites tested
-  dat$epi$prop.phar.tested[at] <-
-    length(c(idsPGC_getTest)) / length(ids_seekTest)
+    ## Proportion of urethral sites tested
+    dat$epi$prop.ureth.tested[at] <-
+      length(c(idsUGC_getTest)) / length(ids_seekTest)
 
-  ## Proportion of tested rectal sites GC+
-  dat$epi$prob.rGC.tested[at] <-
-    sum(dat$attr$rGC[idsRGC_getTest] == 1) /
-    length(idsRGC_getTest)
+    ## Proportion of pharyngeal sites tested
+    dat$epi$prop.phar.tested[at] <-
+      length(c(idsPGC_getTest)) / length(ids_seekTest)
 
-  ## Proportion of tested urethral sites GC+
-  dat$epi$prob.uGC.tested[at] <-
-    sum(dat$attr$uGC[idsUGC_getTest] == 1) /
-    length(idsUGC_getTest)
+    ## Proportion of tested rectal sites GC+
+    dat$epi$prob.rGC.tested[at] <-
+      sum(dat$attr$rGC[idsRGC_getTest] == 1) /
+        length(idsRGC_getTest)
 
-  ## Proportion of tested pharyngeal sites GC+
-  dat$epi$prob.pGC.tested[at] <-
-    sum(dat$attr$pGC[idsPGC_getTest] == 1) /
-    length(idsPGC_getTest)
+    ## Proportion of tested urethral sites GC+
+    dat$epi$prob.uGC.tested[at] <-
+      sum(dat$attr$uGC[idsUGC_getTest] == 1) /
+        length(idsUGC_getTest)
+
+    ## Proportion of tested pharyngeal sites GC+
+    dat$epi$prob.pGC.tested[at] <-
+      sum(dat$attr$pGC[idsPGC_getTest] == 1) /
+        length(idsPGC_getTest)
+  }
 
   return(dat)
 }
