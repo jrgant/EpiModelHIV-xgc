@@ -124,13 +124,15 @@ position_msm <- function(dat, at) {
     )
   )
 
-  ids_exposedPharynx <- union(
-    ids_exposedPharynx,
-    c(
-      dat$temp$kiss[, "p1"],
-      dat$temp$kiss[, "p2"]
+  if (dat$control$cdcExposureSite_Kissing == TRUE) {
+    ids_exposedPharynx <- union(
+      ids_exposedPharynx,
+      c(
+        dat$temp$kiss[, "p1"],
+        dat$temp$kiss[, "p2"]
+      )
     )
-  )
+  }
 
   dat$attr$last.rectal.exp[ids_exposedRectum] <- at
   dat$attr$last.ureth.exp[ids_exposedUrethra] <- at
